@@ -2,22 +2,39 @@ package lexer
 
 import (
 	"bytes"
-	"fmt"
 	"unicode"
 )
 
 type TokenType int64
 
 const (
-	INT TokenType = iota
+	INT TokenType = iota // integer numbers
 	STR
+	DECIMAL
+	TYPE
+	OP_STAR
 	OP_PLUS
-	KW_FN
+	OP_MINUS
+	OP_EQ
+	OP_COLONEQ
+	OP_PLUSEQ
+	OP_LESS
+	KW_FOR
+	KW_IMPORT
+	KW_AS
 	WORD
+	SEMICOLON
 	LPAREN
 	RPAREN
 	LBRACKET
 	RBRACKET
+	NL // newline token
+	COMMENT
+	DOT
+
+	// buildtin types
+	T_VOID
+	T_INT
 )
 
 type Token struct {
@@ -28,21 +45,32 @@ type Token struct {
 
 func Tokenize(stream *bytes.Reader) ([]Token, error) {
 	tokens := []Token{}
-	keywords := map[string]TokenType {
-		"fn": KW_FN,
+	keywords := map[string]TokenType{
+		"for":    KW_FOR,
+		"import": KW_IMPORT,
+		"as":     KW_AS,
+
+		"void":   T_VOID,
+		"int":   T_INT,
 	}
-	special_chars := map[string]TokenType {
-		"+": OP_PLUS,
-		"(": LPAREN,
-		")": RPAREN,
-		"{": LBRACKET,
-		"}": RBRACKET,
+	special_chars := map[string]TokenType{
+		"+":  OP_PLUS,
+		"-":  OP_MINUS,
+		"*":  OP_STAR,
+		"<":  OP_LESS,
+		"=":  OP_EQ,
+		"(":  LPAREN,
+		")":  RPAREN,
+		"{":  LBRACKET,
+		"}":  RBRACKET,
+		".":  DOT,
+		";":  SEMICOLON,
+		"\n": NL,
 	}
 
 	for {
 		c, _, err := stream.ReadRune()
 		pos, _ := stream.Seek(0, 1)
-		fmt.Printf("Pos: %d", pos)
 
 		if err != nil {
 			// end of parsing
@@ -51,15 +79,40 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 
 		if unicode.IsDigit(c) {
 			rest := readWhile(stream, unicode.IsDigit)
-			tokens = append(tokens, Token{INT, string(c) + rest, pos})
-		} else if c == '\'' {
+			nextChr, _, err := stream.ReadRune()
+			if err == nil && nextChr == '.' {
+				rest += string(nextChr)
+				rest += readWhile(stream, unicode.IsDigit)
+				tokens = append(tokens, Token{DECIMAL, string(c) + rest, pos})
+			} else {
+				stream.UnreadRune()
+				tokens = append(tokens, Token{INT, string(c) + rest, pos})
+			}
+		} else if c == '"' {
 			content := readUntil(stream, func(c rune) bool {
-				return c != '\''
+				return c != '"'
 			})
 			tokens = append(tokens, Token{STR, string(c) + content, pos})
+		} else if c == ':' {
+			nextChr, _, err := stream.ReadRune()
+			if err == nil && nextChr == '=' {
+				tokens = append(tokens, Token{OP_COLONEQ, ":=", pos})
+			} else {
+				stream.UnreadRune()
+			}
+		} else if c == '+' {
+			next, _, err := stream.ReadRune()
+			if next == '=' && err == nil {
+				tokens = append(tokens, Token{OP_PLUSEQ, "+=", pos})
+			} else {
+				stream.UnreadRune()
+				tokens = append(tokens, Token{OP_PLUS, string(c), pos})
+			}
+		} else if c == '#' {
+			content := readUntil(stream, func(c rune) bool { return c != '\n' })
+			tokens = append(tokens, Token{COMMENT, string(c) + content, pos})
 		} else if typ, ok := special_chars[string(c)]; ok {
 			tokens = append(tokens, Token{typ, string(c), pos})
-
 		} else if unicode.IsLetter(c) {
 			content := readWhile(stream, unicode.IsLetter)
 			name := string(c) + content
