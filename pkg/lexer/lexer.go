@@ -50,8 +50,8 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 		"import": KW_IMPORT,
 		"as":     KW_AS,
 
-		"void":   T_VOID,
-		"int":   T_INT,
+		"void": T_VOID,
+		"int":  T_INT,
 	}
 	special_chars := map[string]TokenType{
 		"+":  OP_PLUS,

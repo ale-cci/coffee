@@ -128,7 +128,7 @@ func TestTokenizer(t *testing.T) {
 		})
 	})
 
-	t.Run("should parse star operator", func (t *testing.T) {
+	t.Run("should parse star operator", func(t *testing.T) {
 		prg := []byte(`3 * 4`)
 		tokens, err := lexer.Tokenize(bytes.NewReader(prg))
 		assert.NilError(t, err)
@@ -160,4 +160,3 @@ func TestTokenizer(t *testing.T) {
 		})
 	})
 }
-
