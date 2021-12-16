@@ -159,4 +159,13 @@ func TestTokenizer(t *testing.T) {
 			{compiler.T_INT, "int", 1},
 		})
 	})
+
+	t.Run("should parse comma token", func(t *testing.T) {
+		prg := []byte(",")
+		tokens, err := compiler.Tokenize(bytes.NewReader(prg))
+		assert.NilError(t, err)
+		assert.DeepEqual(t, tokens, []compiler.Token{
+			{compiler.COMMA, ",", 1},
+		})
+	})
 }

@@ -31,9 +31,8 @@ const (
 	NL // newline token
 	COMMENT
 	DOT
-
-	// buildtin types
 	T_VOID
+	COMMA
 	T_INT
 )
 
@@ -59,6 +58,7 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 		"*":  OP_STAR,
 		"<":  OP_LESS,
 		"=":  OP_EQ,
+		",":  COMMA,
 		"(":  LPAREN,
 		")":  RPAREN,
 		"{":  LBRACKET,
