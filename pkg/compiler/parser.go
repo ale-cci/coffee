@@ -15,8 +15,6 @@ type Parsable interface {
 	Parse([]Token) *ParseError
 }
 
-type Statement interface{}
-type AST = []Statement
 
 func Parse(tokens []Token) (*AST, error) {
 	peeker := NewTokenPeeker(tokens)
@@ -40,26 +38,6 @@ func Parse(tokens []Token) (*AST, error) {
 	return &body, nil
 }
 
-type Type interface{}
-
-type Expression interface{}
-type Argument struct {
-	Type Type
-	Name string
-}
-
-type Function struct {
-	Name       string
-	ReturnType Type
-	Args       []Argument
-	Body       []Expression
-}
-
-type Number struct {
-	Value string
-	Type  Type
-}
-
 func ParseFunction(p *TokenPeeker) (*Function, error) {
 	returnType, err := ParseType(p)
 	if err != nil {
@@ -73,6 +51,7 @@ func ParseFunction(p *TokenPeeker) (*Function, error) {
 		}
 	}
 
+	// parse function arguments
 	args := []Argument{}
 	var prevType Type
 	for p.PeekOne().Type != RPAREN {
@@ -101,6 +80,7 @@ func ParseFunction(p *TokenPeeker) (*Function, error) {
 		})
 	}
 
+	// ensure last token is closed )
 	if tok := p.Read(); tok.Type != RPAREN {
 		return nil, &ParseError{
 			Pos:   tok.Position,
@@ -113,19 +93,9 @@ func ParseFunction(p *TokenPeeker) (*Function, error) {
 			error: fmt.Sprintf("Expected { found %q", tok.Value),
 		}
 	}
-	// TODO: parse function body
-	expressions := []Expression{}
-	for p.PeekOne().Type != RBRACKET {
-		// skip empty new lines
-		if p.PeekOne().Type == NL {
-			p.Read()
-			continue
-		}
-		expr, err := ParseExpression(p)
-		if err != nil {
-			return nil, err
-		}
-		expressions = append(expressions, expr)
+	expressions, err := ParseBlock(p)
+	if err != nil {
+		return nil, err
 	}
 
 	if tok := p.Read(); tok.Type != RBRACKET {

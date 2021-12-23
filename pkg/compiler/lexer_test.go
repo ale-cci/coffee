@@ -2,6 +2,7 @@ package compiler_test
 
 import (
 	"bytes"
+	"fmt"
 	"testing"
 
 	"bitbucket.org/ale-cci/elk/pkg/compiler"
@@ -167,5 +168,52 @@ func TestTokenizer(t *testing.T) {
 		assert.DeepEqual(t, tokens, []compiler.Token{
 			{compiler.COMMA, ",", 1},
 		})
+	})
+
+	t.Run("should parse if token", func(t *testing.T) {
+		prg := []byte("if")
+		tokens, err := compiler.Tokenize(bytes.NewReader(prg))
+		assert.NilError(t, err)
+		assert.DeepEqual(t, tokens, []compiler.Token{
+			{compiler.KW_IF, "if", 1},
+		})
+	})
+
+	t.Run("parses tokens correctly", func(t *testing.T) {
+		tt := []struct {
+			program string
+			expects []compiler.Token
+			name    string
+		}{
+			{
+				program: "if",
+				expects: []compiler.Token{{compiler.KW_IF, "if", 1}},
+				name: "parses if token",
+			},
+			{
+				program: "elif",
+				expects: []compiler.Token{{compiler.KW_ELIF, "elif", 1}},
+				name: "parses elif token",
+			},
+			{
+				program: "true",
+				expects: []compiler.Token{{compiler.KW_TRUE, "true", 1}},
+				name: "parses true token",
+			},
+			{
+				program: "false",
+				expects: []compiler.Token{{compiler.KW_FALSE, "false", 1}},
+				name: "parses false token",
+			},
+		}
+
+		for i, tc := range tt {
+			testName := fmt.Sprintf("[%d] %s", i, tc.name)
+			t.Run(testName, func(t *testing.T) {
+				tokens, err := compiler.Tokenize(bytes.NewReader([]byte(tc.program)))
+				assert.NilError(t, err)
+				assert.DeepEqual(t, tokens, tc.expects)
+			})
+		}
 	})
 }

@@ -19,24 +19,62 @@ func compile(prg string) (*compiler.AST, error) {
 	return ast, err
 }
 
-func TestCompiler(t *testing.T) {
-
-	t.Run("parses function statement", func(t *testing.T) {
-		ast, err := compile(`
-		void main() {
-		}
-		`)
-		assert.NilError(t, err)
-
-		assert.DeepEqual(t, ast, &[]compiler.Statement{
-			&compiler.Function{
-				Name:       "main",
+func TestFunctionParser(t *testing.T) {
+	tt := []struct {
+		name string
+		program string
+		expect *compiler.Function
+	} {
+		{
+			name: "parses function statement",
+			program: "void main() { }",
+			expect: &compiler.Function{
+				Name: "main",
 				ReturnType: "void",
-				Args:       []compiler.Argument{},
-				Body:       []compiler.Expression{},
+				Args: []compiler.Argument{},
+				Body: []compiler.Expression{},
 			},
+		},
+		{
+			name: "parses if-else case inside block",
+			program: `void main() {
+				if true {
+				}
+			}
+			`,
+			expect: &compiler.Function{
+				Name: "main",
+				ReturnType: "void",
+				Args: []compiler.Argument{},
+				Body: []compiler.Expression{
+					&compiler.IfElseBlock{
+						Condition: compiler.Boolean("true"),
+						Body: []compiler.Expression{},
+						Else: nil,
+					},
+				},
+			},
+		},
+	}
+
+	for i, tc := range tt {
+		name := fmt.Sprintf("[%d] %s", i, tc.name)
+		t.Run(name, func(t *testing.T) {
+			tokens, err := compiler.Tokenize(
+				bytes.NewReader([]byte(tc.program)),
+			)
+			assert.NilError(t, err)
+			t.Logf("Tokens %q", tokens)
+			p := compiler.NewTokenPeeker(tokens)
+			vals, err := compiler.ParseFunction(p)
+
+			assert.NilError(t, err)
+			assert.DeepEqual(t, vals, tc.expect)
 		})
-	})
+	}
+
+}
+func TestCompiler(t *testing.T) {
 	t.Run("parses function body", func(t *testing.T) {
 		ast, err := compile(`
 		int main() {
@@ -151,6 +189,52 @@ func TestParseAssignable(t *testing.T) {
 			program: "\"test\"",
 			expect:  compiler.String("test"),
 		},
+		{
+			name:    "should parse false",
+			program: "false",
+			expect:  compiler.Boolean("false"),
+		},
+		{
+			name: "parses addition",
+			program: "3 + 4",
+			expect: compiler.Sum{
+				Left: compiler.Number{Value: "3", Type: "int"},
+				Right: compiler.Number{Value: "4", Type: "int"},
+			},
+		},
+		{
+			name: "multiplication has precendence over sum",
+			program: "3 + 4 * 5",
+			expect: compiler.Sum{
+				Left: compiler.Number{Value: "3", Type: "int"},
+				Right: compiler.OpTimes{
+					Left: compiler.Number{Value: "4", Type: "int"},
+					Right: compiler.Number{Value: "5", Type: "int"},
+				},
+			},
+		},
+		{
+			name: "parses multiplication",
+			program: "4 * 5 + 3",
+			expect: compiler.Sum{
+				Left: compiler.OpTimes{
+					Left: compiler.Number{Value: "4", Type: "int"},
+					Right: compiler.Number{Value: "5", Type: "int"},
+				},
+				Right: compiler.Number{Value: "3", Type: "int"},
+			},
+		},
+		{
+			name: "parses subtraction",
+			program: "4 - 5 + 3",
+			expect: compiler.Sum{
+				Left: compiler.OpMinus{
+					Left: compiler.Number{"4", "int"},
+					Right: compiler.Number{"5", "int"},
+				},
+				Right: compiler.Number{"3", "int"},
+			},
+		},
 	}
 
 	for i, tc := range tt {
@@ -169,3 +253,4 @@ func TestParseAssignable(t *testing.T) {
 		})
 	}
 }
+

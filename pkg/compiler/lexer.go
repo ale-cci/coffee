@@ -22,6 +22,11 @@ const (
 	KW_FOR
 	KW_IMPORT
 	KW_AS
+	KW_TRUE
+	KW_FALSE
+	KW_IF
+	KW_ELSE
+	KW_ELIF
 	WORD
 	SEMICOLON
 	LPAREN
@@ -48,6 +53,10 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 		"for":    KW_FOR,
 		"import": KW_IMPORT,
 		"as":     KW_AS,
+		"if":     KW_IF,
+		"true":   KW_TRUE,
+		"false":  KW_FALSE,
+		"elif":   KW_ELIF,
 
 		"void": T_VOID,
 		"int":  T_INT,
