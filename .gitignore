@@ -1,3 +1,6 @@
 cj
 samples/*
 !samples/*.cj
+llvm/*
+!llvm/*.ll
+!llvm/compile.sh
