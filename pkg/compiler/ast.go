@@ -9,15 +9,17 @@ type Type interface{}
 
 // expression with value, includes:
 // - function calls
-// - operations
+// - operations ?
 // - variables
-type Expression interface{}
+type Expression interface{
+}
 
 // Argument of a function definition
 type Argument struct {
 	Type Type
 	Name string
 }
+type Return struct {Value Assignable }
 
 type Function struct {
 	Name       string
@@ -72,5 +74,10 @@ type OpTimes struct {
 // multiplication between assignables
 type OpMinus struct {
 	Left  Assignable
+	Right Assignable
+}
+
+type OpOver struct {
+	Left Assignable
 	Right Assignable
 }

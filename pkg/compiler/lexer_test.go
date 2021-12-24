@@ -205,6 +205,16 @@ func TestTokenizer(t *testing.T) {
 				expects: []compiler.Token{{compiler.KW_FALSE, "false", 1}},
 				name: "parses false token",
 			},
+			{
+				program: "/",
+				expects: []compiler.Token{{compiler.OP_OVER, "/", 1}},
+				name: "parses division token",
+			},
+			{
+				program: "return",
+				expects: []compiler.Token{{compiler.KW_RETURN, "return", 1}},
+				name: "parses return primitive",
+			},
 		}
 
 		for i, tc := range tt {

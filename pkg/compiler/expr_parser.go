@@ -38,7 +38,13 @@ func ParseExpression(p *TokenPeeker) (Expression, error) {
 	} else if tok.Type == KW_IF {
 		tok, err := ParseIfBlock(p)
 		return tok, err
-	} else if tok.Type == KW_TRUE {
+	} else if tok.Type == KW_RETURN {
+		p.Read()
+		val, err := ParseAssignable(p)
+		if err != nil {
+			return nil, err
+		}
+		return &Return{ val }, nil
 	}
 
 	return nil, &ParseError{
@@ -207,6 +213,12 @@ func ParseAssignable(p *TokenPeeker) (Assignable, error){
 			20,
 			func(l, r Assignable)Assignable{
 				return OpTimes{Left: l, Right: r}
+			},
+		},
+		OP_OVER: {
+			20,
+			func(l, r Assignable)Assignable{
+				return OpOver{Left: l, Right: r}
 			},
 		},
 	}

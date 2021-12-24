@@ -15,11 +15,13 @@ const (
 	OP_STAR
 	OP_PLUS
 	OP_MINUS
+	OP_OVER
 	OP_EQ
 	OP_COLONEQ
 	OP_PLUSEQ
 	OP_LESS
 	KW_FOR
+	KW_RETURN
 	KW_IMPORT
 	KW_AS
 	KW_TRUE
@@ -57,6 +59,7 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 		"true":   KW_TRUE,
 		"false":  KW_FALSE,
 		"elif":   KW_ELIF,
+		"return": KW_RETURN,
 
 		"void": T_VOID,
 		"int":  T_INT,
@@ -65,6 +68,7 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 		"+":  OP_PLUS,
 		"-":  OP_MINUS,
 		"*":  OP_STAR,
+		"/":  OP_OVER,
 		"<":  OP_LESS,
 		"=":  OP_EQ,
 		",":  COMMA,

@@ -160,6 +160,13 @@ func TestCompiler(t *testing.T) {
 					},
 				},
 			},
+			{
+				name: "parses return call",
+				program: "return 3",
+				expect: &compiler.Return{
+					compiler.Number{"3", "int"},
+				},
+			},
 		}
 
 		for i, tc := range expressions {
@@ -233,6 +240,39 @@ func TestParseAssignable(t *testing.T) {
 					Right: compiler.Number{"5", "int"},
 				},
 				Right: compiler.Number{"3", "int"},
+			},
+		},
+		{
+			name: "subtraction is commutative",
+			program: "4 + 5 - 3",
+			expect: compiler.OpMinus{
+				Left: compiler.Sum{
+					Left: compiler.Number{"4", "int"},
+					Right: compiler.Number{"5", "int"},
+				},
+				Right: compiler.Number{"3", "int"},
+			},
+		},
+		{
+			name: "parses division",
+			program: "4 + 5 / 3",
+			expect: compiler.Sum{
+				Left: compiler.Number{"4", "int"},
+				Right: compiler.OpOver{
+					Left: compiler.Number{"5", "int"},
+					Right: compiler.Number{"3", "int"},
+				},
+			},
+		},
+		{
+			name: "division has priority",
+			program: "5 / 3 + 4",
+			expect: compiler.Sum{
+				Left: compiler.OpOver{
+					Left: compiler.Number{"5", "int"},
+					Right: compiler.Number{"3", "int"},
+				},
+				Right: compiler.Number{"4", "int"},
 			},
 		},
 	}
