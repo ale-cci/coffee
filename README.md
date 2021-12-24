@@ -1,4 +1,4 @@
-# Cjure (yes, it's pronounced like seizure)
+# Espresso (coffee-lang)
 ## C-like programming language with Clojures
 I don't have the time to do it right the first time, but surely i have the
 time to do it twice.

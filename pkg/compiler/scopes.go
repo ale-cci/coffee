@@ -58,7 +58,6 @@ func DefineExtern(scopes *Scopes, name string, i NameInfo) (string, error) {
 		return "", err
 	}
 	argNames := []string{}
-	fmt.Printf("Args: %#v %d\n", i.Arguments, len(i.Arguments))
 	for _, arg := range i.Arguments {
 		strType, err := scopes.TypeRepr(arg.Type)
 		if err != nil {
