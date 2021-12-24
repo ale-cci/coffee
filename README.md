@@ -18,20 +18,20 @@ $ ./hello
 
 #### Sample syntax
 ```
-#!/usr/bin/env cj
+#!/usr/bin/env coffee
 -- example of multiline docstring
 import "something" as something_else
 
 -- Function to store somehitng
 -- < argv : input arguent
 -- > nothing : output argument
-void main(string[] argv) {
+void main(str[] argv) {
     int clojure() {
         return len(argv)
     }
 
-    int t = 0;
-    dec j = 10.0;
+    int t = 0
+    dec j = 10.0
 
     for t = 0; t < 69; t += 1 {
         print(t)

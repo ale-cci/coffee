@@ -1,4 +1,4 @@
-cj
+coffee
 samples/*
 !samples/*.cf
 llvm/*
