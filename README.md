@@ -2,6 +2,11 @@
 ## C-like programming language with Clojures
 I don't have the time to do it right the first time, but surely i have the
 time to do it twice.
+#### Dependencies
+- [ ] go
+- [ ] llvm
+- [ ] gcc
+
 #### Getting started
 ```sh
 $ go build ./cli/cj.go
