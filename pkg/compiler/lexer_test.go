@@ -215,6 +215,11 @@ func TestTokenizer(t *testing.T) {
 				expects: []compiler.Token{{compiler.KW_RETURN, "return", 1}},
 				name: "parses return primitive",
 			},
+			{
+				program: "extern",
+				expects: []compiler.Token{{compiler.KW_EXTERN, "extern", 1}},
+				name: "parses extern primitive",
+			},
 		}
 
 		for i, tc := range tt {

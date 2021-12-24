@@ -171,7 +171,7 @@ func ParseAtomicAssignable(p *TokenPeeker) (Assignable, error) {
 		}, nil
 	} else if tok.Type == STR {
 		tok := p.Read()
-		return String(tok.Value[1 : len(tok.Value)-1]), nil
+		return &String{Value: tok.Value[1 : len(tok.Value)-1]}, nil
 	} else if tok.Type == WORD {
 		tok := p.Read()
 		if p.PeekOne() != nil && p.PeekOne().Type == LPAREN {

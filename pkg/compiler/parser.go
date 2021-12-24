@@ -15,42 +15,79 @@ type Parsable interface {
 	Parse([]Token) *ParseError
 }
 
-
 func Parse(tokens []Token) (*AST, error) {
 	peeker := NewTokenPeeker(tokens)
 	body := []Statement{}
 
 	for peeker.HasTokens() {
 		tok := peeker.PeekOne()
-		if tok.Type == NL {
-			// ignore empty newlines
+		// parse function import
+		var stmt Statement
+
+		switch tok.Type {
+		case NL:
 			peeker.Read()
 			continue
-		}
-		// parse function import
-		fn, err := ParseFunction(peeker)
-		if err != nil {
-			return nil, err
+		case KW_EXTERN:
+			ext, err := ParseExtern(peeker)
+			if err != nil {
+				return nil, err
+			}
+			stmt = ext
+
+		default:
+			fn, err := ParseFunction(peeker)
+			if err != nil {
+				return nil, err
+			}
+			stmt = fn
 		}
 
-		body = append(body, fn)
+		body = append(body, stmt)
 	}
 	return &body, nil
 }
 
-func ParseFunction(p *TokenPeeker) (*Function, error) {
-	returnType, err := ParseType(p)
+func ParseExtern(p *TokenPeeker) (*ExternFunc, error) {
+	tok := p.Read()
+	if tok.Type != KW_EXTERN {
+		return nil, &ParseError{
+			Pos: tok.Position,
+			error: fmt.Sprintf("Expected extern keyword, found: %q", tok.Value),
+		}
+	}
+	typ, err := ParseType(p)
 	if err != nil {
 		return nil, err
 	}
-	name := p.Read()
+	fnName := p.Read()
+	if fnName.Type != WORD {
+		return nil, &ParseError{
+			Pos: fnName.Position,
+			error: fmt.Sprintf("Expected function or variable name, found reserved word: %q", fnName.Value),
+		}
+	}
+
+	args, err := ParseFunctionArgs(p)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ExternFunc{
+		ReturnType: typ,
+		Name: fnName.Value,
+		Args: args,
+	}, nil
+}
+
+
+func ParseFunctionArgs(p *TokenPeeker) ([]Argument, error) {
 	if tok := p.Read(); tok.Type != LPAREN {
 		return nil, &ParseError{
 			Pos:   tok.Position,
 			error: fmt.Sprintf("Expected ( found %s", tok.Value),
 		}
 	}
-
 	// parse function arguments
 	args := []Argument{}
 	var prevType Type
@@ -79,7 +116,6 @@ func ParseFunction(p *TokenPeeker) (*Function, error) {
 			Type: prevType,
 		})
 	}
-
 	// ensure last token is closed )
 	if tok := p.Read(); tok.Type != RPAREN {
 		return nil, &ParseError{
@@ -87,6 +123,20 @@ func ParseFunction(p *TokenPeeker) (*Function, error) {
 			error: fmt.Sprintf("Expected ) found %q", tok.Value),
 		}
 	}
+	return args, nil
+}
+
+func ParseFunction(p *TokenPeeker) (*Function, error) {
+	returnType, err := ParseType(p)
+	if err != nil {
+		return nil, err
+	}
+	name := p.Read()
+	args, err := ParseFunctionArgs(p)
+	if err != nil {
+		return nil, err
+	}
+
 	if tok := p.Read(); tok.Type != LBRACKET {
 		return nil, &ParseError{
 			Pos:   tok.Position,

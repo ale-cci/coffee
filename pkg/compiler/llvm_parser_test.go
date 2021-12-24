@@ -32,6 +32,26 @@ func TestParsing(t *testing.T) {
 				"}",
 			),
 		},
+		{
+			name: "parses extern puts call",
+			program: fmt.Sprint(
+				"extern int puts(str text)\n",
+				"",
+				"int main() {\n",
+					"puts(\"hi from cj!\")\n",
+					"return 0\n",
+				"}",
+			),
+			expect: fmt.Sprint(
+				"@.str0 = constant [12 x i8] c\"hi from cj!\\00\"\n",
+				"declare i32 @puts(i8*)\n",
+				"define i32 @main() {\n",
+					"%.tmp0 = getelementptr [12 x i8], [12 x i8]*@.str0, i64 0, i64 0\n",
+					"call i32 @puts(i8*%.tmp0)\n",
+					"ret i32 0\n",
+				"}",
+			),
+		},
 	}
 
 	for i, tc := range tt {

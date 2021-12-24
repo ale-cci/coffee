@@ -11,7 +11,7 @@ type Type interface{}
 // - function calls
 // - operations ?
 // - variables
-type Expression interface{
+type Expression interface {
 }
 
 // Argument of a function definition
@@ -19,8 +19,13 @@ type Argument struct {
 	Type Type
 	Name string
 }
-type Return struct {Value Assignable }
+type Return struct{ Value Assignable }
 
+type ExternFunc struct {
+	Name       string
+	ReturnType Type
+	Args       []Argument
+}
 type Function struct {
 	Name       string
 	ReturnType Type
@@ -43,7 +48,11 @@ type Assignment struct {
 }
 
 type Var string
-type String string
+type String struct {
+	Value string
+	Uid string
+}
+
 type Boolean string
 
 // things that could be assigned, like a variable, a function call, etc
@@ -78,6 +87,6 @@ type OpMinus struct {
 }
 
 type OpOver struct {
-	Left Assignable
+	Left  Assignable
 	Right Assignable
 }

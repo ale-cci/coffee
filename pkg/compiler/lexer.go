@@ -29,6 +29,7 @@ const (
 	KW_IF
 	KW_ELSE
 	KW_ELIF
+	KW_EXTERN
 	WORD
 	SEMICOLON
 	LPAREN
@@ -60,6 +61,7 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 		"false":  KW_FALSE,
 		"elif":   KW_ELIF,
 		"return": KW_RETURN,
+		"extern": KW_EXTERN,
 
 		"void": T_VOID,
 		"int":  T_INT,

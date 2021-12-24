@@ -21,18 +21,18 @@ func compile(prg string) (*compiler.AST, error) {
 
 func TestFunctionParser(t *testing.T) {
 	tt := []struct {
-		name string
+		name    string
 		program string
-		expect *compiler.Function
-	} {
+		expect  *compiler.Function
+	}{
 		{
-			name: "parses function statement",
+			name:    "parses function statement",
 			program: "void main() { }",
 			expect: &compiler.Function{
-				Name: "main",
+				Name:       "main",
 				ReturnType: "void",
-				Args: []compiler.Argument{},
-				Body: []compiler.Expression{},
+				Args:       []compiler.Argument{},
+				Body:       []compiler.Expression{},
 			},
 		},
 		{
@@ -43,14 +43,14 @@ func TestFunctionParser(t *testing.T) {
 			}
 			`,
 			expect: &compiler.Function{
-				Name: "main",
+				Name:       "main",
 				ReturnType: "void",
-				Args: []compiler.Argument{},
+				Args:       []compiler.Argument{},
 				Body: []compiler.Expression{
 					&compiler.IfElseBlock{
 						Condition: compiler.Boolean("true"),
-						Body: []compiler.Expression{},
-						Else: nil,
+						Body:      []compiler.Expression{},
+						Else:      nil,
 					},
 				},
 			},
@@ -72,9 +72,37 @@ func TestFunctionParser(t *testing.T) {
 			assert.DeepEqual(t, vals, tc.expect)
 		})
 	}
-
 }
+
 func TestCompiler(t *testing.T) {
+	t.Run("test compile full program to ast", func(t *testing.T) {
+		tt := []struct {
+			name    string
+			program string
+			expect  *compiler.AST
+		}{
+			{
+				name:    "Parses extern declaration",
+				program: "extern int puts()",
+				expect: &compiler.AST{
+					&compiler.ExternFunc{
+						Name:       "puts",
+						ReturnType: "int",
+						Args:       []compiler.Argument{},
+					},
+				},
+			},
+		}
+		for i, tc := range tt {
+			testName := fmt.Sprintf("[%d] %s", i, tc.name)
+			t.Run(testName, func(t *testing.T) {
+				ast, err := compile(tc.program)
+				assert.NilError(t, err)
+				assert.DeepEqual(t, ast, tc.expect)
+			})
+		}
+	})
+
 	t.Run("parses function body", func(t *testing.T) {
 		ast, err := compile(`
 		int main() {
@@ -161,7 +189,7 @@ func TestCompiler(t *testing.T) {
 				},
 			},
 			{
-				name: "parses return call",
+				name:    "parses return call",
 				program: "return 3",
 				expect: &compiler.Return{
 					compiler.Number{"3", "int"},
@@ -194,7 +222,7 @@ func TestParseAssignable(t *testing.T) {
 		{
 			name:    "should parse string",
 			program: "\"test\"",
-			expect:  compiler.String("test"),
+			expect:  &compiler.String{Value: "test"},
 		},
 		{
 			name:    "should parse false",
@@ -202,74 +230,74 @@ func TestParseAssignable(t *testing.T) {
 			expect:  compiler.Boolean("false"),
 		},
 		{
-			name: "parses addition",
+			name:    "parses addition",
 			program: "3 + 4",
 			expect: compiler.Sum{
-				Left: compiler.Number{Value: "3", Type: "int"},
+				Left:  compiler.Number{Value: "3", Type: "int"},
 				Right: compiler.Number{Value: "4", Type: "int"},
 			},
 		},
 		{
-			name: "multiplication has precendence over sum",
+			name:    "multiplication has precendence over sum",
 			program: "3 + 4 * 5",
 			expect: compiler.Sum{
 				Left: compiler.Number{Value: "3", Type: "int"},
 				Right: compiler.OpTimes{
-					Left: compiler.Number{Value: "4", Type: "int"},
+					Left:  compiler.Number{Value: "4", Type: "int"},
 					Right: compiler.Number{Value: "5", Type: "int"},
 				},
 			},
 		},
 		{
-			name: "parses multiplication",
+			name:    "parses multiplication",
 			program: "4 * 5 + 3",
 			expect: compiler.Sum{
 				Left: compiler.OpTimes{
-					Left: compiler.Number{Value: "4", Type: "int"},
+					Left:  compiler.Number{Value: "4", Type: "int"},
 					Right: compiler.Number{Value: "5", Type: "int"},
 				},
 				Right: compiler.Number{Value: "3", Type: "int"},
 			},
 		},
 		{
-			name: "parses subtraction",
+			name:    "parses subtraction",
 			program: "4 - 5 + 3",
 			expect: compiler.Sum{
 				Left: compiler.OpMinus{
-					Left: compiler.Number{"4", "int"},
+					Left:  compiler.Number{"4", "int"},
 					Right: compiler.Number{"5", "int"},
 				},
 				Right: compiler.Number{"3", "int"},
 			},
 		},
 		{
-			name: "subtraction is commutative",
+			name:    "subtraction is commutative",
 			program: "4 + 5 - 3",
 			expect: compiler.OpMinus{
 				Left: compiler.Sum{
-					Left: compiler.Number{"4", "int"},
+					Left:  compiler.Number{"4", "int"},
 					Right: compiler.Number{"5", "int"},
 				},
 				Right: compiler.Number{"3", "int"},
 			},
 		},
 		{
-			name: "parses division",
+			name:    "parses division",
 			program: "4 + 5 / 3",
 			expect: compiler.Sum{
 				Left: compiler.Number{"4", "int"},
 				Right: compiler.OpOver{
-					Left: compiler.Number{"5", "int"},
+					Left:  compiler.Number{"5", "int"},
 					Right: compiler.Number{"3", "int"},
 				},
 			},
 		},
 		{
-			name: "division has priority",
+			name:    "division has priority",
 			program: "5 / 3 + 4",
 			expect: compiler.Sum{
 				Left: compiler.OpOver{
-					Left: compiler.Number{"5", "int"},
+					Left:  compiler.Number{"5", "int"},
 					Right: compiler.Number{"3", "int"},
 				},
 				Right: compiler.Number{"4", "int"},
@@ -293,4 +321,3 @@ func TestParseAssignable(t *testing.T) {
 		})
 	}
 }
-
