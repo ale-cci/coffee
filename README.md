@@ -1,6 +1,15 @@
+# Cjure (yes, it's pronounced like seizure)
 ## C-like programming language with Clojures
 I don't have the time to do it right the first time, but surely i have the
 time to do it twice.
+#### Getting started
+```sh
+$ go build ./cli/cj.go
+
+$ # build & run one of the samples
+$ cj -in samples/hello.cj -out hello
+$ ./hello
+```
 
 #### Sample syntax
 ```
