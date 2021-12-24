@@ -1,0 +1,8 @@
+#!/usr/bin/env cj
+
+extern int puts(str text)
+
+int main() {
+    puts("Hello from expresso!")
+    return 0
+}
