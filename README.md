@@ -2,8 +2,27 @@
 ## C-like programming language with Clojures
 I don't have the time to do it right the first time, but surely i have the
 time to do it twice.
+
+### Scope of this project:
+I've pretty high standards, and i'm still too new on the field to know if all
+of these are doable, but there they are:
+- self hosting language
+- clojure support
+- not nullable values by default (you have to provide `?` at the end of a type name if you want to allow null) (to prevent undefined errors)
+- simple golike syntax (to prevent headakes)
+- repl (for faster feedback loop)
+- no floating types, only integers and decimals (to prevent floating point rounding errors)
+- easy to test
+- c-like features (only the good parts):
+    * no truthy & falsy values.
+    * null has it's own type
+    * no macros
+    * something to prevent buffer overflow errors & memory allocation problems
+    * easier function pointer syntax
+- rich ast library apis for easier to write linting tools, lsps, etc...
+
 #### Dependencies
-- [ ] go
+- [ ] go (for now)
 - [ ] llvm
 - [ ] gcc
 
@@ -22,10 +41,9 @@ $ ./hello
 -- example of multiline docstring
 import "something" as something_else
 
--- Function to store somehitng
--- < argv : input arguent
--- > nothing : output argument
-void main(str[] argv) {
+-- Example function declaration
+int main(str[] argv) {
+    -- example closure declaration
     int clojure() {
         return len(argv)
     }
@@ -41,10 +59,6 @@ void main(str[] argv) {
     t, j = j, t
 
     printf("%f", dec(t) + j)
-    return
+    return 0 -- exit code
 }
 ```
-
-- repl (jit compiler?)
-- closures
-
