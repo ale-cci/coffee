@@ -2,6 +2,7 @@ package compiler_test
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"bitbucket.org/ale-cci/elk/pkg/compiler"
@@ -70,6 +71,21 @@ func TestParsing(t *testing.T) {
 				"br label .if.end.1\n",
 				".if.end.1:\n",
 				"}",
+			),
+		},
+		{
+			name: "parses void return type",
+			program: strings.Join(
+				[]string{
+					"void fn() {",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @fn() {",
+					"}",
+				}, "\n",
 			),
 		},
 	}
