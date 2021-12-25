@@ -28,10 +28,10 @@ of these are doable, but there they are:
 
 #### Getting started
 ```sh
-$ go build ./cli/cj.go
+$ go build ./cli/coffee.go
 
 $ # build & run one of the samples
-$ cj -in samples/hello.cj -out hello
+$ coffee -in samples/hello.cf -out hello
 $ ./hello
 ```
 
