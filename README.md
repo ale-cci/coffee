@@ -48,6 +48,8 @@ $ ./hello
 ```
 #!/usr/bin/env coffee
 -- example of multiline docstring
+-- the second line
+-- the third line
 import "something" as something_else
 
 -- Example function declaration
