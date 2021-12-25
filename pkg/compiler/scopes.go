@@ -145,7 +145,7 @@ func ScopesFrom(startScope []RtScope) Scopes {
 		counter: 0,
 	}
 }
-func (s Scopes) ReserveLocal() (int, error) {
+func (s *Scopes) ReserveLocal() (int, error) {
 	val := s.counter
 	s.counter += 1
 	return val, nil

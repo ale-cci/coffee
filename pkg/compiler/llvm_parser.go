@@ -17,6 +17,44 @@ import (
 //  - push a new empty scope
 //  - start parsing each expression
 
+
+func (b *IfElseBlock) ToLLVM(scopes *Scopes) (string, error) {
+	// reserve label counter
+	// true condition
+	// false condition
+	// end
+	scopes.ReserveLocal()
+	labelId, err := scopes.ReserveLocal()
+	if err != nil {
+		return "", err
+	}
+
+	cond := "false"
+	template :=  strings.Join([]string{
+		"br i1 %s, label %%.if.true.%d, label %%.if.false.%d",
+		".if.true.%d:",
+		// if true
+		"br label .if.end.%d",
+		".if.false.%d:",
+		// if false
+		"br label .if.end.%d",
+		".if.end.%d:",
+	}, "\n")
+	return fmt.Sprintf(
+		template,
+		cond,
+		labelId, // br true
+		labelId, // br false
+		labelId, // label true
+		// body
+		labelId, // br to end
+		labelId, // label false
+		// body
+		labelId, // br to end
+		labelId, // end
+	), nil
+}
+
 func (r *Return) ToLLVM(scopes *Scopes) (string, error) {
 	rv := ""
 	if num, ok := r.Value.(Number); ok {

@@ -82,7 +82,6 @@ func ParseIfBlock(p *TokenPeeker) (*IfElseBlock, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	ifelse.Body = body
 	return &ifelse, nil
 }
@@ -150,6 +149,21 @@ func ParseBlock(p *TokenPeeker) ([]Expression, error) {
 		expressions = append(expressions, expr)
 	}
 
+	// read end token
+	tok := p.Read()
+	if tok == nil {
+		return nil, &ParseError{
+			Pos: -1,
+			error: "Code block must be closed by '}', reached end of file",
+		}
+	}
+	if tok.Type != RBRACKET {
+		return nil, &ParseError{
+			Pos: -1,
+			error: fmt.Sprintf("Expected '}', got %s", tok.Value),
+		}
+	}
+
 	return expressions, nil
 }
 
@@ -182,7 +196,7 @@ func ParseAtomicAssignable(p *TokenPeeker) (Assignable, error) {
 		return Var(tok.Value), nil
 	} else if tok.Type == KW_TRUE || tok.Type == KW_FALSE {
 		p.Read()
-		return Boolean(tok.Value), nil
+		return &Boolean{tok.Value}, nil
 	}
 	return nil, &ParseError{
 		Pos:   tok.Position,

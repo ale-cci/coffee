@@ -53,7 +53,9 @@ type String struct {
 	Uid string
 }
 
-type Boolean string
+type Boolean struct {
+	Value string
+}
 
 // things that could be assigned, like a variable, a function call, etc
 type Assignable interface{}

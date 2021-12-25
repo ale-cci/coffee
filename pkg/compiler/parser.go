@@ -148,13 +148,6 @@ func ParseFunction(p *TokenPeeker) (*Function, error) {
 		return nil, err
 	}
 
-	if tok := p.Read(); tok.Type != RBRACKET {
-		return nil, &ParseError{
-			Pos:   tok.Position,
-			error: fmt.Sprintf("Expected } found %q", tok.Value),
-		}
-	}
-
 	return &Function{
 		Name:       name.Value,
 		Args:       args,
