@@ -17,19 +17,55 @@ import (
 //  - push a new empty scope
 //  - start parsing each expression
 
+func (b *Boolean) ToLLVM(scopes *Scopes) (string, error) {
+	id, err := scopes.ReserveLocal()
+	if err != nil {
+		return "", err
+	}
+	b.Uid = fmt.Sprintf("%%.tmp%d", id)
+	boolValue := 0
+	if b.Value == "true" {
+		boolValue = 1
+	}
+	return fmt.Sprintf("%%.tmp%d = add i1 0, %d", id, boolValue), nil
+}
+func (b *Boolean) Id() (string, error) {
+	if b.Uid == "" {
+		return "", fmt.Errorf("Unable to get uid before ToLLVM call in (bool)")
+	}
+	return b.Uid, nil
+}
+func (b *Boolean) Type(scopes Scopes) (string, error) {
+	typestring, err := scopes.TypeRepr("bool")
+	return typestring, err
+}
 
 func (b *IfElseBlock) ToLLVM(scopes *Scopes) (string, error) {
 	// reserve label counter
 	// true condition
 	// false condition
 	// end
-	scopes.ReserveLocal()
+
+	var err error
+	var cond string
+	var code string
+	if ssa, ok := b.Condition.(SSAValue); ok {
+		code, err = ssa.ToLLVM(scopes)
+		if err != nil {
+			return "", err
+		}
+		cond, err = ssa.Id()
+		if err != nil {
+			return "", err
+		}
+	} else {
+		return "", fmt.Errorf("Assignable %#v does not implement SSAValue", b.Condition)
+	}
+
 	labelId, err := scopes.ReserveLocal()
 	if err != nil {
 		return "", err
 	}
-
-	cond := "false"
 	template :=  strings.Join([]string{
 		"br i1 %s, label %%.if.true.%d, label %%.if.false.%d",
 		".if.true.%d:",
@@ -40,7 +76,7 @@ func (b *IfElseBlock) ToLLVM(scopes *Scopes) (string, error) {
 		"br label .if.end.%d",
 		".if.end.%d:",
 	}, "\n")
-	return fmt.Sprintf(
+	return code + "\n" + fmt.Sprintf(
 		template,
 		cond,
 		labelId, // br true

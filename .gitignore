@@ -1,6 +1,6 @@
 coffee
 samples/*
-!samples/*.cf
+!samples/*.bn
 llvm/*
 !llvm/*.ll
 !llvm/compile.sh

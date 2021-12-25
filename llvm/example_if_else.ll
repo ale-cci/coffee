@@ -5,8 +5,9 @@
 declare i32 @puts(i8*)
 
 define i32 @main() {
+  %.tmp3 = add i1 0, 0
 
-  br i1 false, label %.if.true.1, label %.if.false.1
+  br i1 %.tmp3, label %.if.true.1, label %.if.false.1
 .if.true.1:
   %.tmp0 = getelementptr [3 x i8], [3 x i8]* @.str0, i32 0, i32 0
   %.tmp1 = call i32 @puts(i8* %.tmp0)

@@ -62,6 +62,7 @@ func TestParsing(t *testing.T) {
 			),
 			expect: fmt.Sprint(
 				"define i32 @main() {\n",
+				"%.tmp0 = add i1 0, 0\n",
 				"br i1 %.tmp0, label %.if.true.1, label %.if.false.1\n",
 				".if.true.1:\n",
 				"br label .if.end.1\n",

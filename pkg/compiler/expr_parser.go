@@ -196,7 +196,7 @@ func ParseAtomicAssignable(p *TokenPeeker) (Assignable, error) {
 		return Var(tok.Value), nil
 	} else if tok.Type == KW_TRUE || tok.Type == KW_FALSE {
 		p.Read()
-		return &Boolean{tok.Value}, nil
+		return &Boolean{Value: tok.Value}, nil
 	}
 	return nil, &ParseError{
 		Pos:   tok.Position,

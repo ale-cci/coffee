@@ -50,11 +50,12 @@ type Assignment struct {
 type Var string
 type String struct {
 	Value string
-	Uid string
+	Uid   string
 }
 
 type Boolean struct {
 	Value string
+	Uid   string
 }
 
 // things that could be assigned, like a variable, a function call, etc

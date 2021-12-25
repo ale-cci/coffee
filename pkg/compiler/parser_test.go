@@ -48,7 +48,7 @@ func TestFunctionParser(t *testing.T) {
 				Args:       []compiler.Argument{},
 				Body: []compiler.Expression{
 					&compiler.IfElseBlock{
-						Condition: &compiler.Boolean{"true"},
+						Condition: &compiler.Boolean{Value: "true"},
 						Body:      []compiler.Expression{},
 						Else:      nil,
 					},
@@ -227,7 +227,7 @@ func TestParseAssignable(t *testing.T) {
 		{
 			name:    "should parse false",
 			program: "false",
-			expect:  &compiler.Boolean{"false"},
+			expect:  &compiler.Boolean{Value: "false"},
 		},
 		{
 			name:    "parses addition",
