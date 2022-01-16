@@ -36,6 +36,7 @@ type Function struct {
 type Number struct {
 	Value string
 	Type  Type
+	uid   string
 }
 
 type Declaration struct {
@@ -90,6 +91,11 @@ type OpMinus struct {
 }
 
 type OpOver struct {
+	Left  Assignable
+	Right Assignable
+}
+
+type OpLess struct {
 	Left  Assignable
 	Right Assignable
 }

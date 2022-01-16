@@ -88,6 +88,57 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "if condition",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    if 5 < 4 {",
+					"    }",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"%.tmp0 = icmp slt i32 5, 4",
+					"br i1 %.tmp0, label %.if.true.1, label %.if.false.1",
+					".if.true.1:",
+					"br label .if.end.1",
+					".if.false.1:",
+					"br label .if.end.1",
+					".if.end.1:",
+					"}",
+				}, "\n",
+			),
+		},
+		{
+			name: "if condition block",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    if 1 + 2 < 4 {",
+					"    }",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"%.tmp0 = add i32 1, 2",
+					"%.tmp1 = icmp slt i32 %.tmp0, 4",
+					"br i1 %.tmp1, label %.if.true.2, label %.if.false.2",
+					".if.true.2:",
+					"br label .if.end.2",
+					".if.false.2:",
+					"br label .if.end.2",
+					".if.end.2:",
+					"}",
+				}, "\n",
+			),
+		},
+			// TODO: parses if condition
+			// TODO: parses if body
 	}
 
 	for i, tc := range tt {

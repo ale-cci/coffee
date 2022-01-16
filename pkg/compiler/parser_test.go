@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"bitbucket.org/ale-cci/elk/pkg/compiler"
 	"gotest.tools/v3/assert"
 )
@@ -118,14 +119,11 @@ func TestCompiler(t *testing.T) {
 				Body: []compiler.Expression{
 					compiler.Declaration{
 						To: "a",
-						Value: compiler.Number{
-							Value: "0",
-							Type:  "int",
-						},
+						Value: compiler.NewInt("0"),
 					},
 				},
 			},
-		})
+		}, cmpopts.IgnoreUnexported(compiler.Number{}))
 	})
 
 	t.Run("fully parses expressions", func(t *testing.T) {
@@ -139,7 +137,7 @@ func TestCompiler(t *testing.T) {
 				program: "b := 76",
 				expect: compiler.Declaration{
 					To: compiler.Var("b"),
-					Value: compiler.Number{
+					Value: &compiler.Number{
 						Value: "76",
 						Type:  "int",
 					},
@@ -192,7 +190,7 @@ func TestCompiler(t *testing.T) {
 				name:    "parses return call",
 				program: "return 3",
 				expect: &compiler.Return{
-					compiler.Number{"3", "int"},
+					compiler.NewInt("3"),
 				},
 			},
 		}
@@ -207,7 +205,7 @@ func TestCompiler(t *testing.T) {
 				p := compiler.NewTokenPeeker(tokens)
 				exprs, err := compiler.ParseExpression(p)
 				assert.NilError(t, err)
-				assert.DeepEqual(t, exprs, tc.expect)
+				assert.DeepEqual(t, exprs, tc.expect, cmpopts.IgnoreUnexported(compiler.Number{}))
 			})
 		}
 	})
@@ -228,80 +226,6 @@ func TestParseAssignable(t *testing.T) {
 			name:    "should parse false",
 			program: "false",
 			expect:  &compiler.Boolean{Value: "false"},
-		},
-		{
-			name:    "parses addition",
-			program: "3 + 4",
-			expect: compiler.Sum{
-				Left:  compiler.Number{Value: "3", Type: "int"},
-				Right: compiler.Number{Value: "4", Type: "int"},
-			},
-		},
-		{
-			name:    "multiplication has precendence over sum",
-			program: "3 + 4 * 5",
-			expect: compiler.Sum{
-				Left: compiler.Number{Value: "3", Type: "int"},
-				Right: compiler.OpTimes{
-					Left:  compiler.Number{Value: "4", Type: "int"},
-					Right: compiler.Number{Value: "5", Type: "int"},
-				},
-			},
-		},
-		{
-			name:    "parses multiplication",
-			program: "4 * 5 + 3",
-			expect: compiler.Sum{
-				Left: compiler.OpTimes{
-					Left:  compiler.Number{Value: "4", Type: "int"},
-					Right: compiler.Number{Value: "5", Type: "int"},
-				},
-				Right: compiler.Number{Value: "3", Type: "int"},
-			},
-		},
-		{
-			name:    "parses subtraction",
-			program: "4 - 5 + 3",
-			expect: compiler.Sum{
-				Left: compiler.OpMinus{
-					Left:  compiler.Number{"4", "int"},
-					Right: compiler.Number{"5", "int"},
-				},
-				Right: compiler.Number{"3", "int"},
-			},
-		},
-		{
-			name:    "subtraction is commutative",
-			program: "4 + 5 - 3",
-			expect: compiler.OpMinus{
-				Left: compiler.Sum{
-					Left:  compiler.Number{"4", "int"},
-					Right: compiler.Number{"5", "int"},
-				},
-				Right: compiler.Number{"3", "int"},
-			},
-		},
-		{
-			name:    "parses division",
-			program: "4 + 5 / 3",
-			expect: compiler.Sum{
-				Left: compiler.Number{"4", "int"},
-				Right: compiler.OpOver{
-					Left:  compiler.Number{"5", "int"},
-					Right: compiler.Number{"3", "int"},
-				},
-			},
-		},
-		{
-			name:    "division has priority",
-			program: "5 / 3 + 4",
-			expect: compiler.Sum{
-				Left: compiler.OpOver{
-					Left:  compiler.Number{"5", "int"},
-					Right: compiler.Number{"3", "int"},
-				},
-				Right: compiler.Number{"4", "int"},
-			},
 		},
 	}
 

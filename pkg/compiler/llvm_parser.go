@@ -35,9 +35,38 @@ func (b *Boolean) Id() (string, error) {
 	}
 	return b.Uid, nil
 }
-func (b *Boolean) Type(scopes Scopes) (string, error) {
+func (b *Boolean) TypeRepr(scopes Scopes) (string, error) {
 	typestring, err := scopes.TypeRepr("bool")
 	return typestring, err
+}
+
+func (op *OpLess) ToLLVM(scopes *Scopes) (string, error) {
+	id, err := scopes.ReserveLocal()
+	if err != nil {
+		return "", err
+	}
+	// detect left and right
+	var lhs, rhs string
+
+	if num, ok := op.Left.(Number); ok {
+		lhs = num.Value
+	} else if ssa, ok := op.Left.(SSAValue); ok {
+		ssa.ToLLVM(scopes)
+	} else {
+		return "", fmt.Errorf("Assignblae %#v does not implement SSAValue", op.Left)
+	}
+	if num, ok := op.Right.(Number); ok {
+		rhs = num.Value
+	}
+	code := fmt.Sprintf("%%.tmp%d = icmp slt i32 %s, %s", id, lhs, rhs)
+	return code, nil
+}
+func (op *OpLess) TypeRepr(scopes Scopes) (string, error) {
+	typestring, err := scopes.TypeRepr("int")
+	return typestring, err
+}
+func (op *OpLess) Id() (string, error) {
+	return "%.tmp0", nil
 }
 
 func (b *IfElseBlock) ToLLVM(scopes *Scopes) (string, error) {
@@ -93,7 +122,7 @@ func (b *IfElseBlock) ToLLVM(scopes *Scopes) (string, error) {
 
 func (r *Return) ToLLVM(scopes *Scopes) (string, error) {
 	rv := ""
-	if num, ok := r.Value.(Number); ok {
+	if num, ok := r.Value.(*Number); ok {
 		typename, err := scopes.TypeRepr(num.Type)
 		if err != nil {
 			return "", err
@@ -197,7 +226,7 @@ func (f *FnCall) ToLLVM(scopes *Scopes) (string, error) {
 	return strings.Join(code, "\n"), nil
 }
 
-func (s *String) Type(scopes Scopes) (string, error) {
+func (s *String) TypeRepr(scopes Scopes) (string, error) {
 	name, err := scopes.TypeRepr("str")
 	return name, err
 }

@@ -13,9 +13,11 @@ type RtName struct {
 type SSA interface {
 	ToLLVM(*Scopes) (string, error)
 }
+
+// assignable value
 type SSAValue interface {
 	SSA
-	Type(Scopes) (string, error)
+	TypeRepr(Scopes) (string, error)
 	Id() (string, error)
 }
 

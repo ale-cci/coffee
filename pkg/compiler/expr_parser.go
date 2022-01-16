@@ -179,7 +179,7 @@ func ParseAtomicAssignable(p *TokenPeeker) (Assignable, error) {
 
 	if tok.Type == INT {
 		p.Read()
-		return Number{
+		return &Number{
 			Type:  "int",
 			Value: tok.Value,
 		}, nil
@@ -204,100 +204,3 @@ func ParseAtomicAssignable(p *TokenPeeker) (Assignable, error) {
 	}
 }
 
-// read tokens until an arithmetic operator is found
-func ParseAssignable(p *TokenPeeker) (Assignable, error){
-	type Op struct {
-		Priority int
-		New func(left, right Assignable)Assignable
-	}
-	opmap := map[TokenType]Op{
-		OP_PLUS: {
-			10,
-			func(left, right Assignable)Assignable{
-				return Sum{Left: left, Right: right}
-			},
-		},
-		OP_MINUS: {
-			10,
-			func(left, right Assignable)Assignable{
-				return OpMinus{Left: left, Right: right}
-			},
-		},
-		OP_STAR: {
-			20,
-			func(l, r Assignable)Assignable{
-				return OpTimes{Left: l, Right: r}
-			},
-		},
-		OP_OVER: {
-			20,
-			func(l, r Assignable)Assignable{
-				return OpOver{Left: l, Right: r}
-			},
-		},
-	}
-	// read assignalbe,
-
-	// check for operator
-	assignables := []Assignable{}
-	ops := []TokenType{}
-	for {
-		ass, err := ParseAtomicAssignable(p)
-		if err != nil {
-			return nil, err
-		}
-		assignables = append(assignables, ass)
-
-		tok := p.PeekOne()
-		if tok == nil {
-			// end of tokens
-			break
-		}
-		_, ok := opmap[tok.Type]
-		if !ok {
-			break
-		}
-		// token is an concat operator, read it
-		p.Read()
-		ops = append(ops, tok.Type)
-	}
-
-	if len(ops) != len(assignables) - 1 {
-		return nil, &ParseError{
-			Pos: p.PeekOne().Position,
-			error: fmt.Sprintf("Mismatching number of operator for expression"),
-		}
-	}
-
-	for len(assignables) != 1{
-		// find max priority
-		maxPriority := 0
-		for _, op := range ops {
-			if opmap[op].Priority > maxPriority {
-				maxPriority = opmap[op].Priority
-			}
-		}
-		// execute sequentially all operations with that priority
-		newAssignables := []Assignable{
-			assignables[0],
-		}
-		newOps := []TokenType{}
-
-		for i, op := range ops {
-			currOp := opmap[op]
-			if currOp.Priority != maxPriority {
-				newAssignables = append(newAssignables, assignables[i + 1])
-				newOps = append(newOps, op)
-				continue
-			}
-
-			lastIdx := len(newAssignables) -1
-			newAssignables[lastIdx] = currOp.New(newAssignables[lastIdx], assignables[i + 1])
-		}
-
-		assignables = newAssignables
-		ops = newOps
-	}
-
-	return assignables[0], nil
-}
