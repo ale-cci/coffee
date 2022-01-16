@@ -37,7 +37,7 @@ of these are doable, but there they are:
 
 #### Getting started
 ```sh
-$ go build ./cli/coffee.go
+$ go build ./cli/coffee.go # or go install ./cli/coffee.go
 
 $ # build & run one of the samples
 $ coffee -in samples/hello.cf -out hello

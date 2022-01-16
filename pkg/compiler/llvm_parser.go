@@ -114,10 +114,10 @@ func (b *IfElseBlock) ToLLVM(scopes *Scopes) (string, error) {
 		"br i1 %s, label %%.if.true.%d, label %%.if.false.%d",
 		".if.true.%d:",
 		"%s", // if true body
-		"br label .if.end.%d",
+		"br label %%.if.end.%d",
 		".if.false.%d:",
 		"%s", // if false body
-		"br label .if.end.%d",
+		"br label %%.if.end.%d",
 		".if.end.%d:",
 	}, "\n")
 
