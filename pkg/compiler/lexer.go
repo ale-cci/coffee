@@ -20,6 +20,10 @@ const (
 	OP_COLONEQ
 	OP_PLUSEQ
 	OP_LESS
+	OP_EQQ
+	OP_GREATER
+	OP_GREATER_EQ
+	OP_LESS_EQ
 	KW_FOR
 	KW_RETURN
 	KW_IMPORT
@@ -71,8 +75,6 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 		"-":  OP_MINUS,
 		"*":  OP_STAR,
 		"/":  OP_OVER,
-		"<":  OP_LESS,
-		"=":  OP_EQ,
 		",":  COMMA,
 		"(":  LPAREN,
 		")":  RPAREN,
@@ -122,6 +124,30 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 			} else {
 				stream.UnreadRune()
 				tokens = append(tokens, Token{OP_PLUS, string(c), pos})
+			}
+		} else if c == '>' {
+			next, _, err := stream.ReadRune()
+			if next == '=' && err == nil {
+				tokens = append(tokens, Token{OP_GREATER_EQ, ">=", pos})
+			} else {
+				stream.UnreadRune()
+				tokens = append(tokens, Token{OP_GREATER, string(c), pos})
+			}
+		} else if c == '<' {
+			next, _, err := stream.ReadRune()
+			if next == '=' && err == nil {
+				tokens = append(tokens, Token{OP_LESS_EQ, "<=", pos})
+			} else {
+				stream.UnreadRune()
+				tokens = append(tokens, Token{OP_LESS, string(c), pos})
+			}
+		} else if c == '=' {
+			next, _, err := stream.ReadRune()
+			if next == '=' && err == nil {
+				tokens = append(tokens, Token{OP_EQQ, "==", pos})
+			} else {
+				stream.UnreadRune()
+				tokens = append(tokens, Token{OP_EQ, string(c), pos})
 			}
 		} else if c == '#' {
 			content := readUntil(stream, func(c rune) bool { return c != '\n' })

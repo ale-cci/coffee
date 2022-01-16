@@ -220,6 +220,26 @@ func TestTokenizer(t *testing.T) {
 				expects: []compiler.Token{{compiler.KW_EXTERN, "extern", 1}},
 				name: "parses extern primitive",
 			},
+			{
+				program: ">",
+				expects: []compiler.Token{{compiler.OP_GREATER, ">", 1}},
+				name: "parses > token",
+			},
+			{
+				program: ">=",
+				expects: []compiler.Token{{compiler.OP_GREATER_EQ, ">=", 1}},
+				name: "parses >= token",
+			},
+			{
+				program: "<=",
+				expects: []compiler.Token{{compiler.OP_LESS_EQ, "<=", 1}},
+				name: "parses <= token",
+			},
+			{
+				program: "==",
+				expects: []compiler.Token{{compiler.OP_EQQ, "==", 1}},
+				name: "parses == token",
+			},
 		}
 
 		for i, tc := range tt {

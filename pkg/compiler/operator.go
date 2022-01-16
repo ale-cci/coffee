@@ -107,6 +107,11 @@ func (o *Operator) ToLLVM(scopes *Scopes) (string, error) {
 		if err != nil {
 			return "", err
 		}
+	// OP_STAR
+	// OP_OVER
+	// OP_EQ
+	// OP_COLONEQ
+	// OP_PLUSEQ
 	default:
 		return "", fmt.Errorf("Missing operator properties for %#v", o.Optype)
 	}
