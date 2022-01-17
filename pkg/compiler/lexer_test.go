@@ -191,6 +191,11 @@ func TestTokenizer(t *testing.T) {
 				name: "parses if token",
 			},
 			{
+				program: "else",
+				expects: []compiler.Token{{compiler.KW_ELSE, "else", 1}},
+				name: "parses else token",
+			},
+			{
 				program: "elif",
 				expects: []compiler.Token{{compiler.KW_ELIF, "elif", 1}},
 				name: "parses elif token",

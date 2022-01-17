@@ -174,6 +174,38 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "else condition has body parsed",
+			program: strings.Join(
+				[]string{
+					"extern int puts(str text)",
+					"void main() {",
+					"    if true {",
+					"    } else {",
+					"        puts(\"hi\")",
+					"    }",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"@.str0 = constant [3 x i8] c\"hi\\00\"",
+					"declare i32 @puts(i8*)",
+					"define void @main() {",
+					"%.tmp0 = add i1 0, 1",
+					"br i1 %.tmp0, label %.if.true.1, label %.if.false.1",
+					".if.true.1:",
+					"",
+					"br label %.if.end.1",
+					".if.false.1:",
+					"%.tmp2 = getelementptr [3 x i8], [3 x i8]*@.str0, i64 0, i64 0",
+					"call i32 @puts(i8*%.tmp2)",
+					"br label %.if.end.1",
+					".if.end.1:",
+					"}",
+				}, "\n",
+			),
+		},
 			// TODO: parses if condition
 			// TODO: parses if body
 	}

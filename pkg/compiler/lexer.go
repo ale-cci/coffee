@@ -64,6 +64,7 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 		"true":   KW_TRUE,
 		"false":  KW_FALSE,
 		"elif":   KW_ELIF,
+		"else":   KW_ELSE,
 		"return": KW_RETURN,
 		"extern": KW_EXTERN,
 

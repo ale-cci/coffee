@@ -109,6 +109,19 @@ func (b *IfElseBlock) ToLLVM(scopes *Scopes) (string, error) {
 		}
 	}
 
+	iffalsebody := []string{}
+	for _, expr := range(b.Else) {
+		if ll, ok := expr.(SSA); ok {
+			code, err := ll.ToLLVM(scopes)
+			if err != nil {
+				return "", err
+			}
+			iffalsebody = append(iffalsebody, code)
+		} else {
+			return "", fmt.Errorf("Unable to treat %#v as ssa, does not implement methods", expr)
+		}
+	}
+
 
 	template :=  strings.Join([]string{
 		"br i1 %s, label %%.if.true.%d, label %%.if.false.%d",
@@ -130,7 +143,7 @@ func (b *IfElseBlock) ToLLVM(scopes *Scopes) (string, error) {
 		strings.Join(iftruebody, "\n"),
 		labelId, // br to end
 		labelId, // label false
-		"",// body
+		strings.Join(iffalsebody, "\n"),
 		labelId, // br to end
 		labelId, // end
 	), nil

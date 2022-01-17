@@ -2,7 +2,6 @@ package compiler
 
 import "fmt"
 
-
 func ParseExpression(p *TokenPeeker) (Expression, error) {
 	tok := p.PeekOne()
 	if tok.Type == WORD {
@@ -44,7 +43,7 @@ func ParseExpression(p *TokenPeeker) (Expression, error) {
 		if err != nil {
 			return nil, err
 		}
-		return &Return{ val }, nil
+		return &Return{val}, nil
 	}
 
 	return nil, &ParseError{
@@ -73,7 +72,7 @@ func ParseIfBlock(p *TokenPeeker) (*IfElseBlock, error) {
 	// expect open bracket
 	if tok := p.Read(); tok.Type != LBRACKET {
 		return nil, &ParseError{
-			Pos: tok.Position,
+			Pos:   tok.Position,
 			error: fmt.Sprintf("Expected {, found: %q", tok.Value),
 		}
 	}
@@ -83,6 +82,21 @@ func ParseIfBlock(p *TokenPeeker) (*IfElseBlock, error) {
 		return nil, err
 	}
 	ifelse.Body = body
+
+	if nextToken := p.PeekOne(); nextToken != nil && nextToken.Type == KW_ELSE {
+		p.Read()
+		if tok := p.Read(); tok.Type != LBRACKET {
+			return nil, &ParseError{
+				Pos:   tok.Position,
+				error: fmt.Sprintf("Expected { after else, found: %q", tok.Value),
+			}
+		}
+		body, err := ParseBlock(p)
+		if err != nil {
+			return nil, err
+		}
+		ifelse.Else = body
+	}
 	return &ifelse, nil
 }
 
@@ -153,20 +167,19 @@ func ParseBlock(p *TokenPeeker) ([]Expression, error) {
 	tok := p.Read()
 	if tok == nil {
 		return nil, &ParseError{
-			Pos: -1,
+			Pos:   -1,
 			error: "Code block must be closed by '}', reached end of file",
 		}
 	}
 	if tok.Type != RBRACKET {
 		return nil, &ParseError{
-			Pos: -1,
+			Pos:   -1,
 			error: fmt.Sprintf("Expected '}', got %s", tok.Value),
 		}
 	}
 
 	return expressions, nil
 }
-
 
 func ParseAtomicAssignable(p *TokenPeeker) (Assignable, error) {
 	tok := p.PeekOne()
@@ -203,4 +216,3 @@ func ParseAtomicAssignable(p *TokenPeeker) (Assignable, error) {
 		error: fmt.Sprintf("Expecting assignable, found: %q", tok.Value),
 	}
 }
-
