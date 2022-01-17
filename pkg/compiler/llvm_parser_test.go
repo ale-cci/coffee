@@ -206,8 +206,24 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
-			// TODO: parses if condition
-			// TODO: parses if body
+		{
+			name: "parses varible declaration",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    x := 0",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"%x = alloca i32",
+					"store i32 0, i32* %x",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {

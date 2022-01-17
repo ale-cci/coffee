@@ -117,7 +117,7 @@ func TestCompiler(t *testing.T) {
 				ReturnType: "int",
 				Args:       []compiler.Argument{},
 				Body: []compiler.Expression{
-					compiler.Declaration{
+					&compiler.Declaration{
 						To: "a",
 						Value: compiler.NewInt("0"),
 					},
@@ -135,7 +135,7 @@ func TestCompiler(t *testing.T) {
 			{
 				name:    "parses the declaration expression",
 				program: "b := 76",
-				expect: compiler.Declaration{
+				expect: &compiler.Declaration{
 					To: compiler.Var("b"),
 					Value: &compiler.Number{
 						Value: "76",
