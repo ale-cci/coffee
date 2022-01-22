@@ -2,9 +2,11 @@ declare i8* @itoa(i32 , i8* , i32)
 declare i32 @puts(i8*)
 
 define i32 @main() {
+  ; var := 3
   %var = alloca i32
-
   store i32 3, i32* %var
+
+  ; var += '0'
   %.tmp0 = load i32, i32* %var
   %.tmp1 = add i32 %.tmp0, 48
   store i32 %.tmp1, i32* %var
