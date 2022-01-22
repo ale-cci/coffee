@@ -96,3 +96,50 @@ func (d *Declaration) ToLLVM(scopes *Scopes) (string, error) {
 		}, "\n",
 	), nil
 }
+
+func (a *Assignment) ToLLVM(scopes *Scopes) (string, error) {
+	vartype, err := scopes.GetDefinedVar(a.To.Name)
+	if err != nil {
+		log.Panicf("In assignment: %v", err)
+	}
+	typerepr, err := scopes.TypeRepr(vartype)
+	if err != nil {
+		log.Panicf("In assignment: %v", err)
+	}
+
+	var toassign, immtype, prepCode string
+	if imm, ok := a.Value.(LLVMImmediate); ok {
+		immediate, err := imm.ToImmediateLLVM(scopes)
+		if err != nil {
+			log.Panicf("Unable to retrieve immediate type: %v", err)
+		}
+		toassign = immediate.Value
+		immtype, err = a.Value.(SSAValue).RealType(*scopes)
+		if err != nil {
+			log.Panicf("Error retrieving real type: %v", err)
+		}
+	} else if ssa, ok := a.Value.(SSAValue); ok {
+		var err error
+		prepCode, err = ssa.ToLLVM(scopes)
+		if err != nil {
+			log.Panicf("Unable to initialize ToLLVM: %v", err)
+		}
+		toassign, err = ssa.Id()
+		if err != nil {
+			log.Panicf("Unable to retrieve Id of SSAValue: %v", err)
+		}
+		immtype, err = ssa.RealType(*scopes)
+		if err != nil {
+			log.Panicf("Unable to retrieve real type: %v", err)
+		}
+	} else {
+		log.Panicf("Value does not implement LLVMImmediate or SSAValue: %#v", a.Value)
+	}
+
+	if immtype != vartype {
+		log.Panicf("Implicit casting not implemented!!!")
+	}
+
+	code := fmt.Sprintf("store %s %s, %s* %%%s", typerepr, toassign, typerepr, a.To.Name)
+	return strings.TrimLeft(strings.Join([]string{prepCode, code},"\n"), "\n"), nil
+}

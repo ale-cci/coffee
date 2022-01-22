@@ -312,6 +312,69 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "test variable assignment",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    i := 0",
+					"    i = 1",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"",
+					"%i = alloca i32",
+					"store i32 0, i32* %i",
+					"store i32 1, i32* %i",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
+		{
+			name: "test variable assignment with non llvmimmediates",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    i := 0",
+					"    i = i + 1",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"",
+					"%i = alloca i32",
+					"store i32 0, i32* %i",
+					"%.tmp0 = load i32, i32* %i",
+					"%.tmp1 = add i32 %.tmp0, 1",
+					"store i32 %.tmp1, i32* %i",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
+		// {
+		// 	name: "for loop implementation",
+		// 	program: strings.Join(
+		// 		[]string{
+		// 			"void main() {",
+		// 			"    for i := 0; i < 3; i = i + 1 {"
+		// 			"}",
+		// 		}, "\n",
+		// 	),
+		// 	expect: strings.Join(
+		// 		[]string{
+		// 			"define void @main() {",
+		// 			"ret void",
+		// 			"}",
+		// 		}, "\n",
+		// 	),
+		// },
 	}
 
 	for i, tc := range tt {

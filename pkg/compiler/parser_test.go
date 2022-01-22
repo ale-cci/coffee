@@ -146,7 +146,7 @@ func TestCompiler(t *testing.T) {
 			{
 				name:    "parses assignment",
 				program: "a = b",
-				expect: compiler.Assignment{
+				expect: &compiler.Assignment{
 					To:    &compiler.Var{Name: "a"},
 					Value: &compiler.Var{Name: "b"},
 				},

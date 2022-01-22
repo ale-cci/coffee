@@ -25,7 +25,7 @@ func ParseExpression(p *TokenPeeker) (Expression, error) {
 			if err != nil {
 				return nil, err
 			}
-			return Assignment{
+			return &Assignment{
 				To:    &Var{Name: tok.Value},
 				Value: assignable,
 			}, nil
