@@ -2,6 +2,86 @@ package compiler
 
 import "fmt"
 
+func ParseTopLevelExpression(p *TokenPeeker) (Expression, error) {
+	tok := p.PeekOne()
+	if tok.Type == KW_IF {
+		tok, err := ParseIfBlock(p)
+		return tok, err
+	} else if tok.Type == KW_FOR {
+		tok, err := ParseForLoop(p)
+		return tok, err
+	} else if tok.Type == KW_RETURN {
+		p.Read()
+		val, err := ParseAssignable(p)
+		if err != nil {
+			return nil, err
+		}
+		return &Return{val}, nil
+	}
+	expr, err := ParseExpression(p)
+	return expr, err
+}
+
+func ParseForLoop(p *TokenPeeker) (*ForLoop, error) {
+	tok := p.Read()
+	if tok.Type != KW_FOR {
+		return nil, &ParseError{
+			Pos:   tok.Position,
+			error: fmt.Sprintf("Expecting 'for' keyword, got: %q", tok.Value),
+		}
+	}
+
+	init, err := ParseExpression(p)
+	if err != nil {
+		return nil, err
+	}
+	// assert ;
+	tok = p.Read()
+	if tok.Type != SEMICOLON {
+		return nil, &ParseError{
+			Pos:   tok.Position,
+			error: fmt.Sprintf("Expecting ; in 'for' definition block, got %q", tok.Value),
+		}
+	}
+
+	cond, err := ParseAssignable(p)
+	if err != nil {
+		return nil, err
+	}
+	// assert ;
+	tok = p.Read()
+	if tok.Type != SEMICOLON {
+		return nil, &ParseError{
+			Pos:   tok.Position,
+			error: fmt.Sprintf("Expecting ; in 'for' definition block, got %q", tok.Value),
+		}
+	}
+
+	iter, err := ParseExpression(p)
+	if err != nil {
+		return nil, err
+	}
+	// expect open bracket
+	if tok := p.Read(); tok.Type != LBRACKET {
+		return nil, &ParseError{
+			Pos:   tok.Position,
+			error: fmt.Sprintf("Expected {, found: %q", tok.Value),
+		}
+	}
+
+	body, err := ParseBlock(p)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ForLoop{
+		Init:      init,
+		Incr:      iter,
+		Condition: cond,
+		Body:      body,
+	}, nil
+}
+
 func ParseExpression(p *TokenPeeker) (Expression, error) {
 	tok := p.PeekOne()
 	if tok.Type == WORD {
@@ -34,16 +114,6 @@ func ParseExpression(p *TokenPeeker) (Expression, error) {
 			fnCall, err := ParseFunctionCall(p)
 			return fnCall, err
 		}
-	} else if tok.Type == KW_IF {
-		tok, err := ParseIfBlock(p)
-		return tok, err
-	} else if tok.Type == KW_RETURN {
-		p.Read()
-		val, err := ParseAssignable(p)
-		if err != nil {
-			return nil, err
-		}
-		return &Return{val}, nil
 	}
 
 	return nil, &ParseError{
@@ -156,7 +226,7 @@ func ParseBlock(p *TokenPeeker) ([]Expression, error) {
 			p.Read()
 			continue
 		}
-		expr, err := ParseExpression(p)
+		expr, err := ParseTopLevelExpression(p)
 		if err != nil {
 			return nil, err
 		}

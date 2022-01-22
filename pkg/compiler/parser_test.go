@@ -3,10 +3,11 @@ package compiler_test
 import (
 	"bytes"
 	"fmt"
+	"strings"
 	"testing"
 
-	"github.com/google/go-cmp/cmp/cmpopts"
 	"bitbucket.org/ale-cci/elk/pkg/compiler"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"gotest.tools/v3/assert"
 )
 
@@ -18,6 +19,61 @@ func compile(prg string) (*compiler.AST, error) {
 
 	ast, err := compiler.Parse(tokens)
 	return ast, err
+}
+func TestParseForLoop(t *testing.T) {
+	program := strings.Join(
+		[]string{
+			"void main() {",
+			"    for i := 0; i < 3; i = i + 1 {",
+			"        a := 3",
+			"    }",
+			"}",
+		}, "\n",
+	)
+	expect := &compiler.Function{
+		Name:       "main",
+		ReturnType: "void",
+		Args:       []compiler.Argument{},
+		Body: []compiler.Expression{
+			&compiler.ForLoop{
+				Init: &compiler.Declaration{
+					To:    &compiler.Var{Name: "i"},
+					Value: &compiler.Number{Type: "int", Value: "0"},
+				},
+				Condition: &compiler.Operator{
+					Optype: compiler.OP_LESS,
+					Left:   &compiler.Var{Name: "i"},
+					Right:  &compiler.Number{Type: "int", Value: "3"},
+				},
+				Incr: &compiler.Assignment{
+					To: &compiler.Var{Name: "i"},
+					Value: &compiler.Operator{
+						Optype: compiler.OP_PLUS,
+						Left:   &compiler.Var{Name: "i"},
+						Right:  &compiler.Number{Type: "int", Value: "1"},
+					},
+				},
+				Body: []compiler.Expression{
+					&compiler.Declaration{
+						To:    &compiler.Var{Name: "a"},
+						Value: &compiler.Number{Value: "3", Type: "int"},
+					},
+				},
+			},
+		},
+	}
+
+	tokens, err := compiler.Tokenize(
+		bytes.NewReader([]byte(program)),
+	)
+	assert.NilError(t, err)
+	t.Logf("Tokens %q", tokens)
+	p := compiler.NewTokenPeeker(tokens)
+	vals, err := compiler.ParseFunction(p)
+
+	assert.NilError(t, err)
+	assert.DeepEqual(t, vals, expect, cmpopts.IgnoreUnexported(compiler.Number{}, compiler.Operator{}))
+
 }
 
 func TestFunctionParser(t *testing.T) {
@@ -118,7 +174,7 @@ func TestCompiler(t *testing.T) {
 				Args:       []compiler.Argument{},
 				Body: []compiler.Expression{
 					&compiler.Declaration{
-						To: &compiler.Var{Name: "a"},
+						To:    &compiler.Var{Name: "a"},
 						Value: compiler.NewInt("0"),
 					},
 				},
@@ -203,7 +259,7 @@ func TestCompiler(t *testing.T) {
 
 				t.Logf("Tokens %q", tokens)
 				p := compiler.NewTokenPeeker(tokens)
-				exprs, err := compiler.ParseExpression(p)
+				exprs, err := compiler.ParseTopLevelExpression(p)
 				assert.NilError(t, err)
 				assert.DeepEqual(t, exprs, tc.expect, cmpopts.IgnoreUnexported(compiler.Number{}))
 			})

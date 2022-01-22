@@ -7,6 +7,7 @@ type AST = []Statement
 // type representation, for variable tyeps, function rv types...
 type Type interface {
 }
+
 // expression with value, includes:
 // - function calls
 // - operations ?
@@ -42,6 +43,13 @@ type Number struct {
 type Declaration struct {
 	To    *Var
 	Value interface{}
+}
+
+type ForLoop struct {
+	Init      Expression
+	Condition Assignable
+	Incr      Expression
+	Body []Expression
 }
 type Assignment struct {
 	To    *Var

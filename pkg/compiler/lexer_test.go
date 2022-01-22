@@ -247,6 +247,11 @@ func TestTokenizer(t *testing.T) {
 				name: "parses == token",
 			},
 			{
+				program: ";",
+				expects: []compiler.Token{{compiler.SEMICOLON, ";", 1}},
+				name: "parses ; token",
+			},
+			{
 				program: strings.Join([]string{
 					"3",
 					"4 -- this is an example comment",
