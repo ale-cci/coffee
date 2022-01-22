@@ -5,8 +5,8 @@ type Statement interface{}
 type AST = []Statement
 
 // type representation, for variable tyeps, function rv types...
-type Type interface{}
-
+type Type interface {
+}
 // expression with value, includes:
 // - function calls
 // - operations ?
@@ -40,15 +40,20 @@ type Number struct {
 }
 
 type Declaration struct {
-	To    Var
+	To    *Var
 	Value interface{}
 }
 type Assignment struct {
-	To    Var
+	To    *Var
 	Value interface{}
 }
 
-type Var string
+type Var struct {
+	Name string
+	Type Type
+	Uid  string
+}
+
 type String struct {
 	Value string
 	Uid   string
@@ -63,7 +68,7 @@ type Boolean struct {
 type Assignable interface{}
 
 type FnCall struct {
-	Name   Var
+	Name   *Var
 	Params []Assignable
 }
 

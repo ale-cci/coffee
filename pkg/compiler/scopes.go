@@ -1,7 +1,11 @@
+/**
+ * Contains description of runtime scoipes of the current parsed program
+ */
 package compiler
 
 import (
 	"fmt"
+	"log"
 	"strings"
 )
 
@@ -14,9 +18,19 @@ type SSA interface {
 	ToLLVM(*Scopes) (string, error)
 }
 
+type LLVMImmediateValue struct {
+	Type     Type
+	Value    string
+}
+
+type LLVMImmediate interface {
+	ToImmediateLLVM(scopes *Scopes) (*LLVMImmediateValue, error)
+}
+
 // assignable value
 type SSAValue interface {
 	SSA
+	RealType(Scopes) (string, error)
 	TypeRepr(Scopes) (string, error)
 	Id() (string, error)
 }
@@ -37,6 +51,8 @@ type RtScope struct {
 
 	// defined functions
 	externs []string
+
+	Vars map[string]string
 }
 
 func (rs *RtScope) DefineVar(name string, typeval Type, args []Argument, extern bool) error {
@@ -94,6 +110,26 @@ func (s *Scopes) DefineGlobals() ([]string, error) {
 	return globals, nil
 }
 
+func (s *Scopes) GetDefinedVar(name string) (Type, error) {
+	for i := len(s.scopes) - 1; i >= 0; i -= 1 {
+		currScope := s.scopes[i]
+		if info, ok := currScope.Vars[name]; ok {
+			return info, nil
+		}
+	}
+	return "", fmt.Errorf("Error: variable %q is not defined", name)
+}
+
+func (s *Scopes) DefineVariable(name string, typename Type) error {
+	currScope := s.scopes[len(s.scopes)-1]
+	vartype, defined := currScope.Vars[name]
+	if defined {
+		return fmt.Errorf("Variable %q is already defined on this scope with type %#v", name, vartype)
+	}
+	currScope.Vars[name] = typename.(string)
+	return nil
+}
+
 func (s *Scopes) GetDefined(name string) (*NameInfo, error) {
 	for i := len(s.scopes) - 1; i >= 0; i -= 1 {
 		currScope := s.scopes[i]
@@ -133,6 +169,7 @@ func (s *Scopes) Push() *RtScope {
 	s.scopes = append(s.scopes, RtScope{
 		TypeAliases: make(map[string]string),
 		Names:       make(map[string]NameInfo),
+		Vars:        make(map[string]string),
 	})
 	return &s.scopes[len(s.scopes)-1]
 }
@@ -158,8 +195,8 @@ func (s *Scopes) DefineConstantString(value string) (ConstantValue, error) {
 	constants := len(s.statics)
 
 	constant := ConstantValue{
-		Value: value + "\\00",
-		Uid: fmt.Sprintf("@.str%d", constants),
+		Value:    value + "\\00",
+		Uid:      fmt.Sprintf("@.str%d", constants),
 		TypeRepr: fmt.Sprintf("[%d x i8]", length),
 	}
 	s.statics = append(s.statics, constant)
@@ -174,7 +211,7 @@ func (s Scopes) TypeRepr(typename Type) (string, error) {
 	if op, ok := typename.(string); ok {
 		name = op
 	} else {
-		return "", fmt.Errorf("Bad Parsing: unable to interpret %#v as a type", typename)
+		log.Panicf("Bad Parsing: unable to interpret %#v as a type", typename)
 	}
 
 	// reverse iterate through the scopes to find the name value

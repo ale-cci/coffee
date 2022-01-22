@@ -3,8 +3,10 @@
 extern int puts(str text)
 
 int main() {
-    if 3 > 4 {
-        puts("Hello from expresso!")
+    t := "hello!"
+
+    if 3 < 4 {
+        puts(t)
     }
     return 0
 }

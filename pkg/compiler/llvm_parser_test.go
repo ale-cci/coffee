@@ -225,6 +225,68 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "parses varible declaration",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    x := 3 + 4",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"%.tmp0 = add i32 3, 4",
+					"%x = alloca i32",
+					"store i32 %.tmp0, i32* %x",
+					"}",
+				}, "\n",
+			),
+		},
+		{
+			name: "parses varible declaration",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    y := 2",
+					"    x := 3 + y",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"",
+					"%y = alloca i32",
+					"store i32 2, i32* %y",
+					"%.tmp0 = load i32, i32* %y",
+					"%.tmp1 = add i32 3, %.tmp0",
+					"%x = alloca i32",
+					"store i32 %.tmp1, i32* %x",
+					"}",
+				}, "\n",
+			),
+		},
+		{
+			name: "parses expression assignment",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    y := 3 > 2",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"%.tmp0 = icmp sgt i32 3, 2",
+					"%y = alloca i1",
+					"store i1 %.tmp0, i1* %y",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {

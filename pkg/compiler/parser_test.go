@@ -118,7 +118,7 @@ func TestCompiler(t *testing.T) {
 				Args:       []compiler.Argument{},
 				Body: []compiler.Expression{
 					&compiler.Declaration{
-						To: "a",
+						To: &compiler.Var{Name: "a"},
 						Value: compiler.NewInt("0"),
 					},
 				},
@@ -136,7 +136,7 @@ func TestCompiler(t *testing.T) {
 				name:    "parses the declaration expression",
 				program: "b := 76",
 				expect: &compiler.Declaration{
-					To: compiler.Var("b"),
+					To: &compiler.Var{Name: "b"},
 					Value: &compiler.Number{
 						Value: "76",
 						Type:  "int",
@@ -147,15 +147,15 @@ func TestCompiler(t *testing.T) {
 				name:    "parses assignment",
 				program: "a = b",
 				expect: compiler.Assignment{
-					To:    compiler.Var("a"),
-					Value: compiler.Var("b"),
+					To:    &compiler.Var{Name: "a"},
+					Value: &compiler.Var{Name: "b"},
 				},
 			},
 			{
 				name:    "parses funciton call",
 				program: "a()",
 				expect: &compiler.FnCall{
-					Name:   compiler.Var("a"),
+					Name:   &compiler.Var{Name: "a"},
 					Params: []compiler.Assignable{},
 				},
 			},
@@ -163,11 +163,11 @@ func TestCompiler(t *testing.T) {
 				name:    "parases function parameters",
 				program: "a(b, c, d)",
 				expect: &compiler.FnCall{
-					Name: compiler.Var("a"),
+					Name: &compiler.Var{Name: "a"},
 					Params: []compiler.Assignable{
-						compiler.Var("b"),
-						compiler.Var("c"),
-						compiler.Var("d"),
+						&compiler.Var{Name: "b"},
+						&compiler.Var{Name: "c"},
+						&compiler.Var{Name: "d"},
 					},
 				},
 			},
@@ -175,12 +175,12 @@ func TestCompiler(t *testing.T) {
 				name:    "parses nested function calls",
 				program: "a(b(c))",
 				expect: &compiler.FnCall{
-					Name: compiler.Var("a"),
+					Name: &compiler.Var{Name: "a"},
 					Params: []compiler.Assignable{
 						&compiler.FnCall{
-							Name: compiler.Var("b"),
+							Name: &compiler.Var{Name: "b"},
 							Params: []compiler.Assignable{
-								compiler.Var("c"),
+								&compiler.Var{Name: "c"},
 							},
 						},
 					},

@@ -29,6 +29,11 @@ func (b *Boolean) ToLLVM(scopes *Scopes) (string, error) {
 	}
 	return fmt.Sprintf("%%.tmp%d = add i1 0, %d", id, boolValue), nil
 }
+
+func (b *Boolean) RealType(scopes Scopes) (string, error) {
+	return "bool", nil
+}
+
 func (b *Boolean) Id() (string, error) {
 	if b.Uid == "" {
 		return "", fmt.Errorf("Unable to get uid before ToLLVM call in (bool)")
@@ -210,7 +215,7 @@ func (e *ExternFunc) ToLLVM(scopes *Scopes) (string, error) {
 }
 
 func (f *FnCall) ToLLVM(scopes *Scopes) (string, error) {
-	definedFn, err := scopes.GetDefined(string(f.Name))
+	definedFn, err := scopes.GetDefined(f.Name.Name)
 	if err != nil {
 		return "", err
 	}
@@ -250,9 +255,13 @@ func (f *FnCall) ToLLVM(scopes *Scopes) (string, error) {
 	}
 
 	strArgs := strings.Join(args, ",")
-	call := fmt.Sprintf("call %s @%s(%s)", strReturnType, f.Name, strArgs)
+	call := fmt.Sprintf("call %s @%s(%s)", strReturnType, f.Name.Name, strArgs)
 	code = append(code, call)
 	return strings.Join(code, "\n"), nil
+}
+
+func (s *String) RealType(scopes Scopes) (string, error) {
+	return "str", nil
 }
 
 func (s *String) TypeRepr(scopes Scopes) (string, error) {

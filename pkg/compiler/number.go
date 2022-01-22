@@ -8,6 +8,11 @@ func NewInt(val string) *Number {
 		Value: val,
 	}
 }
+
+func (n *Number) RealType(scopes Scopes) (string, error) {
+	return n.Type.(string), nil
+}
+
 func (n *Number) ToLLVM(scopes *Scopes) (string, error) {
 	typename, err := scopes.TypeRepr(n.Type)
 	if err != nil {
@@ -22,22 +27,9 @@ func (n *Number) ToLLVM(scopes *Scopes) (string, error) {
 	return fmt.Sprintf("%s = add %s 0, 5", n.uid, typename), nil
 }
 
-type LLVMImmediateValue struct {
-	Type string
-	Value string
-}
-
-type LLVMImmediate interface {
-	ToImmediateLLVM(scopes *Scopes) (*LLVMImmediateValue, error)
-}
-
 func (n *Number) ToImmediateLLVM(scopes *Scopes) (*LLVMImmediateValue, error) {
-	typename, err := scopes.TypeRepr(n.Type)
-	if err != nil {
-		return nil, err
-	}
 	return &LLVMImmediateValue{
-		Type: typename,
+		Type: n.Type,
 		Value: n.Value,
 	}, nil
 }

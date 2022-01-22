@@ -2,13 +2,14 @@ package compiler
 
 import (
 	"fmt"
+	"log"
 	"strings"
 )
 
 type Operator struct {
 	uid      string
 	Optype   TokenType
-	typename string
+	realtype string
 	Left     Assignable
 	Right    Assignable
 }
@@ -29,7 +30,10 @@ func (o *Operator) ToLLVM(scopes *Scopes) (string, error) {
 		if err != nil {
 			return "", err
 		}
-		ltype = immvalue.Type
+		ltype, err = o.Left.(SSAValue).RealType(*scopes)
+		if err != nil {
+			log.Panicf("Error con converting immediate type: %#v", err)
+		}
 		lval = immvalue.Value
 	} else {
 		var lssa SSAValue
@@ -43,7 +47,7 @@ func (o *Operator) ToLLVM(scopes *Scopes) (string, error) {
 
 		code = append(code, lcode)
 
-		ltype, err = lssa.TypeRepr(*scopes)
+		ltype, err = lssa.RealType(*scopes)
 		if err != nil {
 			return "", fmt.Errorf("Error while converting operator: %v", err)
 		}
@@ -58,7 +62,10 @@ func (o *Operator) ToLLVM(scopes *Scopes) (string, error) {
 		if err != nil {
 			return "", err
 		}
-		rtype = immvalue.Type
+		rtype, err = o.Right.(SSAValue).RealType(*scopes)
+		if err != nil {
+			return "", err
+		}
 		rval = immvalue.Value
 	} else {
 		var rssa SSAValue
@@ -67,12 +74,13 @@ func (o *Operator) ToLLVM(scopes *Scopes) (string, error) {
 		}
 		rcode, err := rssa.ToLLVM(scopes)
 		if err != nil {
-			return "", fmt.Errorf("Error while converting operator: %v", err)
+			log.Printf("Rssa: %#v", rssa)
+			log.Panicf("Error while converting operator: %v", err)
 		}
 
 		code = append(code, rcode)
 
-		rtype, err = rssa.TypeRepr(*scopes)
+		rtype, err = rssa.RealType(*scopes)
 		if err != nil {
 			return "", fmt.Errorf("Error while converting operator: %v", err)
 		}
@@ -90,23 +98,21 @@ func (o *Operator) ToLLVM(scopes *Scopes) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("unable to reserve local operator: %v", err)
 	}
-	var op, returnType string
 
+	var op string
 	switch o.Optype {
 	case OP_PLUS:
 		op = "add"
-		returnType = ltype
 		break
 	case OP_MINUS:
 		op = "sub"
-		returnType = ltype
 		break
 	case OP_LESS:
 		op = "icmp slt"
-		returnType, err = scopes.TypeRepr("bool")
-		if err != nil {
-			return "", err
-		}
+		break
+	case OP_GREATER:
+		op = "icmp sgt"
+		break
 	// OP_STAR
 	// OP_OVER
 	// OP_EQ
@@ -116,19 +122,48 @@ func (o *Operator) ToLLVM(scopes *Scopes) (string, error) {
 		return "", fmt.Errorf("Missing operator properties for %#v", o.Optype)
 	}
 
-	o.uid = fmt.Sprintf("%%.tmp%d", op_uid)
-	o.typename = returnType
 
-	code = append(code, fmt.Sprintf("%s = %s %s %s, %s", o.uid, op, ltype, lval, rval))
+	o.uid = fmt.Sprintf("%%.tmp%d", op_uid)
+
+	boolOps := []TokenType{
+		OP_LESS, OP_GREATER,
+	}
+	o.realtype = ltype
+	for _, tokentype := range boolOps {
+		if tokentype == o.Optype {
+			o.realtype = "bool"
+			break
+		}
+	}
+
+	llvmType, err := scopes.TypeRepr(ltype)
+	if err != nil {
+		log.Panicf("Unable to convert type %s: %v", ltype, err)
+		return "", err
+	}
+	code = append(code, fmt.Sprintf("%s = %s %s %s, %s", o.uid, op, llvmType, lval, rval))
 	return strings.Join(code, "\n"), nil
 }
 
+func (o *Operator) RealType(scopes Scopes) (string, error) {
+	if o.realtype == "" {
+		return "", fmt.Errorf("Trying to retrieve operator type before ToLLVM initialization")
+	}
+	return o.realtype, nil
+}
+
 func (o *Operator) TypeRepr(scopes Scopes) (string, error) {
-	if o.typename == "" {
+	if o.realtype == "" {
 		return "", fmt.Errorf("Trying to retrieve operator type before llvm initialization")
 	}
-	return o.typename, nil
+	repr, err := scopes.TypeRepr(o.realtype)
+	if err != nil {
+		log.Panicf("Unable to retrieve operator type: %v", err)
+		return "", err
+	}
+	return repr, nil
 }
+
 func (o *Operator) Id() (string, error) {
 	if o.uid == "" {
 		return "", fmt.Errorf("Trying to retrieve id before llvm initialization")
@@ -152,6 +187,7 @@ func ParseAssignable(p *TokenPeeker) (Assignable, error) {
 		OP_STAR:  20, // *
 		OP_OVER:  20, // /
 		OP_LESS:  5,  // <
+		OP_GREATER: 5, // >
 	}
 	var err error
 

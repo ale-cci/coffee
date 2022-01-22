@@ -16,7 +16,7 @@ func ParseExpression(p *TokenPeeker) (Expression, error) {
 				return nil, err
 			}
 			return &Declaration{
-				To:    Var(tok.Value),
+				To:    &Var{Name: tok.Value},
 				Value: assignable,
 			}, nil
 		} else if next.Type == OP_EQ {
@@ -26,7 +26,7 @@ func ParseExpression(p *TokenPeeker) (Expression, error) {
 				return nil, err
 			}
 			return Assignment{
-				To:    Var(tok.Value),
+				To:    &Var{Name: tok.Value},
 				Value: assignable,
 			}, nil
 		} else if next.Type == LPAREN {
@@ -142,7 +142,7 @@ func ParseFunctionCall(p *TokenPeeker) (*FnCall, error) {
 		}
 	}
 	return &FnCall{
-		Name:   Var(tok.Value),
+		Name:   &Var{Name: tok.Value},
 		Params: params,
 	}, nil
 }
@@ -206,7 +206,7 @@ func ParseAtomicAssignable(p *TokenPeeker) (Assignable, error) {
 			fn, err := ParseFunctionCall(p)
 			return fn, err
 		}
-		return Var(tok.Value), nil
+		return &Var{Name: tok.Value}, nil
 	} else if tok.Type == KW_TRUE || tok.Type == KW_FALSE {
 		p.Read()
 		return &Boolean{Value: tok.Value}, nil
