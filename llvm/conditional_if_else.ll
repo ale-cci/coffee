@@ -4,8 +4,14 @@
 declare i32 @puts(i8*)
 
 define i32 @main() {
+  %var = alloca i32
+
+  store i32 3, i32* %var
   %.tmp5 = add i32 5, 0
-  %.tmp0 = icmp sgt i32 %.tmp5, 4
+
+  %.tmp6 = load i32, i32* %var
+
+  %.tmp0 = icmp sgt i32 %.tmp5, %.tmp6
   br i1 %.tmp0, label %.if.true.1, label %.if.false.1
 .if.true.1:
   %.tmp1 = getelementptr [3 x i8], [3 x i8]* @.str0, i32 0, i32 0

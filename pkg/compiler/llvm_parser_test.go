@@ -218,6 +218,7 @@ func TestParsing(t *testing.T) {
 			expect: strings.Join(
 				[]string{
 					"define void @main() {",
+					"",
 					"%x = alloca i32",
 					"store i32 0, i32* %x",
 					"}",
