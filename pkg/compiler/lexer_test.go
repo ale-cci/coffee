@@ -3,6 +3,7 @@ package compiler_test
 import (
 	"bytes"
 	"fmt"
+	"strings"
 	"testing"
 
 	"bitbucket.org/ale-cci/elk/pkg/compiler"
@@ -244,6 +245,27 @@ func TestTokenizer(t *testing.T) {
 				program: "==",
 				expects: []compiler.Token{{compiler.OP_EQQ, "==", 1}},
 				name: "parses == token",
+			},
+			{
+				program: strings.Join([]string{
+					"3",
+					"4 -- this is an example comment",
+					"5",
+				}, "\n"),
+				expects: []compiler.Token{
+					{compiler.INT, "3", 1},
+					{compiler.NL, "\n", 2},
+					{compiler.INT, "4", 3},
+					{compiler.COMMENT, "-- this is an example comment", 5},
+					{compiler.NL, "\n", 34},
+					{compiler.INT, "5", 35},
+				},
+				name: "parses comments",
+			},
+			{
+				program: "--",
+				expects: []compiler.Token{{compiler.COMMENT, "--", 1}},
+				name: "does not crash on empty comments",
 			},
 		}
 

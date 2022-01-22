@@ -126,6 +126,19 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 				stream.UnreadRune()
 				tokens = append(tokens, Token{OP_PLUS, string(c), pos})
 			}
+		} else if c == '-' {
+			next, _, err := stream.ReadRune()
+			if next == '-' && err == nil {
+				rest := readUntil(stream, func(c rune) bool {return c != '\n' })
+				stream.UnreadRune()
+				if len(rest) > 0 && rest[len(rest) -1 ] == '\n' {
+					rest = rest[:len(rest) -1]
+				}
+				tokens = append(tokens, Token{COMMENT, "--" + rest, pos})
+			} else {
+				stream.UnreadRune()
+				tokens = append(tokens, Token{OP_MINUS, string(c), pos})
+			}
 		} else if c == '>' {
 			next, _, err := stream.ReadRune()
 			if next == '=' && err == nil {
