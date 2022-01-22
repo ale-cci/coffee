@@ -180,16 +180,22 @@ func (f *Function) ToLLVM(scopes *Scopes) (string, error) {
 	strFunctionArgs := ""
 	strFunctionBody := ""
 
+	var lastexpr Expression
 	for _, expr := range f.Body {
 		ssa, ok := expr.(SSA)
 		if !ok {
 			return "", fmt.Errorf("ToLLVM method not implemented on: %#v", expr)
 		}
+		lastexpr= ssa
 		code, err := ssa.ToLLVM(scopes)
 		if err != nil {
 			return "", err
 		}
 		strFunctionBody += ("\n" + code)
+	}
+
+	if _, ok := lastexpr.(Return); !ok && strReturnType == "void" {
+		strFunctionBody += "\nret void"
 	}
 
 	code := fmt.Sprintf(
