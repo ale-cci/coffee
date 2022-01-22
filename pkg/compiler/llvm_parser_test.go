@@ -372,14 +372,16 @@ func TestParsing(t *testing.T) {
 			expect: strings.Join(
 				[]string{
 					"define void @main() {",
+					"",
 					"%i = alloca i32",
 					"store i32 0, i32* %i",
-					"br label .for.start.0:",
+					"br label %.for.start.0",
 					".for.start.0:",
 					"%.tmp1 = load i32, i32* %i",
 					"%.tmp2 = icmp slt i32 %.tmp1, 3",
 					"br i1 %.tmp2, label %.for.continue.0, label %.for.end.0",
 					".for.continue.0:",
+					"",
 					"%a = alloca i32",
 					"store i32 3, i32* %a",
 					"br label %.for.start.0",

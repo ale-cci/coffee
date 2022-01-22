@@ -2,6 +2,7 @@ package compiler
 
 import (
 	"fmt"
+	"log"
 	"strings"
 )
 
@@ -72,6 +73,57 @@ func (op *OpLess) TypeRepr(scopes Scopes) (string, error) {
 }
 func (op *OpLess) Id() (string, error) {
 	return "%.tmp0", nil
+}
+
+func (f *ForLoop) ToLLVM(scopes *Scopes) (string, error) {
+	initCode, err := f.Init.(SSA).ToLLVM(scopes)
+	if err != nil {
+		return "", err
+	}
+
+	loopId, err := scopes.ReserveLocal()
+	if err != nil {
+		log.Panicf("Unable to reserve local value: %v", err)
+	}
+
+	ssaCondition, implemented := f.Condition.(SSAValue)
+	if !implemented {
+		log.Panicf("for condition does not implement ssavalue")
+	}
+
+
+	loopCond, err := ssaCondition.ToLLVM(scopes)
+	if err != nil {
+		log.Panicf("Unable to convert condition to SSA: %v", err)
+	}
+
+	condId, err := ssaCondition.Id()
+	if err != nil {
+		log.Panicf("Unable to convert condition to SSA: %v", err)
+	}
+	loopBody := []string{}
+	for _, expr := range f.Body {
+		exprCode, err := expr.(SSA).ToLLVM(scopes)
+		loopBody = append(loopBody, exprCode)
+		if err != nil {
+			log.Panicf("Unable to convert condition to SSA: %v", err)
+		}
+	}
+
+	loopBodyStr := strings.Join(loopBody, "\n")
+	return strings.Join(
+		[]string{
+			initCode,
+			fmt.Sprintf("br label %%.for.start.%d", loopId),
+			fmt.Sprintf(".for.start.%d:", loopId),
+			loopCond,
+			fmt.Sprintf("br i1 %s, label %%.for.continue.%d, label %%.for.end.%d", condId, loopId, loopId),
+			fmt.Sprintf(".for.continue.%d:", loopId),
+			loopBodyStr,
+			fmt.Sprintf("br label %%.for.start.%d", loopId),
+			fmt.Sprintf(".for.end.%d:", loopId),
+		}, "\n",
+	), nil
 }
 
 func (b *IfElseBlock) ToLLVM(scopes *Scopes) (string, error) {
