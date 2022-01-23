@@ -166,6 +166,56 @@ func ParseFunction(p *TokenPeeker) (*Function, error) {
 
 func ParseType(p *TokenPeeker) (Type, error) {
 	t := p.Read()
+	if t.Type == KW_STRUCT {
+		fields := []Argument{}
+		if tok := p.Read(); tok.Type != LBRACKET {
+			return nil, &ParseError{
+				Pos:   t.Position,
+				error: fmt.Sprintf("Required { after 'struct' keyword, found: %q", t.Value),
+			}
+		}
+		// ignore trailing newlines
+		for ; p.PeekOne().Type == NL; {
+			p.Read()
+		}
+
+		// read struct fields
+		for p.PeekOne().Type != RBRACKET {
+			typeval, err := ParseType(p)
+			if err != nil {
+				return nil, err
+			}
+			name := p.Read()
+
+			if name.Type != WORD {
+				return nil, &ParseError{
+					Pos: name.Position,
+					error: fmt.Sprintf("Expect struct field name, found: %q", name.Value),
+				}
+			}
+
+			fields = append(fields, Argument{
+				Type: typeval,
+				Name: name.Value,
+			})
+
+			if tok := p.Read(); tok.Type != COMMA {
+				return nil, &ParseError{
+					Pos: tok.Position,
+					error: fmt.Sprintf("Required comma after struct arg, got %q", tok.Value),
+				}
+			}
+
+			// ignore trailing newlines
+			for ; p.PeekOne().Type == NL; {
+				p.Read()
+			}
+		}
+
+		return &StructType{
+			Fields: fields,
+		}, nil
+	}
 	if !(t.Type == T_VOID || t.Type == T_INT || t.Type == WORD) {
 		return nil, &ParseError{
 			Pos:   t.Position,
@@ -175,7 +225,7 @@ func ParseType(p *TokenPeeker) (Type, error) {
 
 	var baseType Type
 	baseType = t.Value
-	for p.PeekOne().Type == LSBRACKET {
+	for p.PeekOne() != nil && p.PeekOne().Type == LSBRACKET {
 		p.Read()
 		var size int
 		if p.PeekOne().Type != RSBRACKET {

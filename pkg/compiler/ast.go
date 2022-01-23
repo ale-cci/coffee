@@ -63,6 +63,10 @@ type ArrayType struct {
 	Size int
 }
 
+type StructType struct {
+	Fields []Argument
+}
+
 type StaticArray struct {
 	Elements []Assignable
 }

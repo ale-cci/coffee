@@ -20,6 +20,53 @@ func compile(prg string) (*compiler.AST, error) {
 	ast, err := compiler.Parse(tokens)
 	return ast, err
 }
+func TestParseType(t *testing.T) {
+	tt := []struct {
+		name    string
+		program string
+		expect  compiler.Type
+	}{
+		{
+			name:    "parses int type",
+			program: "int",
+			expect:  "int",
+		},
+		{
+			name: "parses struct type",
+			program: strings.Join(
+				[]string{
+					"struct {",
+					"    int a,",
+					"    str b,",
+					"}",
+				}, "\n",
+			),
+			expect: &compiler.StructType{
+				Fields: []compiler.Argument{
+					{Type: "int", Name: "a"},
+					{Type: "str", Name: "b"},
+				},
+			},
+		},
+	}
+
+	for id, tc := range tt {
+		tcname := fmt.Sprintf("[%d] %s", id, tc.name)
+		t.Run(tcname, func(t *testing.T) {
+			tokens, err := compiler.Tokenize(
+				bytes.NewReader([]byte(tc.program)),
+			)
+			assert.NilError(t, err)
+			t.Logf("Tokens %q", tokens)
+			p := compiler.NewTokenPeeker(tokens)
+			vals, err := compiler.ParseType(p)
+
+			assert.NilError(t, err)
+			assert.DeepEqual(t, vals, tc.expect, cmpopts.IgnoreUnexported(compiler.Number{}, compiler.Operator{}))
+		})
+	}
+}
+
 func TestParseForLoop(t *testing.T) {
 	program := strings.Join(
 		[]string{
@@ -156,7 +203,7 @@ func TestCompiler(t *testing.T) {
 					&compiler.ExternFunc{
 						Name:       "puts",
 						ReturnType: "int",
-						Args:       []compiler.Argument{
+						Args: []compiler.Argument{
 							{Type: "str", Name: "text"},
 							{Type: "int", Name: "p0"},
 						},
@@ -242,18 +289,18 @@ func TestCompiler(t *testing.T) {
 				},
 			},
 			{
-				name: "parses variable declaration",
+				name:    "parses variable declaration",
 				program: "int t = 0",
 				expect: &compiler.Declaration{
-					To: &compiler.Var{Name: "t", Type: "int"},
+					To:    &compiler.Var{Name: "t", Type: "int"},
 					Value: &compiler.Number{Type: "int", Value: "0"},
 				},
 			},
 			{
-				name: "parses array declaration",
+				name:    "parses array declaration",
 				program: "int[32] t = []",
 				expect: &compiler.Declaration{
-					To: &compiler.Var{Name: "t", Type: &compiler.ArrayType{Base: "int", Size: 32}},
+					To:    &compiler.Var{Name: "t", Type: &compiler.ArrayType{Base: "int", Size: 32}},
 					Value: &compiler.StaticArray{Elements: []compiler.Assignable{}},
 				},
 			},
