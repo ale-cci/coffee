@@ -242,6 +242,22 @@ func TestCompiler(t *testing.T) {
 				},
 			},
 			{
+				name: "parses variable declaration",
+				program: "int t = 0",
+				expect: &compiler.Declaration{
+					To: &compiler.Var{Name: "t", Type: "int"},
+					Value: &compiler.Number{Type: "int", Value: "0"},
+				},
+			},
+			{
+				name: "parses array declaration",
+				program: "int[32] t = []",
+				expect: &compiler.Declaration{
+					To: &compiler.Var{Name: "t", Type: &compiler.ArrayType{Base: "int", Size: 32}},
+					Value: &compiler.StaticArray{Elements: []compiler.Assignable{}},
+				},
+			},
+			{
 				name:    "parses nested function calls",
 				program: "a(b(c))",
 				expect: &compiler.FnCall{

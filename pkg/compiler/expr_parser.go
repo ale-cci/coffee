@@ -17,6 +17,51 @@ func ParseTopLevelExpression(p *TokenPeeker) (Expression, error) {
 			return nil, err
 		}
 		return &Return{val}, nil
+	} else if tok.Type == WORD || tok.Type == T_INT {
+		// a = b || a[] var = 3
+		p.Read()
+		if tok := p.PeekOne(); tok.Type == WORD || tok.Type == LSBRACKET {
+			// int a || int[] a cases
+			p.Unread()
+			typename, err := ParseType(p)
+			if err != nil {
+				return nil, err
+			}
+
+			varname := p.Read()
+			if varname.Type != WORD {
+				return nil, &ParseError{
+					Pos:   tok.Position,
+					error: fmt.Sprintf("Expecting variable name, got %q", tok.Value),
+				}
+			}
+
+			// expect equal
+			if tok := p.PeekOne(); tok.Type == OP_EQ {
+				p.Read()
+				value, err := ParseAssignable(p)
+				if err != nil {
+					return nil, err
+				}
+				return &Declaration{
+					To: &Var{
+						Type: typename,
+						Name: varname.Value,
+					},
+					Value: value,
+				}, nil
+			}
+			// comma
+			return &Declaration{
+				To: &Var{
+					Type: typename,
+					Name: varname.Value,
+				},
+				Value: nil,
+			}, nil
+		} else {
+			p.Unread()
+		}
 	}
 	expr, err := ParseExpression(p)
 	return expr, err
@@ -280,6 +325,22 @@ func ParseAtomicAssignable(p *TokenPeeker) (Assignable, error) {
 	} else if tok.Type == KW_TRUE || tok.Type == KW_FALSE {
 		p.Read()
 		return &Boolean{Value: tok.Value}, nil
+	} else if tok.Type == LSBRACKET {
+		// parse array [1, 2, 3]
+		p.Read()
+		for p.PeekOne().Type != RSBRACKET {
+			// read assignable
+			// expect comma or closed paren
+		}
+		if tok := p.Read(); tok.Type != RSBRACKET {
+			return nil, &ParseError{
+				Pos: tok.Position,
+				error: fmt.Sprintf("Expecting closed ], got %q", tok.Value),
+			}
+		}
+		return &StaticArray{
+			Elements: []Assignable{},
+		}, nil
 	}
 	return nil, &ParseError{
 		Pos:   tok.Position,

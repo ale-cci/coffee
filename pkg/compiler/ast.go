@@ -49,13 +49,23 @@ type ForLoop struct {
 	Init      Expression
 	Condition Assignable
 	Incr      Expression
-	Body []Expression
+	Body      []Expression
 }
 type Assignment struct {
 	To    *Var
 	Value interface{}
 }
 
+// array type defintion, always contains a size, es. int[32] or int[] for any
+// array, in that case size is -1
+type ArrayType struct {
+	Base Type
+	Size int
+}
+
+type StaticArray struct {
+	Elements []Assignable
+}
 type Var struct {
 	Name string
 	Type Type

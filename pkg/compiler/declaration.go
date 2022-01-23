@@ -76,6 +76,18 @@ func (d *Declaration) ToLLVM(scopes *Scopes) (string, error) {
 			return "", err
 		}
 		rval, err = ssa.Id()
+	} else if d.Value != nil {
+		return "", fmt.Errorf("%v does not implement SSAValue!", d.Value)
+	} else if d.Value == nil {
+		if d.To.Type == "" {
+			return "", fmt.Errorf("Unable to automatically detect type for variable %q", d.To.Name)
+		}
+		realtype = d.To.Type
+	}
+
+
+	if err := scopes.DefineVariable(d.To.Name, realtype); err != nil {
+		return "", err
 	}
 
 	rtype, err := scopes.TypeRepr(realtype)
@@ -83,16 +95,16 @@ func (d *Declaration) ToLLVM(scopes *Scopes) (string, error) {
 		return "", err
 	}
 
-	if err := scopes.DefineVariable(d.To.Name, realtype); err != nil {
-		return "", err
+	assignment := ""
+	if d.Value != nil {
+		assignment = fmt.Sprintf("store %s %s, %s* %%%s", rtype, rval, rtype, d.To.Name)
 	}
-
 
 	return strings.Join(
 		[]string{
 			prepCode,
 			fmt.Sprintf("%%%s = alloca %s", d.To.Name, rtype),
-			fmt.Sprintf("store %s %s, %s* %%%s", rtype, rval, rtype, d.To.Name),
+			assignment,
 		}, "\n",
 	), nil
 }

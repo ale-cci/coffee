@@ -127,8 +127,18 @@ func (s *Scopes) DefineVariable(name string, typename Type) error {
 	if defined {
 		return fmt.Errorf("Variable %q is already defined on this scope with type %#v", name, vartype)
 	}
-	currScope.Vars[name] = typename.(string)
+	currScope.Vars[name] = TypeRepr(typename)
 	return nil
+}
+func TypeRepr(typename Type) (string) {
+	if name, ok := typename.(string); ok {
+		return name
+	} else if arr, ok := typename.(*ArrayType); ok {
+		basename := TypeRepr(arr.Base)
+		return fmt.Sprintf("%s[%d]", basename, arr.Size)
+	}
+	log.Panicf("Unable to convert type: %#v", typename)
+	return ""
 }
 
 func (s *Scopes) GetDefined(name string) (*NameInfo, error) {
@@ -212,8 +222,15 @@ func (s Scopes) TypeRepr(typename Type) (string, error) {
 	// parse typename to string. Typename could be of type OP if it is a
 	// primitive otherwise it's a container containing an OP
 	var name string
+
 	if op, ok := typename.(string); ok {
 		name = op
+	} else if arr, ok := typename.(*ArrayType); ok {
+		basetype, err := s.TypeRepr(arr.Base)
+		if err != nil {
+			return "", err
+		}
+		return fmt.Sprintf("[ %d x %s ]", arr.Size, basetype), nil
 	} else {
 		log.Panicf("Bad Parsing: unable to interpret %#v as a type", typename)
 	}

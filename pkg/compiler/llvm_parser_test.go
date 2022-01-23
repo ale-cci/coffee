@@ -417,6 +417,26 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "parses array types",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"   int[32] t",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"",
+					"%t = alloca [ 32 x i32 ]",
+					"",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {

@@ -40,6 +40,8 @@ const (
 	RPAREN
 	LBRACKET
 	RBRACKET
+	LSBRACKET
+	RSBRACKET
 	NL // newline token
 	COMMENT
 	DOT
@@ -81,6 +83,8 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 		")":  RPAREN,
 		"{":  LBRACKET,
 		"}":  RBRACKET,
+		"[":  LSBRACKET,
+		"]":  RSBRACKET,
 		".":  DOT,
 		";":  SEMICOLON,
 		"\n": NL,
