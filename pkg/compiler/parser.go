@@ -104,6 +104,7 @@ func ParseFunctionArgs(p *TokenPeeker) ([]Argument, error) {
 				return nil, err
 			}
 		}
+
 		name := p.Read()
 		if name.Type != WORD {
 			return nil, &ParseError{
@@ -115,6 +116,10 @@ func ParseFunctionArgs(p *TokenPeeker) ([]Argument, error) {
 			Name: name.Value,
 			Type: prevType,
 		})
+
+		if t := p.Read(); t.Type == RPAREN {
+			p.Unread()
+		}
 	}
 	// ensure last token is closed )
 	if tok := p.Read(); tok.Type != RPAREN {

@@ -149,6 +149,20 @@ func TestCompiler(t *testing.T) {
 					},
 				},
 			},
+			{
+				name:    "Parses extern with multiple arguments",
+				program: "extern int puts(str text, int p0)",
+				expect: &compiler.AST{
+					&compiler.ExternFunc{
+						Name:       "puts",
+						ReturnType: "int",
+						Args:       []compiler.Argument{
+							{Type: "str", Name: "text"},
+							{Type: "int", Name: "p0"},
+						},
+					},
+				},
+			},
 		}
 		for i, tc := range tt {
 			testName := fmt.Sprintf("[%d] %s", i, tc.name)
