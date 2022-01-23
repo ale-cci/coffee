@@ -255,6 +255,11 @@ func TestTokenizer(t *testing.T) {
 				name: "parses == token",
 			},
 			{
+				program: "struct",
+				expects: []compiler.Token{{compiler.KW_STRUCT, "struct", 1}},
+				name: "parses 'struct' keyword",
+			},
+			{
 				program: ";",
 				expects: []compiler.Token{{compiler.SEMICOLON, ";", 1}},
 				name: "parses ; token",
