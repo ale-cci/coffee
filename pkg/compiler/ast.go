@@ -69,7 +69,7 @@ type StructType struct {
 }
 type ArrayCell struct {
 	Var SSAValue
-	Pos int
+	Pos Assignable
 	Uid string
 }
 

@@ -274,9 +274,20 @@ func TestCompiler(t *testing.T) {
 				expect: &compiler.Assignment{
 					To: &compiler.ArrayCell{
 						Var: &compiler.Var{Name: "a"},
-						Pos: 0,
+						Pos: &compiler.Number{Value: "0", Type: "int"},
 					},
 					Value: &compiler.Var{Name: "b"},
+				},
+			},
+			{
+				name:    "parses assignment of cells",
+				program: "b = a[0]",
+				expect: &compiler.Assignment{
+					To: &compiler.Var{Name: "b"},
+					Value: &compiler.ArrayCell{
+						Var: &compiler.Var{Name: "a"},
+						Pos: &compiler.Number{Value: "0", Type: "int"},
+					},
 				},
 			},
 			{

@@ -57,7 +57,7 @@ func (v *Var) RealType(scopes Scopes) (string, error) {
 
 func (v *Var) Id() (string, error) {
 	if v.Uid == "" {
-		return "", fmt.Errorf("RuntimeError: called Var.id before TOLLVM initialization")
+		log.Panicf("RuntimeError: called 'Id' before ToLLVM initialization")
 	}
 	return v.Uid, nil
 }
@@ -221,12 +221,12 @@ func (ac *ArrayCell) TypeRepr(scopes Scopes) (string, error) {
 }
 
 func (ac *ArrayCell) ToLLVM(scopes *Scopes) (string, error) {
-	id, err := scopes.ReserveLocal()
+	init, err := ac.Var.(SSAAddr).AddrToLLVM(scopes)
 	if err != nil {
 		return "", err
 	}
 
-	ofIdx, err := ac.Var.Id()
+	ofIdx, err := ac.Var.(SSAAddr).AddrId()
 	if err != nil {
 		return "", err
 	}
@@ -239,9 +239,46 @@ func (ac *ArrayCell) ToLLVM(scopes *Scopes) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	lid, err := scopes.ReserveLocal()
+	if err != nil {
+		return "", err
+	}
+	loadId := fmt.Sprintf("%%.tmp%d", lid)
+
+	id, err := scopes.ReserveLocal()
+	if err != nil {
+		return "", err
+	}
 	ac.Uid = fmt.Sprintf("%%.tmp%d", id)
 
-	return fmt.Sprintf("%s = getelementptr %s, %s*%s, i32 0, i32 %d", ac.Uid, typename, typename, ofIdx, ac.Pos), nil
+	var postype, posid string
+	if imm, ok := ac.Pos.(LLVMImmediate); ok {
+		immvalue, err := imm.ToImmediateLLVM(scopes)
+		if err != nil {
+			return "", err
+		}
+		postype, err = scopes.TypeRepr(immvalue.Type)
+		if err != nil {
+			return "", err
+		}
+		posid = immvalue.Value
+	}
+
+	celltype, err := ac.TypeRepr(*scopes)
+	if err != nil {
+		return "", err
+	}
+
+	return strings.Trim(
+		strings.Join(
+			[]string{
+				init,
+				fmt.Sprintf("%s = getelementptr %s, %s*%s, i32 0, %s %s", loadId, typename, typename, ofIdx, postype, posid),
+				fmt.Sprintf("%s = load %s, %s* %s", ac.Uid, celltype, celltype, loadId),
+			}, "\n",
+		), "\n",
+	), nil
 }
 
 func (ac *ArrayCell) AddrToLLVM(scopes *Scopes) (string, error) {
@@ -266,7 +303,21 @@ func (ac *ArrayCell) AddrToLLVM(scopes *Scopes) (string, error) {
 		return "", err
 	}
 
-	code := fmt.Sprintf("%s = getelementptr %s, %s*%s, i32 0, i32 %d", ac.Uid, typename, typename, varid, ac.Pos)
+
+	var postype, posid string
+	if imm, ok := ac.Pos.(LLVMImmediate); ok {
+		immvalue, err := imm.ToImmediateLLVM(scopes)
+		if err != nil {
+			return "", err
+		}
+		postype, err = scopes.TypeRepr(immvalue.Type)
+		if err != nil {
+			return "", err
+		}
+		posid = immvalue.Value
+	}
+
+	code := fmt.Sprintf("%s = getelementptr %s, %s*%s, i32 0, %s %s", ac.Uid, typename, typename, varid, postype, posid)
 	return strings.Trim(
 		strings.Join(
 			[]string{

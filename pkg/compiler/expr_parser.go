@@ -41,12 +41,12 @@ func ParseTopLevelExpression(p *TokenPeeker) (Expression, error) {
 				arr, err := ArrayTypeToArrayCell(typename)
 				if err != nil {
 					return nil, &ParseError{
-						Pos: varname.Position,
+						Pos:   varname.Position,
 						error: err.Error(),
 					}
 				}
 				return &Assignment{
-					To: arr,
+					To:    arr,
 					Value: value,
 				}, nil
 			} else if varname.Type != WORD {
@@ -99,12 +99,12 @@ func ArrayTypeToArrayCell(t Type) (*ArrayCell, error) {
 		}
 		return &ArrayCell{
 			Var: content,
-			Pos: arr.Size,
+			Pos: &Number{Value: fmt.Sprintf("%d", arr.Size), Type: "int"},
 		}, nil
 	} else if varname, ok := arr.Base.(string); ok {
 		return &ArrayCell{
 			Var: &Var{Name: varname},
-			Pos: arr.Size,
+			Pos: &Number{Value: fmt.Sprintf("%d", arr.Size), Type: "int"},
 		}, nil
 	}
 	return nil, fmt.Errorf("Unable to parse array type to array cell %#v", arr.Base)
@@ -230,7 +230,7 @@ func ParseExpression(p *TokenPeeker) (Expression, error) {
 
 			return &ArrayCell{
 				Var: &Var{Name: name},
-				Pos: index,
+				Pos: &Number{Value: fmt.Sprintf("%d", index), Type: "int"},
 			}, nil
 		}
 	}
@@ -394,6 +394,26 @@ func ParseAtomicAssignable(p *TokenPeeker) (Assignable, error) {
 			p.Unread()
 			fn, err := ParseFunctionCall(p)
 			return fn, err
+		} else if p.PeekOne() != nil && p.PeekOne().Type == LSBRACKET {
+			var val SSAValue
+			val = &Var{Name: tok.Value}
+
+			for p.PeekOne() != nil && p.PeekOne().Type == LSBRACKET {
+				p.Read()
+				pos, err := ParseAssignable(p)
+				if err != nil {
+					return nil, err
+				}
+				if tok := p.Read(); tok.Type != RSBRACKET {
+					return nil, &ParseError{
+						Pos:   tok.Position,
+						error: fmt.Sprintf("Expecting ], got %q", tok.Value),
+					}
+				}
+				val = &ArrayCell{Var: val, Pos: pos}
+			}
+
+			return val, nil
 		}
 		return &Var{Name: tok.Value}, nil
 	} else if tok.Type == KW_TRUE || tok.Type == KW_FALSE {
