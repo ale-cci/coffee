@@ -373,6 +373,7 @@ func TestParsing(t *testing.T) {
 					"store i32 0, i32* %i",
 					"%.tmp0 = load i32, i32* %i",
 					"%.tmp1 = add i32 %.tmp0, 1",
+					"",
 					"store i32 %.tmp1, i32* %i",
 					"ret void",
 					"}",
@@ -408,6 +409,7 @@ func TestParsing(t *testing.T) {
 
 					"%.tmp3 = load i32, i32* %i",
 					"%.tmp4 = add i32 %.tmp3, 1",
+					"",
 					"store i32 %.tmp4, i32* %i",
 
 					"br label %.for.start.0",
@@ -423,6 +425,7 @@ func TestParsing(t *testing.T) {
 				[]string{
 					"void main() {",
 					"   int[32] t",
+					"   t[1] = 2",
 					"}",
 				}, "\n",
 			),
@@ -432,6 +435,8 @@ func TestParsing(t *testing.T) {
 					"",
 					"%t = alloca [ 32 x i32 ]",
 					"",
+					"%.tmp0 = getelementptr [ 32 x i32 ], [ 32 x i32 ]*%t, i32 0, i32 1",
+					"store i32 2, i32* %.tmp0",
 					"ret void",
 					"}",
 				}, "\n",

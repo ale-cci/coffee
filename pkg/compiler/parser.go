@@ -228,26 +228,24 @@ func ParseType(p *TokenPeeker) (Type, error) {
 	for p.PeekOne() != nil && p.PeekOne().Type == LSBRACKET {
 		p.Read()
 		var size int
-		if p.PeekOne().Type != RSBRACKET {
-			// read number
-			var err error
-			tokSize := p.Read()
-			if tokSize.Type != INT {
-				return nil, &ParseError{
-					Pos: t.Position,
-					error: fmt.Sprintf("Expected ] or array size, found: %q", t.Value),
-				}
+
+		// read number
+		var err error
+		tokSize := p.Read()
+		if tokSize.Type != INT {
+			return nil, &ParseError{
+				Pos: t.Position,
+				error: fmt.Sprintf("Expected ] or array size, found: %q", t.Value),
 			}
-			size, err = strconv.Atoi(tokSize.Value)
-			if err != nil {
-				return nil, &ParseError{
-					Pos: t.Position,
-					error: fmt.Sprintf("Unable to convert %q as an integer", tokSize.Value),
-				}
-			}
-		} else {
-			size = -1
 		}
+		size, err = strconv.Atoi(tokSize.Value)
+		if err != nil {
+			return nil, &ParseError{
+				Pos: t.Position,
+				error: fmt.Sprintf("Unable to convert %q as an integer", tokSize.Value),
+			}
+		}
+
 		baseType = &ArrayType{
 			Base: baseType,
 			Size: size,

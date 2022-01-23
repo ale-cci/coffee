@@ -1,6 +1,9 @@
 package compiler
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 func ParseTopLevelExpression(p *TokenPeeker) (Expression, error) {
 	tok := p.PeekOne()
@@ -21,7 +24,7 @@ func ParseTopLevelExpression(p *TokenPeeker) (Expression, error) {
 		// a = b || a[] var = 3
 		p.Read()
 		if tok := p.PeekOne(); tok.Type == WORD || tok.Type == LSBRACKET {
-			// int a || int[] a cases
+			// int a || int[1] a || a[1] = 3 cases ||
 			p.Unread()
 			typename, err := ParseType(p)
 			if err != nil {
@@ -29,10 +32,27 @@ func ParseTopLevelExpression(p *TokenPeeker) (Expression, error) {
 			}
 
 			varname := p.Read()
-			if varname.Type != WORD {
+			if tok.Type == LSBRACKET && varname.Type == OP_EQ {
+				// this is an assignment
+				value, err := ParseAssignable(p)
+				if err != nil {
+					return nil, err
+				}
+				arr, err := ArrayTypeToArrayCell(typename)
+				if err != nil {
+					return nil, &ParseError{
+						Pos: varname.Position,
+						error: err.Error(),
+					}
+				}
+				return &Assignment{
+					To: arr,
+					Value: value,
+				}, nil
+			} else if varname.Type != WORD {
 				return nil, &ParseError{
-					Pos:   tok.Position,
-					error: fmt.Sprintf("Expecting variable name, got %q", tok.Value),
+					Pos:   varname.Position,
+					error: fmt.Sprintf("Expecting variable name, got %q", varname.Value),
 				}
 			}
 
@@ -65,6 +85,29 @@ func ParseTopLevelExpression(p *TokenPeeker) (Expression, error) {
 	}
 	expr, err := ParseExpression(p)
 	return expr, err
+}
+
+// this is required because i've fucked up the type declaration
+func ArrayTypeToArrayCell(t Type) (*ArrayCell, error) {
+	arr := t.(*ArrayType)
+
+	if hasArray, ok := arr.Base.(ArrayType); ok {
+		// contains another array
+		content, err := ArrayTypeToArrayCell(hasArray)
+		if err != nil {
+			return nil, err
+		}
+		return &ArrayCell{
+			Var: content,
+			Pos: arr.Size,
+		}, nil
+	} else if varname, ok := arr.Base.(string); ok {
+		return &ArrayCell{
+			Var: &Var{Name: varname},
+			Pos: arr.Size,
+		}, nil
+	}
+	return nil, fmt.Errorf("Unable to parse array type to array cell %#v", arr.Base)
 }
 
 func ParseForLoop(p *TokenPeeker) (*ForLoop, error) {
@@ -158,6 +201,37 @@ func ParseExpression(p *TokenPeeker) (Expression, error) {
 			p.Unread()
 			fnCall, err := ParseFunctionCall(p)
 			return fnCall, err
+		} else if next.Type == LSBRACKET {
+			p.Read()
+			name := tok.Value
+			indexToken := p.Read()
+			if indexToken.Type != INT {
+				return nil, &ParseError{
+					Pos:   indexToken.Position,
+					error: fmt.Sprintf("Expected int value, fount: %q", indexToken.Value),
+				}
+			}
+
+			index, err := strconv.Atoi(indexToken.Value)
+			if err != nil {
+				return nil, &ParseError{
+					Pos:   indexToken.Position,
+					error: fmt.Sprintf("Failed integer conversion of: %q", indexToken.Value),
+				}
+			}
+
+			if tok := p.Read(); tok.Type != RSBRACKET {
+				return nil, &ParseError{
+					Pos:   tok.Position,
+					error: fmt.Sprintf("Expected closed ], found %q", tok.Value),
+				}
+
+			}
+
+			return &ArrayCell{
+				Var: &Var{Name: name},
+				Pos: index,
+			}, nil
 		}
 	}
 
@@ -334,7 +408,7 @@ func ParseAtomicAssignable(p *TokenPeeker) (Assignable, error) {
 		}
 		if tok := p.Read(); tok.Type != RSBRACKET {
 			return nil, &ParseError{
-				Pos: tok.Position,
+				Pos:   tok.Position,
 				error: fmt.Sprintf("Expecting closed ], got %q", tok.Value),
 			}
 		}

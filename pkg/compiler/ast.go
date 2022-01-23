@@ -52,8 +52,9 @@ type ForLoop struct {
 	Body      []Expression
 }
 type Assignment struct {
-	To    *Var
+	To    SSAValue
 	Value interface{}
+	Uid   string
 }
 
 // array type defintion, always contains a size, es. int[32] or int[] for any
@@ -65,6 +66,11 @@ type ArrayType struct {
 
 type StructType struct {
 	Fields []Argument
+}
+type ArrayCell struct {
+	Var SSAValue
+	Pos int
+	Uid string
 }
 
 type StaticArray struct {

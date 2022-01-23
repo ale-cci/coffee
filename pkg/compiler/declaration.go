@@ -24,8 +24,23 @@ func (v *Var) ToLLVM(scopes *Scopes) (string, error) {
 
 	return fmt.Sprintf("%s = load %s, %s* %%%s", v.Uid, typeRepr, typeRepr, v.Name), nil
 }
+func (v *Var) AddrToLLVM(scopes *Scopes) (string, error) {
+	realtype, err := scopes.GetDefinedVar(v.Name)
+	if err != nil {
+		return "", err
+	}
+	v.Type = realtype
+	return "", nil
+}
+func (v *Var) AddrId() (string, error) {
+	return fmt.Sprintf("%%%s", v.Name), nil
+}
 
 func (v *Var) TypeRepr(scopes Scopes) (string, error) {
+	if v.Type == "" || v.Type == nil {
+		log.Panicf("RuntimeError: called 'RealType' before ToLLVM initialization")
+		return "", nil
+	}
 	typeRepr, err := scopes.TypeRepr(v.Type)
 	if err != nil {
 		return "", err
@@ -33,11 +48,11 @@ func (v *Var) TypeRepr(scopes Scopes) (string, error) {
 	return typeRepr, nil
 }
 func (v *Var) RealType(scopes Scopes) (string, error) {
-	if v.Type == "" {
+	if v.Type == "" || v.Type == nil {
 		log.Panicf("RuntimeError: called 'RealType' before ToLLVM initialization")
 		return "", nil
 	}
-	return v.Type.(string), nil
+	return RealType(v.Type), nil
 }
 
 func (v *Var) Id() (string, error) {
@@ -85,7 +100,6 @@ func (d *Declaration) ToLLVM(scopes *Scopes) (string, error) {
 		realtype = d.To.Type
 	}
 
-
 	if err := scopes.DefineVariable(d.To.Name, realtype); err != nil {
 		return "", err
 	}
@@ -110,14 +124,6 @@ func (d *Declaration) ToLLVM(scopes *Scopes) (string, error) {
 }
 
 func (a *Assignment) ToLLVM(scopes *Scopes) (string, error) {
-	vartype, err := scopes.GetDefinedVar(a.To.Name)
-	if err != nil {
-		log.Panicf("In assignment: %v", err)
-	}
-	typerepr, err := scopes.TypeRepr(vartype)
-	if err != nil {
-		log.Panicf("In assignment: %v", err)
-	}
 
 	var toassign, immtype, prepCode string
 	if imm, ok := a.Value.(LLVMImmediate); ok {
@@ -148,10 +154,133 @@ func (a *Assignment) ToLLVM(scopes *Scopes) (string, error) {
 		log.Panicf("Value does not implement LLVMImmediate or SSAValue: %#v", a.Value)
 	}
 
-	if immtype != vartype {
-		log.Panicf("Implicit casting not implemented!!!")
+	initCode, err := a.To.(SSAAddr).AddrToLLVM(scopes)
+	if err != nil {
+		log.Panicf("Unable to init variable: %v", err)
 	}
 
-	code := fmt.Sprintf("store %s %s, %s* %%%s", typerepr, toassign, typerepr, a.To.Name)
-	return strings.TrimLeft(strings.Join([]string{prepCode, code},"\n"), "\n"), nil
+	vartype, err := a.To.RealType(*scopes)
+	if err != nil {
+		log.Panicf("In assignment: %v", err)
+	}
+
+	if !SameType(immtype, vartype) {
+		log.Panicf("Implicit casting not implemented!!! %#v != %#v", immtype, vartype)
+	}
+
+	typerepr, err := a.To.TypeRepr(*scopes)
+	if err != nil {
+		log.Panicf("In assignment: %v", err)
+	}
+
+	varid, err := a.To.(SSAAddr).AddrId()
+	if err != nil {
+		log.Panicf("In assignment: %v", err)
+	}
+
+	code := fmt.Sprintf("store %s %s, %s* %s", typerepr, toassign, typerepr, varid)
+	return strings.Trim(
+		strings.Join(
+			[]string{
+				prepCode,
+				initCode,
+				code,
+			}, "\n",
+		), "\n",
+	), nil
+}
+
+
+func (ac *ArrayCell) Id() (string, error) {
+	if ac.Uid == "" {
+		log.Panicf("ProgrammingError: Id called before ToLLVM initialization")
+	}
+	return ac.Uid, nil
+}
+func (ac *ArrayCell) varname() (string) {
+	if name, ok := ac.Var.(*Var); ok {
+		return name.Name
+	}
+
+	return ac.Var.(*ArrayCell).varname()
+}
+
+func (ac *ArrayCell) RealType(scopes Scopes) (string, error) {
+	// typerepr, err := ac.Var.RealType(scopes)
+	typeval, err := scopes.GetDefinedVar(ac.varname())
+	return RealType(typeval.(*ArrayType).Base), err
+}
+
+func (ac *ArrayCell) TypeRepr(scopes Scopes) (string, error) {
+	typeval, err := scopes.GetDefinedVar(ac.varname())
+	if err != nil {
+		return "", err
+	}
+	typerepr, err := scopes.TypeRepr(typeval.(*ArrayType).Base)
+	return typerepr, err
+}
+
+func (ac *ArrayCell) ToLLVM(scopes *Scopes) (string, error) {
+	id, err := scopes.ReserveLocal()
+	if err != nil {
+		return "", err
+	}
+
+	ofIdx, err := ac.Var.Id()
+	if err != nil {
+		return "", err
+	}
+
+	vartype, err := scopes.GetDefinedVar(ac.varname())
+	if err != nil {
+		return "", err
+	}
+	typename, err := scopes.TypeRepr(vartype)
+	if err != nil {
+		return "", err
+	}
+	ac.Uid = fmt.Sprintf("%%.tmp%d", id)
+
+	return fmt.Sprintf("%s = getelementptr %s, %s*%s, i32 0, i32 %d", ac.Uid, typename, typename, ofIdx, ac.Pos), nil
+}
+
+func (ac *ArrayCell) AddrToLLVM(scopes *Scopes) (string, error) {
+	id, err := scopes.ReserveLocal()
+	if err != nil {
+		log.Panicf("Unable to reserve local id: %v", err)
+	}
+	ac.Uid = fmt.Sprintf("%%.tmp%d", id)
+
+	initCode, err := ac.Var.(SSAAddr).AddrToLLVM(scopes)
+	varid, err := ac.Var.(SSAAddr).AddrId()
+	if err != nil {
+		log.Panicf("Unable to get var addr: %v", err)
+	}
+
+	vartype, err := scopes.GetDefinedVar(ac.varname())
+	if err != nil {
+		return "", err
+	}
+	typename, err := scopes.TypeRepr(vartype)
+	if err != nil {
+		return "", err
+	}
+
+	code := fmt.Sprintf("%s = getelementptr %s, %s*%s, i32 0, i32 %d", ac.Uid, typename, typename, varid, ac.Pos)
+	return strings.Trim(
+		strings.Join(
+			[]string{
+				initCode,
+				code,
+			}, "\n",
+		), "\n",
+	), nil
+}
+
+func (ac *ArrayCell) AddrId() (string, error) {
+	if ac.Uid == "" {
+		log.Panicf("AddrId called before AddrToLLVM initialization")
+	}
+
+	return ac.Uid, nil
 }

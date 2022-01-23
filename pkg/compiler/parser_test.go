@@ -269,6 +269,17 @@ func TestCompiler(t *testing.T) {
 				},
 			},
 			{
+				name:    "parses assignment",
+				program: "a[0] = b",
+				expect: &compiler.Assignment{
+					To: &compiler.ArrayCell{
+						Var: &compiler.Var{Name: "a"},
+						Pos: 0,
+					},
+					Value: &compiler.Var{Name: "b"},
+				},
+			},
+			{
 				name:    "parses funciton call",
 				program: "a()",
 				expect: &compiler.FnCall{

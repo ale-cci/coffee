@@ -18,6 +18,10 @@ type RtName struct {
 type SSA interface {
 	ToLLVM(*Scopes) (string, error)
 }
+type SSAAddr interface {
+	AddrToLLVM(*Scopes) (string, error)
+	AddrId() (string, error)
+}
 
 type LLVMImmediateValue struct {
 	Type     Type
@@ -53,9 +57,12 @@ type RtScope struct {
 	// defined functions
 	externs []string
 
-	Vars map[string]string
+	Vars map[string]Type
 }
 
+func SameType(t1, t2 Type) bool {
+	return RealType(t1) == RealType(t2)
+}
 func (rs *RtScope) DefineVar(name string, typeval Type, args []Argument, extern bool) error {
 	if _, ok := rs.Names[name]; ok {
 		return fmt.Errorf("Function or variable %q is already defined in the scope.", name)
@@ -127,14 +134,16 @@ func (s *Scopes) DefineVariable(name string, typename Type) error {
 	if defined {
 		return fmt.Errorf("Variable %q is already defined on this scope with type %#v", name, vartype)
 	}
-	currScope.Vars[name] = TypeRepr(typename)
+	currScope.Vars[name] = typename
 	return nil
 }
-func TypeRepr(typename Type) (string) {
+
+// returns real type
+func RealType(typename Type) (string) {
 	if name, ok := typename.(string); ok {
 		return name
 	} else if arr, ok := typename.(*ArrayType); ok {
-		basename := TypeRepr(arr.Base)
+		basename := RealType(arr.Base)
 		return fmt.Sprintf("%s[%d]", basename, arr.Size)
 	}
 	log.Panicf("Unable to convert type: %#v", typename)
@@ -180,7 +189,7 @@ func (s *Scopes) Push() *RtScope {
 	s.scopes = append(s.scopes, RtScope{
 		TypeAliases: make(map[string]string),
 		Names:       make(map[string]NameInfo),
-		Vars:        make(map[string]string),
+		Vars:        make(map[string]Type),
 	})
 	return &s.scopes[len(s.scopes)-1]
 }
@@ -245,7 +254,8 @@ func (s Scopes) TypeRepr(typename Type) (string, error) {
 		return alias, nil
 	}
 
-	return "", fmt.Errorf("Type %s is not defined", typename)
+	log.Panicf("Type %s is not defined", typename)
+	return "", nil
 }
 
 // TODO: find the declaration of a name/variable on the scope tree
