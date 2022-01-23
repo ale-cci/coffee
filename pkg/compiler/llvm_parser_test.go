@@ -54,6 +54,27 @@ func TestParsing(t *testing.T) {
 			),
 		},
 		{
+			name: "parses string escape characters",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    t := \"sample\\13\"",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"@.str0 = constant [8 x i8] c\"sample\\13\\00\"",
+					"define void @main() {",
+					"%.tmp0 = getelementptr [8 x i8], [8 x i8]*@.str0, i64 0, i64 0",
+					"%t = alloca i8*",
+					"store i8* %.tmp0, i8** %t",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
+		{
 			name: "should parse if else block",
 			program: fmt.Sprint(
 				"int main() {\n",
@@ -384,6 +405,11 @@ func TestParsing(t *testing.T) {
 					"",
 					"%a = alloca i32",
 					"store i32 3, i32* %a",
+
+					"%.tmp3 = load i32, i32* %i",
+					"%.tmp4 = add i32 %.tmp3, 1",
+					"store i32 %.tmp4, i32* %i",
+
 					"br label %.for.start.0",
 					".for.end.0:",
 					"ret void",

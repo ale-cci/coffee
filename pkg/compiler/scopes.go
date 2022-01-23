@@ -6,6 +6,7 @@ package compiler
 import (
 	"fmt"
 	"log"
+	"regexp"
 	"strings"
 )
 
@@ -191,11 +192,14 @@ func (s *Scopes) ReserveLocal() (int, error) {
 }
 
 func (s *Scopes) DefineConstantString(value string) (ConstantValue, error) {
-	length := len([]byte(value)) + 1 // add terminator character
 	constants := len(s.statics)
 
+	strValue := value + "\\00"
+	extra := len(regexp.MustCompile(`\\[0-9A-Z]{2}`).FindAll([]byte(strValue), -1))
+	length := len([]byte(strValue)) - extra * 2
+
 	constant := ConstantValue{
-		Value:    value + "\\00",
+		Value:    strValue,
 		Uid:      fmt.Sprintf("@.str%d", constants),
 		TypeRepr: fmt.Sprintf("[%d x i8]", length),
 	}

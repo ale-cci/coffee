@@ -110,6 +110,11 @@ func (f *ForLoop) ToLLVM(scopes *Scopes) (string, error) {
 		}
 	}
 
+	iter, err := f.Incr.(SSA).ToLLVM(scopes)
+	if err != nil {
+		log.Panicf("Unable to convert iter condition to SSA: %v", err)
+	}
+
 	loopBodyStr := strings.Join(loopBody, "\n")
 	return strings.Join(
 		[]string{
@@ -120,6 +125,7 @@ func (f *ForLoop) ToLLVM(scopes *Scopes) (string, error) {
 			fmt.Sprintf("br i1 %s, label %%.for.continue.%d, label %%.for.end.%d", condId, loopId, loopId),
 			fmt.Sprintf(".for.continue.%d:", loopId),
 			loopBodyStr,
+			iter,
 			fmt.Sprintf("br label %%.for.start.%d", loopId),
 			fmt.Sprintf(".for.end.%d:", loopId),
 		}, "\n",
