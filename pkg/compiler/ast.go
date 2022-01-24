@@ -19,6 +19,10 @@ type TypeAlias struct {
 type Expression interface {
 }
 
+type Import struct {
+	Path string
+	As string
+}
 // Argument of a function definition
 type Argument struct {
 	Type Type

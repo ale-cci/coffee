@@ -427,6 +427,20 @@ func TestParseStatement(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "parse import statement",
+			program: strings.Join(
+				[]string{
+					"import \"./file\" as f",
+				}, "\n",
+			),
+			expect: &[]compiler.Statement{
+				&compiler.Import{
+					Path: "./file",
+					As: "f",
+				},
+			},
+		},
 	}
 	for i, tc := range tt {
 		name := fmt.Sprintf("[%d] %s", i, tc.name)

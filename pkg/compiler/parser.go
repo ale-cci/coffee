@@ -47,6 +47,14 @@ func Parse(tokens []Token) (*AST, error) {
 			stmt = typealias
 			break
 
+		case KW_IMPORT:
+			importStmt, err := ParseImport(peeker)
+			if err != nil {
+				return nil, err
+			}
+			stmt = importStmt
+			break
+
 		default:
 			fn, err := ParseFunction(peeker)
 			if err != nil {
@@ -305,5 +313,25 @@ func ParseTypeAlias(p *TokenPeeker) (*TypeAlias, error) {
 	return &TypeAlias{
 		Name: to.Value,
 		Type: typeval,
+	}, nil
+}
+
+func ParseImport(p *TokenPeeker) (*Import, error) {
+	if tok := p.PeekOne(); tok.Type != KW_IMPORT {
+		return nil, &ParseError{
+			Pos: tok.Position,
+			error: fmt.Sprintf("import requires 'import' keyword"),
+		}
+	}
+	p.Read()
+
+	// could be comma
+	path := p.Read()
+	p.Read() // as
+	name := p.Read()
+
+	return &Import{
+		Path: path.Value[1:len(path.Value)-1],
+		As: name.Value,
 	}, nil
 }
