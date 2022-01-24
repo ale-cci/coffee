@@ -400,3 +400,46 @@ func TestParseAssignable(t *testing.T) {
 		})
 	}
 }
+
+func TestParseStatement(t *testing.T) {
+	tt := []struct {
+		name      string
+		program   string
+		expect    *compiler.AST
+	}{
+		{
+			name: "parses type alias",
+			program: strings.Join(
+				[]string{
+					"alias T = struct {",
+					"    int a,",
+					"}",
+				}, "\n",
+			),
+			expect: &[]compiler.Statement{
+				&compiler.TypeAlias{
+					Name: "T",
+					Type: &compiler.StructType{
+						Fields: []compiler.Argument{
+							{Type: "int", Name: "a"},
+						},
+					},
+				},
+			},
+		},
+	}
+	for i, tc := range tt {
+		name := fmt.Sprintf("[%d] %s", i, tc.name)
+		t.Run(name, func(t *testing.T) {
+			tokens, err := compiler.Tokenize(
+				bytes.NewReader([]byte(tc.program)),
+			)
+			assert.NilError(t, err)
+			t.Logf("Tokens %q", tokens)
+			vals, err := compiler.Parse(tokens)
+
+			assert.NilError(t, err)
+			assert.DeepEqual(t, vals, tc.expect)
+		})
+	}
+}

@@ -28,6 +28,7 @@ const (
 	OP_AND
 	OP_OR
 	OP_LESS_EQ
+	KW_ALIAS
 	KW_FOR
 	KW_RETURN
 	KW_IMPORT
@@ -76,10 +77,11 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 		"return": KW_RETURN,
 		"extern": KW_EXTERN,
 		"struct": KW_STRUCT,
+		"alias":  KW_ALIAS,
 
 		"void": T_VOID,
 		"int":  T_INT,
-		"chr": T_CHAR,
+		"chr":  T_CHAR,
 	}
 	special_chars := map[string]TokenType{
 		"+":  OP_PLUS,
@@ -157,10 +159,10 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 		} else if c == '-' {
 			next, _, err := stream.ReadRune()
 			if next == '-' && err == nil {
-				rest := readUntil(stream, func(c rune) bool {return c != '\n' })
+				rest := readUntil(stream, func(c rune) bool { return c != '\n' })
 				stream.UnreadRune()
-				if len(rest) > 0 && rest[len(rest) -1 ] == '\n' {
-					rest = rest[:len(rest) -1]
+				if len(rest) > 0 && rest[len(rest)-1] == '\n' {
+					rest = rest[:len(rest)-1]
 				}
 				tokens = append(tokens, Token{COMMENT, "--" + rest, pos})
 			} else {
@@ -197,7 +199,7 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 		} else if typ, ok := special_chars[string(c)]; ok {
 			tokens = append(tokens, Token{typ, string(c), pos})
 		} else if unicode.IsLetter(c) {
-			content := readWhile(stream, func (c rune) bool {
+			content := readWhile(stream, func(c rune) bool {
 				return unicode.IsLetter(c) || unicode.IsDigit(c)
 			})
 			name := string(c) + content

@@ -8,6 +8,10 @@ type AST = []Statement
 type Type interface {
 }
 
+type TypeAlias struct {
+	Name string
+	Type Type
+}
 // expression with value, includes:
 // - function calls
 // - operations ?

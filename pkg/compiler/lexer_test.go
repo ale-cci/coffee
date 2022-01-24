@@ -280,6 +280,11 @@ func TestTokenizer(t *testing.T) {
 				name: "parses == token",
 			},
 			{
+				program: "alias",
+				expects: []compiler.Token{{compiler.KW_ALIAS, "alias", 1}},
+				name: "parses alias keyword token",
+			},
+			{
 				program: "struct",
 				expects: []compiler.Token{{compiler.KW_STRUCT, "struct", 1}},
 				name: "parses 'struct' keyword",

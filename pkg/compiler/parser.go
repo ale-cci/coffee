@@ -37,6 +37,15 @@ func Parse(tokens []Token) (*AST, error) {
 				return nil, err
 			}
 			stmt = ext
+			break
+
+		case KW_ALIAS:
+			typealias, err := ParseTypeAlias(peeker)
+			if err != nil {
+				return nil, err
+			}
+			stmt = typealias
+			break
 
 		default:
 			fn, err := ParseFunction(peeker)
@@ -212,6 +221,13 @@ func ParseType(p *TokenPeeker) (Type, error) {
 			}
 		}
 
+		if tok := p.Read(); tok.Type != RBRACKET {
+			return nil, &ParseError{
+				Pos: tok.Position,
+				error: fmt.Sprintf("Struct type must end with }, got: %q", tok.Value),
+			}
+		}
+
 		return &StructType{
 			Fields: fields,
 		}, nil
@@ -258,4 +274,36 @@ func ParseType(p *TokenPeeker) (Type, error) {
 		}
 	}
 	return baseType, nil
+}
+
+func ParseTypeAlias(p *TokenPeeker) (*TypeAlias, error) {
+	if tok := p.PeekOne(); tok.Type != KW_ALIAS {
+		return nil, &ParseError{
+			Pos: tok.Position,
+			error: fmt.Sprintf("Type alias requires 'alias' keyword"),
+		}
+	}
+	p.Read()
+
+	to := p.Read()
+	if to.Type != WORD {
+		return nil, &ParseError{
+			Pos: to.Position,
+			error: fmt.Sprintf("Unable to assign type to reserved token: %q", to.Value),
+		}
+	}
+	if tok := p.Read(); tok.Type != OP_EQ {
+		return nil, &ParseError{
+			Pos: to.Position,
+			error: fmt.Sprintf("Expecting = for type alias, got: %q", to.Value),
+		}
+	}
+	typeval, err := ParseType(p)
+	if err != nil {
+		return nil, err
+	}
+	return &TypeAlias{
+		Name: to.Value,
+		Type: typeval,
+	}, nil
 }
