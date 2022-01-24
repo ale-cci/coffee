@@ -113,6 +113,9 @@ func (o *Operator) ToLLVM(scopes *Scopes) (string, error) {
 	case OP_GREATER:
 		op = "icmp sgt"
 		break
+	case OP_EQQ:
+		op = "icmp seq"
+		break
 	// OP_STAR
 	// OP_OVER
 	// OP_EQ
@@ -181,13 +184,15 @@ func NewOperator(optype TokenType, left, right Assignable) (*Operator, error) {
 }
 
 func ParseAssignable(p *TokenPeeker) (Assignable, error) {
+	// https://en.cppreference.com/w/c/language/operator_precedence
 	precedence := map[TokenType]int{
-		OP_PLUS:  10, // +
-		OP_MINUS: 10, // -
-		OP_STAR:  20, // *
-		OP_OVER:  20, // /
-		OP_LESS:  5,  // <
+		OP_PLUS:   10, // +
+		OP_MINUS:  10, // -
+		OP_STAR:   20, // *
+		OP_OVER:   20, // /
+		OP_LESS:    5,  // <
 		OP_GREATER: 5, // >
+		OP_EQQ:     4, // ==
 	}
 	var err error
 

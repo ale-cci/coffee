@@ -440,6 +440,26 @@ func TestParsing(t *testing.T) {
 			),
 		},
 		{
+			name: "equal operator",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    t := 3 == 3",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"%.tmp0 = icmp seq i32 3, 3",
+					"%t = alloca i32",
+					"store i32 %.tmp0, i32* %t",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
+		{
 			name: "parses array types",
 			program: strings.Join(
 				[]string{

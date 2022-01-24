@@ -252,6 +252,16 @@ func TestTokenizer(t *testing.T) {
 				name: "parses or token",
 			},
 			{
+				program: "&",
+				expects: []compiler.Token{{compiler.OP_BIN_AND, "&", 1}},
+				name: "parses binary and token",
+			},
+			{
+				program: "|",
+				expects: []compiler.Token{{compiler.OP_BIN_OR, "|", 1}},
+				name: "parses binary or token",
+			},
+			{
 				program: "&&",
 				expects: []compiler.Token{{compiler.OP_AND, "&&", 1}},
 				name: "parses and token",
