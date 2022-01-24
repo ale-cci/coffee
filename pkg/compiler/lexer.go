@@ -49,6 +49,7 @@ const (
 	T_VOID
 	COMMA
 	T_INT
+	T_CHAR
 )
 
 type Token struct {
@@ -74,6 +75,7 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 
 		"void": T_VOID,
 		"int":  T_INT,
+		"chr": T_CHAR,
 	}
 	special_chars := map[string]TokenType{
 		"+":  OP_PLUS,
