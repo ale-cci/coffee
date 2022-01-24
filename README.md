@@ -44,6 +44,8 @@ $ coffee -in samples/hello.bn -out hello
 $ ./hello
 ```
 
+NOTE: if you do `go install`, you probably need to add `$HOME/go/bin` to your `"$PATH"`
+
 #### Sample syntax
 ```
 #!/usr/bin/env coffee
