@@ -32,7 +32,7 @@ of these are doable, but there they are:
 
 #### Dependencies
  - go (for now)
- - llvm
+ - llvm (requires llc executable to be in "$PATH")
  - gcc
 
 #### Getting started
