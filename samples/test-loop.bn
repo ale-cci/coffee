@@ -1,3 +1,4 @@
+#!/usr/bin/env coffee
 
 extern int printf(str template, int p0)
 

@@ -40,7 +40,7 @@ of these are doable, but there they are:
 $ go build ./cli/coffee.go # or go install ./cli/coffee.go
 
 $ # build & run one of the samples
-$ coffee -in samples/hello.cf -out hello
+$ coffee -in samples/hello.bn -out hello
 $ ./hello
 ```
 
