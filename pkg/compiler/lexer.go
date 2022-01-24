@@ -23,6 +23,10 @@ const (
 	OP_EQQ
 	OP_GREATER
 	OP_GREATER_EQ
+	OP_BIN_OR
+	OP_BIN_AND
+	OP_AND
+	OP_OR
 	OP_LESS_EQ
 	KW_FOR
 	KW_RETURN
@@ -133,6 +137,22 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 			} else {
 				stream.UnreadRune()
 				tokens = append(tokens, Token{OP_PLUS, string(c), pos})
+			}
+		} else if c == '&' {
+			next, _, err := stream.ReadRune()
+			if next == '&' && err == nil {
+				tokens = append(tokens, Token{OP_AND, "&&", pos})
+			} else {
+				stream.UnreadRune()
+				tokens = append(tokens, Token{OP_BIN_AND, string(c), pos})
+			}
+		} else if c == '|' {
+			next, _, err := stream.ReadRune()
+			if next == '|' && err == nil {
+				tokens = append(tokens, Token{OP_OR, "||", pos})
+			} else {
+				stream.UnreadRune()
+				tokens = append(tokens, Token{OP_BIN_OR, string(c), pos})
 			}
 		} else if c == '-' {
 			next, _, err := stream.ReadRune()

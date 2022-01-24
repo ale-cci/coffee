@@ -247,6 +247,16 @@ func TestTokenizer(t *testing.T) {
 				name: "parses chr keyword",
 			},
 			{
+				program: "||",
+				expects: []compiler.Token{{compiler.OP_OR, "||", 1}},
+				name: "parses or token",
+			},
+			{
+				program: "&&",
+				expects: []compiler.Token{{compiler.OP_AND, "&&", 1}},
+				name: "parses and token",
+			},
+			{
 				program: "==",
 				expects: []compiler.Token{{compiler.OP_EQQ, "==", 1}},
 				name: "parses == token",
