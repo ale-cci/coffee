@@ -25,6 +25,26 @@ func TestParsing(t *testing.T) {
 			),
 		},
 		{
+			name:    "parses char type",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    chr[4] t",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+				"define void @main() {",
+				"",
+				"%t = alloca [ 4 x i8 ]",
+				"",
+				"ret void",
+				"}",
+				}, "\n",
+			),
+		},
+		{
 			name:    "parses main return value",
 			program: "int main() { return 1 }",
 			expect: fmt.Sprint(

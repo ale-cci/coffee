@@ -367,6 +367,7 @@ func ToLLVM(ast *AST) (string, error) {
 			TypeAliases: map[string]string{
 				"void": "void",
 				"int": "i32",
+				"chr": "i8",
 				"bool": "i1",
 				"str": "i8*",
 			},

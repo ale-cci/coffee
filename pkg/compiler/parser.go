@@ -216,7 +216,7 @@ func ParseType(p *TokenPeeker) (Type, error) {
 			Fields: fields,
 		}, nil
 	}
-	if !(t.Type == T_VOID || t.Type == T_INT || t.Type == WORD) {
+	if !(t.Type == T_VOID || t.Type == T_INT || t.Type == WORD || t.Type == T_CHAR ) {
 		return nil, &ParseError{
 			Pos:   t.Position,
 			error: fmt.Sprintf("Expected type, found: %q", t.Value),

@@ -20,7 +20,7 @@ func ParseTopLevelExpression(p *TokenPeeker) (Expression, error) {
 			return nil, err
 		}
 		return &Return{val}, nil
-	} else if tok.Type == WORD || tok.Type == T_INT {
+	} else if tok.Type == WORD || tok.Type == T_INT || tok.Type == T_CHAR  {
 		// a = b || a[] var = 3
 		p.Read()
 		if tok := p.PeekOne(); tok.Type == WORD || tok.Type == LSBRACKET {
