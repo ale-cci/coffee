@@ -508,6 +508,25 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "custom types are defined",
+			program: strings.Join(
+				[]string{
+					"alias myint = int",
+					"myint main() {",
+					"    return 3",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"%.type.myint = type i32",
+					"define %.type.myint @main() {",
+					"ret i32 3",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {

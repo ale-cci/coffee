@@ -185,6 +185,11 @@ type Scopes struct {
 	counter int
 }
 
+func (s *Scopes) DefineTypeAlias(name, llvmAlias string) error {
+	s.scopes[len(s.scopes) -1].TypeAliases[name] = llvmAlias
+	return nil
+}
+
 func (s *Scopes) Push() *RtScope {
 	s.scopes = append(s.scopes, RtScope{
 		TypeAliases: make(map[string]string),
