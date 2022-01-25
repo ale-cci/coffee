@@ -543,6 +543,23 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "does not import module twice",
+			program: strings.Join(
+				[]string{
+					"import \"../../samples/empty-main.bn\" as x",
+					"import \"../../samples/empty-main.bn\" as y",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"declare i32 @puts(i8*)",
+					"define void @.mod0.main() {",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {
