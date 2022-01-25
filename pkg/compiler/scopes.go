@@ -24,8 +24,8 @@ type SSAAddr interface {
 }
 
 type LLVMImmediateValue struct {
-	Type     Type
-	Value    string
+	Type  Type
+	Value string
 }
 
 type LLVMImmediate interface {
@@ -96,9 +96,9 @@ func DefineExtern(scopes *Scopes, name string, i NameInfo) (string, error) {
 	return fmt.Sprintf("declare %s @%s(%s)", strReturnType, name, argsStr), nil
 }
 
-func (s *Scopes) DefineGlobals() ([]string, error) {
+func (s *Scopes) DefineGlobals(topLevel *RtScope) ([]string, error) {
 	// globals are defined only on the global scopes
-	topLevel := s.scopes[1]
+	// topLevel := s.scopes[1]
 	globals := []string{}
 	for _, static := range s.statics {
 		repr, err := static.ToLLVM(s)
@@ -139,7 +139,7 @@ func (s *Scopes) DefineVariable(name string, typename Type) error {
 }
 
 // returns real type
-func RealType(typename Type) (string) {
+func RealType(typename Type) string {
 	if name, ok := typename.(string); ok {
 		return name
 	} else if arr, ok := typename.(*ArrayType); ok {
@@ -183,10 +183,11 @@ type Scopes struct {
 	scopes  []RtScope
 	statics []ConstantValue
 	counter int
+	prefix  string
 }
 
 func (s *Scopes) DefineTypeAlias(name, llvmAlias string) error {
-	s.scopes[len(s.scopes) -1].TypeAliases[name] = llvmAlias
+	s.scopes[len(s.scopes)-1].TypeAliases[name] = llvmAlias
 	return nil
 }
 
@@ -220,7 +221,7 @@ func (s *Scopes) DefineConstantString(value string) (ConstantValue, error) {
 
 	strValue := value + "\\00"
 	extra := len(regexp.MustCompile(`\\[0-9A-Z]{2}`).FindAll([]byte(strValue), -1))
-	length := len([]byte(strValue)) - extra * 2
+	length := len([]byte(strValue)) - extra*2
 
 	constant := ConstantValue{
 		Value:    strValue,

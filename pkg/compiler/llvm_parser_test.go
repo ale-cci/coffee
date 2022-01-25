@@ -527,6 +527,22 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "imports modules",
+			program: strings.Join(
+				[]string{
+					"import \"../../samples/empty-main.bn\" as x",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"declare i32 @puts(i8*)",
+					"define void @.mod0.main() {",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {
@@ -535,7 +551,8 @@ func TestParsing(t *testing.T) {
 			ast, err := compile(tc.program)
 			assert.NilError(t, err)
 
-			llvmOut, err := compiler.ToLLVM(ast)
+			scopes := compiler.BuildScopes()
+			llvmOut, err := compiler.ToLLVM(scopes, ast)
 			assert.NilError(t, err)
 			assert.DeepEqual(t, llvmOut, tc.expect)
 		})

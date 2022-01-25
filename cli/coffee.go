@@ -51,7 +51,9 @@ func main() {
 		panic(fmt.Sprintf("Error on ast parsing: %v", err))
 	}
 
-	code, err := compiler.ToLLVM(ast)
+	scopes := compiler.BuildScopes()
+
+	code, err := compiler.ToLLVM(scopes, ast)
 	if err != nil {
 		panic(fmt.Sprintf("Error on llvm conversion: %v", err))
 	}

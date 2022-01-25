@@ -1,7 +1,9 @@
 package compiler
 
 import (
+	"bytes"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"strings"
 )
@@ -234,7 +236,7 @@ func (f *Function) ToLLVM(scopes *Scopes) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	strFunctionName := "@" + f.Name
+	strFunctionName := "@" + scopes.prefix + f.Name
 	strFunctionArgs := ""
 	strFunctionBody := ""
 
@@ -360,7 +362,7 @@ func (s *String) Id() (string, error) {
 	return s.Uid, nil
 }
 
-func ToLLVM(ast *AST) (string, error) {
+func BuildScopes() *Scopes {
 	scopes := ScopesFrom([]RtScope{
 		// top level scope
 		{
@@ -374,6 +376,10 @@ func ToLLVM(ast *AST) (string, error) {
 		},
 		// add global scopes
 	})
+	return &scopes
+}
+
+func ToLLVM(scopes *Scopes, ast *AST) (string, error) {
 	globalScopes := scopes.Push()
 	for _, topLevelOp := range *ast {
 		switch v := topLevelOp.(type) {
@@ -387,13 +393,19 @@ func ToLLVM(ast *AST) (string, error) {
 	blocks := []string{}
 	for _, state := range *ast {
 		if fn, ok := state.(*Function); ok {
-			code, err := fn.ToLLVM(&scopes)
+			code, err := fn.ToLLVM(scopes)
 			if err != nil {
 				return "", err
 			}
 			blocks = append(blocks, code)
 		} else if alias, ok := state.(*TypeAlias); ok {
-			code, err := alias.ToLLVM(&scopes)
+			code, err := alias.ToLLVM(scopes)
+			if err != nil {
+				return "", err
+			}
+			blocks = append(blocks, code)
+		} else if imp, ok := state.(*Import); ok {
+			code, err := imp.ToLLVM(scopes)
 			if err != nil {
 				return "", err
 			}
@@ -409,7 +421,7 @@ func ToLLVM(ast *AST) (string, error) {
 			return "", fmt.Errorf("Invalid top level instruction: %#v", state)
 		}
 	}
-	globals, err := scopes.DefineGlobals()
+	globals, err := scopes.DefineGlobals(globalScopes)
 	if err != nil {
 		return "", err
 	}
@@ -428,4 +440,32 @@ func (t *TypeAlias) ToLLVM(scopes *Scopes) (string, error) {
 		return "", err
 	}
 	return fmt.Sprintf("%s = type %s", t.Uid, repr), nil
+}
+
+func (imp *Import) ToLLVM(scopes *Scopes) (string, error) {
+
+	// FIXME: relative imports
+	content, err := ioutil.ReadFile(imp.Path)
+	if err != nil {
+		return "", err
+	}
+	tokens, err := Tokenize(bytes.NewReader(content))
+	if err != nil {
+		return "", err
+	}
+
+	ast, err := Parse(tokens)
+	if err != nil {
+		return "", err
+	}
+	prefixId, err := scopes.ReserveLocal()
+	if err != nil {
+		return "", err
+	}
+
+	prevPrefix := scopes.prefix
+	scopes.prefix = fmt.Sprintf(".mod%d.", prefixId)
+	code, err := ToLLVM(scopes, ast)
+	scopes.prefix = prevPrefix
+	return code, err
 }
