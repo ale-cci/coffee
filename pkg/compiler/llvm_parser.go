@@ -392,6 +392,12 @@ func ToLLVM(ast *AST) (string, error) {
 				return "", err
 			}
 			blocks = append(blocks, code)
+		} else if alias, ok := state.(*TypeAlias); ok {
+			code, err := alias.ToLLVM(&scopes)
+			if err != nil {
+				return "", err
+			}
+			blocks = append(blocks, code)
 		} else if _, ok := state.(*ExternFunc); ok {
 			continue
 			// code, err := ext.ToLLVM(scopes)
@@ -410,4 +416,13 @@ func ToLLVM(ast *AST) (string, error) {
 
 	blocks = append(globals, blocks...)
 	return strings.Join(blocks, "\n"), nil
+}
+
+func (t *TypeAlias) ToLLVM(scopes *Scopes) (string, error) {
+	t.Uid = fmt.Sprintf("%%.type.%s", t.Name)
+	repr, err := scopes.TypeRepr(t.Type)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("%s = type %s", t.Uid, repr), nil
 }

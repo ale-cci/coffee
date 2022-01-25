@@ -493,6 +493,7 @@ func TestParsing(t *testing.T) {
 				[]string{
 					"alias X = struct {",
 					"    int a,",
+					"    int b,",
 					"}",
 					"void main() {",
 					"}",
@@ -501,7 +502,8 @@ func TestParsing(t *testing.T) {
 			expect: strings.Join(
 				[]string{
 					"%.type.X = type {i32, i32}",
-					"void main() {",
+					"define void @main() {",
+					"ret void",
 					"}",
 				}, "\n",
 			),

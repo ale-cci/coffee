@@ -240,6 +240,16 @@ func (s Scopes) TypeRepr(typename Type) (string, error) {
 			return "", err
 		}
 		return fmt.Sprintf("[ %d x %s ]", arr.Size, basetype), nil
+	} else if structType, ok := typename.(*StructType); ok {
+		fields := []string{}
+		for _, f := range structType.Fields {
+			repr, err := s.TypeRepr(f.Type)
+			if err != nil {
+				return "", err
+			}
+			fields = append(fields, repr)
+		}
+		return fmt.Sprintf("{%s}", strings.Join(fields, ", ")), nil
 	} else {
 		log.Panicf("Bad Parsing: unable to interpret %#v as a type", typename)
 	}

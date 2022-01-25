@@ -11,6 +11,7 @@ type Type interface {
 type TypeAlias struct {
 	Name string
 	Type Type
+	Uid string
 }
 // expression with value, includes:
 // - function calls
