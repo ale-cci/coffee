@@ -487,6 +487,25 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "parses type alias",
+			program: strings.Join(
+				[]string{
+					"alias X = struct {",
+					"    int a,",
+					"}",
+					"void main() {",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"%.type.X = type {i32, i32}",
+					"void main() {",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {
