@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+    "os"
 	"log"
 	"strings"
+    "path/filepath"
 )
 
 // 1. find names visible for the current scope
@@ -376,6 +378,7 @@ func BuildScopes() *Scopes {
 		},
 		// add global scopes
 	})
+    scopes.modules = make(map[string]ImportInfo)
 	return &scopes
 }
 
@@ -427,7 +430,7 @@ func ToLLVM(scopes *Scopes, ast *AST) (string, error) {
 	}
 
 	blocks = append(globals, blocks...)
-	return strings.Join(blocks, "\n"), nil
+	return strings.Trim(strings.Join(blocks, "\n"), "\n"), nil
 }
 
 func (t *TypeAlias) ToLLVM(scopes *Scopes) (string, error) {
@@ -443,9 +446,18 @@ func (t *TypeAlias) ToLLVM(scopes *Scopes) (string, error) {
 }
 
 func (imp *Import) ToLLVM(scopes *Scopes) (string, error) {
+    // get absolute path for file
+    path, err := os.Getwd()
+    if err != nil {
+        return "", err
+    }
 
-	// FIXME: relative imports
-	content, err := ioutil.ReadFile(imp.Path)
+    abspath := filepath.Join(path, imp.Path)
+    if _, ok := scopes.modules[abspath]; ok {
+        return "", nil
+    }
+	content, err := ioutil.ReadFile(abspath)
+
 	if err != nil {
 		return "", err
 	}
@@ -465,6 +477,7 @@ func (imp *Import) ToLLVM(scopes *Scopes) (string, error) {
 
 	prevPrefix := scopes.prefix
 	scopes.prefix = fmt.Sprintf(".mod%d.", prefixId)
+    scopes.modules[abspath] = ImportInfo{ false, scopes.prefix }
 	code, err := ToLLVM(scopes, ast)
 	scopes.prefix = prevPrefix
 	return code, err

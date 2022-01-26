@@ -179,11 +179,16 @@ func (c ConstantValue) ToLLVM(scopes *Scopes) (string, error) {
 	), nil
 }
 
+type ImportInfo struct {
+    imported bool
+    prefix string
+}
 type Scopes struct {
 	scopes  []RtScope
 	statics []ConstantValue
 	counter int
 	prefix  string
+    modules map[string]ImportInfo
 }
 
 func (s *Scopes) DefineTypeAlias(name, llvmAlias string) error {
