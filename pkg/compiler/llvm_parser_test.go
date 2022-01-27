@@ -560,6 +560,31 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "does not import module twice",
+			program: strings.Join(
+				[]string{
+					"import \"../../samples/empty-main\" as x",
+					"void main() {",
+					"    x.puts(\"test\")",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"@.str0 = constant [5 x i8] c\"test\\00\"",
+					"declare i32 @puts(i8*)",
+					"define void @.mod0.main() {",
+					"ret void",
+					"}",
+					"define void @main() {",
+					"%.tmp1 = getelementptr [5 x i8], [5 x i8]*@.str0, i64 0, i64 0",
+					"call i32 @puts(i8*%.tmp1)",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {
@@ -568,7 +593,7 @@ func TestParsing(t *testing.T) {
 			ast, err := compile(tc.program)
 			assert.NilError(t, err)
 
-			scopes := compiler.BuildScopes()
+			scopes := compiler.BuildScopes("")
 			llvmOut, err := compiler.ToLLVM(scopes, ast)
 			assert.NilError(t, err)
 			assert.DeepEqual(t, llvmOut, tc.expect)

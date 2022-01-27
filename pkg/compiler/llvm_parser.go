@@ -238,7 +238,7 @@ func (f *Function) ToLLVM(scopes *Scopes) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	strFunctionName := "@" + scopes.prefix + f.Name
+	strFunctionName := "@" + scopes.CurrentMod().prefix + f.Name
 	strFunctionArgs := ""
 	strFunctionBody := ""
 
@@ -282,8 +282,9 @@ func (e *ExternFunc) ToLLVM(scopes *Scopes) (string, error) {
 	return fmt.Sprintf("declare %s %s (%s)", strReturnType, strFuncName, strFuncArgs), nil
 }
 
+
 func (f *FnCall) ToLLVM(scopes *Scopes) (string, error) {
-	definedFn, err := scopes.GetDefined(f.Name.Name)
+	definedFn, err := scopes.GetDefined(f.Name)
 	if err != nil {
 		return "", err
 	}
@@ -323,7 +324,7 @@ func (f *FnCall) ToLLVM(scopes *Scopes) (string, error) {
 	}
 
 	strArgs := strings.Join(args, ",")
-	call := fmt.Sprintf("call %s @%s(%s)", strReturnType, f.Name.Name, strArgs)
+	call := fmt.Sprintf("call %s %s(%s)", strReturnType, definedFn.Alias, strArgs)
 	code = append(code, call)
 	return strings.Join(code, "\n"), nil
 }
@@ -364,7 +365,7 @@ func (s *String) Id() (string, error) {
 	return s.Uid, nil
 }
 
-func BuildScopes() *Scopes {
+func BuildScopes(defaultScope string) *Scopes {
 	scopes := ScopesFrom([]RtScope{
 		// top level scope
 		{
@@ -378,18 +379,23 @@ func BuildScopes() *Scopes {
 		},
 		// add global scopes
 	})
-    scopes.modules = make(map[string]ImportInfo)
+    scopes.modules = make(map[string]*ImportInfo)
+	scopes.modules[defaultScope] = &ImportInfo{
+		imported: false,
+		globalNames: make(map[string]interface{}),
+	}
+	scopes.currentmod = defaultScope
 	return &scopes
 }
 
 func ToLLVM(scopes *Scopes, ast *AST) (string, error) {
-	globalScopes := scopes.Push()
+	scopes.Push()
 	for _, topLevelOp := range *ast {
 		switch v := topLevelOp.(type) {
 		case *Function:
-			globalScopes.DefineVar(v.Name, v.ReturnType, v.Args, false)
+			scopes.DefineVar(v.Name, v.ReturnType, v.Args, fmt.Sprintf("@%s%s", scopes.CurrentMod().prefix, v.Name), false)
 		case *ExternFunc:
-			globalScopes.DefineVar(v.Name, v.ReturnType, v.Args, true)
+			scopes.DefineVar(v.Name, v.ReturnType, v.Args, fmt.Sprintf("@%s", v.Name), true)
 		}
 	}
 
@@ -424,7 +430,7 @@ func ToLLVM(scopes *Scopes, ast *AST) (string, error) {
 			return "", fmt.Errorf("Invalid top level instruction: %#v", state)
 		}
 	}
-	globals, err := scopes.DefineGlobals(globalScopes)
+	globals, err := scopes.DefineGlobals()
 	if err != nil {
 		return "", err
 	}
@@ -475,10 +481,16 @@ func (imp *Import) ToLLVM(scopes *Scopes) (string, error) {
 		return "", err
 	}
 
-	prevPrefix := scopes.prefix
-	scopes.prefix = fmt.Sprintf(".mod%d.", prefixId)
-    scopes.modules[abspath] = ImportInfo{ false, scopes.prefix }
+	prevMod := scopes.currentmod
+    scopes.modules[abspath] = &ImportInfo{
+		imported: false,
+		prefix: fmt.Sprintf(".mod%d.", prefixId),
+		globalNames: make(map[string]interface{}),
+	}
+	scopes.CurrentMod().globalNames[imp.As] = scopes.modules[abspath]
+
+	scopes.currentmod = abspath
 	code, err := ToLLVM(scopes, ast)
-	scopes.prefix = prevPrefix
+	scopes.currentmod = prevMod
 	return code, err
 }

@@ -43,26 +43,24 @@ type SSAValue interface {
 type NameInfo struct {
 	HasType   Type
 	Arguments []Argument
+	Extern    bool
+	Alias     string
 }
 
 // should be mutable
-type RtScope struct {
-	// available types
-	TypeAliases map[string]string
-
-	// global variables
-	// function
-	Names map[string]NameInfo
-
-	// defined functions
-	externs []string
-
-	Vars map[string]Type
-}
 
 func SameType(t1, t2 Type) bool {
 	return RealType(t1) == RealType(t2)
 }
+func (s *Scopes) DefineVar(name string, typeval Type, args []Argument, alias string, extern bool) {
+	s.CurrentMod().globalNames[name] = NameInfo{
+		HasType:   typeval,
+		Arguments: args,
+		Extern:    extern,
+		Alias:     alias,
+	}
+}
+
 func (rs *RtScope) DefineVar(name string, typeval Type, args []Argument, extern bool) error {
 	if _, ok := rs.Names[name]; ok {
 		return fmt.Errorf("Function or variable %q is already defined in the scope.", name)
@@ -79,6 +77,7 @@ func (rs *RtScope) DefineVar(name string, typeval Type, args []Argument, extern 
 }
 
 func DefineExtern(scopes *Scopes, name string, i NameInfo) (string, error) {
+
 	strReturnType, err := scopes.TypeRepr(i.HasType)
 	if err != nil {
 		return "", err
@@ -96,7 +95,7 @@ func DefineExtern(scopes *Scopes, name string, i NameInfo) (string, error) {
 	return fmt.Sprintf("declare %s @%s(%s)", strReturnType, name, argsStr), nil
 }
 
-func (s *Scopes) DefineGlobals(topLevel *RtScope) ([]string, error) {
+func (s *Scopes) DefineGlobals() ([]string, error) {
 	// globals are defined only on the global scopes
 	// topLevel := s.scopes[1]
 	globals := []string{}
@@ -108,12 +107,16 @@ func (s *Scopes) DefineGlobals(topLevel *RtScope) ([]string, error) {
 		globals = append(globals, repr)
 	}
 
-	for _, e := range topLevel.externs {
-		g, err := DefineExtern(s, e, topLevel.Names[e])
-		if err != nil {
-			return nil, err
+	for name, e := range s.CurrentMod().globalNames {
+		if parsed, ok := e.(NameInfo); ok {
+			if parsed.Extern {
+				g, err := DefineExtern(s, name, parsed)
+				if err != nil {
+					return nil, err
+				}
+				globals = append(globals, g)
+			}
 		}
-		globals = append(globals, g)
 	}
 	return globals, nil
 }
@@ -150,15 +153,35 @@ func RealType(typename Type) string {
 	return ""
 }
 
-func (s *Scopes) GetDefined(name string) (*NameInfo, error) {
+func (s *Scopes) GetDefined(name *Var) (*NameInfo, error) {
+	// look for name in scopes, could be a struct
+	fnname := name.Name
 	for i := len(s.scopes) - 1; i >= 0; i -= 1 {
 		currScope := s.scopes[i]
-		if info, ok := currScope.Names[name]; ok {
+		if info, ok := currScope.Names[fnname]; ok {
 			return &info, nil
 		}
 	}
-	return nil, fmt.Errorf("Error: %q is not defined", name)
 
+	names := s.CurrentMod().globalNames
+	modinfo, ok := names[name.Name]
+	if ok {
+		if name.Trailer != nil && len(name.Trailer) > 0 {
+			hasnames := modinfo.(*ImportInfo).globalNames
+			tosearch := name.Trailer[0]
+			value, ok := hasnames[tosearch].(NameInfo)
+			if !ok {
+				return nil, fmt.Errorf(
+					"Name %q not found in module %q", tosearch, name.Name,
+				)
+			}
+			return &value, nil
+		} else if nameinfo, ok := modinfo.(NameInfo); ok {
+			return &nameinfo, nil
+		}
+	}
+
+	return nil, fmt.Errorf("Error: %q is not defined", name)
 }
 
 // func (rs *RtScope) DefineVariable()
@@ -179,16 +202,36 @@ func (c ConstantValue) ToLLVM(scopes *Scopes) (string, error) {
 	), nil
 }
 
-type ImportInfo struct {
-    imported bool
-    prefix string
+type RtScope struct {
+	// available types
+	TypeAliases map[string]string
+
+	// global variables
+	// function
+	Names map[string]NameInfo
+
+	// defined functions
+	externs []string
+
+	Vars map[string]Type
 }
+
+type ImportInfo struct {
+	imported    bool
+	prefix      string
+	globalNames map[string]interface{}
+}
+
 type Scopes struct {
-	scopes  []RtScope
-	statics []ConstantValue
-	counter int
-	prefix  string
-    modules map[string]ImportInfo
+	scopes     []RtScope
+	statics    []ConstantValue
+	counter    int
+	modules    map[string]*ImportInfo
+	currentmod string
+}
+
+func (s *Scopes) CurrentMod() *ImportInfo {
+	return s.modules[s.currentmod]
 }
 
 func (s *Scopes) DefineTypeAlias(name, llvmAlias string) error {
