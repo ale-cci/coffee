@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"flag"
+    "path/filepath"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -37,9 +38,20 @@ func ParseArgs() *Args {
 	return &a
 }
 
+func abspath(relpath string) (string) {
+	path, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+
+    abspath := filepath.Join(path, relpath)
+	return abspath
+}
+
 func main() {
 	args := ParseArgs()
-	content, err := ioutil.ReadFile(args.files[0])
+	abspath := args.files[0]
+	content, err := ioutil.ReadFile(abspath)
 
 	tokens, err := compiler.Tokenize(bytes.NewReader(content))
 	if err != nil {
@@ -51,7 +63,7 @@ func main() {
 		panic(fmt.Sprintf("Error on ast parsing: %v", err))
 	}
 
-	scopes := compiler.BuildScopes()
+	scopes := compiler.BuildScopes(abspath)
 
 	code, err := compiler.ToLLVM(scopes, ast)
 	if err != nil {

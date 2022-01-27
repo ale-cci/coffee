@@ -11,8 +11,9 @@ type Type interface {
 type TypeAlias struct {
 	Name string
 	Type Type
-	Uid string
+	Uid  string
 }
+
 // expression with value, includes:
 // - function calls
 // - operations ?
@@ -22,15 +23,15 @@ type Expression interface {
 
 type Import struct {
 	Path string
-	As string
+	As   string
 }
+
 // Argument of a function definition
 type Argument struct {
 	Type Type
 	Name string
 }
 type Return struct{ Value Assignable }
-
 
 type ExternFunc struct {
 	Name       string
@@ -87,9 +88,9 @@ type StaticArray struct {
 	Elements []Assignable
 }
 type Var struct {
-	Name string
-	Type Type
-	Uid  string
+	Name    string
+	Type    Type
+	Uid     string
 	Trailer []string
 }
 
@@ -109,6 +110,7 @@ type Assignable interface{}
 type FnCall struct {
 	Name   *Var
 	Params []Assignable
+	Uid    string
 }
 
 type IfElseBlock struct {

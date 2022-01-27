@@ -456,7 +456,20 @@ func ParseAtomicAssignable(p *TokenPeeker) (Assignable, error) {
 		} else if next.Type == DOT {
 			p.Unread()
 			attr, err := ParseAttrs(p)
-			return attr, err
+			if err != nil {
+				return nil, err
+			}
+			if p.PeekOne() != nil && p.PeekOne().Type == LPAREN {
+				params, err := ParseFunctionCallParens(p)
+				if err != nil {
+					return nil, err
+				}
+				return &FnCall{
+					Name: attr,
+					Params: params,
+				}, nil
+			}
+			return attr, nil
 		} else if next.Type == LSBRACKET {
 			var val SSAValue
 			val = &Var{Name: tok.Value}

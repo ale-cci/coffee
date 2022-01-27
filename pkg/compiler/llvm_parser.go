@@ -247,6 +247,7 @@ func (r *Return) ToLLVM(scopes *Scopes) (string, error) {
 				fmt.Sprintf("ret %s %s", typename, id),
 		}, "\n"), nil
 	}
+	log.Fatalf("Unable to parse ssa value for return: %#v", r.Value)
 	return "", fmt.Errorf("Unable to parse ssa value for return")
 }
 
@@ -258,8 +259,21 @@ func (f *Function) ToLLVM(scopes *Scopes) (string, error) {
 		return "", err
 	}
 	strFunctionName := "@" + scopes.CurrentMod().prefix + f.Name
-	strFunctionArgs := ""
+	fnArgs := []string{}
 	strFunctionBody := ""
+
+	for _, arg := range f.Args {
+		err := scopes.DefineVariable(arg.Name, arg.Type)
+		if err != nil {
+			return "", err
+		}
+		typerepr, err := scopes.TypeRepr(arg.Type)
+		if err != nil {
+			return "", err
+		}
+		fnArgs = append(fnArgs, fmt.Sprintf("%s %%%s", typerepr, arg.Name))
+	}
+	strFunctionArgs := strings.Join(fnArgs, ", ")
 
 	var lastexpr Expression
 	for _, expr := range f.Body {
@@ -334,7 +348,7 @@ func (f *FnCall) ToLLVM(scopes *Scopes) (string, error) {
 			if err != nil {
 				return "", err
 			}
-			arg += uid
+			arg += "" + uid
 
 		} else {
 			return "", fmt.Errorf("NotImplementedError: Assignable has not enough methods to be used as a SSAValue: %#v", assignable)
@@ -342,10 +356,38 @@ func (f *FnCall) ToLLVM(scopes *Scopes) (string, error) {
 		args = append(args, arg)
 	}
 
-	strArgs := strings.Join(args, ",")
-	call := fmt.Sprintf("call %s %s(%s)", strReturnType, definedFn.Alias, strArgs)
+	strArgs := strings.Join(args, ", ")
+	fnId, err := scopes.ReserveLocal()
+	if err != nil {
+		return "", err
+	}
+	f.Uid = fmt.Sprintf("%%.tmp%d", fnId)
+
+	call := fmt.Sprintf("%s = call %s %s(%s)", f.Uid, strReturnType, definedFn.Alias, strArgs)
 	code = append(code, call)
 	return strings.Join(code, "\n"), nil
+}
+func (f *FnCall) Id() (string, error) {
+	if f.Uid == "" {
+		return "", fmt.Errorf("ID() called before tollvm initialization")
+	}
+	return f.Uid, nil
+}
+func (f *FnCall) RealType(scopes Scopes) (string, error) {
+	info, err := scopes.GetDefined(f.Name)
+	if err != nil {
+		return "", err
+	}
+	return RealType(info), nil
+}
+
+func (f *FnCall) TypeRepr(scopes Scopes) (string, error) {
+	info, err := scopes.GetDefined(f.Name)
+	if err != nil {
+		return "", err
+	}
+	typerepr, err := scopes.TypeRepr(info.HasType)
+	return typerepr, err
 }
 
 func (s *String) RealType(scopes Scopes) (string, error) {

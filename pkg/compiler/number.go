@@ -24,7 +24,7 @@ func (n *Number) ToLLVM(scopes *Scopes) (string, error) {
 	}
 	n.uid = fmt.Sprintf("%%.tmp%d", id)
 
-	return fmt.Sprintf("%s = add %s 0, 5", n.uid, typename), nil
+	return fmt.Sprintf("%s = add %s 0, %s", n.uid, typename, n.Value), nil
 }
 
 func (n *Number) ToImmediateLLVM(scopes *Scopes) (*LLVMImmediateValue, error) {
