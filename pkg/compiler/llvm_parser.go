@@ -217,18 +217,37 @@ func (b *IfElseBlock) ToLLVM(scopes *Scopes) (string, error) {
 }
 
 func (r *Return) ToLLVM(scopes *Scopes) (string, error) {
-	rv := ""
-	if num, ok := r.Value.(*Number); ok {
-		typename, err := scopes.TypeRepr(num.Type)
+	if num, ok := r.Value.(LLVMImmediate); ok {
+		imm, err := num.ToImmediateLLVM(scopes)
 		if err != nil {
 			return "", err
 		}
-		rv = fmt.Sprintf("%s %s", typename, num.Value)
-	} else {
-		panic("TODO!!!")
+		typename, err := scopes.TypeRepr(imm.Type)
+		if err != nil {
+			return "", err
+		}
+
+		return fmt.Sprintf("ret %s %s", typename, imm.Value), nil
+	} else if ssa, ok := r.Value.(SSAValue); ok {
+		prepCode, err := ssa.ToLLVM(scopes)
+		if err != nil {
+			return "", err
+		}
+		typename, err := ssa.TypeRepr(*scopes)
+		if err != nil {
+			return "", err
+		}
+		id, err := ssa.Id()
+		if err != nil {
+			return "", err
+		}
+		return strings.Join(
+			[]string{
+				prepCode,
+				fmt.Sprintf("ret %s %s", typename, id),
+		}, "\n"), nil
 	}
-	code := fmt.Sprintf("ret %s", rv)
-	return code, nil
+	return "", fmt.Errorf("Unable to parse ssa value for return")
 }
 
 

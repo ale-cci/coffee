@@ -544,6 +544,24 @@ func TestParsing(t *testing.T) {
 			),
 		},
 		{
+			name: "parses return statement with assignment",
+			program: strings.Join(
+				[]string{
+					"int main() {",
+					"    return 3 + 4",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define i32 @main() {",
+					"%.tmp0 = add i32 3, 4",
+					"ret i32 %.tmp0",
+					"}",
+				}, "\n",
+			),
+		},
+		{
 			name: "does not import module twice",
 			program: strings.Join(
 				[]string{
