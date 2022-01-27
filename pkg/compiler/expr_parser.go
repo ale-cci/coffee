@@ -187,6 +187,24 @@ func ParseExpression(p *TokenPeeker) (Expression, error) {
 				To:    &Var{Name: tok.Value},
 				Value: assignable,
 			}, nil
+		} else if next.Type == DOT {
+			p.Unread()
+			attr, err := ParseAttrs(p)
+			if err != nil {
+				return nil, err
+			}
+
+			if p.PeekOne().Type == LPAREN {
+				params, err := ParseFunctionCallParens(p)
+				if err != nil {
+					return nil, err
+				}
+				return &FnCall{
+					Name: attr,
+					Params: params,
+				}, nil
+			}
+			return attr, nil
 		} else if next.Type == OP_EQ {
 			p.Read()
 			assignable, err := ParseAssignable(p)
@@ -289,15 +307,7 @@ func ParseIfBlock(p *TokenPeeker) (*IfElseBlock, error) {
 	return &ifelse, nil
 }
 
-func ParseFunctionCall(p *TokenPeeker) (*FnCall, error) {
-	tok := p.Read()
-	if tok.Type != WORD {
-		return nil, &ParseError{
-			Pos:   tok.Position,
-			error: fmt.Sprintf("Expected WORD, found: %q", tok.Value),
-		}
-	}
-
+func ParseFunctionCallParens(p *TokenPeeker) ([]Assignable, error) {
 	if tok := p.Read(); tok.Type != LPAREN {
 		return nil, &ParseError{
 			Pos:   tok.Position,
@@ -330,10 +340,55 @@ func ParseFunctionCall(p *TokenPeeker) (*FnCall, error) {
 			error: fmt.Sprintf("Expected ) , found: %q", t.Value),
 		}
 	}
+	return params, nil
+}
+
+func ParseFunctionCall(p *TokenPeeker) (*FnCall, error) {
+	tok := p.Read()
+	if tok.Type != WORD {
+		return nil, &ParseError{
+			Pos:   tok.Position,
+			error: fmt.Sprintf("Expected WORD, found: %q", tok.Value),
+		}
+	}
+
+	params, err := ParseFunctionCallParens(p)
+	if err != nil {
+		return nil, err
+	}
 	return &FnCall{
 		Name:   &Var{Name: tok.Value},
 		Params: params,
 	}, nil
+}
+func ParseAttrs(p *TokenPeeker) (*Var, error) {
+	tok := p.Read()
+	if tok.Type != WORD {
+		return nil, &ParseError{
+			Pos:   tok.Position,
+			error: fmt.Sprintf("expected WORD got %q", tok.Value),
+		}
+	}
+	p.Read()
+	attr := &Var{Name: tok.Value, Trailer: []string{}}
+	for true {
+		next := p.Read()
+		if next.Type != WORD {
+			return nil, &ParseError{
+				Pos:   next.Position,
+				error: fmt.Sprintf("expected WORD got %q", next.Value),
+			}
+		}
+		attr.Trailer = append(attr.Trailer, next.Value)
+
+		next = p.PeekOne()
+		if next == nil || next.Type != DOT {
+			break
+		}
+		p.Read()
+	}
+
+	return attr, nil
 }
 
 func ParseBlock(p *TokenPeeker) ([]Expression, error) {
@@ -399,26 +454,9 @@ func ParseAtomicAssignable(p *TokenPeeker) (Assignable, error) {
 			fn, err := ParseFunctionCall(p)
 			return fn, err
 		} else if next.Type == DOT {
-            p.Read()
-			attr := &Var{Name: tok.Value, Trailer: []string{}}
-			for true {
-				next := p.Read()
-				if next.Type != WORD {
-					return nil, &ParseError{
-						Pos: next.Position,
-						error: fmt.Sprintf("expected WORD got %q", next.Value),
-					}
-				}
-				attr.Trailer = append(attr.Trailer, next.Value)
-
-				next = p.PeekOne()
-				if next == nil || next.Type != DOT {
-					break
-				}
-				p.Read()
-			}
-
-			return attr, nil
+			p.Unread()
+			attr, err := ParseAttrs(p)
+			return attr, err
 		} else if next.Type == LSBRACKET {
 			var val SSAValue
 			val = &Var{Name: tok.Value}

@@ -310,6 +310,14 @@ func TestCompiler(t *testing.T) {
 				},
 			},
 			{
+				name: "parses function call",
+				program: "a.b()",
+				expect: &compiler.FnCall{
+					Name: &compiler.Var{Name: "a", Trailer: []string{"b"}},
+					Params: []compiler.Assignable{},
+				},
+			},
+			{
 				name:    "parases function parameters",
 				program: "a(b, c, d)",
 				expect: &compiler.FnCall{
