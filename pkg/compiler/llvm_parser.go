@@ -452,7 +452,7 @@ func (imp *Import) ToLLVM(scopes *Scopes) (string, error) {
         return "", err
     }
 
-    abspath := filepath.Join(path, imp.Path)
+    abspath := filepath.Join(path, imp.Path + ".bn")
     if _, ok := scopes.modules[abspath]; ok {
         return "", nil
     }

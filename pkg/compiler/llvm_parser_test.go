@@ -531,7 +531,7 @@ func TestParsing(t *testing.T) {
 			name: "imports modules",
 			program: strings.Join(
 				[]string{
-					"import \"../../samples/empty-main.bn\" as x",
+					"import \"../../samples/empty-main\" as x",
 				}, "\n",
 			),
 			expect: strings.Join(
@@ -547,8 +547,8 @@ func TestParsing(t *testing.T) {
 			name: "does not import module twice",
 			program: strings.Join(
 				[]string{
-					"import \"../../samples/empty-main.bn\" as x",
-					"import \"../../samples/empty-main.bn\" as y",
+					"import \"../../samples/empty-main\" as x",
+					"import \"../../samples/empty-main\" as y",
 				}, "\n",
 			),
 			expect: strings.Join(
