@@ -31,6 +31,11 @@ type Argument struct {
 }
 type Return struct{ Value Assignable }
 
+type Attr struct {
+    Of Assignable
+    ToGet Assignable
+}
+
 type ExternFunc struct {
 	Name       string
 	ReturnType Type

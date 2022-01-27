@@ -20,7 +20,7 @@ func ParseTopLevelExpression(p *TokenPeeker) (Expression, error) {
 			return nil, err
 		}
 		return &Return{val}, nil
-	} else if tok.Type == WORD || tok.Type == T_INT || tok.Type == T_CHAR  {
+	} else if tok.Type == WORD || tok.Type == T_INT || tok.Type == T_CHAR {
 		// a = b || a[] var = 3
 		p.Read()
 		if tok := p.PeekOne(); tok.Type == WORD || tok.Type == LSBRACKET {
@@ -390,11 +390,26 @@ func ParseAtomicAssignable(p *TokenPeeker) (Assignable, error) {
 		return &String{Value: tok.Value[1 : len(tok.Value)-1]}, nil
 	} else if tok.Type == WORD {
 		tok := p.Read()
-		if p.PeekOne() != nil && p.PeekOne().Type == LPAREN {
+		next := p.PeekOne()
+		if next == nil {
+			return &Var{Name: tok.Value}, nil
+		}
+		if next.Type == LPAREN {
 			p.Unread()
 			fn, err := ParseFunctionCall(p)
 			return fn, err
-		} else if p.PeekOne() != nil && p.PeekOne().Type == LSBRACKET {
+		} else if next.Type == DOT {
+            p.Read()
+			toGet, err := ParseAtomicAssignable(p)
+			if err != nil {
+				return nil, err
+			}
+
+			return &Attr{
+				Of:    &Var{Name: tok.Value},
+				ToGet: toGet,
+			}, nil
+		} else if next.Type == LSBRACKET {
 			var val SSAValue
 			val = &Var{Name: tok.Value}
 
@@ -415,6 +430,7 @@ func ParseAtomicAssignable(p *TokenPeeker) (Assignable, error) {
 
 			return val, nil
 		}
+
 		return &Var{Name: tok.Value}, nil
 	} else if tok.Type == KW_TRUE || tok.Type == KW_FALSE {
 		p.Read()

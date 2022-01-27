@@ -299,6 +299,20 @@ func TestCompiler(t *testing.T) {
 				},
 			},
 			{
+				name:    "parses attribute getter",
+				program: "a := a.b.c",
+				expect: &compiler.Declaration{
+					To: &compiler.Var{Name: "a"},
+					Value: &compiler.Attr{
+						Of: &compiler.Var{Name: "a"},
+						ToGet: &compiler.Attr{
+							Of:    &compiler.Var{Name: "b"},
+							ToGet: &compiler.Var{Name: "c"},
+						},
+					},
+				},
+			},
+			{
 				name:    "parases function parameters",
 				program: "a(b, c, d)",
 				expect: &compiler.FnCall{
@@ -403,9 +417,9 @@ func TestParseAssignable(t *testing.T) {
 
 func TestParseStatement(t *testing.T) {
 	tt := []struct {
-		name      string
-		program   string
-		expect    *compiler.AST
+		name    string
+		program string
+		expect  *compiler.AST
 	}{
 		{
 			name: "parses type alias",
@@ -437,7 +451,7 @@ func TestParseStatement(t *testing.T) {
 			expect: &[]compiler.Statement{
 				&compiler.Import{
 					Path: "./file",
-					As: "f",
+					As:   "f",
 				},
 			},
 		},
