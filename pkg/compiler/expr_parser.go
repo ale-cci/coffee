@@ -400,15 +400,25 @@ func ParseAtomicAssignable(p *TokenPeeker) (Assignable, error) {
 			return fn, err
 		} else if next.Type == DOT {
             p.Read()
-			toGet, err := ParseAtomicAssignable(p)
-			if err != nil {
-				return nil, err
+			attr := &Var{Name: tok.Value, Trailer: []string{}}
+			for true {
+				next := p.Read()
+				if next.Type != WORD {
+					return nil, &ParseError{
+						Pos: next.Position,
+						error: fmt.Sprintf("expected WORD got %q", next.Value),
+					}
+				}
+				attr.Trailer = append(attr.Trailer, next.Value)
+
+				next = p.PeekOne()
+				if next == nil || next.Type != DOT {
+					break
+				}
+				p.Read()
 			}
 
-			return &Attr{
-				Of:    &Var{Name: tok.Value},
-				ToGet: toGet,
-			}, nil
+			return attr, nil
 		} else if next.Type == LSBRACKET {
 			var val SSAValue
 			val = &Var{Name: tok.Value}

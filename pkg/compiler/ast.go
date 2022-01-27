@@ -31,10 +31,6 @@ type Argument struct {
 }
 type Return struct{ Value Assignable }
 
-type Attr struct {
-    Of Assignable
-    ToGet Assignable
-}
 
 type ExternFunc struct {
 	Name       string
@@ -94,6 +90,7 @@ type Var struct {
 	Name string
 	Type Type
 	Uid  string
+	Trailer []string
 }
 
 type String struct {

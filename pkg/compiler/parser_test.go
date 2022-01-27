@@ -303,12 +303,9 @@ func TestCompiler(t *testing.T) {
 				program: "a := a.b.c",
 				expect: &compiler.Declaration{
 					To: &compiler.Var{Name: "a"},
-					Value: &compiler.Attr{
-						Of: &compiler.Var{Name: "a"},
-						ToGet: &compiler.Attr{
-							Of:    &compiler.Var{Name: "b"},
-							ToGet: &compiler.Var{Name: "c"},
-						},
+					Value: &compiler.Var{
+						Name: "a",
+						Trailer: []string{"b", "c"},
 					},
 				},
 			},
