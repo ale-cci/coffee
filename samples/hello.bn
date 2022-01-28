@@ -1,12 +1,7 @@
 #!/usr/bin/env coffee
-
-extern int puts(str text)
+extern int printf(str template, ...args)
 
 int main() {
-    t := "hello!"
-
-    if 3 < 4 {
-        puts(t)
-    }
+    printf("Hello from coffee!\0A")
     return 0
 }

@@ -22,7 +22,6 @@ void main() {
 }
 ```
 
-## In progress
 #### the `alias` keyword
 `alias` is used to define new types, it is a top level expression, so it could
 be used in the global scope and in function/for/if scope
@@ -35,11 +34,24 @@ alias <name> = <type definition>
 Some examples:
 
 ```
-
---
 alias Int = int
 alias MyStruct = struct {
     int t,
     str name,
 }
+
+void main() {
+    MyStruct s
+    s.name = "example"
+    s.t = 3
+}
 ```
+#### Implemented operators
+`+ - = < > ==`
+
+## In progress
+- [ ] pointer type
+- [ ] fixing relative imports
+- [ ] elif block
+- [ ] more operators `* / >= <= && || & | != !`
+- [ ] standard library imports

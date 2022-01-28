@@ -41,7 +41,9 @@ $ go build ./cli/coffee.go # or go install ./cli/coffee.go
 
 $ # build & run one of the samples
 $ coffee -in samples/hello.bn -out hello
+File hello compiled successfully!
 $ ./hello
+Hello from coffee!
 ```
 
 NOTE: if you do `go install`, you probably need to add `$HOME/go/bin` to your `"$PATH"`
