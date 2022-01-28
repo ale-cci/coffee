@@ -1,0 +1,8 @@
+import "./fn-declaration" as f
+import "./sys" as sys
+
+
+void main() {
+    sys.printf("hi: %d %d\0A", 3, 4)
+	sys.printf("result: %d", f.add(1, 3))
+}
