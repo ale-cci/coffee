@@ -609,17 +609,17 @@ func TestParsing(t *testing.T) {
 				[]string{
 					"extern int printf(str text, ...args)",
 					"void main() {",
-					"    printf(\"sample %d\", 4)",
+					"    printf(\"sample %d %d\", 4, 6)",
 					"}",
 				}, "\n",
 			),
 			expect: strings.Join(
 				[]string{
-					"@.str0 = constant [10 x i8] c\"sample %d\\00\"",
+					"@.str0 = constant [13 x i8] c\"sample %d %d\\00\"",
 					"declare i32 @printf(i8*,...)",
 					"define void @main() {",
-					"%.tmp0 = getelementptr [10 x i8], [10 x i8]*@.str0, i64 0, i64 0",
-					"%.tmp1 = call i32 (i8*, ...) @printf(i8*%.tmp0, i32 4)",
+					"%.tmp0 = getelementptr [13 x i8], [13 x i8]*@.str0, i64 0, i64 0",
+					"%.tmp1 = call i32 (i8*, ...) @printf(i8*%.tmp0, i32 4, i32 6)",
 					"ret void",
 					"}",
 				}, "\n",
@@ -653,6 +653,17 @@ func TestParsing(t *testing.T) {
 					"%.tmp4 = call i32 (i32, i32) @.mod0.add(i32 1, i32 2)",
 					"ret i32 %.tmp4",
 					"}",
+				}, "\n",
+			),
+		},
+		{
+			name: "can parse 'struct' operations",
+			program: strings.Join(
+				[]string{
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
 				}, "\n",
 			),
 		},

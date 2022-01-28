@@ -329,7 +329,9 @@ func (f *FnCall) ToLLVM(scopes *Scopes) (string, error) {
 	}
 	// prepare and parse assignables
 	if len(definedFn.Arguments) != len(f.Params) {
-		return "", fmt.Errorf("Too little or too much arguments provided for function call: %q", f.Name)
+		if len(definedFn.Arguments) > 0 && definedFn.Arguments[len(definedFn.Arguments) -1].Type != VARARG {
+			return "", fmt.Errorf("Too little or too much arguments provided for function call: %q", f.Name)
+		}
 	}
 	argTypes := []string{}
 	for _, arg := range definedFn.Arguments {
