@@ -8,7 +8,7 @@ declare i32 @printf(i8*, ...)
 
 define void @main() {
     %t = alloca %.struct.type
-    %.tmp0 = getelementptr %.struct.type, %.struct.type*%t, i32 0, i32 0
+    %.tmp0 = getelementptr {i32, i32}, {i32, i32}*%t, i32 0, i32 0
     store i32 22, i32* %.tmp0
 
     %.tmp1 = getelementptr %.struct.type, %.struct.type*%t, i32 0, i32 1

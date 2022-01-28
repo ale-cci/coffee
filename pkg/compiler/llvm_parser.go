@@ -528,7 +528,7 @@ func (t *TypeAlias) ToLLVM(scopes *Scopes) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if err := scopes.DefineTypeAlias(t.Name, t.Uid); err != nil {
+	if err := scopes.DefineTypeAlias(t.Name, t.Uid, t.Type); err != nil {
 		return "", err
 	}
 	return fmt.Sprintf("%s = type %s", t.Uid, repr), nil

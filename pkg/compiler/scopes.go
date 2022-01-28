@@ -121,6 +121,17 @@ func (s *Scopes) DefineGlobals() ([]string, error) {
 	return globals, nil
 }
 
+func (s *Scopes) GetDefinedType(name string) (Type, string, error) {
+	for i := len(s.scopes) - 1; i >= 0; i -= 1 {
+		currScope := s.scopes[i]
+		if info, ok := currScope.RealTypeAliases[name]; ok {
+			return info, currScope.TypeAliases[name], nil
+		}
+	}
+	return "", "", fmt.Errorf("Error: variable %q is not defined", name)
+}
+
+
 func (s *Scopes) GetDefinedVar(name string) (Type, error) {
 	for i := len(s.scopes) - 1; i >= 0; i -= 1 {
 		currScope := s.scopes[i]
@@ -205,6 +216,7 @@ func (c ConstantValue) ToLLVM(scopes *Scopes) (string, error) {
 type RtScope struct {
 	// available types
 	TypeAliases map[string]string
+	RealTypeAliases map[string]Type
 
 	// global variables
 	// function
@@ -234,14 +246,16 @@ func (s *Scopes) CurrentMod() *ImportInfo {
 	return s.modules[s.currentmod]
 }
 
-func (s *Scopes) DefineTypeAlias(name, llvmAlias string) error {
+func (s *Scopes) DefineTypeAlias(name, llvmAlias string, realtype Type) error {
 	s.scopes[len(s.scopes)-1].TypeAliases[name] = llvmAlias
+	s.scopes[len(s.scopes)-1].RealTypeAliases[name] = realtype
 	return nil
 }
 
 func (s *Scopes) Push() *RtScope {
 	s.scopes = append(s.scopes, RtScope{
 		TypeAliases: make(map[string]string),
+		RealTypeAliases: make(map[string]Type),
 		Names:       make(map[string]NameInfo),
 		Vars:        make(map[string]Type),
 	})
@@ -320,7 +334,7 @@ func (s Scopes) TypeRepr(typename Type) (string, error) {
 		return alias, nil
 	}
 
-	log.Panicf("Type %s is not defined", typename)
+	log.Panicf("Type %#v is not defined", typename)
 	return "", nil
 }
 

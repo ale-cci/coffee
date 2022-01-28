@@ -7,33 +7,156 @@ import (
 )
 
 func (v *Var) ToLLVM(scopes *Scopes) (string, error) {
-	id, err := scopes.ReserveLocal()
-	if err != nil {
-		return "", err
-	}
-	v.Uid = fmt.Sprintf("%%.tmp%d", id)
-	varType, err := scopes.GetDefinedVar(v.Name)
-	if err != nil {
-		return "", err
-	}
-	v.Type = varType
-	typeRepr, err := scopes.TypeRepr(varType)
+	// id, err := scopes.ReserveLocal()
+	// if err != nil {
+	// 	return "", err
+	// }
+	// v.Uid = fmt.Sprintf("%%.tmp%d", id)
+	// varType, err := scopes.GetDefinedVar(v.Name)
+	// if err != nil {
+	// 	return "", err
+	// }
+	// v.Type = varType
+	// typeRepr, err := scopes.TypeRepr(varType)
+	// if err != nil {
+	// 	return "", err
+	// }
+
+	// code := []string{}
+	// if v.Trailer != nil && len(v.Trailer) > 0 {
+	// 	// TODO: check if it's not a module name
+	// 	for _, name := range v.Trailer {
+	// 		currtyperepr, err := scopes.TypeRepr(v.Type)
+	// 		if err != nil {
+	// 			return "", err
+	// 		}
+	// 		st, ok := v.Type.(*StructType)
+	// 		if !ok {
+	// 			var alias string
+	// 			if alias, ok = v.Type.(string); ok {
+	// 				var stVal Type
+	// 				stVal, typeRepr, err = scopes.GetDefinedType(alias)
+	// 				ok = err == nil
+	// 				if ok {
+	// 					st, ok = stVal.(*StructType)
+	// 				}
+	// 			}
+	// 		}
+
+	// 		if !ok {
+	// 			return "", fmt.Errorf("Unable to retrieve dot value %q from non struct type: %#v", name, v)
+	// 		}
+
+	// 		var field *Argument = nil
+	// 		index := 0
+	// 		for idx, arg := range st.Fields {
+	// 			if arg.Name == name {
+	// 				field = &arg
+	// 				index = idx
+	// 			}
+	// 		}
+	// 		if field == nil {
+	// 			return "", fmt.Errorf("Field %q is not defined on struct %#v", name, st)
+	// 		}
+
+	// 		varId, err := scopes.ReserveLocal()
+	// 		if err != nil {
+	// 			log.Panicf("Unable to reserve id: %v", err)
+	// 		}
+	// 		newId := fmt.Sprintf("%%.tmp%d", varId)
+	// 		code = append(
+	// 			code,
+	// 			fmt.Sprintf("%s = getelementptr %s, %s* %s, i32 0, i32 %d", newId,  currtyperepr, currtyperepr, v.Uid, index),
+	// 		)
+	// 		v.Type = field.Type
+	// 		v.Uid = newId
+	// 	}
+	// }
+	prepCode, err := v.AddrToLLVM(scopes)
 	if err != nil {
 		return "", err
 	}
 
-	return fmt.Sprintf("%s = load %s, %s* %%%s", v.Uid, typeRepr, typeRepr, v.Name), nil
-}
-func (v *Var) AddrToLLVM(scopes *Scopes) (string, error) {
-	realtype, err := scopes.GetDefinedVar(v.Name)
+	id, err := scopes.ReserveLocal()
 	if err != nil {
 		return "", err
 	}
-	v.Type = realtype
-	return "", nil
+	newId := fmt.Sprintf("%%.tmp%d", id)
+
+	typeRepr, err := scopes.TypeRepr(v.Type)
+	if err != nil {
+		return "", err
+	}
+
+	code := []string{prepCode}
+	code = append(code, fmt.Sprintf("%s = load %s, %s* %s", newId, typeRepr, typeRepr, v.Uid))
+	v.Uid = newId
+	return strings.Trim(strings.Join(code, "\n"), "\n"), nil
 }
+func (v *Var) AddrToLLVM(scopes *Scopes) (string, error) {
+	realtype, err := scopes.GetDefinedVar(v.Name)
+	v.Type = realtype
+	code := []string{}
+	v.Uid = fmt.Sprintf("%%%s", v.Name)
+
+	if v.Trailer != nil && len(v.Trailer) > 0 {
+		// TODO: check if it's not a module name
+		for _, name := range v.Trailer {
+			currtyperepr, err := scopes.TypeRepr(v.Type)
+			if err != nil {
+				log.Panicf("Unable to represent type %#v: %v", v.Type, err)
+			}
+			if str, ok := v.Type.(string); ok{
+				typ, repr, err := scopes.GetDefinedType(str)
+				if err == nil {
+					currtyperepr = repr
+					v.Type = typ
+				}
+			}
+
+			st, ok := v.Type.(*StructType)
+			if !ok {
+				return "", fmt.Errorf("Unable to retrieve dot value %q from non struct type: %#v", name, v.Type)
+			}
+
+			var field *Argument = nil
+			index := 0
+			for idx, arg := range st.Fields {
+				if arg.Name == name {
+					field = &arg
+					index = idx
+					break
+				}
+			}
+			if field == nil {
+				return "", fmt.Errorf("Field %q is not defined on struct %#v", name, st)
+			}
+
+			varId, err := scopes.ReserveLocal()
+			if err != nil {
+				log.Panicf("Unable to reserve id: %v", err)
+			}
+
+			newId := fmt.Sprintf("%%.tmp%d", varId)
+			code = append(
+				code,
+				fmt.Sprintf("%s = getelementptr %s, %s* %s, i32 0, i32 %d", newId,  currtyperepr, currtyperepr, v.Uid, index),
+			)
+			v.Type = field.Type
+			v.Uid = newId
+		}
+	}
+	if err != nil {
+		return "", err
+	}
+	return strings.Join(code, "\n"), nil
+}
+
 func (v *Var) AddrId() (string, error) {
-	return fmt.Sprintf("%%%s", v.Name), nil
+	if v.Uid == "" {
+		log.Panicf("AddrId called before AddrTollvm initialization")
+	}
+	return v.Uid, nil
 }
 
 func (v *Var) TypeRepr(scopes Scopes) (string, error) {
@@ -57,7 +180,7 @@ func (v *Var) RealType(scopes Scopes) (string, error) {
 
 func (v *Var) Id() (string, error) {
 	if v.Uid == "" {
-		log.Panicf("RuntimeError: called 'Id' before ToLLVM initialization")
+		log.Panicf("RuntimeError: called 'Id' of %q before ToLLVM initialization", v.Name)
 	}
 	return v.Uid, nil
 }
@@ -154,7 +277,8 @@ func (a *Assignment) ToLLVM(scopes *Scopes) (string, error) {
 		log.Panicf("Value does not implement LLVMImmediate or SSAValue: %#v", a.Value)
 	}
 
-	initCode, err := a.To.(SSAAddr).AddrToLLVM(scopes)
+	ssaAddr := a.To.(SSAAddr)
+	initCode, err := ssaAddr.AddrToLLVM(scopes)
 	if err != nil {
 		log.Panicf("Unable to init variable: %v", err)
 	}
@@ -165,7 +289,7 @@ func (a *Assignment) ToLLVM(scopes *Scopes) (string, error) {
 	}
 
 	if !SameType(immtype, vartype) {
-		log.Panicf("Implicit casting not implemented!!! %#v != %#v", immtype, vartype)
+		log.Panicf("Implicit casting not implemented!!! %#v != %#v (%#v, %#v)", immtype, vartype, a.To, a.Value)
 	}
 
 	typerepr, err := a.To.TypeRepr(*scopes)
@@ -173,7 +297,7 @@ func (a *Assignment) ToLLVM(scopes *Scopes) (string, error) {
 		log.Panicf("In assignment: %v", err)
 	}
 
-	varid, err := a.To.(SSAAddr).AddrId()
+	varid, err := ssaAddr.AddrId()
 	if err != nil {
 		log.Panicf("In assignment: %v", err)
 	}

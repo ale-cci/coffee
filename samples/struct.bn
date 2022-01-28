@@ -9,8 +9,8 @@ alias PrintfArgs = struct {
 
 void main() {
     PrintfArgs t
-    PrintfArgs.template = "val: %d\0A"
-    PrintfArgs.arg0 = 3
+    t.template = "val: %d\0A"
+    t.arg0 = 3
 
-    sys.printf(PrintfArgs.template, PrintfArgs.arg0)
+    sys.printf(t.template, t.arg0)
 }
