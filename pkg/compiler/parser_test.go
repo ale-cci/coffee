@@ -210,6 +210,19 @@ func TestCompiler(t *testing.T) {
 					},
 				},
 			},
+			{
+				name:    "parses varargs",
+				program: "extern int puts(... args)",
+				expect: &compiler.AST{
+					&compiler.ExternFunc{
+						Name:       "puts",
+						ReturnType: "int",
+						Args:       []compiler.Argument{
+							{Name: "args", Type: compiler.VARARG},
+						},
+					},
+				},
+			},
 		}
 		for i, tc := range tt {
 			testName := fmt.Sprintf("[%d] %s", i, tc.name)

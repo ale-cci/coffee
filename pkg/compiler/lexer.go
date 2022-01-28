@@ -2,6 +2,7 @@ package compiler
 
 import (
 	"bytes"
+	"fmt"
 	"unicode"
 )
 
@@ -55,6 +56,7 @@ const (
 	COMMA
 	T_INT
 	T_CHAR
+	VARARG
 )
 
 type Token struct {
@@ -95,7 +97,6 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 		"}":  RBRACKET,
 		"[":  LSBRACKET,
 		"]":  RSBRACKET,
-		".":  DOT,
 		";":  SEMICOLON,
 		"\n": NL,
 	}
@@ -139,6 +140,21 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 			} else {
 				stream.UnreadRune()
 				tokens = append(tokens, Token{OP_PLUS, string(c), pos})
+			}
+		} else if c == '.' {
+			next, _, err := stream.ReadRune()
+			if next == '.' && err == nil {
+				if r, _, err := stream.ReadRune(); err != nil || r != '.' {
+					return nil, &ParseError{
+						Pos: pos,
+						error: fmt.Sprintf("Invalid syntax for '..')"),
+					}
+				}
+
+				tokens = append(tokens, Token{VARARG, "...", pos})
+			} else {
+				stream.UnreadRune()
+				tokens = append(tokens, Token{DOT, string(c), pos})
 			}
 		} else if c == '&' {
 			next, _, err := stream.ReadRune()

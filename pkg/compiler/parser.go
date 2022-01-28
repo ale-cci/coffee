@@ -183,6 +183,10 @@ func ParseFunction(p *TokenPeeker) (*Function, error) {
 
 func ParseType(p *TokenPeeker) (Type, error) {
 	t := p.Read()
+	if t.Type == VARARG {
+		return t.Type, nil
+	}
+
 	if t.Type == KW_STRUCT {
 		fields := []Argument{}
 		if tok := p.Read(); tok.Type != LBRACKET {
