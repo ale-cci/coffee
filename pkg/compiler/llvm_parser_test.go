@@ -615,7 +615,13 @@ func TestParsing(t *testing.T) {
 			),
 			expect: strings.Join(
 				[]string{
-					"define i32 @.mod0.add(i32 %a, i32 %b) {",
+					"define i32 @.mod0.add(i32 %.arg.a, i32 %.arg.b) {",
+					"%a = alloca i32",
+					"store i32 %.arg.a, i32* %a",
+
+					"%b = alloca i32",
+					"store i32 %.arg.b, i32* %b",
+
 					"%.tmp1 = load i32, i32* %a",
 					"%.tmp2 = load i32, i32* %b",
 					"%.tmp3 = add i32 %.tmp1, %.tmp2",

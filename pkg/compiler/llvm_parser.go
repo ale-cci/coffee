@@ -271,7 +271,9 @@ func (f *Function) ToLLVM(scopes *Scopes) (string, error) {
 		if err != nil {
 			return "", err
 		}
-		fnArgs = append(fnArgs, fmt.Sprintf("%s %%%s", typerepr, arg.Name))
+		fnArgs = append(fnArgs, fmt.Sprintf("%s %%.arg.%s", typerepr, arg.Name))
+		strFunctionBody += fmt.Sprintf("\n%%%s = alloca %s", arg.Name, typerepr)
+		strFunctionBody += fmt.Sprintf("\nstore %s %%.arg.%s, %s* %%%s", typerepr, arg.Name, typerepr, arg.Name)
 	}
 	strFunctionArgs := strings.Join(fnArgs, ", ")
 
