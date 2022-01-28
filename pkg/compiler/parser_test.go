@@ -380,6 +380,14 @@ func TestCompiler(t *testing.T) {
 					compiler.NewInt("3"),
 				},
 			},
+			{
+				name: "parses struct field assignment",
+				program: "a.b = c",
+				expect: &compiler.Assignment{
+					To: &compiler.Var{Name: "a", Trailer: []string{"b"}},
+					Value: &compiler.Var{Name: "c"},
+				},
+			},
 		}
 
 		for i, tc := range expressions {

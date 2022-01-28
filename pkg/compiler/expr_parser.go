@@ -204,6 +204,19 @@ func ParseExpression(p *TokenPeeker) (Expression, error) {
 					Params: params,
 				}, nil
 			}
+
+			if p.PeekOne().Type == OP_EQ {
+				p.Read()
+				assignable, err := ParseAssignable(p)
+				if err != nil {
+					return nil, err
+				}
+				return &Assignment{
+					To: attr,
+					Value: assignable,
+				}, nil
+			}
+
 			return attr, nil
 		} else if next.Type == OP_EQ {
 			p.Read()
