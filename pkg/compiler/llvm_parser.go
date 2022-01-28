@@ -331,31 +331,49 @@ func (f *FnCall) ToLLVM(scopes *Scopes) (string, error) {
 	if len(definedFn.Arguments) != len(f.Params) {
 		return "", fmt.Errorf("Too little or too much arguments provided for function call: %q", f.Name)
 	}
+	argTypes := []string{}
+	for _, arg := range definedFn.Arguments {
+		typerepr, err := scopes.TypeRepr(arg.Type)
+		if err != nil {
+			log.Panicf("Unable to get type repr for %#v: %v", arg.Type, err)
+		}
+		argTypes = append(argTypes, typerepr)
+	}
+	strCallType := fmt.Sprintf("%s (%s)", strReturnType, strings.Join(argTypes, ", "))
 
 	code := []string{}
 	args := []string{}
-	for i, assignable := range f.Params {
-		arg, err := scopes.TypeRepr(definedFn.Arguments[i].Type)
-		if err != nil {
-			return "", err
-		}
+	for _, assignable := range f.Params {
+		if imm, ok := assignable.(LLVMImmediate); ok {
+			immediate, err := imm.ToImmediateLLVM(scopes)
+			if err != nil {
+				return "", err
+			}
+			typerepr, err := scopes.TypeRepr(immediate.Type)
+			if err != nil {
+				return "", err
+			}
+			args = append(args, fmt.Sprintf("%s %s", typerepr, immediate.Value))
 
-		if casted, ok := assignable.(SSAValue); ok {
+		} else if casted, ok := assignable.(SSAValue); ok {
 			ops, err := casted.ToLLVM(scopes)
 			if err != nil {
 				return "", err
 			}
+			typerepr, err := casted.TypeRepr(*scopes)
+			if err != nil {
+				return "", err
+			}
+
 			code = append(code, ops)
 			uid, err := casted.Id()
 			if err != nil {
 				return "", err
 			}
-			arg += "" + uid
-
+			args = append(args, fmt.Sprintf("%s%s", typerepr, uid))
 		} else {
 			return "", fmt.Errorf("NotImplementedError: Assignable has not enough methods to be used as a SSAValue: %#v", assignable)
 		}
-		args = append(args, arg)
 	}
 
 	strArgs := strings.Join(args, ", ")
@@ -365,7 +383,7 @@ func (f *FnCall) ToLLVM(scopes *Scopes) (string, error) {
 	}
 	f.Uid = fmt.Sprintf("%%.tmp%d", fnId)
 
-	call := fmt.Sprintf("%s = call %s %s(%s)", f.Uid, strReturnType, definedFn.Alias, strArgs)
+	call := fmt.Sprintf("%s = call %s %s(%s)", f.Uid, strCallType, definedFn.Alias, strArgs)
 	code = append(code, call)
 	return strings.Join(code, "\n"), nil
 }

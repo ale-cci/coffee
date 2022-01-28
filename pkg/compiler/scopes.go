@@ -304,6 +304,8 @@ func (s Scopes) TypeRepr(typename Type) (string, error) {
 			fields = append(fields, repr)
 		}
 		return fmt.Sprintf("{%s}", strings.Join(fields, ", ")), nil
+	} else if typename == VARARG {
+		return "...", nil
 	} else {
 		log.Panicf("Bad Parsing: unable to interpret %#v as a type", typename)
 	}
