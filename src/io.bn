@@ -7,6 +7,13 @@
 extern int printf(str template, ...args)
 
 
+-- read variables to string literal
+-- example:
+--  int t
+--  scanf("%d", &t)
+extern int scanf(str template, ...args)
+
+
 -- write extern syscall, see `man 2 write`
 -- fd = 0 : stdin
 -- fd = 1 : stdout
@@ -33,4 +40,5 @@ extern int close(int fd)
 extern int open(str pathname, int flags)
 
 
+-- get string length
 extern int strlen(str message)

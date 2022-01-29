@@ -11,6 +11,7 @@ extern chr* realloc(chr* ptr, int size)
 -- free dynamic memory allocation
 extern void free(chr* ptr)
 
+
 void assert(bool condition, str message) {
     if condition != true {
         int size = io.strlen(message)

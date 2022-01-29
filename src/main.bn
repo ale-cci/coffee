@@ -2,27 +2,35 @@
 import "./io" as io
 import "./sys" as sys
 
-void read_file(str filename) {
-    int fd = io.open(filename, 0)
-    sys.assert(fd > 0, "Unable to open file\0A")
 
-    int buflen = 32
-    chr* buf = sys.malloc(8 * buflen)
+alias LexerState = struct {
+    int line, -- current line of the file
+    int pos,  -- current character of the current line
 
-    int read = io.read(fd, buf, buflen)
-    sys.assert(read > 0, "Unable to read from file\0A")
-    io.write(1, buf, buflen)
-    io.close(fd)
-    sys.free(buf)
+    chr* filename, -- name of the file analyzed
+    int fd,        -- descriptor of the file
 }
 
 
-int main() {
-    int o_rw = 2 | 64 | 512
-    -- int fd = io.open("./hello-files.txt", o_rw)
+int main(int argc, chr** argv) {
+    io.printf("Compilation started...\0A")
 
-    read_file("./hello-files.txt")
+    int fd_in = io.open("main.bn", 0)
+    sys.assert(fd_in > 0, "File ./main.bn not found")
 
-
+    int fd_out
+    compile(fd_in, fd_out)
     return 0
+}
+
+
+void compile(int fd_in, fd_out) {
+    LexerState s
+    s.line = 0
+    s.pos = 0
+    s.fd = fd_in
+
+    chr* buf = sys.malloc(8)
+
+    sys.free(buf)
 }
