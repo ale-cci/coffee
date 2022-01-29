@@ -833,6 +833,26 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "does not return addr on void procedure",
+			program: strings.Join(
+				[]string{
+				"extern void exit(int status_code)",
+				"void main() {",
+				"    exit(5)",
+				"}",
+			}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"declare void @exit(i32)",
+					"define void @main() {",
+					"call void (i32) @exit(i32 5)",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {

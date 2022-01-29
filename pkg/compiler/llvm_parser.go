@@ -384,8 +384,14 @@ func (f *FnCall) ToLLVM(scopes *Scopes) (string, error) {
 		return "", err
 	}
 	f.Uid = fmt.Sprintf("%%.tmp%d", fnId)
+	prefix := ""
+	if strReturnType != "void" {
+		prefix = fmt.Sprintf("%s = ", f.Uid)
+	} else {
+		f.Uid = ""
+	}
 
-	call := fmt.Sprintf("%s = call %s %s(%s)", f.Uid, strCallType, definedFn.Alias, strArgs)
+	call := fmt.Sprintf("%scall %s %s(%s)", prefix, strCallType, definedFn.Alias, strArgs)
 	code = append(code, call)
 	return strings.Join(code, "\n"), nil
 }
