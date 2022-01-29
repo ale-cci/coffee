@@ -34,7 +34,7 @@ func (b *Boolean) ToLLVM(scopes *Scopes) (string, error) {
 	return fmt.Sprintf("%%.tmp%d = add i1 0, %d", id, boolValue), nil
 }
 
-func (b *Boolean) RealType(scopes Scopes) (string, error) {
+func (b *Boolean) RealType(scopes Scopes) (Type, error) {
 	return "bool", nil
 }
 
@@ -401,12 +401,12 @@ func (f *FnCall) Id() (string, error) {
 	}
 	return f.Uid, nil
 }
-func (f *FnCall) RealType(scopes Scopes) (string, error) {
+func (f *FnCall) RealType(scopes Scopes) (Type, error) {
 	info, err := scopes.GetDefined(f.Name)
 	if err != nil {
 		return "", err
 	}
-	return RealType(info.HasType), nil
+	return info.HasType, nil
 }
 
 func (f *FnCall) TypeRepr(scopes Scopes) (string, error) {
@@ -418,7 +418,7 @@ func (f *FnCall) TypeRepr(scopes Scopes) (string, error) {
 	return typerepr, err
 }
 
-func (s *String) RealType(scopes Scopes) (string, error) {
+func (s *String) RealType(scopes Scopes) (Type, error) {
 	return "str", nil
 }
 

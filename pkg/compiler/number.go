@@ -9,7 +9,7 @@ func NewInt(val string) *Number {
 	}
 }
 
-func (n *Number) RealType(scopes Scopes) (string, error) {
+func (n *Number) RealType(scopes Scopes) (Type, error) {
 	return n.Type.(string), nil
 }
 

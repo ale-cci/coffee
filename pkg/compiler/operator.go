@@ -9,7 +9,7 @@ import (
 type Operator struct {
 	uid      string
 	Optype   TokenType
-	realtype string
+	realtype Type
 	Left     Assignable
 	Right    Assignable
 }
@@ -22,7 +22,7 @@ func (o *Operator) ToLLVM(scopes *Scopes) (string, error) {
 	// return code
 	code := []string{}
 
-	var ltype, rtype string
+	var ltype, rtype Type
 	var lval, rval string
 
 	if imm, ok := o.Left.(LLVMImmediate); ok {
@@ -90,7 +90,7 @@ func (o *Operator) ToLLVM(scopes *Scopes) (string, error) {
 		}
 	}
 
-	if rtype != ltype {
+	if !SameType(rtype, ltype) {
 		return "", fmt.Errorf("Mismatching types: %#v != %#v", ltype, rtype)
 	}
 
@@ -163,7 +163,7 @@ func (o *Operator) ToLLVM(scopes *Scopes) (string, error) {
 	return strings.Join(code, "\n"), nil
 }
 
-func (o *Operator) RealType(scopes Scopes) (string, error) {
+func (o *Operator) RealType(scopes Scopes) (Type, error) {
 	if o.realtype == "" {
 		return "", fmt.Errorf("Trying to retrieve operator type before ToLLVM initialization")
 	}

@@ -35,7 +35,7 @@ type LLVMImmediate interface {
 // assignable value
 type SSAValue interface {
 	SSA
-	RealType(Scopes) (string, error)
+	RealType(Scopes) (Type, error)
 	TypeRepr(Scopes) (string, error)
 	Id() (string, error)
 }
@@ -50,8 +50,9 @@ type NameInfo struct {
 // should be mutable
 
 func SameType(t1, t2 Type) bool {
-	return RealType(t1) == RealType(t2)
+	return RealTypeRepr(t1) == RealTypeRepr(t2)
 }
+
 func (s *Scopes) DefineVar(name string, typeval Type, args []Argument, alias string, extern bool) {
 	s.CurrentMod().globalNames[name] = NameInfo{
 		HasType:   typeval,
@@ -152,11 +153,11 @@ func (s *Scopes) DefineVariable(name string, typename Type) error {
 }
 
 // returns real type
-func RealType(typename Type) string {
+func RealTypeRepr(typename Type) string {
 	if name, ok := typename.(string); ok {
 		return name
 	} else if arr, ok := typename.(*ArrayType); ok {
-		basename := RealType(arr.Base)
+		basename := RealTypeRepr(arr.Base)
 		return fmt.Sprintf("%s[%d]", basename, arr.Size)
 	}
 	log.Panicf("Unable to convert type: %#v", typename)

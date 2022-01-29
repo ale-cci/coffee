@@ -868,19 +868,21 @@ func TestParsing(t *testing.T) {
 			name: "does parse pointer type",
 			program: strings.Join(
 				[]string{
+					"extern chr* malloc(int size)",
 					"void fn(chr* template) {",
-					"    chr* buf",
+					"    chr* buf = malloc(8)",
 					"}",
 				}, "\n",
 			),
 			expect: strings.Join(
 				[]string{
+					"declare i8* @malloc(i32)",
 					"define void @fn(i8* %.arg.template) {",
 					"%template = alloca i8*",
 					"store i8* %.arg.template, i8** %template",
-					"",
+					"%.tmp0 = call i8* (i32) @malloc(i32 8)",
 					"%buf = alloca i8*",
-					"",
+					"store i8* %.tmp0, i8** %buf",
 					"ret void",
 					"}",
 				}, "\n",

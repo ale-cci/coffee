@@ -107,12 +107,12 @@ func (v *Var) TypeRepr(scopes Scopes) (string, error) {
 	}
 	return typeRepr, nil
 }
-func (v *Var) RealType(scopes Scopes) (string, error) {
+func (v *Var) RealType(scopes Scopes) (Type, error) {
 	if v.Type == "" || v.Type == nil {
 		log.Panicf("RuntimeError: called 'RealType' before ToLLVM initialization")
 		return "", nil
 	}
-	return RealType(v.Type), nil
+	return v.Type, nil
 }
 
 func (v *Var) Id() (string, error) {
@@ -185,7 +185,8 @@ func (d *Declaration) ToLLVM(scopes *Scopes) (string, error) {
 
 func (a *Assignment) ToLLVM(scopes *Scopes) (string, error) {
 
-	var toassign, immtype, prepCode string
+	var immtype Type
+	var toassign, prepCode string
 	if imm, ok := a.Value.(LLVMImmediate); ok {
 		immediate, err := imm.ToImmediateLLVM(scopes)
 		if err != nil {
@@ -266,10 +267,10 @@ func (ac *ArrayCell) varname() (string) {
 	return ac.Var.(*ArrayCell).varname()
 }
 
-func (ac *ArrayCell) RealType(scopes Scopes) (string, error) {
+func (ac *ArrayCell) RealType(scopes Scopes) (Type, error) {
 	// typerepr, err := ac.Var.RealType(scopes)
 	typeval, err := scopes.GetDefinedVar(ac.varname())
-	return RealType(typeval.(*ArrayType).Base), err
+	return typeval.(*ArrayType).Base, err
 }
 
 func (ac *ArrayCell) TypeRepr(scopes Scopes) (string, error) {
