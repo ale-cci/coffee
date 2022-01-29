@@ -13,6 +13,7 @@ void read_file(str filename) {
     sys.assert(read > 0, "Unable to read from file\0A")
     io.write(1, buf, buflen)
     io.close(fd)
+    sys.free(buf)
 }
 
 
