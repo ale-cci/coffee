@@ -948,6 +948,32 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "auto dereferences addr usage",
+			program: strings.Join(
+				[]string{
+					"alias S = struct{",
+					"    int a,",
+					"}",
+					"void fn(S* t) {",
+					"   t.a = 3",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"%.type.S = type {i32}",
+					"define void @fn(%.type.S* %.arg.t) {",
+					"%t = alloca %.type.S*",
+					"store %.type.S* %.arg.t, %.type.S** %t",
+					"%.tmp0 = load %.type.S*, %.type.S** %t",
+					"%.tmp1 = getelementptr %.type.S, %.type.S* %.tmp0, i32 0, i32 0",
+					"store i32 3, i32* %.tmp1",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {

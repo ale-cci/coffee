@@ -38,6 +38,32 @@ func (v *Var) AddrToLLVM(scopes *Scopes) (string, error) {
 
 	if v.Trailer != nil && len(v.Trailer) > 0 {
 		// TODO: check if it's not a module name
+
+		// auto-dereference
+		for true {
+			if ptr, ok := v.Type.(*Pointer); ok {
+				id, err := scopes.ReserveLocal()
+				if err != nil {
+					log.Panicf("Unable to dereference: %v", err)
+				}
+				typerepr, err := scopes.TypeRepr(ptr.Of)
+				if err != nil {
+					log.Panicf("Unable to represent type (%#v): %v", ptr.Of, err)
+				}
+
+				tmpId := fmt.Sprintf("%%.tmp%d", id)
+				code = append(
+					code,
+					fmt.Sprintf("%s = load %s*, %s** %s", tmpId, typerepr, typerepr, v.Uid),
+				)
+
+				v.Uid = tmpId
+				v.Type = ptr.Of
+			} else {
+				break
+			}
+		}
+
 		for _, name := range v.Trailer {
 			currtyperepr, err := scopes.TypeRepr(v.Type)
 			if err != nil {
