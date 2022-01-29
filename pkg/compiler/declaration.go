@@ -29,7 +29,6 @@ func (v *Var) ToLLVM(scopes *Scopes) (string, error) {
 	return strings.Trim(strings.Join(code, "\n"), "\n"), nil
 }
 
-
 func (v *Var) AddrToLLVM(scopes *Scopes) (string, error) {
 	realtype, err := scopes.GetDefinedVar(v.Name)
 	v.Type = realtype
@@ -69,7 +68,7 @@ func (v *Var) AddrToLLVM(scopes *Scopes) (string, error) {
 			if err != nil {
 				log.Panicf("Unable to represent type %#v: %v", v.Type, err)
 			}
-			if str, ok := v.Type.(string); ok{
+			if str, ok := v.Type.(string); ok {
 				typ, repr, err := scopes.GetDefinedType(str)
 				if err == nil {
 					currtyperepr = repr
@@ -103,7 +102,7 @@ func (v *Var) AddrToLLVM(scopes *Scopes) (string, error) {
 			newId := fmt.Sprintf("%%.tmp%d", varId)
 			code = append(
 				code,
-				fmt.Sprintf("%s = getelementptr %s, %s* %s, i32 0, i32 %d", newId,  currtyperepr, currtyperepr, v.Uid, index),
+				fmt.Sprintf("%s = getelementptr %s, %s* %s, i32 0, i32 %d", newId, currtyperepr, currtyperepr, v.Uid, index),
 			)
 			v.Type = field.Type
 			v.Uid = newId
@@ -278,14 +277,13 @@ func (a *Assignment) ToLLVM(scopes *Scopes) (string, error) {
 	), nil
 }
 
-
 func (ac *ArrayCell) Id() (string, error) {
 	if ac.Uid == "" {
 		log.Panicf("ProgrammingError: Id called before ToLLVM initialization")
 	}
 	return ac.Uid, nil
 }
-func (ac *ArrayCell) varname() (string) {
+func (ac *ArrayCell) varname() string {
 	if name, ok := ac.Var.(*Var); ok {
 		return name.Name
 	}
@@ -296,6 +294,9 @@ func (ac *ArrayCell) varname() (string) {
 func (ac *ArrayCell) RealType(scopes Scopes) (Type, error) {
 	// typerepr, err := ac.Var.RealType(scopes)
 	typeval, err := scopes.GetDefinedVar(ac.varname())
+	if ptr, ok := typeval.(*Pointer); ok {
+		return ptr.Of, err
+	}
 	return typeval.(*ArrayType).Base, err
 }
 
@@ -303,6 +304,10 @@ func (ac *ArrayCell) TypeRepr(scopes Scopes) (string, error) {
 	typeval, err := scopes.GetDefinedVar(ac.varname())
 	if err != nil {
 		return "", err
+	}
+	if ptr, ok := typeval.(*Pointer); ok {
+		typ, err := scopes.TypeRepr(ptr.Of)
+		return typ, err
 	}
 	typerepr, err := scopes.TypeRepr(typeval.(*ArrayType).Base)
 	return typerepr, err
@@ -358,6 +363,25 @@ func (ac *ArrayCell) ToLLVM(scopes *Scopes) (string, error) {
 		return "", err
 	}
 
+	if _, ok := vartype.(*Pointer); ok {
+		id, err := scopes.ReserveLocal()
+		if err != nil {
+			return "", err
+		}
+		tmpId := ac.Uid
+		ac.Uid = fmt.Sprintf("%%.tmp%d", id)
+		return strings.Trim(
+			strings.Join(
+				[]string{
+					init,
+					fmt.Sprintf("%s = load %s*, %s** %s", loadId, celltype, celltype, ofIdx),
+					fmt.Sprintf("%s = getelementptr %s, %s* %s, %s %s", tmpId, celltype, celltype, loadId, postype, posid),
+					fmt.Sprintf("%s = load %s, %s* %s", ac.Uid, celltype, celltype, tmpId),
+				}, "\n",
+			), "\n",
+		), nil
+	}
+
 	return strings.Trim(
 		strings.Join(
 			[]string{
@@ -390,7 +414,6 @@ func (ac *ArrayCell) AddrToLLVM(scopes *Scopes) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
 
 	var postype, posid string
 	if imm, ok := ac.Pos.(LLVMImmediate); ok {

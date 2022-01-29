@@ -12,11 +12,12 @@ alias LexerState = struct {
 }
 
 
-int main(int argc, chr** argv) {
+int main(int argc, str* argv) {
     io.printf("Compilation started...\0A")
 
     int fd_in = io.open("main.bn", 0)
     sys.assert(fd_in > 0, "File ./main.bn not found")
+    io.printf(argv[1])
 
     int fd_out
     compile(fd_in, fd_out)

@@ -974,6 +974,32 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "addresses pointer values",
+			program: strings.Join(
+				[]string{
+					"void main(int argc, str* argv) {",
+					"   t := argv[0]",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main(i32 %.arg.argc, i8** %.arg.argv) {",
+					"%argc = alloca i32",
+					"store i32 %.arg.argc, i32* %argc",
+					"%argv = alloca i8**",
+					"store i8** %.arg.argv, i8*** %argv",
+					"%.tmp0 = load i8**, i8*** %argv",
+					"%.tmp1 = getelementptr i8*, i8** %.tmp0, i32 0",
+					"%.tmp2 = load i8*, i8** %.tmp1",
+					"%t = alloca i8*",
+					"store i8* %.tmp2, i8** %t",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {
