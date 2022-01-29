@@ -7,71 +7,6 @@ import (
 )
 
 func (v *Var) ToLLVM(scopes *Scopes) (string, error) {
-	// id, err := scopes.ReserveLocal()
-	// if err != nil {
-	// 	return "", err
-	// }
-	// v.Uid = fmt.Sprintf("%%.tmp%d", id)
-	// varType, err := scopes.GetDefinedVar(v.Name)
-	// if err != nil {
-	// 	return "", err
-	// }
-	// v.Type = varType
-	// typeRepr, err := scopes.TypeRepr(varType)
-	// if err != nil {
-	// 	return "", err
-	// }
-
-	// code := []string{}
-	// if v.Trailer != nil && len(v.Trailer) > 0 {
-	// 	// TODO: check if it's not a module name
-	// 	for _, name := range v.Trailer {
-	// 		currtyperepr, err := scopes.TypeRepr(v.Type)
-	// 		if err != nil {
-	// 			return "", err
-	// 		}
-	// 		st, ok := v.Type.(*StructType)
-	// 		if !ok {
-	// 			var alias string
-	// 			if alias, ok = v.Type.(string); ok {
-	// 				var stVal Type
-	// 				stVal, typeRepr, err = scopes.GetDefinedType(alias)
-	// 				ok = err == nil
-	// 				if ok {
-	// 					st, ok = stVal.(*StructType)
-	// 				}
-	// 			}
-	// 		}
-
-	// 		if !ok {
-	// 			return "", fmt.Errorf("Unable to retrieve dot value %q from non struct type: %#v", name, v)
-	// 		}
-
-	// 		var field *Argument = nil
-	// 		index := 0
-	// 		for idx, arg := range st.Fields {
-	// 			if arg.Name == name {
-	// 				field = &arg
-	// 				index = idx
-	// 			}
-	// 		}
-	// 		if field == nil {
-	// 			return "", fmt.Errorf("Field %q is not defined on struct %#v", name, st)
-	// 		}
-
-	// 		varId, err := scopes.ReserveLocal()
-	// 		if err != nil {
-	// 			log.Panicf("Unable to reserve id: %v", err)
-	// 		}
-	// 		newId := fmt.Sprintf("%%.tmp%d", varId)
-	// 		code = append(
-	// 			code,
-	// 			fmt.Sprintf("%s = getelementptr %s, %s* %s, i32 0, i32 %d", newId,  currtyperepr, currtyperepr, v.Uid, index),
-	// 		)
-	// 		v.Type = field.Type
-	// 		v.Uid = newId
-	// 	}
-	// }
 	prepCode, err := v.AddrToLLVM(scopes)
 	if err != nil {
 		return "", err
@@ -93,6 +28,8 @@ func (v *Var) ToLLVM(scopes *Scopes) (string, error) {
 	v.Uid = newId
 	return strings.Trim(strings.Join(code, "\n"), "\n"), nil
 }
+
+
 func (v *Var) AddrToLLVM(scopes *Scopes) (string, error) {
 	realtype, err := scopes.GetDefinedVar(v.Name)
 	v.Type = realtype
