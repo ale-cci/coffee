@@ -25,7 +25,7 @@ func TestParsing(t *testing.T) {
 			),
 		},
 		{
-			name:    "parses char type",
+			name: "parses char type",
 			program: strings.Join(
 				[]string{
 					"void main() {",
@@ -35,12 +35,12 @@ func TestParsing(t *testing.T) {
 			),
 			expect: strings.Join(
 				[]string{
-				"define void @main() {",
-				"",
-				"%t = alloca [ 4 x i8 ]",
-				"",
-				"ret void",
-				"}",
+					"define void @main() {",
+					"",
+					"%t = alloca [ 4 x i8 ]",
+					"",
+					"ret void",
+					"}",
 				}, "\n",
 			),
 		},
@@ -919,6 +919,30 @@ func TestParsing(t *testing.T) {
 					".if.end.3:",
 					"br label %.if.end.1",
 					".if.end.1:",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
+		{
+			name: "does parse & for address retrieving",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    t := 1",
+					"    int *tp = &t",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"",
+					"%t = alloca i32",
+					"store i32 1, i32* %t",
+					"%.tmp0 = getelementptr i32, i32* %t, i32 0",
+					"%tp = alloca i32*",
+					"store i32* %.tmp0, i32** %tp",
 					"ret void",
 					"}",
 				}, "\n",

@@ -463,6 +463,15 @@ func ParseAtomicAssignable(p *TokenPeeker) (Assignable, error) {
 			Type:  "int",
 			Value: tok.Value,
 		}, nil
+	} else if tok.Type == OP_BIN_AND {
+		p.Read()
+		ass, err := ParseAtomicAssignable(p)
+		if err != nil {
+			return nil, err
+		}
+		return &Addr{
+			Of: ass.(*Var),
+		}, nil
 	} else if tok.Type == STR {
 		tok := p.Read()
 		return &String{Value: tok.Value[1 : len(tok.Value)-1]}, nil

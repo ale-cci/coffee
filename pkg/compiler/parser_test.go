@@ -338,6 +338,16 @@ func TestCompiler(t *testing.T) {
 				},
 			},
 			{
+				name: "parses address retrieving",
+				program: "x = &a",
+				expect: &compiler.Assignment{
+					To: &compiler.Var{Name: "x"},
+					Value: &compiler.Addr{
+						Of: &compiler.Var{Name: "a"},
+					},
+				},
+			},
+			{
 				name:    "parses funciton call",
 				program: "a()",
 				expect: &compiler.FnCall{

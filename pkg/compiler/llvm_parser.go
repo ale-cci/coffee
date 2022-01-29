@@ -586,3 +586,55 @@ func (imp *Import) ToLLVM(scopes *Scopes) (string, error) {
 	scopes.currentmod = prevMod
 	return code, err
 }
+
+func (addr *Addr) ToLLVM(scopes *Scopes) (string, error) {
+	prepCode, err := addr.Of.AddrToLLVM(scopes)
+	if err != nil {
+		log.Panicf("Unable to init addr: %v (%#v)", err, addr)
+	}
+	code := []string{prepCode}
+
+	id, err := scopes.ReserveLocal()
+	if err != nil {
+		log.Panicf("Unable to init addr: %v (%#v)", err, addr)
+	}
+	typerepr, err := addr.Of.TypeRepr(*scopes)
+	if err != nil {
+		log.Panicf("Unable to init addr: %v (%#v)", err, addr)
+	}
+
+	ofUid, err := addr.Of.Id()
+	if err != nil {
+		log.Panicf("Unable to init addr: %v (%#v)", err, addr)
+	}
+
+	addr.Uid = fmt.Sprintf("%%.tmp%d", id)
+	code = append(
+		code,
+		fmt.Sprintf("%s = getelementptr %s, %s* %s, i32 0", addr.Uid, typerepr, typerepr, ofUid),
+	)
+	return strings.Trim(strings.Join(code, "\n"), "\n"), nil
+}
+
+func (addr *Addr) RealType(scopes Scopes) (Type, error) {
+	of, err := addr.Of.RealType(scopes)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Pointer{ Of: of }, nil
+}
+func (addr *Addr) Id() (string, error) {
+	if addr.Uid == "" {
+		log.Panicf("'Id' called before ToLLVM initialization")
+	}
+	return addr.Uid, nil
+}
+func (addr *Addr) TypeRepr(scopes Scopes) (string, error) {
+	rt, err := addr.RealType(scopes)
+	if err != nil {
+		return "", err
+	}
+	repr, err := scopes.TypeRepr(rt)
+	return repr, err
+}

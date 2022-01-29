@@ -29,6 +29,10 @@ type Import struct {
 type Pointer struct {
 	Of Type
 }
+type Addr struct {
+	Of *Var
+	Uid string
+}
 
 // Argument of a function definition
 type Argument struct {
