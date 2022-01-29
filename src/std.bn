@@ -1,0 +1,45 @@
+-- Standard io operations
+
+
+-- it's what you expect
+-- example:
+--  printf("number: %d", 3)
+extern int printf(str template, ...args)
+
+
+-- write extern syscall, see `man 2 write`
+-- fd = 0 : stdin
+-- fd = 1 : stdout
+-- fd = 2 : stderr
+extern int write(int fd, str buffer, int n)
+
+
+-- read syscall, see `man 2 read`
+extern int read(int fd, str buf, int bytes_to_read)
+
+
+-- close a opened file descriptor
+extern int close(int fd)
+
+
+-- returns file descriptor of opened file
+-- flags:
+--   O_RDONLY (0)
+--   O_WRONLY (1)
+--   O_RDWR (2)
+--
+--   O_CREAT(64)
+--   O_TRUNC(512)
+extern int open(str pathname, int flags)
+
+extern void exit(int status_code)
+
+extern int strlen(str message)
+
+void assert(bool condition, str message) {
+    if condition != true {
+        int size = strlen(message)
+        write(1, message, size)
+        exit(1)
+    }
+}

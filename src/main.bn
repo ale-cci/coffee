@@ -1,0 +1,12 @@
+#!/usr/bin/env coffee
+import "./std" as std
+
+int main() {
+    int o_rw = 2 | 64 | 512
+    int fd = std.open("./hello-files.txt", o_rw)
+    std.assert(fd > 0, "Unable to open file\0A")
+
+    std.write(fd, "Hello!\0A", 7)
+    std.close(fd)
+    return 0
+}

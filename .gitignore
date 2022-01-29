@@ -4,3 +4,7 @@ samples/*
 llvm/*
 !llvm/*.ll
 !llvm/compile.sh
+
+src/*
+!src/*.bn
+!src/compile.sh
