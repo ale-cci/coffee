@@ -4,7 +4,8 @@
 -- it's what you expect
 -- example:
 --  printf("number: %d", 3)
-extern int printf(str template, ...args)
+extern int printf(str format, ...args)
+extern int sprintf(chr* dest, str format, ...args)
 
 
 -- read variables to string literal
@@ -12,12 +13,14 @@ extern int printf(str template, ...args)
 --  int t
 --  scanf("%d", &t)
 extern int scanf(str template, ...args)
+extern int sscanf(chr* from, str template, ...args)
 
 
 -- write extern syscall, see `man 2 write`
--- fd = 0 : stdin
--- fd = 1 : stdout
--- fd = 2 : stderr
+-- :param fd:
+--  (0) STDIN
+--  (1) STDOUT
+--  (2) STDERR
 extern int write(int fd, str buffer, int n)
 
 
@@ -29,14 +32,21 @@ extern int read(int fd, chr* buf, int bytes_to_read)
 extern int close(int fd)
 
 
+-- seek location of a file,
+-- :param whence:
+--  (0) SEEK_SET - set to offset
+--  (1) SEEK_CUR - current location plus offset
+--  (2) SEEK_END - file size plus offset
+extern int lseek(int fd, int offset, int whence)
+
+
 -- returns file descriptor of opened file
--- flags:
---   O_RDONLY (0)
---   O_WRONLY (1)
---   O_RDWR (2)
---
---   O_CREAT(64)
---   O_TRUNC(512)
+-- :param flags:
+--  (0)   O_RDONLY
+--  (1)   O_WRONLY
+--  (2)   O_RDWR
+--  (64)  O_CREAT
+--  (512) O_TRUNC
 extern int open(str pathname, int flags)
 
 
