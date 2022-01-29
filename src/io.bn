@@ -32,14 +32,5 @@ extern int close(int fd)
 --   O_TRUNC(512)
 extern int open(str pathname, int flags)
 
-extern void exit(int status_code)
 
 extern int strlen(str message)
-
-void assert(bool condition, str message) {
-    if condition != true {
-        int size = strlen(message)
-        write(1, message, size)
-        exit(1)
-    }
-}

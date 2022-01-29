@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
-    "os"
 	"log"
 	"strings"
     "path/filepath"
@@ -321,7 +320,8 @@ func (e *ExternFunc) ToLLVM(scopes *Scopes) (string, error) {
 func (f *FnCall) ToLLVM(scopes *Scopes) (string, error) {
 	definedFn, err := scopes.GetDefined(f.Name)
 	if err != nil {
-		return "", err
+		log.Printf("Scopes: %#v", scopes.CurrentMod().globalNames[f.Name.Name])
+		log.Panicf("[%s]: unable to retrieve function %q: %v", scopes.currentmod, f.Name, err)
 	}
 	strReturnType, err := scopes.TypeRepr(definedFn.HasType)
 	if err != nil {
@@ -542,14 +542,17 @@ func (t *TypeAlias) ToLLVM(scopes *Scopes) (string, error) {
 
 func (imp *Import) ToLLVM(scopes *Scopes) (string, error) {
     // get absolute path for file
-    path, err := os.Getwd()
-    if err != nil {
-        return "", err
-    }
+    // path, err := os.Getwd()
+    // if err != nil {
+    //     return "", err
+    // }
 
-    abspath := filepath.Join(path, imp.Path + ".bn")
-    if _, ok := scopes.modules[abspath]; ok {
-        return "", nil
+	modulepath := filepath.Dir(scopes.currentmod)
+
+	abspath := filepath.Join(modulepath, imp.Path + ".bn")
+	if _, ok := scopes.modules[abspath]; ok {
+		scopes.CurrentMod().globalNames[imp.As] = scopes.modules[abspath]
+		return "", nil
     }
 	content, err := ioutil.ReadFile(abspath)
 

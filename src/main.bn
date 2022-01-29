@@ -1,12 +1,17 @@
 #!/usr/bin/env coffee
-import "./std" as std
+import "./io" as io
+import "./sys" as sys
+
+void read_file(str filename) {
+    int fd = io.open(filename, 0)
+}
 
 int main() {
     int o_rw = 2 | 64 | 512
-    int fd = std.open("./hello-files.txt", o_rw)
-    std.assert(fd > 0, "Unable to open file\0A")
+    int fd = io.open("./hello-files.txt", o_rw)
+    sys.assert(fd > 0, "Unable to open file\0A")
 
-    std.write(fd, "Hello!\0A", 7)
-    std.close(fd)
+    io.write(fd, "Hello!\0A", 7)
+    io.close(fd)
     return 0
 }

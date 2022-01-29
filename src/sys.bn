@@ -1,0 +1,11 @@
+import "./io" as io
+
+extern void exit(int status_code)
+
+void assert(bool condition, str message) {
+    if condition != true {
+        int size = io.strlen(message)
+        io.write(1, message, size)
+        exit(1)
+    }
+}
