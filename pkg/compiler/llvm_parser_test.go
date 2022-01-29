@@ -864,6 +864,42 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "does parse elif blocks",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    if true {",
+					"    } elif 2 > 3 {",
+					"    }",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"%.tmp0 = add i1 0, 1",
+					"br i1 %.tmp0, label %.if.true.1, label %.if.false.1",
+					".if.true.1:",
+					"",
+					"br label %.if.end.1",
+					".if.false.1:",
+					"%.tmp2 = icmp sgt i32 2, 3",
+					"br i1 %.tmp2, label %.if.true.3, label %.if.false.3",
+					".if.true.3:",
+					"",
+					"br label %.if.end.3",
+					".if.false.3:",
+					"",
+					"br label %.if.end.3",
+					".if.end.3:",
+					"br label %.if.end.1",
+					".if.end.1:",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {

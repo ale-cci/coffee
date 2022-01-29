@@ -274,12 +274,13 @@ func ParseExpression(p *TokenPeeker) (Expression, error) {
 
 func ParseIfBlock(p *TokenPeeker) (*IfElseBlock, error) {
 	tok := p.Read()
-	if tok.Type != KW_IF {
+	if tok.Type != KW_IF && tok.Type != KW_ELIF {
 		return nil, &ParseError{
 			Pos:   tok.Position,
 			error: fmt.Sprintf("Expected IF, found: %q", tok.Value),
 		}
 	}
+
 	// read expression
 	expr, err := ParseAssignable(p)
 	if err != nil {
@@ -303,7 +304,16 @@ func ParseIfBlock(p *TokenPeeker) (*IfElseBlock, error) {
 	}
 	ifelse.Body = body
 
-	if nextToken := p.PeekOne(); nextToken != nil && nextToken.Type == KW_ELSE {
+	next := p.PeekOne()
+
+	if next != nil && next.Type == KW_ELIF {
+		block, err := ParseIfBlock(p)
+		if err != nil {
+			return nil, err
+		}
+		ifelse.Else = []Expression{block}
+
+	} else if next != nil && next.Type == KW_ELSE {
 		p.Read()
 		if tok := p.Read(); tok.Type != LBRACKET {
 			return nil, &ParseError{

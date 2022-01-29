@@ -140,6 +140,40 @@ func TestFunctionParser(t *testing.T) {
 			},
 		},
 		{
+			name: "parses elif",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    if true {",
+					"    } elif 2 > 3 {",
+					"    }",
+					"}",
+				}, "\n",
+			),
+			expect: &compiler.Function{
+				Name: "main",
+				ReturnType: "void",
+				Args: []compiler.Argument{},
+				Body: []compiler.Expression{
+					&compiler.IfElseBlock{
+						Condition: &compiler.Boolean{Value: "true"},
+						Body: []compiler.Expression{},
+						Else: []compiler.Expression{
+							&compiler.IfElseBlock{
+								Condition: &compiler.Operator{
+									Optype: compiler.OP_GREATER,
+									Left: &compiler.Number{Value: "2", Type: "int"},
+									Right: &compiler.Number{Value: "3", Type: "int"},
+								},
+								Body: []compiler.Expression{},
+								Else: nil,
+							},
+						},
+					},
+				},
+			},
+		},
+		{
 			name: "parses if-else case inside block",
 			program: `void main() {
 				if true {
@@ -173,7 +207,7 @@ func TestFunctionParser(t *testing.T) {
 			vals, err := compiler.ParseFunction(p)
 
 			assert.NilError(t, err)
-			assert.DeepEqual(t, vals, tc.expect)
+			assert.DeepEqual(t, vals, tc.expect, cmpopts.IgnoreUnexported(compiler.Number{}, compiler.Operator{}))
 		})
 	}
 }
