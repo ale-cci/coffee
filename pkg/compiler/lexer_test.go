@@ -192,6 +192,11 @@ func TestTokenizer(t *testing.T) {
 				name: "parses if token",
 			},
 			{
+				program: "var_with_underscores",
+				expects: []compiler.Token{{compiler.WORD, "var_with_underscores", 1}},
+				name: "allow underscores in variable name",
+			},
+			{
 				program: "...",
 				expects: []compiler.Token{{compiler.VARARG, "...", 1}},
 				name: "parses ... token",

@@ -224,9 +224,9 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 			tokens = append(tokens, Token{COMMENT, string(c) + content, pos})
 		} else if typ, ok := special_chars[string(c)]; ok {
 			tokens = append(tokens, Token{typ, string(c), pos})
-		} else if unicode.IsLetter(c) {
+		} else if unicode.IsLetter(c) || c == '_' {
 			content := readWhile(stream, func(c rune) bool {
-				return unicode.IsLetter(c) || unicode.IsDigit(c)
+				return unicode.IsLetter(c) || unicode.IsDigit(c) || c == '_'
 			})
 			name := string(c) + content
 
