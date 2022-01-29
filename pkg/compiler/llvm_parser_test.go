@@ -809,6 +809,30 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "parses assignment of return value to function",
+			program: strings.Join(
+				[]string{
+					"extern int open(str name, int f)",
+					"void main() {",
+					"    int fd = open(\"sample\", 2)",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"@.str0 = constant [7 x i8] c\"sample\\00\"",
+					"declare i32 @open(i8*,i32)",
+					"define void @main() {",
+					"%.tmp0 = getelementptr [7 x i8], [7 x i8]*@.str0, i64 0, i64 0",
+					"%.tmp1 = call i32 (i8*, i32) @open(i8*%.tmp0, i32 2)",
+					"%fd = alloca i32",
+					"store i32 %.tmp1, i32* %fd",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {

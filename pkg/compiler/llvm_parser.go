@@ -400,7 +400,7 @@ func (f *FnCall) RealType(scopes Scopes) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return RealType(info), nil
+	return RealType(info.HasType), nil
 }
 
 func (f *FnCall) TypeRepr(scopes Scopes) (string, error) {
