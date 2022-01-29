@@ -128,6 +128,12 @@ func (o *Operator) ToLLVM(scopes *Scopes) (string, error) {
 	case OP_OVER:
 		op = "sdiv"
 		break
+	case OP_LESS_EQ:
+		op = "icmp sle"
+		break
+	case OP_GREATER_EQ:
+		op = "icmp sge"
+		break
 	case OP_NE:
 		op = "icmp ne"
 		break
@@ -138,7 +144,7 @@ func (o *Operator) ToLLVM(scopes *Scopes) (string, error) {
 	o.uid = fmt.Sprintf("%%.tmp%d", op_uid)
 
 	boolOps := []TokenType{
-		OP_LESS, OP_GREATER, OP_NE,
+		OP_LESS, OP_GREATER, OP_NE, OP_LESS_EQ, OP_GREATER_EQ,
 	}
 	o.realtype = ltype
 	for _, tokentype := range boolOps {
@@ -205,6 +211,8 @@ func ParseAssignable(p *TokenPeeker) (Assignable, error) {
 		OP_BIN_AND: 15 - 8,  // &
 		OP_BIN_OR:  15 - 10,  // |
 		OP_NE:      15 - 7, // !=
+		OP_LESS_EQ: 15 - 6, // <=
+		OP_GREATER_EQ: 15 - 6, // >=
 	}
 	var err error
 

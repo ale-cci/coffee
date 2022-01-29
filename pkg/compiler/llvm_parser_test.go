@@ -697,6 +697,26 @@ func TestParsing(t *testing.T) {
 			),
 		},
 		{
+			name: "compiles >= operator",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    t := 3 >= 4",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"%.tmp0 = icmp sge i32 3, 4",
+					"%t = alloca i1",
+					"store i1 %.tmp0, i1* %t",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
+		{
 			name: "compiles != operator",
 			program: strings.Join(
 				[]string{
