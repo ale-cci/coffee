@@ -47,11 +47,17 @@ void main() {
 }
 ```
 #### Implemented operators
-`+ - = < > ==`
+`+ - = < > == | & * / !=`
 
 ## In progress
+- [ ] more operators `>= <= && || !`
 - [ ] pointer type
-- [ ] fixing relative imports
 - [ ] elif block
-- [ ] more operators `* / >= <= && || & | != !`
-- [ ] standard library imports
+- [ ] import variables
+- [ ] enums
+
+## TODO:
+- [ ] fixing relative imports
+- [ ] standard library
+- [ ] imports from standard library
+- [ ] first class functions

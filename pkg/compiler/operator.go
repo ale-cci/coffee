@@ -116,20 +116,29 @@ func (o *Operator) ToLLVM(scopes *Scopes) (string, error) {
 	case OP_EQQ:
 		op = "icmp seq"
 		break
-	// OP_STAR
-	// OP_OVER
-	// OP_EQ
-	// OP_COLONEQ
-	// OP_PLUSEQ
+	case OP_STAR:
+		op = "mul"
+		break
+	case OP_BIN_OR:
+		op = "or"
+		break
+	case OP_BIN_AND:
+		op = "and"
+		break
+	case OP_OVER:
+		op = "sdiv"
+		break
+	case OP_NE:
+		op = "icmp ne"
+		break
 	default:
 		return "", fmt.Errorf("Missing operator properties for %#v", o.Optype)
 	}
 
-
 	o.uid = fmt.Sprintf("%%.tmp%d", op_uid)
 
 	boolOps := []TokenType{
-		OP_LESS, OP_GREATER,
+		OP_LESS, OP_GREATER, OP_NE,
 	}
 	o.realtype = ltype
 	for _, tokentype := range boolOps {
@@ -174,7 +183,6 @@ func (o *Operator) Id() (string, error) {
 	return o.uid, nil
 }
 
-
 func NewOperator(optype TokenType, left, right Assignable) (*Operator, error) {
 	return &Operator{
 		Optype: optype,
@@ -185,14 +193,18 @@ func NewOperator(optype TokenType, left, right Assignable) (*Operator, error) {
 
 func ParseAssignable(p *TokenPeeker) (Assignable, error) {
 	// https://en.cppreference.com/w/c/language/operator_precedence
+	// `15 - ` because here higher is more precedence
 	precedence := map[TokenType]int{
-		OP_PLUS:   10, // +
-		OP_MINUS:  10, // -
-		OP_STAR:   20, // *
-		OP_OVER:   20, // /
-		OP_LESS:    5,  // <
-		OP_GREATER: 5, // >
-		OP_EQQ:     4, // ==
+		OP_PLUS:    15 - 4, // +
+		OP_MINUS:   15 - 4, // -
+		OP_STAR:    15 - 3, // *
+		OP_OVER:    15 - 3, // /
+		OP_LESS:    15 - 6,  // <
+		OP_GREATER: 15 - 6,  // >
+		OP_EQQ:     15 - 7,  // ==
+		OP_BIN_AND: 15 - 8,  // &
+		OP_BIN_OR:  15 - 10,  // |
+		OP_NE:      15 - 7, // !=
 	}
 	var err error
 
@@ -240,13 +252,13 @@ func ParseAssignable(p *TokenPeeker) (Assignable, error) {
 		for i, op := range ops {
 			if precedence[op] < maxPriority {
 				// ignore this operator
-				newAssignables = append(newAssignables, assignables[i + 1])
+				newAssignables = append(newAssignables, assignables[i+1])
 				newOps = append(newOps, op)
 				continue
 			}
 
 			lastIdx := len(newAssignables) - 1
-			newAssignables[lastIdx], err = NewOperator(op, newAssignables[lastIdx], assignables[i + 1])
+			newAssignables[lastIdx], err = NewOperator(op, newAssignables[lastIdx], assignables[i+1])
 			if err != nil {
 				return nil, err
 			}

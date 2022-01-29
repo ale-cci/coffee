@@ -242,6 +242,16 @@ func TestTokenizer(t *testing.T) {
 				name: "parses >= token",
 			},
 			{
+				program: "!",
+				expects: []compiler.Token{{compiler.OP_NOT, "!", 1}},
+				name: "parses ! token",
+			},
+			{
+				program: "!=",
+				expects: []compiler.Token{{compiler.OP_NE, "!=", 1}},
+				name: "parses != token",
+			},
+			{
 				program: "<=",
 				expects: []compiler.Token{{compiler.OP_LESS_EQ, "<=", 1}},
 				name: "parses <= token",

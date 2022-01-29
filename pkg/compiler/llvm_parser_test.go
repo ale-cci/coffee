@@ -657,6 +657,106 @@ func TestParsing(t *testing.T) {
 			),
 		},
 		{
+			name: "parses * operator",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    t := 3 * 4",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"%.tmp0 = mul i32 3, 4",
+					"%t = alloca i32",
+					"store i32 %.tmp0, i32* %t",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
+		{
+			name: "compiles | operator",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    t := 3 | 4",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"%.tmp0 = or i32 3, 4",
+					"%t = alloca i32",
+					"store i32 %.tmp0, i32* %t",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
+		{
+			name: "compiles != operator",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    t := 3 != 4",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"%.tmp0 = icmp ne i32 3, 4",
+					"%t = alloca i1",
+					"store i1 %.tmp0, i1* %t",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
+		{
+			name: "compiles & operator",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    t := 3 & 4",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"%.tmp0 = and i32 3, 4",
+					"%t = alloca i32",
+					"store i32 %.tmp0, i32* %t",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
+		{
+			name: "parses / operator",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    t := 3 / 4",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"%.tmp0 = sdiv i32 3, 4",
+					"%t = alloca i32",
+					"store i32 %.tmp0, i32* %t",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
+		{
 			name: "can parse 'struct' operations",
 			program: strings.Join(
 				[]string{

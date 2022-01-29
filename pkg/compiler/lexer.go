@@ -18,6 +18,7 @@ const (
 	OP_MINUS
 	OP_OVER
 	OP_EQ
+	OP_NOT
 	OP_COLONEQ
 	OP_PLUSEQ
 	OP_LESS
@@ -28,6 +29,7 @@ const (
 	OP_BIN_AND
 	OP_AND
 	OP_OR
+	OP_NE
 	OP_LESS_EQ
 	KW_ALIAS
 	KW_FOR
@@ -132,6 +134,14 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 				tokens = append(tokens, Token{OP_COLONEQ, ":=", pos})
 			} else {
 				stream.UnreadRune()
+			}
+		} else if c == '!' {
+			next, _, err := stream.ReadRune()
+			if next == '=' && err == nil {
+				tokens = append(tokens, Token{OP_NE, "!=", pos})
+			} else {
+				stream.UnreadRune()
+				tokens = append(tokens, Token{OP_NOT, string(c), pos})
 			}
 		} else if c == '+' {
 			next, _, err := stream.ReadRune()
