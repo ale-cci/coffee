@@ -23,7 +23,7 @@ func ParseTopLevelExpression(p *TokenPeeker) (Expression, error) {
 	} else if tok.Type == WORD || tok.Type == T_INT || tok.Type == T_CHAR {
 		// a = b || a[] var = 3
 		p.Read()
-		if tok := p.PeekOne(); tok.Type == WORD || tok.Type == LSBRACKET {
+		if tok := p.PeekOne(); tok.Type == WORD || tok.Type == LSBRACKET || tok.Type == OP_STAR {
 			// int a || int[1] a || a[1] = 3 cases ||
 			p.Unread()
 			typename, err := ParseType(p)

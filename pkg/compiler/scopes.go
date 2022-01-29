@@ -131,7 +131,6 @@ func (s *Scopes) GetDefinedType(name string) (Type, string, error) {
 	return "", "", fmt.Errorf("Error: variable %q is not defined", name)
 }
 
-
 func (s *Scopes) GetDefinedVar(name string) (Type, error) {
 	for i := len(s.scopes) - 1; i >= 0; i -= 1 {
 		currScope := s.scopes[i]
@@ -215,7 +214,7 @@ func (c ConstantValue) ToLLVM(scopes *Scopes) (string, error) {
 
 type RtScope struct {
 	// available types
-	TypeAliases map[string]string
+	TypeAliases     map[string]string
 	RealTypeAliases map[string]Type
 
 	// global variables
@@ -254,10 +253,10 @@ func (s *Scopes) DefineTypeAlias(name, llvmAlias string, realtype Type) error {
 
 func (s *Scopes) Push() *RtScope {
 	s.scopes = append(s.scopes, RtScope{
-		TypeAliases: make(map[string]string),
+		TypeAliases:     make(map[string]string),
 		RealTypeAliases: make(map[string]Type),
-		Names:       make(map[string]NameInfo),
-		Vars:        make(map[string]Type),
+		Names:           make(map[string]NameInfo),
+		Vars:            make(map[string]Type),
 	})
 	return &s.scopes[len(s.scopes)-1]
 }
@@ -308,6 +307,12 @@ func (s Scopes) TypeRepr(typename Type) (string, error) {
 			return "", err
 		}
 		return fmt.Sprintf("[ %d x %s ]", arr.Size, basetype), nil
+	} else if ptr, ok := typename.(*Pointer); ok {
+		basetype, err := s.TypeRepr(ptr.Of)
+		if err != nil {
+			return "", err
+		}
+		return fmt.Sprintf("%s*", basetype), nil
 	} else if structType, ok := typename.(*StructType); ok {
 		fields := []string{}
 		for _, f := range structType.Fields {

@@ -26,6 +26,10 @@ type Import struct {
 	As   string
 }
 
+type Pointer struct {
+	Of Type
+}
+
 // Argument of a function definition
 type Argument struct {
 	Type Type

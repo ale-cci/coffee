@@ -4,12 +4,20 @@ import "./sys" as sys
 
 void read_file(str filename) {
     int fd = io.open(filename, 0)
+
+    int buflen = 32
+    chr* buf = sys.malloc(8 * buflen)
+
+    io.read(fd, buf, buflen)
+    io.write(fd, buf, buflen)
 }
 
 int main() {
     int o_rw = 2 | 64 | 512
     int fd = io.open("./hello-files.txt", o_rw)
     sys.assert(fd > 0, "Unable to open file\0A")
+
+
 
     io.write(fd, "Hello!\0A", 7)
     io.close(fd)

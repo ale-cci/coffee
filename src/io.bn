@@ -15,7 +15,7 @@ extern int write(int fd, str buffer, int n)
 
 
 -- read syscall, see `man 2 read`
-extern int read(int fd, str buf, int bytes_to_read)
+extern int read(int fd, chr* buf, int bytes_to_read)
 
 
 -- close a opened file descriptor

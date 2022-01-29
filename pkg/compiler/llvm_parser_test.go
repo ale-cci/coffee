@@ -865,6 +865,28 @@ func TestParsing(t *testing.T) {
 			),
 		},
 		{
+			name: "does parse pointer type",
+			program: strings.Join(
+				[]string{
+					"void fn(chr* template) {",
+					"    chr* buf",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @fn(i8* %.arg.template) {",
+					"%template = alloca i8*",
+					"store i8* %.arg.template, i8** %template",
+					"",
+					"%buf = alloca i8*",
+					"",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
+		{
 			name: "does parse elif blocks",
 			program: strings.Join(
 				[]string{

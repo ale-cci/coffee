@@ -72,7 +72,7 @@ func ParseExtern(p *TokenPeeker) (*ExternFunc, error) {
 	tok := p.Read()
 	if tok.Type != KW_EXTERN {
 		return nil, &ParseError{
-			Pos: tok.Position,
+			Pos:   tok.Position,
 			error: fmt.Sprintf("Expected extern keyword, found: %q", tok.Value),
 		}
 	}
@@ -83,7 +83,7 @@ func ParseExtern(p *TokenPeeker) (*ExternFunc, error) {
 	fnName := p.Read()
 	if fnName.Type != WORD {
 		return nil, &ParseError{
-			Pos: fnName.Position,
+			Pos:   fnName.Position,
 			error: fmt.Sprintf("Expected function or variable name, found reserved word: %q", fnName.Value),
 		}
 	}
@@ -95,11 +95,10 @@ func ParseExtern(p *TokenPeeker) (*ExternFunc, error) {
 
 	return &ExternFunc{
 		ReturnType: typ,
-		Name: fnName.Value,
-		Args: args,
+		Name:       fnName.Value,
+		Args:       args,
 	}, nil
 }
-
 
 func ParseFunctionArgs(p *TokenPeeker) ([]Argument, error) {
 	if tok := p.Read(); tok.Type != LPAREN {
@@ -187,6 +186,7 @@ func ParseType(p *TokenPeeker) (Type, error) {
 		return t.Type, nil
 	}
 
+	var returnType Type
 	if t.Type == KW_STRUCT {
 		fields := []Argument{}
 		if tok := p.Read(); tok.Type != LBRACKET {
@@ -196,7 +196,7 @@ func ParseType(p *TokenPeeker) (Type, error) {
 			}
 		}
 		// ignore trailing newlines
-		for ; p.PeekOne().Type == NL; {
+		for p.PeekOne().Type == NL {
 			p.Read()
 		}
 
@@ -210,7 +210,7 @@ func ParseType(p *TokenPeeker) (Type, error) {
 
 			if name.Type != WORD {
 				return nil, &ParseError{
-					Pos: name.Position,
+					Pos:   name.Position,
 					error: fmt.Sprintf("Expect struct field name, found: %q", name.Value),
 				}
 			}
@@ -222,76 +222,89 @@ func ParseType(p *TokenPeeker) (Type, error) {
 
 			if tok := p.Read(); tok.Type != COMMA {
 				return nil, &ParseError{
-					Pos: tok.Position,
+					Pos:   tok.Position,
 					error: fmt.Sprintf("Required comma after struct arg, got %q", tok.Value),
 				}
 			}
 
 			// ignore trailing newlines
-			for ; p.PeekOne().Type == NL; {
+			for p.PeekOne().Type == NL {
 				p.Read()
 			}
 		}
 
 		if tok := p.Read(); tok.Type != RBRACKET {
 			return nil, &ParseError{
-				Pos: tok.Position,
+				Pos:   tok.Position,
 				error: fmt.Sprintf("Struct type must end with }, got: %q", tok.Value),
 			}
 		}
 
-		return &StructType{
+		returnType = &StructType{
 			Fields: fields,
-		}, nil
-	}
-	if !(t.Type == T_VOID || t.Type == T_INT || t.Type == WORD || t.Type == T_CHAR ) {
-		return nil, &ParseError{
-			Pos:   t.Position,
-			error: fmt.Sprintf("Expected type, found: %q", t.Value),
 		}
-	}
-
-	var baseType Type
-	baseType = t.Value
-	for p.PeekOne() != nil && p.PeekOne().Type == LSBRACKET {
-		p.Read()
-		var size int
-
-		// read number
-		var err error
-		tokSize := p.Read()
-		if tokSize.Type != INT {
+	} else {
+		if !(t.Type == T_VOID || t.Type == T_INT || t.Type == WORD || t.Type == T_CHAR) {
 			return nil, &ParseError{
-				Pos: t.Position,
-				error: fmt.Sprintf("Expected ] or array size, found: %q", t.Value),
-			}
-		}
-		size, err = strconv.Atoi(tokSize.Value)
-		if err != nil {
-			return nil, &ParseError{
-				Pos: t.Position,
-				error: fmt.Sprintf("Unable to convert %q as an integer", tokSize.Value),
+				Pos:   t.Position,
+				error: fmt.Sprintf("Expected type, found: %q", t.Value),
 			}
 		}
 
-		baseType = &ArrayType{
-			Base: baseType,
-			Size: size,
-		}
-		if tok := p.Read(); tok.Type != RSBRACKET {
-			return nil, &ParseError{
-				Pos: t.Position,
-				error: fmt.Sprintf("Expectd closed ], found: %q", t.Value),
+		var baseType Type
+		baseType = t.Value
+		for p.PeekOne() != nil && p.PeekOne().Type == LSBRACKET {
+			p.Read()
+			var size int
+
+			// read number
+			var err error
+			tokSize := p.Read()
+			if tokSize.Type != INT {
+				return nil, &ParseError{
+					Pos:   t.Position,
+					error: fmt.Sprintf("Expected ] or array size, found: %q", t.Value),
+				}
+			}
+			size, err = strconv.Atoi(tokSize.Value)
+			if err != nil {
+				return nil, &ParseError{
+					Pos:   t.Position,
+					error: fmt.Sprintf("Unable to convert %q as an integer", tokSize.Value),
+				}
+			}
+
+			baseType = &ArrayType{
+				Base: baseType,
+				Size: size,
+			}
+			if tok := p.Read(); tok.Type != RSBRACKET {
+				return nil, &ParseError{
+					Pos:   t.Position,
+					error: fmt.Sprintf("Expectd closed ], found: %q", t.Value),
+				}
 			}
 		}
+		returnType = baseType
 	}
-	return baseType, nil
+
+	for true {
+		if tok := p.PeekOne(); tok != nil && tok.Type == OP_STAR {
+			p.Read()
+			returnType = &Pointer{
+				Of: returnType,
+			}
+		} else {
+			break
+		}
+	}
+	return returnType, nil
 }
 
 func ParseTypeAlias(p *TokenPeeker) (*TypeAlias, error) {
 	if tok := p.PeekOne(); tok.Type != KW_ALIAS {
 		return nil, &ParseError{
-			Pos: tok.Position,
+			Pos:   tok.Position,
 			error: fmt.Sprintf("Type alias requires 'alias' keyword"),
 		}
 	}
@@ -300,13 +313,13 @@ func ParseTypeAlias(p *TokenPeeker) (*TypeAlias, error) {
 	to := p.Read()
 	if to.Type != WORD {
 		return nil, &ParseError{
-			Pos: to.Position,
+			Pos:   to.Position,
 			error: fmt.Sprintf("Unable to assign type to reserved token: %q", to.Value),
 		}
 	}
 	if tok := p.Read(); tok.Type != OP_EQ {
 		return nil, &ParseError{
-			Pos: to.Position,
+			Pos:   to.Position,
 			error: fmt.Sprintf("Expecting = for type alias, got: %q", to.Value),
 		}
 	}
@@ -323,7 +336,7 @@ func ParseTypeAlias(p *TokenPeeker) (*TypeAlias, error) {
 func ParseImport(p *TokenPeeker) (*Import, error) {
 	if tok := p.PeekOne(); tok.Type != KW_IMPORT {
 		return nil, &ParseError{
-			Pos: tok.Position,
+			Pos:   tok.Position,
 			error: fmt.Sprintf("import requires 'import' keyword"),
 		}
 	}
@@ -335,7 +348,7 @@ func ParseImport(p *TokenPeeker) (*Import, error) {
 	name := p.Read()
 
 	return &Import{
-		Path: path.Value[1:len(path.Value)-1],
-		As: name.Value,
+		Path: path.Value[1 : len(path.Value)-1],
+		As:   name.Value,
 	}, nil
 }

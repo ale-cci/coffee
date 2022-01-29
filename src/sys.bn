@@ -2,6 +2,8 @@ import "./io" as io
 
 extern void exit(int status_code)
 
+extern chr* malloc(int size)
+
 void assert(bool condition, str message) {
     if condition != true {
         int size = io.strlen(message)

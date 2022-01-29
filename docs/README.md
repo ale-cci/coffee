@@ -52,8 +52,8 @@ void main() {
 ## In progress
 - [ ] more operators `&& || !`
 - [ ] pointer type
-- [ ] elif block
 - [ ] import variables
+- [ ] check elif block
 - [ ] enums
 
 ## TODO:
