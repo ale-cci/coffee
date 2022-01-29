@@ -47,10 +47,10 @@ void main() {
 }
 ```
 #### Implemented operators
-`+ - = < > == | & * / !=`
+`+ - = < > == | & * / != >= <=`
 
 ## In progress
-- [ ] more operators `>= <= && || !`
+- [ ] more operators `&& || !`
 - [ ] pointer type
 - [ ] elif block
 - [ ] import variables
