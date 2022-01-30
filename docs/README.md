@@ -35,16 +35,13 @@ You can find more examples [here](../samples).
 `+ - = < > == | & * / != >= <=`
 
 ## In progress
-- [ ] more operators `&& || !`
-- [ ] pointer type
-- [ ] import variables
-- [ ] check elif block
-- [ ] enums
+- [ ] standard library
+- [ ] Create a documentation page: `https://docs.readthedocs.io/en/stable/tutorial/`
 
 ## TODOs:
-- [ ] standard library
 - [ ] first class functions
 - [ ] keyword argument: `int fd = io.open(file: "something", mode: 0)`
-- [ ] Create a documentation page: `https://docs.readthedocs.io/en/stable/tutorial/`
 - [ ] Union
-
+- [ ] more operators `&& || !`
+- [ ] pointer type
+- [ ] enums
