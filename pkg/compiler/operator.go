@@ -114,7 +114,7 @@ func (o *Operator) ToLLVM(scopes *Scopes) (string, error) {
 		op = "icmp sgt"
 		break
 	case OP_EQQ:
-		op = "icmp seq"
+		op = "icmp eq"
 		break
 	case OP_STAR:
 		op = "mul"
@@ -144,7 +144,7 @@ func (o *Operator) ToLLVM(scopes *Scopes) (string, error) {
 	o.uid = fmt.Sprintf("%%.tmp%d", op_uid)
 
 	boolOps := []TokenType{
-		OP_LESS, OP_GREATER, OP_NE, OP_LESS_EQ, OP_GREATER_EQ,
+		OP_LESS, OP_GREATER, OP_NE, OP_LESS_EQ, OP_GREATER_EQ, OP_EQQ,
 	}
 	o.realtype = ltype
 	for _, tokentype := range boolOps {

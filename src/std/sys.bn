@@ -20,6 +20,9 @@ void assert(bool condition, str message) {
     }
 }
 
+-- create new process `man 2 fork`
 extern int fork()
 
+
 extern int waitpid(int pid, int* stat_loc, int options)
+

@@ -7,6 +7,8 @@
 extern int printf(str format, ...args)
 extern int sprintf(chr* dest, str format, ...args)
 
+extern int puts(str text)
+
 
 -- read variables to string literal
 -- example:

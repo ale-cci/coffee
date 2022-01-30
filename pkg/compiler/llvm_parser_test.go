@@ -451,9 +451,9 @@ func TestParsing(t *testing.T) {
 			expect: strings.Join(
 				[]string{
 					"define void @main() {",
-					"%.tmp0 = icmp seq i32 3, 3",
-					"%t = alloca i32",
-					"store i32 %.tmp0, i32* %t",
+					"%.tmp0 = icmp eq i32 3, 3",
+					"%t = alloca i1",
+					"store i1 %.tmp0, i1* %t",
 					"ret void",
 					"}",
 				}, "\n",
