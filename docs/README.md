@@ -28,6 +28,7 @@ You can find more examples [here](../samples).
 ### Index:
 - [types](./types.md)
 - [loops](./loops.md)
+- [variables](./variables.md)
 
 
 #### Implemented operators

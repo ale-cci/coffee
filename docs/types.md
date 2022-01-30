@@ -6,6 +6,32 @@
 - `void`
 - `str`
 
+#### Declaration of array type
+###### Syntax
+```
+<type>[<size>]
+```
+---
+Some examples:
+```
+void main() {
+    int[32] t
+}
+```
+
+#### Declaration of pointer type
+###### Syntax
+```
+<type>*
+```
+---
+Some examples:
+```
+void main() {
+    int* t
+}
+```
+
 
 #### the `alias` keyword
 `alias` is used to define new types, it is a top level expression, so it could
