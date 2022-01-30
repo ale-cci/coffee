@@ -7,4 +7,4 @@ llvm/*
 
 src/*
 !src/*.bn
-!src/compile.sh
+!src/build.sh
