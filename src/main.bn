@@ -30,7 +30,7 @@ chr* readfile(int fd) {
 
     read_bytes := io.read(fd, buf, buflen)
     for ; read_bytes > 0 ; read_bytes = io.read(fd, buf, buflen) {
-        io.puts(buf)
+        io.printf("%s", buf)
         sys.memset(buf, '\00', buflen)
     }
     return buf
