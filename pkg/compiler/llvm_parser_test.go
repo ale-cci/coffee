@@ -1229,6 +1229,28 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "can import constants from external modules",
+			program: strings.Join(
+				[]string{
+					"import \"../test_cases/import_types/globals\" as x",
+					"void main() {",
+					"    int t = x.CONST",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"@CONST = constant i32 3",
+					"define void @main() {",
+					"%.tmp1 = load i32, i32* @CONST",
+					"%t = alloca i32",
+					"store i32 %.tmp1, i32* %t",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {

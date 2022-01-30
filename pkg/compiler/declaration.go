@@ -30,7 +30,17 @@ func (v *Var) ToLLVM(scopes *Scopes) (string, error) {
 }
 
 func (v *Var) AddrToLLVM(scopes *Scopes) (string, error) {
+	if _, ok := scopes.CurrentMod().globalNames[v.Name]; ok {
+		v.Name = v.Trailer[0]
+		for i := 0; i < len(v.Trailer) -1; i += 1 {
+			v.Trailer[i] = v.Trailer[i + 1]
+		}
+		v.Trailer = v.Trailer[:len(v.Trailer) -1]
+	}
 	varData, err := scopes.Variable(v.Name)
+	if err != nil {
+		return "", err
+	}
 
 	v.Type = varData.Type
 	code := []string{}
