@@ -60,10 +60,10 @@ func Parse(tokens []Token) (*AST, error) {
 
 			var fn Expression
 			var err error
-			fn, err = ParseFunction(peeker)
+			fn, err = ParseGlobalConstant(peeker)
 			if err != nil {
 				peeker.index = currIdx
-				fn, err = ParseGlobalConstant(peeker)
+				fn, err = ParseFunction(peeker)
 			}
 			if err != nil {
 				return nil, err
