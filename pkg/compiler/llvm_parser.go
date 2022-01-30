@@ -79,9 +79,14 @@ func (op *OpLess) Id() (string, error) {
 }
 
 func (f *ForLoop) ToLLVM(scopes *Scopes) (string, error) {
-	initCode, err := f.Init.(SSA).ToLLVM(scopes)
-	if err != nil {
-		return "", err
+
+	var err error
+	initCode := ""
+	if f.Init != nil {
+		initCode, err = f.Init.(SSA).ToLLVM(scopes)
+		if err != nil {
+			return "", err
+		}
 	}
 
 	loopId, err := scopes.ReserveLocal()

@@ -119,9 +119,14 @@ func ParseForLoop(p *TokenPeeker) (*ForLoop, error) {
 		}
 	}
 
-	init, err := ParseExpression(p)
-	if err != nil {
-		return nil, err
+	var err error
+	var init Expression = nil
+
+	if p.PeekOne().Type != SEMICOLON {
+		init, err = ParseExpression(p)
+		if err != nil {
+			return nil, err
+		}
 	}
 	// assert ;
 	tok = p.Read()

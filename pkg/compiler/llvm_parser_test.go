@@ -1022,7 +1022,7 @@ func TestParsing(t *testing.T) {
 			program: strings.Join(
 				[]string{
 					"void main() {",
-					"    for i := 0; i < 3; {",
+					"    for i := 0; i < 3 ; {",
 					"    }",
 					"}",
 				}, "\n",
@@ -1038,6 +1038,34 @@ func TestParsing(t *testing.T) {
 					"%.tmp1 = load i32, i32* %i",
 					"%.tmp2 = icmp slt i32 %.tmp1, 3",
 					"br i1 %.tmp2, label %.for.continue.0, label %.for.end.0",
+					".for.continue.0:",
+					"",
+					"",
+					"br label %.for.start.0",
+					".for.end.0:",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
+		{
+			name: "loop without init condition",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    for ; true ; {",
+					"    }",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"",
+					"br label %.for.start.0",
+					".for.start.0:",
+					"%.tmp1 = add i1 0, 1",
+					"br i1 %.tmp1, label %.for.continue.0, label %.for.end.0",
 					".for.continue.0:",
 					"",
 					"",
