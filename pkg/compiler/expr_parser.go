@@ -145,10 +145,14 @@ func ParseForLoop(p *TokenPeeker) (*ForLoop, error) {
 		}
 	}
 
-	iter, err := ParseExpression(p)
-	if err != nil {
-		return nil, err
+	var iter Expression = nil
+	if p.PeekOne().Type != LBRACKET {
+		iter, err = ParseExpression(p)
+		if err != nil {
+			return nil, err
+		}
 	}
+
 	// expect open bracket
 	if tok := p.Read(); tok.Type != LBRACKET {
 		return nil, &ParseError{

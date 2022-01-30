@@ -201,18 +201,18 @@ func ParseAssignable(p *TokenPeeker) (Assignable, error) {
 	// https://en.cppreference.com/w/c/language/operator_precedence
 	// `15 - ` because here higher is more precedence
 	precedence := map[TokenType]int{
-		OP_PLUS:    15 - 4, // +
-		OP_MINUS:   15 - 4, // -
-		OP_STAR:    15 - 3, // *
-		OP_OVER:    15 - 3, // /
-		OP_LESS:    15 - 6,  // <
-		OP_GREATER: 15 - 6,  // >
-		OP_EQQ:     15 - 7,  // ==
-		OP_BIN_AND: 15 - 8,  // &
-		OP_BIN_OR:  15 - 10,  // |
-		OP_NE:      15 - 7, // !=
-		OP_LESS_EQ: 15 - 6, // <=
-		OP_GREATER_EQ: 15 - 6, // >=
+		OP_PLUS:       15 - 4,  // +
+		OP_MINUS:      15 - 4,  // -
+		OP_STAR:       15 - 3,  // *
+		OP_OVER:       15 - 3,  // /
+		OP_LESS:       15 - 6,  // <
+		OP_GREATER:    15 - 6,  // >
+		OP_EQQ:        15 - 7,  // ==
+		OP_BIN_AND:    15 - 8,  // &
+		OP_BIN_OR:     15 - 10, // |
+		OP_NE:         15 - 7,  // !=
+		OP_LESS_EQ:    15 - 6,  // <=
+		OP_GREATER_EQ: 15 - 6,  // >=
 	}
 	var err error
 

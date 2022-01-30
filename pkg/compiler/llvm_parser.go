@@ -113,9 +113,12 @@ func (f *ForLoop) ToLLVM(scopes *Scopes) (string, error) {
 		}
 	}
 
-	iter, err := f.Incr.(SSA).ToLLVM(scopes)
-	if err != nil {
-		log.Panicf("Unable to convert iter condition to SSA: %v", err)
+	var iter string = ""
+	if f.Incr != nil {
+		iter, err = f.Incr.(SSA).ToLLVM(scopes)
+		if err != nil {
+			log.Panicf("Unable to convert iter condition to SSA: %v", err)
+		}
 	}
 
 	loopBodyStr := strings.Join(loopBody, "\n")
