@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"unicode"
+	"strconv"
 )
 
 type TokenType int64
@@ -11,6 +12,7 @@ type TokenType int64
 const (
 	INT TokenType = iota // integer numbers
 	STR
+	CHAR
 	DECIMAL
 	TYPE
 	OP_STAR
@@ -151,6 +153,50 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 				stream.UnreadRune()
 				tokens = append(tokens, Token{OP_PLUS, string(c), pos})
 			}
+		} else if c == '\'' {
+			next, _, err := stream.ReadRune()
+
+			val := ""
+			if next == '\\' && err == nil {
+				// parse two decimal numbers
+				d1, _, err := stream.ReadRune()
+				if err != nil {
+					return nil, &ParseError{
+						Pos: pos,
+						error: fmt.Sprintf("Found invalid syntax while parsing character: expecting digit, found: %q", d1),
+					}
+				}
+				d2, _, err := stream.ReadRune()
+				if err != nil {
+					return nil, &ParseError{
+						Pos: pos,
+						error: fmt.Sprintf("Found invalid syntax while parsing character: expecting digit, found: %q", d2),
+					}
+				}
+
+				repr := string(d1) + string(d2)
+				intval, err := strconv.ParseUint(repr, 16, 8)
+				if err != nil {
+					return nil, &ParseError{
+						Pos: pos,
+						error: fmt.Sprintf("Unable to retrieve int value for char: %#v", repr),
+					}
+				}
+				val = fmt.Sprintf("%d", intval)
+			} else {
+				val = fmt.Sprintf("%d", int(next))
+			}
+
+			r, _, err := stream.ReadRune()
+
+			if r != '\'' || err != nil {
+				return nil, &ParseError{
+					Pos: pos,
+					error: fmt.Sprintf("Found invalid syntax while parsing character: expecting ', found: %q", r),
+				}
+			}
+
+			tokens = append(tokens, Token{CHAR, val, pos})
 		} else if c == '.' {
 			next, _, err := stream.ReadRune()
 			if next == '.' && err == nil {

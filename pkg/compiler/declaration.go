@@ -236,7 +236,6 @@ func (d *Declaration) ToLLVM(scopes *Scopes) (string, error) {
 }
 
 func (a *Assignment) ToLLVM(scopes *Scopes) (string, error) {
-
 	ssaInfo, err := ParseSSA(a.Value.(SSAValue), scopes)
 	if err != nil {
 		return "", err
@@ -427,12 +426,12 @@ func (ac *ArrayCell) AddrToLLVM(scopes *Scopes) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	typename, err := scopes.TypeRepr(vartype)
-	if err != nil {
-		return "", err
-	}
 
 	if _, ok := vartype.(*Pointer); ok {
+		typename, err := ac.TypeRepr(*scopes)
+		if err != nil {
+			return "", err
+		}
 		// extract pointer from array
 		id, err := scopes.ReserveLocal()
 		if err != nil {
@@ -446,14 +445,15 @@ func (ac *ArrayCell) AddrToLLVM(scopes *Scopes) (string, error) {
 				[]string{
 					initCode,
 					info.Init,
-					fmt.Sprintf("%s = getelementptr %s, %s*%s, %s %s", tmpId, typename, typename, varid, info.TypeRepr, info.Uid),
-					fmt.Sprintf("%s = load %s, %s* %s", ac.Uid, typename, typename, tmpId),
+					fmt.Sprintf("%s = load %s*, %s** %s", tmpId, typename, typename, varid),
+					fmt.Sprintf("%s = getelementptr %s, %s* %s, %s %s", ac.Uid, typename, typename, tmpId, info.TypeRepr, info.Uid),
 				}, "\n",
 			), "\n",
 		), nil
 	}
+	typename, err := scopes.TypeRepr(vartype)
 
-	code := fmt.Sprintf("%s = getelementptr %s, %s*%s, i32 0, %s %s", ac.Uid, typename, typename, varid, info.TypeRepr, info.Uid)
+	code := fmt.Sprintf("%s = getelementptr %s, %s* %s, i32 0, %s %s", ac.Uid, typename, typename, varid, info.TypeRepr, info.Uid)
 	return strings.Trim(
 		strings.Join(
 			[]string{
