@@ -7,6 +7,36 @@ alias Token = struct {
     str value,
 }
 
+int main(int argc, str* argv) {
+    check_args(argc, argv)
+
+    int fd = io.open(argv[1], 0)
+    sys.assert(fd > 0, "Unable to open input file\0A")
+    -- read file content
+    chr* buf = readfile(fd)
+    io.puts(buf)
+
+    sys.free(buf)
+    io.close(fd)
+
+
+    return 0
+}
+
+
+chr* readfile(int fd) {
+    int buflen = 1024
+    chr* buf = sys.malloc(8* buflen)
+
+    read_bytes := io.read(fd, buf, buflen)
+    for ; read_bytes > 0 ; read_bytes = io.read(fd, buf, buflen) {
+        io.puts(buf)
+        sys.memset(buf, '\00', buflen)
+    }
+    return buf
+}
+
+-- check how the program was called, assuring at least one argument is present in argv
 void check_args(int argc, str* argv) {
     if argc == 2 {
         return
@@ -20,11 +50,4 @@ void check_args(int argc, str* argv) {
     io.puts(buf)
     sys.free(buf)
     sys.exit(1)
-}
-
-int main(int argc, str* argv) {
-    -- sys.assert(argc == 2, "Usage: %s <filename>")
-    -- int fd_in = io.open("main.bn", 0)
-    check_args(argc, argv)
-    return 0
 }
