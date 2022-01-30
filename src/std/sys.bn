@@ -19,3 +19,7 @@ void assert(bool condition, str message) {
         exit(1)
     }
 }
+
+extern int fork()
+
+extern int waitpid(int pid, int* stat_loc, int options)
