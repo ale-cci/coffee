@@ -329,6 +329,9 @@ func (s Scopes) TypeRepr(typename Type) (string, error) {
 		return fmt.Sprintf("{%s}", strings.Join(fields, ", ")), nil
 	} else if typename == VARARG {
 		return "...", nil
+	} else if imp, ok := typename.(*ImportType); ok {
+		_, repr, err := s.GetDefinedType(imp.Type)
+		return repr, err
 	} else {
 		log.Panicf("Bad Parsing: unable to interpret %#v as a type", typename)
 	}

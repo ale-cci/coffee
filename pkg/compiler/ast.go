@@ -124,6 +124,10 @@ type FnCall struct {
 	Uid    string
 }
 
+type ImportType struct {
+	From string
+	Type string
+}
 type IfElseBlock struct {
 	Body      []Expression
 	Else      []Expression

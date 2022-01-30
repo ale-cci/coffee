@@ -253,6 +253,26 @@ func ParseType(p *TokenPeeker) (Type, error) {
 
 		var baseType Type
 		baseType = t.Value
+
+		if tok := p.PeekOne(); t.Type == WORD && tok != nil && tok.Type == DOT {
+			// name, value
+			p.Read()
+			typename := p.Read()
+
+			if typename.Type != WORD {
+				return nil, &ParseError{
+					Pos: t.Position,
+					error: fmt.Sprintf("Expecting WORD, found %q", typename.Value),
+				}
+			}
+
+			baseType = &ImportType{
+				From: t.Value,
+				Type: typename.Value,
+			}
+		}
+
+
 		for p.PeekOne() != nil && p.PeekOne().Type == LSBRACKET {
 			p.Read()
 			var size int

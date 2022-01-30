@@ -1185,6 +1185,28 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "can import types from module",
+			program: strings.Join(
+				[]string{
+					"import \"../test_cases/import_types/sample\" as x",
+					"void main() {",
+					"    x.T name",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"%.type.T = type {i32}",
+					"define void @main() {",
+					"",
+					"%name = alloca %.type.T",
+					"",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {
