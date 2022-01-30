@@ -1129,6 +1129,41 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "parses pointer types",
+			program: strings.Join(
+				[]string{
+					"int main(int argc, chr** argv) {",
+					"    chr* test",
+					"    test[0] = argv[0][0]",
+					"    return 0",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define i32 @main(i32 %.arg.argc, i8** %.arg.argv) {",
+					"%argc = alloca i32",
+					"store i32 %.arg.argc, i32* %argc",
+					"%argv = alloca i8**",
+					"store i8** %.arg.argv, i8*** %argv",
+					"",
+					"%test = alloca i8*",
+					"",
+					"%.tmp0 = getelementptr i8**, i8***%argv, i32 0",
+					"%.tmp1 = load i8**, i8*** %.tmp0",
+					"",
+					"%.tmp2 = load i8*, i8** %.tmp1",
+					"%.tmp3 = getelementptr i8, i8* %.tmp2, i32 0",
+					"%.tmp4 = load i8, i8* %.tmp3",
+					"%.tmp5 = getelementptr i8*, i8**%test, i32 0",
+					"%.tmp6 = load i8*, i8** %.tmp5",
+					"store i8 %.tmp4, i8* %.tmp6",
+					"ret i32 0",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {

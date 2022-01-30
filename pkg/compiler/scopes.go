@@ -159,6 +159,9 @@ func RealTypeRepr(typename Type) string {
 	} else if arr, ok := typename.(*ArrayType); ok {
 		basename := RealTypeRepr(arr.Base)
 		return fmt.Sprintf("%s[%d]", basename, arr.Size)
+	} else if arr, ok := typename.(*Pointer); ok {
+		basename := RealTypeRepr(arr.Of)
+		return fmt.Sprintf("%s*", basename)
 	}
 	log.Panicf("Unable to convert type: %#v", typename)
 	return ""

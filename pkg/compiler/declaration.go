@@ -264,36 +264,10 @@ func (d *Declaration) ToLLVM(scopes *Scopes) (string, error) {
 
 func (a *Assignment) ToLLVM(scopes *Scopes) (string, error) {
 
-	var immtype Type
-	var toassign, prepCode string
-	if imm, ok := a.Value.(LLVMImmediate); ok {
-		immediate, err := imm.ToImmediateLLVM(scopes)
-		if err != nil {
-			log.Panicf("Unable to retrieve immediate type: %v", err)
-		}
-		toassign = immediate.Value
-		immtype, err = a.Value.(SSAValue).RealType(*scopes)
-		if err != nil {
-			log.Panicf("Error retrieving real type: %v", err)
-		}
-	} else if ssa, ok := a.Value.(SSAValue); ok {
-		var err error
-		prepCode, err = ssa.ToLLVM(scopes)
-		if err != nil {
-			log.Panicf("Unable to initialize ToLLVM: %v", err)
-		}
-		toassign, err = ssa.Id()
-		if err != nil {
-			log.Panicf("Unable to retrieve Id of SSAValue: %v", err)
-		}
-		immtype, err = ssa.RealType(*scopes)
-		if err != nil {
-			log.Panicf("Unable to retrieve real type: %v", err)
-		}
-	} else {
-		log.Panicf("Value does not implement LLVMImmediate or SSAValue: %#v", a.Value)
+	ssaInfo, err := ParseSSA(a.Value.(SSAValue), scopes)
+	if err != nil {
+		return "", err
 	}
-
 	ssaAddr := a.To.(SSAAddr)
 	initCode, err := ssaAddr.AddrToLLVM(scopes)
 	if err != nil {
@@ -305,8 +279,10 @@ func (a *Assignment) ToLLVM(scopes *Scopes) (string, error) {
 		log.Panicf("In assignment: %v", err)
 	}
 
-	if !SameType(immtype, vartype) {
-		log.Panicf("Implicit casting not implemented!!! %#v != %#v (%#v, %#v)", immtype, vartype, a.To, a.Value)
+	if !SameType(vartype, ssaInfo.RealType) {
+		log.Printf("Fst: %#v", a.To)
+		log.Printf("Snd: %#v", a.Value)
+		log.Panicf("Implicit casting not implemented!!! %#v != %#v", ssaInfo.RealType, vartype)
 	}
 
 	typerepr, err := a.To.TypeRepr(*scopes)
@@ -319,11 +295,11 @@ func (a *Assignment) ToLLVM(scopes *Scopes) (string, error) {
 		log.Panicf("In assignment: %v", err)
 	}
 
-	code := fmt.Sprintf("store %s %s, %s* %s", typerepr, toassign, typerepr, varid)
+	code := fmt.Sprintf("store %s %s, %s* %s", typerepr, ssaInfo.Uid, typerepr, varid)
 	return strings.Trim(
 		strings.Join(
 			[]string{
-				prepCode,
+				ssaInfo.Init,
 				initCode,
 				code,
 			}, "\n",
@@ -346,15 +322,11 @@ func (ac *ArrayCell) varname() string {
 }
 
 func (ac *ArrayCell) RealType(scopes Scopes) (Type, error) {
-	typeval, err := scopes.GetDefinedVar(ac.varname())
-	if ptr, ok := typeval.(*Pointer); ok {
-		return ptr.Of, err
+	basetype, err := scopes.GetDefinedVar(ac.varname())
+	if err != nil {
+		return nil, err
 	}
 
-	type realtype interface {
-		RealType(scopes Scopes) (Type, error)
-	}
-	basetype, err := ac.Var.(realtype).RealType(scopes)
 	var elem interface{}
 	elem = ac
 
@@ -363,7 +335,15 @@ func (ac *ArrayCell) RealType(scopes Scopes) (Type, error) {
 			break
 		} else {
 			elem = cell.Var
-			basetype = basetype.(*ArrayType).Base
+
+			switch t := basetype.(type) {
+			case *ArrayType:
+				basetype = t.Base
+			case *Pointer:
+				basetype = t.Of
+			default:
+				log.Panicf("Unable to dereference type: %#v", t)
+			}
 		}
 	}
 	return basetype, nil
