@@ -36,6 +36,7 @@ chr* readfile(int fd) {
     return buf
 }
 
+
 -- check how the program was called, assuring at least one argument is present in argv
 void check_args(int argc, str* argv) {
     if argc == 2 {
