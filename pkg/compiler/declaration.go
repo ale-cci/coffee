@@ -30,10 +30,11 @@ func (v *Var) ToLLVM(scopes *Scopes) (string, error) {
 }
 
 func (v *Var) AddrToLLVM(scopes *Scopes) (string, error) {
-	realtype, err := scopes.GetDefinedVar(v.Name)
-	v.Type = realtype
+	varData, err := scopes.Variable(v.Name)
+
+	v.Type = varData.Type
 	code := []string{}
-	v.Uid = fmt.Sprintf("%%%s", v.Name)
+	v.Uid = varData.Name
 
 	if v.Trailer != nil && len(v.Trailer) > 0 {
 		// TODO: check if it's not a module name
@@ -215,6 +216,9 @@ func (d *Declaration) ToLLVM(scopes *Scopes) (string, error) {
 	} else {
 
 		ssa, err = ParseSSA(d.Value.(SSAValue), scopes)
+		if err != nil {
+			return "", err
+		}
 		assignment = fmt.Sprintf("store %s %s, %s* %%%s", ssa.TypeRepr, ssa.Uid, ssa.TypeRepr, d.To.Name)
 	}
 
@@ -222,14 +226,15 @@ func (d *Declaration) ToLLVM(scopes *Scopes) (string, error) {
 		return "", err
 	}
 
-	if err := scopes.DefineVariable(d.To.Name, ssa.RealType); err != nil {
+	uid := fmt.Sprintf("%%%s", d.To.Name)
+	if err := scopes.DefineVariable(d.To.Name, ssa.RealType, uid); err != nil {
 		return "", err
 	}
 
 	return strings.Join(
 		[]string{
 			ssa.Init,
-			fmt.Sprintf("%%%s = alloca %s", d.To.Name, ssa.TypeRepr),
+			fmt.Sprintf("%s = alloca %s", uid, ssa.TypeRepr),
 			assignment,
 		}, "\n",
 	), nil

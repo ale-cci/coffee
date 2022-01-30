@@ -1207,6 +1207,28 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "parses global constants",
+			program: strings.Join(
+				[]string{
+					"int CONSTANT = 1",
+					"void main() {",
+					"    t := CONSTANT",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"@CONSTANT = constant i32 1",
+					"define void @main() {",
+					"%.tmp0 = load i32, i32* @CONSTANT",
+					"%t = alloca i32",
+					"store i32 %.tmp0, i32* %t",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {

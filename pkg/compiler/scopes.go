@@ -132,23 +132,32 @@ func (s *Scopes) GetDefinedType(name string) (Type, string, error) {
 	return "", "", fmt.Errorf("Error: variable %q is not defined", name)
 }
 
-func (s *Scopes) GetDefinedVar(name string) (Type, error) {
+
+func (s *Scopes) Variable(name string) (*VarInfo, error) {
 	for i := len(s.scopes) - 1; i >= 0; i -= 1 {
 		currScope := s.scopes[i]
 		if info, ok := currScope.Vars[name]; ok {
-			return info, nil
+			return &info, nil
 		}
 	}
-	return "", fmt.Errorf("Error: variable %q is not defined", name)
+	return nil, fmt.Errorf("Error: variable %q is not defined", name)
 }
 
-func (s *Scopes) DefineVariable(name string, typename Type) error {
+func (s *Scopes) GetDefinedVar(name string) (Type, error) {
+	info, err := s.Variable(name)
+	if err != nil {
+		return nil, err
+	}
+	return info.Type, nil
+}
+
+func (s *Scopes) DefineVariable(name string, typename Type, alias string) error {
 	currScope := s.scopes[len(s.scopes)-1]
 	vartype, defined := currScope.Vars[name]
 	if defined {
 		return fmt.Errorf("Variable %q is already defined on this scope with type %#v", name, vartype)
 	}
-	currScope.Vars[name] = typename
+	currScope.Vars[name] = VarInfo{Type: typename, Name: alias}
 	return nil
 }
 
@@ -216,6 +225,10 @@ func (c ConstantValue) ToLLVM(scopes *Scopes) (string, error) {
 	), nil
 }
 
+type VarInfo struct {
+	Name string
+	Type Type
+}
 type RtScope struct {
 	// available types
 	TypeAliases     map[string]string
@@ -228,7 +241,7 @@ type RtScope struct {
 	// defined functions
 	externs []string
 
-	Vars map[string]Type
+	Vars map[string]VarInfo
 }
 
 type ImportInfo struct {
@@ -260,7 +273,7 @@ func (s *Scopes) Push() *RtScope {
 		TypeAliases:     make(map[string]string),
 		RealTypeAliases: make(map[string]Type),
 		Names:           make(map[string]NameInfo),
-		Vars:            make(map[string]Type),
+		Vars:            make(map[string]VarInfo),
 	})
 	return &s.scopes[len(s.scopes)-1]
 }

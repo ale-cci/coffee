@@ -272,7 +272,7 @@ func (f *Function) ToLLVM(scopes *Scopes) (string, error) {
 	strFunctionBody := ""
 
 	for _, arg := range f.Args {
-		err := scopes.DefineVariable(arg.Name, arg.Type)
+		err := scopes.DefineVariable(arg.Name, arg.Type, fmt.Sprintf("%%%s", arg.Name))
 		if err != nil {
 			return "", err
 		}
@@ -487,6 +487,25 @@ func BuildScopes(defaultScope string) *Scopes {
 	return &scopes
 }
 
+func (c *Constant) ToLLVM(scopes *Scopes) (string, error) {
+	imm, ok := c.Value.(LLVMImmediate)
+	if !ok {
+		return "", fmt.Errorf("Value not assignable to global constant: %v", c.Value)
+	}
+	immediate, err := imm.ToImmediateLLVM(scopes)
+	if err != nil {
+		return "", err
+	}
+	typerepr, err := scopes.TypeRepr(immediate.Type)
+	if err != nil {
+		return "", err
+	}
+
+	scopes.DefineVariable(c.To.Name, c.To.Type, "@"+c.To.Name)
+	return fmt.Sprintf("@%s = constant %s %s", c.To.Name, typerepr, immediate.Value), nil
+}
+
+
 func ToLLVM(scopes *Scopes, ast *AST) (string, error) {
 	scopes.Push()
 	for _, topLevelOp := range *ast {
@@ -514,6 +533,12 @@ func ToLLVM(scopes *Scopes, ast *AST) (string, error) {
 			blocks = append(blocks, code)
 		} else if imp, ok := state.(*Import); ok {
 			code, err := imp.ToLLVM(scopes)
+			if err != nil {
+				return "", err
+			}
+			blocks = append(blocks, code)
+		} else if c, ok := state.(*Constant); ok {
+			code, err := c.ToLLVM(scopes)
 			if err != nil {
 				return "", err
 			}

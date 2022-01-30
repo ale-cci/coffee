@@ -56,7 +56,15 @@ func Parse(tokens []Token) (*AST, error) {
 			break
 
 		default:
-			fn, err := ParseFunction(peeker)
+			currIdx := peeker.index
+
+			var fn Expression
+			var err error
+			fn, err = ParseFunction(peeker)
+			if err != nil {
+				peeker.index = currIdx
+				fn, err = ParseGlobalConstant(peeker)
+			}
 			if err != nil {
 				return nil, err
 			}
@@ -66,6 +74,29 @@ func Parse(tokens []Token) (*AST, error) {
 		body = append(body, stmt)
 	}
 	return &body, nil
+}
+
+func ParseGlobalConstant(p *TokenPeeker) (*Constant, error) {
+	typename, err := ParseType(p)
+	if err != nil {
+		return nil, err
+	}
+	varname := p.PeekOne()
+	if varname == nil || varname.Type != WORD {
+		return nil, fmt.Errorf("Unable to parse constant, expected WORD, got %#v", varname)
+	}
+	p.Read()
+
+	if tok := p.PeekOne(); tok == nil || tok.Type != OP_EQ {
+		return nil, fmt.Errorf("Unable to parse constant, expected = , got: %#v", tok)
+	}
+	p.Read()
+
+	val, err := ParseAssignable(p)
+	return &Constant{
+		To: &Var{Name: varname.Value, Type: typename},
+		Value: val,
+	}, nil
 }
 
 func ParseExtern(p *TokenPeeker) (*ExternFunc, error) {

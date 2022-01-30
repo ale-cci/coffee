@@ -65,6 +65,11 @@ type Declaration struct {
 	Value interface{}
 }
 
+type Constant struct {
+	To *Var
+	Value interface{}
+}
+
 type ForLoop struct {
 	Init      Expression
 	Condition Assignable
