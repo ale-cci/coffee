@@ -216,7 +216,9 @@ func (b *IfElseBlock) ToLLVM(scopes *Scopes) (string, error) {
 }
 
 func (r *Return) ToLLVM(scopes *Scopes) (string, error) {
-	if num, ok := r.Value.(LLVMImmediate); ok {
+	if r.Value == nil {
+		return fmt.Sprintf("ret void"), nil
+	} else if num, ok := r.Value.(LLVMImmediate); ok {
 		imm, err := num.ToImmediateLLVM(scopes)
 		if err != nil {
 			return "", err
@@ -290,7 +292,7 @@ func (f *Function) ToLLVM(scopes *Scopes) (string, error) {
 		strFunctionBody += ("\n" + code)
 	}
 
-	if _, ok := lastexpr.(Return); !ok && strReturnType == "void" {
+	if _, ok := lastexpr.(*Return); !ok && strReturnType == "void" {
 		strFunctionBody += "\nret void"
 	}
 

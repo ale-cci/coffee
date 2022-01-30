@@ -1000,6 +1000,23 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "parses 'return' without value",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    return",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {

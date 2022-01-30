@@ -17,7 +17,7 @@ func ParseTopLevelExpression(p *TokenPeeker) (Expression, error) {
 		p.Read()
 		val, err := ParseAssignable(p)
 		if err != nil {
-			return nil, err
+			return &Return{nil}, nil
 		}
 		return &Return{val}, nil
 	} else if tok.Type == WORD || tok.Type == T_INT || tok.Type == T_CHAR {
