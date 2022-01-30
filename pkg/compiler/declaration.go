@@ -202,61 +202,34 @@ func ParseSSA(val SSAValue, scopes *Scopes) (*SSAInfo, error) {
 }
 
 func (d *Declaration) ToLLVM(scopes *Scopes) (string, error) {
-	var prepCode string
-	var rval string
-	var realtype Type
+	var ssa *SSAInfo = &SSAInfo{}
+	var err error
 
-	if imm, ok := d.Value.(LLVMImmediate); ok {
-		immval, err := imm.ToImmediateLLVM(scopes)
-		if err != nil {
-			log.Panicf("Unable to retrieve immediate value for %#v: %v", d.Value, err)
-			return "", err
+	assignment := ""
+	if d.Value == nil {
+		if d.To.Type == "" || d.To.Type == nil {
+			return "", fmt.Errorf("Unable to infer type for variable: %#v", d.To)
 		}
-		realtype, err = d.Value.(SSAValue).RealType(*scopes)
-		if err != nil {
-			log.Panicf("Unable to retrieve real value for %#v: %v", d.Value, err)
-			return "", err
-		}
-		rval = immval.Value
-	} else if ssa, ok := d.Value.(SSAValue); ok {
-		var err error
-		prepCode, err = ssa.ToLLVM(scopes)
-		if err != nil {
-			return "", err
-		}
+		ssa.RealType = d.To.Type
+		ssa.TypeRepr, err = scopes.TypeRepr(ssa.RealType)
+	} else {
 
-		realtype, err = ssa.RealType(*scopes)
-		if err != nil {
-			return "", err
-		}
-		rval, err = ssa.Id()
-	} else if d.Value != nil {
-		return "", fmt.Errorf("%v does not implement SSAValue!", d.Value)
-	} else if d.Value == nil {
-		if d.To.Type == "" {
-			return "", fmt.Errorf("Unable to automatically detect type for variable %q", d.To.Name)
-		}
-		realtype = d.To.Type
+		ssa, err = ParseSSA(d.Value.(SSAValue), scopes)
+		assignment = fmt.Sprintf("store %s %s, %s* %%%s", ssa.TypeRepr, ssa.Uid, ssa.TypeRepr, d.To.Name)
 	}
 
-	if err := scopes.DefineVariable(d.To.Name, realtype); err != nil {
-		return "", err
-	}
-
-	rtype, err := scopes.TypeRepr(realtype)
 	if err != nil {
 		return "", err
 	}
 
-	assignment := ""
-	if d.Value != nil {
-		assignment = fmt.Sprintf("store %s %s, %s* %%%s", rtype, rval, rtype, d.To.Name)
+	if err := scopes.DefineVariable(d.To.Name, ssa.RealType); err != nil {
+		return "", err
 	}
 
 	return strings.Join(
 		[]string{
-			prepCode,
-			fmt.Sprintf("%%%s = alloca %s", d.To.Name, rtype),
+			ssa.Init,
+			fmt.Sprintf("%%%s = alloca %s", d.To.Name, ssa.TypeRepr),
 			assignment,
 		}, "\n",
 	), nil
