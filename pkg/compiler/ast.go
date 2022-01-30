@@ -39,6 +39,7 @@ type Argument struct {
 	Type Type
 	Name string
 }
+
 type Return struct{ Value Assignable }
 
 type ExternFunc struct {
@@ -95,6 +96,8 @@ type ArrayCell struct {
 type StaticArray struct {
 	Elements []Assignable
 }
+
+
 type Var struct {
 	Name    string
 	Type    Type

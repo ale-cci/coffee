@@ -2,7 +2,8 @@ package compiler
 
 import (
 	"fmt"
-	"strconv"
+	"strings"
+	// "strconv"
 )
 
 func ParseTopLevelExpression(p *TokenPeeker) (Expression, error) {
@@ -20,68 +21,6 @@ func ParseTopLevelExpression(p *TokenPeeker) (Expression, error) {
 			return &Return{nil}, nil
 		}
 		return &Return{val}, nil
-	} else if tok.Type == WORD || tok.Type == T_INT || tok.Type == T_CHAR {
-		// a = b || a[] var = 3
-		p.Read()
-		if tok := p.PeekOne(); tok.Type == WORD || tok.Type == LSBRACKET || tok.Type == OP_STAR {
-			// int a || int[1] a || a[1] = 3 cases ||
-			p.Unread()
-			typename, err := ParseType(p)
-			if err != nil {
-				return nil, err
-			}
-
-			varname := p.Read()
-			if tok.Type == LSBRACKET && varname.Type == OP_EQ {
-				// this is an assignment
-				value, err := ParseAssignable(p)
-				if err != nil {
-					return nil, err
-				}
-				arr, err := ArrayTypeToArrayCell(typename)
-				if err != nil {
-					return nil, &ParseError{
-						Pos:   varname.Position,
-						error: err.Error(),
-					}
-				}
-				return &Assignment{
-					To:    arr,
-					Value: value,
-				}, nil
-			} else if varname.Type != WORD {
-				return nil, &ParseError{
-					Pos:   varname.Position,
-					error: fmt.Sprintf("Expecting variable name, got %q", varname.Value),
-				}
-			}
-
-			// expect equal
-			if tok := p.PeekOne(); tok.Type == OP_EQ {
-				p.Read()
-				value, err := ParseAssignable(p)
-				if err != nil {
-					return nil, err
-				}
-				return &Declaration{
-					To: &Var{
-						Type: typename,
-						Name: varname.Value,
-					},
-					Value: value,
-				}, nil
-			}
-			// comma
-			return &Declaration{
-				To: &Var{
-					Type: typename,
-					Name: varname.Value,
-				},
-				Value: nil,
-			}, nil
-		} else {
-			p.Unread()
-		}
 	}
 	expr, err := ParseExpression(p)
 	return expr, err
@@ -179,106 +118,234 @@ func ParseForLoop(p *TokenPeeker) (*ForLoop, error) {
 	}, nil
 }
 
-func ParseExpression(p *TokenPeeker) (Expression, error) {
-	tok := p.PeekOne()
-	if tok.Type == WORD {
-		tok := p.Read()
-		next := p.PeekOne()
-		if next.Type == OP_COLONEQ {
-			// declaration
-			p.Read()
+func ParseDeclaration(p *TokenPeeker) (Expression, error) {
+	typename, err := ParseType(p)
+	if err != nil {
+		return nil, err
+	}
+	name := p.PeekOne()
+	if name == nil || name.Type != WORD {
+		return nil, &ParseError{
+			Pos: name.Position,
+			error: fmt.Sprintf("[Declaration]: Expecting WORD toke for declaration, found: %#v", name),
+		}
+	}
+	p.Read()
 
-			assignable, err := ParseAssignable(p)
-			if err != nil {
-				return nil, err
-			}
-			return &Declaration{
-				To:    &Var{Name: tok.Value},
-				Value: assignable,
-			}, nil
-		} else if next.Type == DOT {
-			p.Unread()
-			attr, err := ParseAttrs(p)
-			if err != nil {
-				return nil, err
-			}
-
-			if p.PeekOne().Type == LPAREN {
-				params, err := ParseFunctionCallParens(p)
-				if err != nil {
-					return nil, err
-				}
-				return &FnCall{
-					Name: attr,
-					Params: params,
-				}, nil
-			}
-
-			if p.PeekOne().Type == OP_EQ {
-				p.Read()
-				assignable, err := ParseAssignable(p)
-				if err != nil {
-					return nil, err
-				}
-				return &Assignment{
-					To: attr,
-					Value: assignable,
-				}, nil
-			}
-
-			return attr, nil
-		} else if next.Type == OP_EQ {
-			p.Read()
-			assignable, err := ParseAssignable(p)
-			if err != nil {
-				return nil, err
-			}
-			return &Assignment{
-				To:    &Var{Name: tok.Value},
-				Value: assignable,
-			}, nil
-		} else if next.Type == LPAREN {
-			p.Unread()
-			fnCall, err := ParseFunctionCall(p)
-			return fnCall, err
-		} else if next.Type == LSBRACKET {
-			p.Read()
-			name := tok.Value
-			indexToken := p.Read()
-			if indexToken.Type != INT {
-				return nil, &ParseError{
-					Pos:   indexToken.Position,
-					error: fmt.Sprintf("Expected int value, fount: %q", indexToken.Value),
-				}
-			}
-
-			index, err := strconv.Atoi(indexToken.Value)
-			if err != nil {
-				return nil, &ParseError{
-					Pos:   indexToken.Position,
-					error: fmt.Sprintf("Failed integer conversion of: %q", indexToken.Value),
-				}
-			}
-
-			if tok := p.Read(); tok.Type != RSBRACKET {
-				return nil, &ParseError{
-					Pos:   tok.Position,
-					error: fmt.Sprintf("Expected closed ], found %q", tok.Value),
-				}
-
-			}
-
-			return &ArrayCell{
-				Var: &Var{Name: name},
-				Pos: &Number{Value: fmt.Sprintf("%d", index), Type: "int"},
-			}, nil
+	var initValue Assignable = nil
+	if tok := p.PeekOne(); tok != nil && tok.Type == OP_EQ {
+		p.Read()
+		initValue, err = ParseAssignable(p)
+		if err != nil {
+			return nil, err
 		}
 	}
 
-	return nil, &ParseError{
-		Pos:   tok.Position,
-		error: fmt.Sprintf("Expecting expression, found: %q", tok.Value),
+	return &Declaration{
+		To: &Var{Name: name.Value, Type: typename},
+		Value: initValue,
+	}, nil
+}
+
+func ParseImplicitDeclaration(p *TokenPeeker) (Expression, error) {
+	tok := p.PeekOne()
+	if tok == nil || tok.Type != WORD {
+		return nil, &ParseError{
+			Pos: tok.Position,
+			error: fmt.Sprintf("[ImplicitDecl]: expecting WORD, found %#v", tok),
+		}
 	}
+	p.Read()
+	if next := p.PeekOne(); next == nil || next.Type != OP_COLONEQ {
+		return nil, &ParseError{
+			Pos: tok.Position,
+			error: fmt.Sprintf("[ImplicitDecl]: expecting :=, found %#v", next),
+		}
+	}
+	p.Read()
+	value, err := ParseAssignable(p)
+	if err != nil {
+		return nil, &ParseError{
+			Pos: tok.Position,
+			error: fmt.Sprintf("Unable to parse implicit declaration: %v", err),
+		}
+	}
+	return &Declaration{
+		To: &Var{ Name: tok.Value },
+		Value: value,
+	}, nil
+}
+
+func ParseAssignment(p *TokenPeeker) (Expression, error) {
+	dest, err := ParseAssignableDestination(p)
+	if err != nil {
+		return nil, err
+	}
+	if tok := p.PeekOne(); tok == nil || tok.Type != OP_EQ {
+		return nil, &ParseError{
+			Pos: tok.Position,
+			error: fmt.Sprintf("[Assignment]: Unable to parse assignment, expecting =, found: %#v", tok),
+		}
+	}
+	p.Read()
+
+	value, err := ParseAssignable(p)
+	if err != nil {
+		return nil, err
+	}
+	return &Assignment{
+		To: dest.(SSAValue),
+		Value: value,
+	}, nil
+}
+
+func ParseFnCall(p *TokenPeeker) (Expression, error) {
+	dest, err := ParseAssignableDestination(p)
+	if err != nil {
+		return nil, err
+	}
+	if tok := p.PeekOne(); tok == nil || tok.Type != LPAREN {
+		return nil, &ParseError{
+			Pos: tok.Position,
+			error: fmt.Sprintf("[FnCall]: Unable to parse assignment, expecting (, found: %#v", tok),
+		}
+	}
+	params, err := ParseFunctionCallParens(p)
+	if err != nil {
+		return nil, err
+	}
+	return &FnCall{
+		Name: dest.(*Var),
+		Params: params,
+	}, nil
+}
+
+func ParseExpression(p *TokenPeeker) (Expression, error) {
+	tok := p.PeekOne()
+
+	var expr Expression
+	var err error
+
+	errors := []string{}
+
+	origIdx := p.index
+	exprs := []func(*TokenPeeker)(Expression, error) {
+		ParseDeclaration,
+		ParseImplicitDeclaration,
+		ParseAssignment,
+		ParseFnCall,
+	}
+	for _, parser := range exprs {
+		if expr, err = parser(p); err == nil {
+			return expr, nil
+		}
+		p.index = origIdx
+		errors = append(errors, err.Error())
+	}
+
+	return nil, &ParseError{
+		Pos: tok.Position,
+		error: fmt.Sprintf("Unable to interpret as expression for one of the following reasons: \n%s", strings.Join(errors, "\n")),
+	}
+
+	// if tok.Type == WORD {
+	// 	tok := p.Read()
+	// 	next := p.PeekOne()
+	// 	if next.Type == OP_COLONEQ {
+	// 		// declaration
+	// 		p.Read()
+
+	// 		assignable, err := ParseAssignable(p)
+	// 		if err != nil {
+	// 			return nil, err
+	// 		}
+	// 		return &Declaration{
+	// 			To:    &Var{Name: tok.Value},
+	// 			Value: assignable,
+	// 		}, nil
+	// 	} else if next.Type == DOT {
+	// 		p.Unread()
+	// 		attr, err := ParseAttrs(p)
+	// 		if err != nil {
+	// 			return nil, err
+	// 		}
+
+	// 		if p.PeekOne().Type == LPAREN {
+	// 			params, err := ParseFunctionCallParens(p)
+	// 			if err != nil {
+	// 				return nil, err
+	// 			}
+	// 			return &FnCall{
+	// 				Name: attr,
+	// 				Params: params,
+	// 			}, nil
+	// 		}
+
+	// 		if p.PeekOne().Type == OP_EQ {
+	// 			p.Read()
+	// 			assignable, err := ParseAssignable(p)
+	// 			if err != nil {
+	// 				return nil, err
+	// 			}
+	// 			return &Assignment{
+	// 				To: attr,
+	// 				Value: assignable,
+	// 			}, nil
+	// 		}
+
+	// 		return attr, nil
+	// 	} else if next.Type == OP_EQ {
+	// 		p.Read()
+	// 		assignable, err := ParseAssignable(p)
+	// 		if err != nil {
+	// 			return nil, err
+	// 		}
+	// 		return &Assignment{
+	// 			To:    &Var{Name: tok.Value},
+	// 			Value: assignable,
+	// 		}, nil
+	// 	} else if next.Type == LPAREN {
+	// 		p.Unread()
+	// 		fnCall, err := ParseFunctionCall(p)
+	// 		return fnCall, err
+	// 	} else if next.Type == LSBRACKET {
+	// 		p.Read()
+	// 		name := tok.Value
+	// 		indexToken := p.Read()
+	// 		if indexToken.Type != INT {
+	// 			return nil, &ParseError{
+	// 				Pos:   indexToken.Position,
+	// 				error: fmt.Sprintf("Expected int value, fount: %q", indexToken.Value),
+	// 			}
+	// 		}
+
+	// 		index, err := strconv.Atoi(indexToken.Value)
+	// 		if err != nil {
+	// 			return nil, &ParseError{
+	// 				Pos:   indexToken.Position,
+	// 				error: fmt.Sprintf("Failed integer conversion of: %q", indexToken.Value),
+	// 			}
+	// 		}
+
+	// 		if tok := p.Read(); tok.Type != RSBRACKET {
+	// 			return nil, &ParseError{
+	// 				Pos:   tok.Position,
+	// 				error: fmt.Sprintf("Expected closed ], found %q", tok.Value),
+	// 			}
+
+	// 		}
+
+	// 		return &ArrayCell{
+	// 			Var: &Var{Name: name},
+	// 			Pos: &Number{Value: fmt.Sprintf("%d", index), Type: "int"},
+	// 		}, nil
+	// 	}
+	// }
+
+	// return nil, &ParseError{
+	// 	Pos:   tok.Position,
+	// 	error: fmt.Sprintf("Expecting expression, found: %q", tok.Value),
+	// }
 }
 
 func ParseIfBlock(p *TokenPeeker) (*IfElseBlock, error) {
@@ -376,12 +443,9 @@ func ParseFunctionCallParens(p *TokenPeeker) ([]Assignable, error) {
 }
 
 func ParseFunctionCall(p *TokenPeeker) (*FnCall, error) {
-	tok := p.Read()
-	if tok.Type != WORD {
-		return nil, &ParseError{
-			Pos:   tok.Position,
-			error: fmt.Sprintf("Expected WORD, found: %q", tok.Value),
-		}
+	dest, err := ParseAssignableDestination(p)
+	if err != nil {
+		return nil, err
 	}
 
 	params, err := ParseFunctionCallParens(p)
@@ -389,7 +453,7 @@ func ParseFunctionCall(p *TokenPeeker) (*FnCall, error) {
 		return nil, err
 	}
 	return &FnCall{
-		Name:   &Var{Name: tok.Value},
+		Name:   dest.(*Var),
 		Params: params,
 	}, nil
 }
@@ -457,6 +521,61 @@ func ParseBlock(p *TokenPeeker) ([]Expression, error) {
 	return expressions, nil
 }
 
+
+func ParseAssignableDestination(p *TokenPeeker) (Assignable, error) {
+	tok := p.PeekOne()
+	if tok.Type == DOT {
+		p.Read()
+		ass, err := ParseAssignableDestination(p)
+		if err != nil {
+			return nil, err
+		}
+		return &Pointer{
+			Of: ass,
+		}, nil
+	}
+	if tok.Type != WORD {
+		return nil, fmt.Errorf("!!!")
+	}
+	p.Read()
+
+	next := p.PeekOne()
+	if next == nil {
+		return &Var{Name: tok.Value}, nil
+	}
+
+	if next.Type == DOT {
+		p.Unread()
+		attr, err := ParseAttrs(p)
+		if err != nil {
+			return nil, err
+		}
+		return attr, nil
+	} else if next.Type == LSBRACKET {
+		var val SSAValue
+		val = &Var{Name: tok.Value}
+
+		for p.PeekOne() != nil && p.PeekOne().Type == LSBRACKET {
+			p.Read()
+			pos, err := ParseAssignable(p)
+			if err != nil {
+				return nil, err
+			}
+			if tok := p.Read(); tok.Type != RSBRACKET {
+				return nil, &ParseError{
+					Pos:   tok.Position,
+					error: fmt.Sprintf("Expecting ], got %q", tok.Value),
+				}
+			}
+			val = &ArrayCell{Var: val, Pos: pos}
+		}
+
+		return val, nil
+	}
+
+	return &Var{Name: tok.Value}, nil
+}
+
 func ParseAtomicAssignable(p *TokenPeeker) (Assignable, error) {
 	tok := p.PeekOne()
 	if tok == nil {
@@ -485,55 +604,22 @@ func ParseAtomicAssignable(p *TokenPeeker) (Assignable, error) {
 		tok := p.Read()
 		return &String{Value: tok.Value[1 : len(tok.Value)-1]}, nil
 	} else if tok.Type == WORD {
-		tok := p.Read()
-		next := p.PeekOne()
-		if next == nil {
-			return &Var{Name: tok.Value}, nil
+		ass, err := ParseAssignableDestination(p)
+		if err != nil {
+			return nil, err
 		}
-		if next.Type == LPAREN {
-			p.Unread()
-			fn, err := ParseFunctionCall(p)
-			return fn, err
-		} else if next.Type == DOT {
-			p.Unread()
-			attr, err := ParseAttrs(p)
+		if next := p.PeekOne(); next != nil && next.Type == LPAREN {
+			params, err := ParseFunctionCallParens(p)
 			if err != nil {
 				return nil, err
 			}
-			if p.PeekOne() != nil && p.PeekOne().Type == LPAREN {
-				params, err := ParseFunctionCallParens(p)
-				if err != nil {
-					return nil, err
-				}
-				return &FnCall{
-					Name: attr,
-					Params: params,
-				}, nil
-			}
-			return attr, nil
-		} else if next.Type == LSBRACKET {
-			var val SSAValue
-			val = &Var{Name: tok.Value}
 
-			for p.PeekOne() != nil && p.PeekOne().Type == LSBRACKET {
-				p.Read()
-				pos, err := ParseAssignable(p)
-				if err != nil {
-					return nil, err
-				}
-				if tok := p.Read(); tok.Type != RSBRACKET {
-					return nil, &ParseError{
-						Pos:   tok.Position,
-						error: fmt.Sprintf("Expecting ], got %q", tok.Value),
-					}
-				}
-				val = &ArrayCell{Var: val, Pos: pos}
-			}
-
-			return val, nil
+			return &FnCall{
+				Name: ass.(*Var),
+				Params: params,
+			}, nil
 		}
-
-		return &Var{Name: tok.Value}, nil
+		return ass, err
 	} else if tok.Type == KW_TRUE || tok.Type == KW_FALSE {
 		p.Read()
 		return &Boolean{Value: tok.Value}, nil

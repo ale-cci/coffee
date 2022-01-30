@@ -147,6 +147,60 @@ func (v *Var) Id() (string, error) {
 	return v.Uid, nil
 }
 
+type SSAInfo struct {
+	Uid      string
+	Init     string
+	RealType Type
+	TypeRepr string
+}
+
+func ParseSSA(val SSAValue, scopes *Scopes) (*SSAInfo, error) {
+	info := SSAInfo{}
+
+	if imm, ok := val.(LLVMImmediate); ok {
+		immvalue, err := imm.ToImmediateLLVM(scopes)
+		if err != nil {
+			return nil, err
+		}
+		info.RealType, err = imm.(SSAValue).RealType(*scopes)
+		if err != nil {
+			return nil, err
+		}
+
+		info.TypeRepr, err = scopes.TypeRepr(immvalue.Type)
+		if err != nil {
+			return nil, err
+		}
+		info.Uid = immvalue.Value
+		info.Init = ""
+		return &info, nil
+	} else if ssa, ok := val.(SSAValue); ok {
+		var err error
+		info.Init, err = ssa.ToLLVM(scopes)
+		if err != nil {
+			return nil, err
+		}
+
+		info.RealType, err = ssa.RealType(*scopes)
+		if err != nil {
+			return nil, err
+		}
+		info.TypeRepr, err = scopes.TypeRepr(info.RealType)
+		if err != nil {
+			return nil, err
+		}
+
+		info.Uid, err = ssa.Id()
+		if err != nil {
+			return nil, err
+		}
+		return &info, nil
+	}
+
+	log.Panicf("Unable to convert %#v to SSAValue", val)
+	return nil, nil
+}
+
 func (d *Declaration) ToLLVM(scopes *Scopes) (string, error) {
 	var prepCode string
 	var rval string
@@ -292,25 +346,36 @@ func (ac *ArrayCell) varname() string {
 }
 
 func (ac *ArrayCell) RealType(scopes Scopes) (Type, error) {
-	// typerepr, err := ac.Var.RealType(scopes)
 	typeval, err := scopes.GetDefinedVar(ac.varname())
 	if ptr, ok := typeval.(*Pointer); ok {
 		return ptr.Of, err
 	}
-	return typeval.(*ArrayType).Base, err
+
+	type realtype interface {
+		RealType(scopes Scopes) (Type, error)
+	}
+	basetype, err := ac.Var.(realtype).RealType(scopes)
+	var elem interface{}
+	elem = ac
+
+	for ;; {
+		if cell, ok := elem.(*ArrayCell); !ok {
+			break
+		} else {
+			elem = cell.Var
+			basetype = basetype.(*ArrayType).Base
+		}
+	}
+	return basetype, nil
 }
 
 func (ac *ArrayCell) TypeRepr(scopes Scopes) (string, error) {
-	typeval, err := scopes.GetDefinedVar(ac.varname())
+	rt, err := ac.RealType(scopes)
 	if err != nil {
 		return "", err
 	}
-	if ptr, ok := typeval.(*Pointer); ok {
-		typ, err := scopes.TypeRepr(ptr.Of)
-		return typ, err
-	}
-	typerepr, err := scopes.TypeRepr(typeval.(*ArrayType).Base)
-	return typerepr, err
+	t, err  := scopes.TypeRepr(rt)
+	return t, err
 }
 
 func (ac *ArrayCell) ToLLVM(scopes *Scopes) (string, error) {
@@ -345,17 +410,9 @@ func (ac *ArrayCell) ToLLVM(scopes *Scopes) (string, error) {
 	}
 	ac.Uid = fmt.Sprintf("%%.tmp%d", id)
 
-	var postype, posid string
-	if imm, ok := ac.Pos.(LLVMImmediate); ok {
-		immvalue, err := imm.ToImmediateLLVM(scopes)
-		if err != nil {
-			return "", err
-		}
-		postype, err = scopes.TypeRepr(immvalue.Type)
-		if err != nil {
-			return "", err
-		}
-		posid = immvalue.Value
+	posInfo, err := ParseSSA(ac.Pos.(SSAValue), scopes)
+	if err != nil {
+		return "", err
 	}
 
 	celltype, err := ac.TypeRepr(*scopes)
@@ -374,8 +431,9 @@ func (ac *ArrayCell) ToLLVM(scopes *Scopes) (string, error) {
 			strings.Join(
 				[]string{
 					init,
+					posInfo.Init,
 					fmt.Sprintf("%s = load %s*, %s** %s", loadId, celltype, celltype, ofIdx),
-					fmt.Sprintf("%s = getelementptr %s, %s* %s, %s %s", tmpId, celltype, celltype, loadId, postype, posid),
+					fmt.Sprintf("%s = getelementptr %s, %s* %s, %s %s", tmpId, celltype, celltype, loadId, posInfo.TypeRepr, posInfo.Uid),
 					fmt.Sprintf("%s = load %s, %s* %s", ac.Uid, celltype, celltype, tmpId),
 				}, "\n",
 			), "\n",
@@ -386,7 +444,8 @@ func (ac *ArrayCell) ToLLVM(scopes *Scopes) (string, error) {
 		strings.Join(
 			[]string{
 				init,
-				fmt.Sprintf("%s = getelementptr %s, %s*%s, i32 0, %s %s", loadId, typename, typename, ofIdx, postype, posid),
+				posInfo.Init,
+				fmt.Sprintf("%s = getelementptr %s, %s*%s, i32 0, %s %s", loadId, typename, typename, ofIdx, posInfo.TypeRepr, posInfo.Uid),
 				fmt.Sprintf("%s = load %s, %s* %s", ac.Uid, celltype, celltype, loadId),
 			}, "\n",
 		), "\n",
@@ -394,6 +453,11 @@ func (ac *ArrayCell) ToLLVM(scopes *Scopes) (string, error) {
 }
 
 func (ac *ArrayCell) AddrToLLVM(scopes *Scopes) (string, error) {
+	info, err := ParseSSA(ac.Pos.(SSAValue), scopes)
+	if err != nil {
+		return "", err
+	}
+
 	id, err := scopes.ReserveLocal()
 	if err != nil {
 		log.Panicf("Unable to reserve local id: %v", err)
@@ -415,24 +479,33 @@ func (ac *ArrayCell) AddrToLLVM(scopes *Scopes) (string, error) {
 		return "", err
 	}
 
-	var postype, posid string
-	if imm, ok := ac.Pos.(LLVMImmediate); ok {
-		immvalue, err := imm.ToImmediateLLVM(scopes)
+	if _, ok := vartype.(*Pointer); ok {
+		// extract pointer from array
+		id, err := scopes.ReserveLocal()
 		if err != nil {
 			return "", err
 		}
-		postype, err = scopes.TypeRepr(immvalue.Type)
-		if err != nil {
-			return "", err
-		}
-		posid = immvalue.Value
+		tmpId := ac.Uid
+		ac.Uid = fmt.Sprintf("%%.tmp%d", id)
+
+		return strings.Trim(
+			strings.Join(
+				[]string{
+					initCode,
+					info.Init,
+					fmt.Sprintf("%s = getelementptr %s, %s*%s, %s %s", tmpId, typename, typename, varid, info.TypeRepr, info.Uid),
+					fmt.Sprintf("%s = load %s, %s* %s", ac.Uid, typename, typename, tmpId),
+				}, "\n",
+			), "\n",
+		), nil
 	}
 
-	code := fmt.Sprintf("%s = getelementptr %s, %s*%s, i32 0, %s %s", ac.Uid, typename, typename, varid, postype, posid)
+	code := fmt.Sprintf("%s = getelementptr %s, %s*%s, i32 0, %s %s", ac.Uid, typename, typename, varid, info.TypeRepr, info.Uid)
 	return strings.Trim(
 		strings.Join(
 			[]string{
 				initCode,
+				info.Init,
 				code,
 			}, "\n",
 		), "\n",

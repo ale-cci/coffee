@@ -460,6 +460,32 @@ func TestParsing(t *testing.T) {
 			),
 		},
 		{
+			name: "parses type of array of arrays correctly",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"chr** t",
+					"chr* b = t[0]",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"",
+					"%t = alloca i8**",
+					"",
+					"%.tmp0 = load i8**, i8*** %t",
+					"%.tmp1 = getelementptr i8*, i8** %.tmp0, i32 0",
+					"%.tmp2 = load i8*, i8** %.tmp1",
+					"%b = alloca i8*",
+					"store i8* %.tmp2, i8** %b",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
+		{
 			name: "parses array types",
 			program: strings.Join(
 				[]string{
@@ -1071,6 +1097,33 @@ func TestParsing(t *testing.T) {
 					"",
 					"br label %.for.start.0",
 					".for.end.0:",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
+		{
+			name: "should treat pointer as unsized arrays",
+			program: strings.Join(
+				[]string{
+					"void f(int* a) {",
+					"    i := 0",
+					"    a[i] = 1",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @f(i32* %.arg.a) {",
+					"%a = alloca i32*",
+					"store i32* %.arg.a, i32** %a",
+					"",
+					"%i = alloca i32",
+					"store i32 0, i32* %i",
+					"%.tmp0 = load i32, i32* %i",
+					"%.tmp1 = getelementptr i32*, i32**%a, i32 %.tmp0",
+					"%.tmp2 = load i32*, i32** %.tmp1",
+					"store i32 1, i32* %.tmp2",
 					"ret void",
 					"}",
 				}, "\n",
