@@ -101,10 +101,14 @@ func (s *Scopes) DefineGlobals() ([]string, error) {
 	// topLevel := s.scopes[1]
 	globals := []string{}
 	for _, static := range s.statics {
+		if static.Inserted {
+			continue
+		}
 		repr, err := static.ToLLVM(s)
 		if err != nil {
 			return nil, err
 		}
+		static.Inserted = true
 		globals = append(globals, repr)
 	}
 
@@ -214,6 +218,7 @@ type ConstantValue struct {
 	Value    string
 	Uid      string
 	TypeRepr string
+	Inserted bool
 }
 
 func (c ConstantValue) ToLLVM(scopes *Scopes) (string, error) {
@@ -252,7 +257,7 @@ type ImportInfo struct {
 
 type Scopes struct {
 	scopes     []RtScope
-	statics    []ConstantValue
+	statics    []*ConstantValue
 	counter    int
 	modules    map[string]*ImportInfo
 	currentmod string
@@ -284,7 +289,7 @@ func (s *Scopes) Pop() {
 func ScopesFrom(startScope []RtScope) Scopes {
 	return Scopes{
 		scopes:  startScope,
-		statics: []ConstantValue{},
+		statics: []*ConstantValue{},
 		counter: 0,
 	}
 }
@@ -306,7 +311,7 @@ func (s *Scopes) DefineConstantString(value string) (ConstantValue, error) {
 		Uid:      fmt.Sprintf("@.str%d", constants),
 		TypeRepr: fmt.Sprintf("[%d x i8]", length),
 	}
-	s.statics = append(s.statics, constant)
+	s.statics = append(s.statics, &constant)
 	return constant, nil
 }
 
