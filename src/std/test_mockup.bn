@@ -30,7 +30,7 @@ void run(bool failure) {
 
 
 void init_file(str filename) {
-    io.printf("\1B[34m file: <'%s'> \1B[0m\0A", filename)
+    io.printf("Running tests in %s\0A", filename)
 }
 
 void setup(str label) {

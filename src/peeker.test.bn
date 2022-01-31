@@ -5,7 +5,7 @@ import "./peeker" as peeker
 
 
 int main() {
-    test.init_file("peeker.test.bn")
+    test.init_file("./peeker.test.bn")
 
     test.setup("reads characters from file descriptor")
     test.run(peeker_reads_chars())
