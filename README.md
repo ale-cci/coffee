@@ -49,7 +49,7 @@ Hello from coffee!
 
 NOTE: if you do `go install`, you probably need to add `$HOME/go/bin` to your `"$PATH"`
 
-#### Sample syntax
+#### Sample syntax (Not all implemented yet)
 ```
 #!/usr/bin/env coffee
 -- example of multiline docstring
@@ -58,7 +58,7 @@ NOTE: if you do `go install`, you probably need to add `$HOME/go/bin` to your `"
 import "something" as something_else
 
 -- Example function declaration
-int main(str[] argv) {
+int main(int argc, str* argv) {
     -- example closure declaration
     int clojure() {
         return len(argv)
