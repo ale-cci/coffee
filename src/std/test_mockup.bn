@@ -1,0 +1,16 @@
+import "./io" as io
+
+-- returns true in case of failure
+bool assert_equal_chr(str label, chr expect, got) {
+    if expect != got {
+        io.printf("[%s] expected '%c', got '%c'", label, expect, got)
+        return true
+    }
+    return false
+}
+
+void run(str label, bool failure) {
+    if failure {
+        io.printf("^--- %s", label)
+    }
+}

@@ -1,0 +1,36 @@
+import "./std/test_mockup" as test
+import "./std/io" as io
+import "./std/sys" as sys
+import "./peeker" as peeker
+
+void f_write(int fd, str string) {
+    int length = io.strlen(string)
+    sys.assert(io.write(fd, string, length) != length, "Not all bytes were written")
+}
+
+
+int main() {
+    int* fds = (int*) sys.malloc(32 * 2)
+    sys.assert(sys.pipe(fds) == 0, "Unable to create pipe")
+
+    # add test cases here
+    test.run("peeker reads characters", peeker_reads_chars(fds))
+
+    sys.free((chr*) fds)
+    return 0
+}
+
+
+bool peeker_reads_chars(int* pipes) {
+    -- write to input pipe, read from output pipe
+    f_write(pipes[io.STDIN], "abc")
+    p := peeker.new(pipes[io.STDOUT])
+
+    bool fail = false
+    fail = fail | test.assert_equal_chr(".1", peeker.read(p), 'a')
+    fail = fail | test.assert_equal_chr(".2", peeker.read(p), 'b')
+    fail = fail | test.assert_equal_chr(".3", peeker.read(p), 'c')
+    fail = fail | test.assert_equal_chr(".4", peeker.read(p), '\00')
+    fail = fail | test.assert_equal_chr(".5", peeker.read(p), '\00')
+    return fail
+}

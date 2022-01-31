@@ -1,25 +1,28 @@
 #!/usr/bin/env coffee
 import "./std/io" as io
 import "./std/sys" as sys
+import "./peeker" as peeker
 
 alias Token = struct {
     int type,
     str value,
 }
 
+
+
 int main(int argc, str* argv) {
     check_args(argc, argv)
-
-    int fd = io.open(argv[1], 0)
+    int fd = io.open(argv[1], io.O_RDONLY)
     sys.assert(fd > 0, "Unable to open input file\0A")
+    pk := peeker.new(fd)
+
+    io.printf("First character: %c\0A", peeker.read(pk))
     -- read file content
-    chr* buf = readfile(fd)
-    io.puts(buf)
+    -- chr* buf = readfile(fd)
+    -- sys.free(buf)
 
-    sys.free(buf)
+    sys.free((chr*) pk)
     io.close(fd)
-
-
     return 0
 }
 

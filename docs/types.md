@@ -32,6 +32,16 @@ void main() {
 }
 ```
 
+#### type casting
+##### Syntax
+```
+(<type>) <assignable>
+```
+---
+###### Examples:
+```
+int* buffer = (int*) sys.malloc(32 * 4)
+```
 
 #### the `alias` keyword
 `alias` is used to define new types, it is a top level expression, so it could

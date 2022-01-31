@@ -34,3 +34,5 @@ chr* memset(chr* buf, chr val, int n) {
     return buf
 }
 
+
+extern int pipe(int* fds)
