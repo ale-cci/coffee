@@ -1276,6 +1276,22 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "can do type recursion",
+			program: strings.Join(
+				[]string{
+					"alias T = struct {",
+					"    T* one,",
+					"    int two,",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"%.type.T = type {%.type.T*, i32}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {

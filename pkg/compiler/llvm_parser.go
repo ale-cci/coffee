@@ -565,11 +565,11 @@ func ToLLVM(scopes *Scopes, ast *AST) (string, error) {
 
 func (t *TypeAlias) ToLLVM(scopes *Scopes) (string, error) {
 	t.Uid = fmt.Sprintf("%%.type.%s", t.Name)
-	repr, err := scopes.TypeRepr(t.Type)
-	if err != nil {
+	if err := scopes.DefineTypeAlias(t.Name, t.Uid, t.Type); err != nil {
 		return "", err
 	}
-	if err := scopes.DefineTypeAlias(t.Name, t.Uid, t.Type); err != nil {
+	repr, err := scopes.TypeRepr(t.Type)
+	if err != nil {
 		return "", err
 	}
 	return fmt.Sprintf("%s = type %s", t.Uid, repr), nil
