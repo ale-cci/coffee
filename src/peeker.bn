@@ -43,6 +43,9 @@ chr read(PeekerInfo* p) {
     return char
 }
 
+void seek(PeekerInfo* p, int pos) {
+    io.lseek(p.fd, pos, io.SEEK_SET)
+}
 
 PeekerInfo* new(int fd) {
     PeekerInfo* p = (PeekerInfo*) sys.malloc(S_PeekerInfo)

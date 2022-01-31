@@ -1,10 +1,11 @@
+-- https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
 import "./io" as io
 import "./sys" as sys
 
 -- returns true in case of failure
 bool assert_equal_chr(str label, chr expect, got) {
     if expect != got {
-        io.printf("[%s] expected '%c', got '%c'\0A", label, expect, got)
+        io.printf("[%s] expected '\1B[35m%c\1B[0m', got '\1B[35m%c\1B[0m'\0A", label, expect, got)
         return true
     }
     return false
@@ -29,7 +30,7 @@ void run(bool failure) {
 
 
 void init_file(str filename) {
-    io.printf("\1B[35m file: <'%s'> \1B[0m\0A", filename)
+    io.printf("\1B[34m file: <'%s'> \1B[0m\0A", filename)
 }
 
 void setup(str label) {
