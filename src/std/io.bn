@@ -1,6 +1,5 @@
 -- Standard io operations
 
-
 -- it's what you expect
 -- example:
 --  printf("number: %d", 3)
@@ -22,9 +21,9 @@ extern int sscanf(chr* from, str template, ...args)
 
 -- write extern syscall, see `man 2 write`
 -- :param fd:
---  (0) STDIN
---  (1) STDOUT
---  (2) STDERR
+int STDIN = 0
+int STDOUT = 1
+int STDERR = 2
 extern int write(int fd, str buffer, int n)
 
 
@@ -38,19 +37,19 @@ extern int close(int fd)
 
 -- seek location of a file,
 -- :param whence:
---  (0) SEEK_SET - set to offset
---  (1) SEEK_CUR - current location plus offset
---  (2) SEEK_END - file size plus offset
+int SEEK_SET = 0 -- set to offset
+int SEEK_CUR = 1 -- current location plus offset
+int SEEK_END = 2 -- file size plus offset
 extern int lseek(int fd, int offset, int whence)
 
 
 -- returns file descriptor of opened file
 -- :param flags:
---  (0)   O_RDONLY
---  (1)   O_WRONLY
---  (2)   O_RDWR
---  (64)  O_CREAT
---  (512) O_TRUNC
+int O_RDONLY = 0
+int O_WRONLY = 1
+int O_RDWR = 2
+int O_CREAT = 64
+int O_TRUNC = 512
 extern int open(str pathname, int flags)
 
 
