@@ -8,4 +8,4 @@ llvm/*
 src/*
 !src/*.bn
 !src/*/
-!src/build.sh
+!src/build
