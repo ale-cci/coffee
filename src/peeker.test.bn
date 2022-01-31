@@ -1,0 +1,35 @@
+import "./std/test_mockup" as test
+import "./std/io" as io
+import "./std/sys" as sys
+import "./peeker" as peeker
+
+
+int main() {
+    test.init_file("peeker.test.bn")
+    test.setup("peeker_reads_chars")
+    test.run(peeker_reads_chars())
+
+    test.setup("peeker_reads_chars")
+    test.run(peeker_reads_chars())
+    return 0
+}
+
+
+bool peeker_reads_chars() {
+    -- write to input pipe, read from output pipe
+    int* pipes = test.new_pipe()
+    p := peeker.new(pipes[io.STDIN])
+    test.write_n_close(pipes[io.STDOUT], "abc")
+
+    bool fail = false
+    fail = fail | test.assert_equal_chr(".1", 'a',   peeker.read(p))
+    fail = fail | test.assert_equal_chr(".2", 'b',   peeker.read(p))
+    fail = fail | test.assert_equal_chr(".3", 'c',   peeker.read(p))
+    fail = fail | test.assert_equal_chr(".4", '\00', peeker.read(p))
+    fail = fail | test.assert_equal_chr(".5", '\00', peeker.read(p))
+    fail = fail | test.assert_true("reach EOF", p.eof)
+
+    io.close(pipes[io.STDIN])
+    sys.free((chr*) pipes)
+    return fail
+}

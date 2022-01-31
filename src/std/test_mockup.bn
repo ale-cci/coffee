@@ -1,16 +1,51 @@
 import "./io" as io
+import "./sys" as sys
 
 -- returns true in case of failure
 bool assert_equal_chr(str label, chr expect, got) {
     if expect != got {
-        io.printf("[%s] expected '%c', got '%c'", label, expect, got)
+        io.printf("[%s] expected '%c', got '%c'\0A", label, expect, got)
         return true
     }
     return false
 }
 
-void run(str label, bool failure) {
-    if failure {
-        io.printf("^--- %s", label)
+bool assert_true(str label, bool got) {
+    if got != true {
+        io.printf("[%s] value is false\0A", label)
+        return true
     }
+    return false
 }
+
+void run(bool failure) {
+    if failure {
+        io.puts("\1B[31m  \-: \1B[5m ERROR \1B[25m\1B[0m")
+    } else {
+        io.puts("\1B[32m  \-: OK\1B[0m")
+    }
+    io.puts("")
+}
+
+
+void init_file(str filename) {
+    io.printf("\1B[35m file: <'%s'> \1B[0m\0A", filename)
+}
+
+void setup(str label) {
+    io.printf("  /-: %s \0A", label)
+}
+
+void write_n_close(int fd, str string) {
+    int length = io.strlen(string) + 1
+    sys.assert(io.write(fd, string, length) == length, "Not all bytes were written")
+    io.close(fd)
+}
+
+
+int* new_pipe() {
+    int* fds = (int*) sys.malloc(32 * 2)
+    sys.assert(sys.pipe(fds) == 0, "Unable to create pipe")
+    return fds
+}
+
