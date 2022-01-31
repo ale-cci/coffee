@@ -1251,6 +1251,31 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "parses pointer casting",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"chr* buf",
+					"int* buf2 = (int*) buf",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"",
+					"%buf = alloca i8*",
+					"",
+					"%.tmp0 = load i8*, i8** %buf",
+					"%.tmp1 = bitcast i8* %.tmp0 to i32*",
+					"%buf2 = alloca i32*",
+					"store i32* %.tmp1, i32** %buf2",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {

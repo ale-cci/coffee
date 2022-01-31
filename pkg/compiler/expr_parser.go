@@ -477,6 +477,35 @@ func ParseAssignableDestination(p *TokenPeeker) (Assignable, error) {
 	return &Var{Name: tok.Value}, nil
 }
 
+func ParseTypeCasting(p *TokenPeeker) (Assignable, error) {
+	if tok := p.PeekOne(); tok == nil || tok.Type != LPAREN {
+		return nil, &ParseError{
+			Pos: tok.Position,
+			error: fmt.Sprintf("Type casting must start with (, found: %q", tok.Value),
+		}
+	}
+	p.Read()
+
+	toType, err := ParseType(p)
+	if err != nil {
+		return nil, err
+	}
+
+	if tok := p.PeekOne(); tok == nil || tok.Type != RPAREN {
+		return nil, &ParseError{
+			Pos: tok.Position,
+			error: fmt.Sprintf("Type casting must end with ), found: %q", tok.Value),
+		}
+	}
+	p.Read()
+
+	ass, err := ParseSimpleAssignable(p)
+	return &Casting{
+		Of: ass,
+		Type: toType,
+	}, nil
+}
+
 func ParseAtomicAssignable(p *TokenPeeker) (Assignable, error) {
 	tok := p.PeekOne()
 	if tok == nil {

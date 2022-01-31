@@ -198,6 +198,33 @@ func NewOperator(optype TokenType, left, right Assignable) (*Operator, error) {
 }
 
 func ParseAssignable(p *TokenPeeker) (Assignable, error) {
+	prevIdx := p.index
+	parsers := []func(p*TokenPeeker)(Assignable, error) {
+		ParseTypeCasting,
+		ParseSimpleAssignable,
+	}
+
+	errors := []string{}
+	for _, parser := range parsers {
+		ass, err := parser(p)
+		if err != nil {
+			errors = append(errors, err.Error())
+			p.index = prevIdx
+			continue
+		}
+		return ass, nil
+	}
+
+	return nil, &ParseError{
+		Pos: int64(prevIdx),
+		error: fmt.Sprintf(
+			"Unable to parse assignbale for one of the following reasons:\n%s",
+			strings.Join(errors, "\n"),
+		),
+	}
+}
+
+func ParseSimpleAssignable(p *TokenPeeker) (Assignable, error) {
 	// https://en.cppreference.com/w/c/language/operator_precedence
 	// `15 - ` because here higher is more precedence
 	precedence := map[TokenType]int{

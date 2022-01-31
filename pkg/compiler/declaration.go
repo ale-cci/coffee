@@ -250,6 +250,53 @@ func (d *Declaration) ToLLVM(scopes *Scopes) (string, error) {
 	), nil
 }
 
+func (c *Casting) ToLLVM(scopes *Scopes) (string, error) {
+	ssa := c.Of.(SSAValue)
+	prepCode, err := ssa.ToLLVM(scopes)
+	if err != nil {
+		return "", err
+	}
+
+	typerepr, err := c.TypeRepr(*scopes)
+	if err != nil {
+		return "", err
+	}
+	ssaType, err := ssa.TypeRepr(*scopes)
+	if err != nil {
+		return "", err
+	}
+	ssaId, err := ssa.Id()
+	if err != nil {
+		return "", err
+	}
+
+	id, err := scopes.ReserveLocal()
+	if err != nil {
+		return "", err
+	}
+	c.Uid = fmt.Sprintf("%%.tmp%d", id)
+	return strings.Join(
+		[]string{
+			prepCode,
+			fmt.Sprintf("%s = bitcast %s %s to %s", c.Uid, ssaType, ssaId, typerepr),
+		}, "\n",
+	), nil
+}
+
+func (c *Casting) Id() (string, error) {
+	if c.Uid == "" {
+		log.Panicf("Called casting.Id() before ToLLVM initialization")
+	}
+	return c.Uid, nil
+}
+func (c *Casting) TypeRepr(scopes Scopes) (string, error) {
+	repr, err := scopes.TypeRepr(c.Type)
+	return repr, err
+}
+func (c *Casting) RealType(scopes Scopes) (Type, error) {
+	return c.Type, nil
+}
+
 func (a *Assignment) ToLLVM(scopes *Scopes) (string, error) {
 	ssaInfo, err := ParseSSA(a.Value.(SSAValue), scopes)
 	if err != nil {

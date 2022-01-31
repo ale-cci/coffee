@@ -30,7 +30,7 @@ type Pointer struct {
 	Of Type
 }
 type Addr struct {
-	Of *Var
+	Of  *Var
 	Uid string
 }
 
@@ -66,7 +66,7 @@ type Declaration struct {
 }
 
 type Constant struct {
-	To *Var
+	To    *Var
 	Value interface{}
 }
 
@@ -101,7 +101,6 @@ type ArrayCell struct {
 type StaticArray struct {
 	Elements []Assignable
 }
-
 
 type Var struct {
 	Name    string
@@ -142,6 +141,12 @@ type IfElseBlock struct {
 type Sum struct {
 	Left  Assignable
 	Right Assignable
+}
+
+type Casting struct {
+	Of   Assignable
+	Type Type
+	Uid  string
 }
 
 // multiplication between assignables
