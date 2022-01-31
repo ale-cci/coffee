@@ -50,36 +50,45 @@ func (v *Var) AddrToLLVM(scopes *Scopes) (string, error) {
 		// TODO: check if it's not a module name
 
 		// auto-dereference
-		for true {
-			if ptr, ok := v.Type.(*Pointer); ok {
-				id, err := scopes.ReserveLocal()
-				if err != nil {
-					log.Panicf("Unable to dereference: %v", err)
-				}
-				typerepr, err := scopes.TypeRepr(ptr.Of)
-				if err != nil {
-					log.Panicf("Unable to represent type (%#v): %v", ptr.Of, err)
-				}
+		dereference := func () {
+			for true {
+				if ptr, ok := v.Type.(*Pointer); ok {
+					id, err := scopes.ReserveLocal()
+					if err != nil {
+						log.Panicf("Unable to dereference: %v", err)
+					}
+					typerepr, err := scopes.TypeRepr(ptr.Of)
+					if err != nil {
+						log.Panicf("Unable to represent type (%#v): %v", ptr.Of, err)
+					}
 
-				tmpId := fmt.Sprintf("%%.tmp%d", id)
-				code = append(
-					code,
-					fmt.Sprintf("%s = load %s*, %s** %s", tmpId, typerepr, typerepr, v.Uid),
-				)
+					tmpId := fmt.Sprintf("%%.tmp%d", id)
+					code = append(
+						code,
+						fmt.Sprintf("%s = load %s*, %s** %s", tmpId, typerepr, typerepr, v.Uid),
+					)
 
-				v.Uid = tmpId
-				v.Type = ptr.Of
-			} else {
-				break
+					v.Uid = tmpId
+					v.Type = ptr.Of
+				} else {
+					break
+				}
 			}
 		}
+
+		dereference()
 
 		for _, name := range v.Trailer {
 			currtyperepr, err := scopes.TypeRepr(v.Type)
 			if err != nil {
 				log.Panicf("Unable to represent type %#v: %v", v.Type, err)
 			}
-			if str, ok := v.Type.(string); ok {
+			dereference()
+			for ;; {
+				str, ok := v.Type.(string)
+				if !ok {
+					break
+				}
 				typ, repr, err := scopes.GetDefinedType(str)
 				if err == nil {
 					currtyperepr = repr

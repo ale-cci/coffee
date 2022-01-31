@@ -1292,6 +1292,36 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "can access nested types",
+			program: strings.Join(
+				[]string{
+					"alias T = struct {",
+					"    T* one,",
+					"    int two,",
+					"}",
+					"void main() {",
+					"    T a",
+					"    a.one.two = 2",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"%.type.T = type {%.type.T*, i32}",
+					"define void @main() {",
+					"",
+					"%a = alloca %.type.T",
+					"",
+					"%.tmp0 = getelementptr %.type.T, %.type.T* %a, i32 0, i32 0",
+					"%.tmp1 = load %.type.T*, %.type.T** %.tmp0",
+					"%.tmp2 = getelementptr %.type.T, %.type.T* %.tmp1, i32 0, i32 1",
+					"store i32 2, i32* %.tmp2",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {
