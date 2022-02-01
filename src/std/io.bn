@@ -55,3 +55,26 @@ extern int open(str pathname, int flags)
 
 -- get string length
 extern int strlen(str message)
+
+
+-- file like operations
+alias File = struct {
+    chr*   ptr,
+    int    _cnt,
+    chr*   base,
+    int    _flag,
+    int    _file,
+    int    _charbuf,
+    int    _bufsiz,
+    chr*   _tmpfname,
+}
+
+extern int fprintf(File* stream, chr* format, ...args)
+
+extern File* fdopen(int fd, str mode)
+extern File* fopen(chr* name, str flags)
+
+extern int fscanf(File* stream, chr* format, ...args)
+
+extern File* tmpfile()
+extern int fseek(File* stream, int offset, int whence)
