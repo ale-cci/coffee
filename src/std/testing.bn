@@ -19,6 +19,9 @@ T* init(chr* filename) {
     t.failures = 0
     t.suite_name = filename
     t.fds = (int*) sys.malloc(2 * 32)
+
+    stderr := io.fdopen(io.STDERR, "w")
+    io.fprintf(stderr, "Running %s\0A", filename)
     return t
 }
 
@@ -83,20 +86,20 @@ void _read_all(int fd) {
 void assert_equal_int(T* t, int expect, got) {
     if expect != got {
         t.failure = true
-        io.fprintf(t.out, "expected '%d', got '%d'", expect, got)
+        io.fprintf(t.out, "expected '%d', got '%d'\0A", expect, got)
     }
 }
 
 void assert_equal_chr(T* t, chr expect, got) {
     if expect != got {
         t.failure = true
-        io.fprintf(t.out, "expected '%c' (%d), got '%c' (%d)", expect, expect, got, got)
+        io.fprintf(t.out, "expected '%c' (%d), got '%c' (%d)\0A", expect, expect, got, got)
     }
 }
 
 void assert_true(T* t, chr* label, bool val) {
     if val == false {
         t.failure = true
-        io.fprintf(t.out, "value %s is not truthy", label)
+        io.fprintf(t.out, "value %s is not truthy\0A", label)
     }
 }

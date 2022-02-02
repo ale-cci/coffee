@@ -8,6 +8,7 @@ alias PeekerInfo = struct {
     int fd,
     int line,
     int char_of_line,
+    chr last_chr,
     bool eof,
 }
 -- size of peekerinfo 4 * 32
@@ -23,23 +24,21 @@ chr read(PeekerInfo* p) {
         return '\00'
     }
 
-    chr char -- buffer character containing read byte
-
-    if io.read(p.fd, &char, 1) == 0 {
-        -- no bytes are read: end of file is reached
-        char = '\00'
-        p.eof = true
-        return char
-    }
-
-    -- adjust line count
-    if char == '\0A' {
+    if p.last_chr == '\0A' {
         p.line = p.line + 1
         p.char_of_line = 0
-    } else {
-        p.char_of_line = p.char_of_line + 1
     }
-    return char
+
+    if io.read(p.fd, &p.last_chr, 1) == 0 {
+        -- no bytes are read: end of file is reached
+        p.last_chr = '\00'
+        p.eof = true
+        return p.last_chr
+    }
+    p.char_of_line = p.char_of_line + 1
+
+    p.pos = p.pos + 1
+    return p.last_chr
 }
 
 void seek(PeekerInfo* p, int pos) {
@@ -49,9 +48,10 @@ void seek(PeekerInfo* p, int pos) {
 PeekerInfo* new(int fd) {
     PeekerInfo* p = (PeekerInfo*) sys.malloc(S_PeekerInfo)
     p.pos = 0
-    p.line = 0
+    p.line = 1
     p.char_of_line = 0
     p.fd = fd
+    p.last_chr = '\00'
     p.eof = false
     return p
 }

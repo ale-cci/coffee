@@ -14,10 +14,26 @@ int main() {
 
     testing.setup(t, "peeker can seek in file position")
     testing.run(t, peeker_can_seek(t))
-    -- test.run(t, peeker_can_seek())
+
+    testing.setup(t, "peeker keeps track of current cursor position")
+    testing.run(t, peeker_keeps_track_of_current_cursor_position(t))
+
+    testing.setup(t, "peeker_counts_lines")
+    testing.run(t, peeker_counts_lines(t))
+
+    testing.setup(t, "peeker_counts_character_position_of_line")
+    testing.run(t, peeker_counts_character_position_of_line(t))
 
     testing.cleanup(t)
     return 0
+}
+
+
+File* newfile(chr* content) {
+    fd := io.tmpfile()
+    io.fprintf(fd, content)
+    io.rewind(fd)
+    return fd
 }
 
 
@@ -34,6 +50,8 @@ int peeker_reads_chars(testing.T* t) {
     testing.assert_equal_chr(t,'\00', peeker.read(p))
     testing.assert_equal_chr(t, '\00', peeker.read(p))
     testing.assert_true(t, "reach EOF", p.eof)
+
+    sys.free((chr*) p)
     return 0
 }
 
@@ -47,21 +65,61 @@ int peeker_can_seek(testing.T* t) {
 
     testing.assert_equal_chr(t, 'a', peeker.read(p))
 
-    io.fclose(fd)
+    sys.free((chr*) p)
     return 0
 }
 
+int peeker_keeps_track_of_current_cursor_position(testing.T* t) {
+    fd := newfile("123")
+    f_no := io.fileno(fd)
 
-File* newfile(chr* content) {
-    fd := io.tmpfile()
-    io.fprintf(fd, content)
-    io.rewind(fd)
-    return fd
+    p := peeker.new(f_no)
+    testing.assert_equal_int(t, 0, p.pos)
+    peeker.read(p)
+    testing.assert_equal_int(t, 1, p.pos)
+    peeker.read(p)
+    peeker.read(p)
+    peeker.read(p)
+    peeker.read(p)
+    testing.assert_equal_int(t, 3, p.pos)
+
+    sys.free((chr*) p)
+    return 0
 }
 
+int peeker_counts_lines(testing.T* t) {
+    fd := newfile("1\0A3")
+    f_no := io.fileno(fd)
 
-int* new_pipe() {
-    int* fds = (int*) sys.malloc(32 * 2)
-    sys.assert(sys.pipe(fds) == 0, "Unable to create pipe")
-    return fds
+    p := peeker.new(f_no)
+    testing.assert_equal_int(t, p.line, 1)
+    peeker.read(p)
+    peeker.read(p)
+    testing.assert_equal_int(t, p.line, 1)
+    peeker.read(p)
+    testing.assert_equal_int(t, p.line, 2)
+
+    sys.free((chr*) p)
+    return 0
+}
+
+int peeker_counts_character_position_of_line(testing.T* t) {
+    fd := newfile("1\0A3")
+    f_no := io.fileno(fd)
+
+    p := peeker.new(f_no)
+    testing.assert_equal_int(t, p.char_of_line, 0)
+    peeker.read(p)
+    testing.assert_equal_int(t, p.char_of_line, 1)
+    peeker.read(p)
+    testing.assert_equal_int(t, p.char_of_line, 2)
+    peeker.read(p)
+    testing.assert_equal_int(t, p.char_of_line, 1)
+    peeker.read(p)
+    peeker.read(p)
+    peeker.read(p)
+    testing.assert_equal_int(t, p.char_of_line, 1)
+
+    sys.free((chr*) p)
+    return 0
 }
