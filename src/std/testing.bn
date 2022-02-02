@@ -1,0 +1,88 @@
+import "./sys" as sys
+import "./io" as io
+
+alias T = struct {
+    int failures,
+    bool failure,
+    chr* suite_name,
+    chr* test_name,
+    int* fds,
+    File* out,
+}
+
+int T_ptr_size = 32
+
+
+-- initialize test suite for a given file
+T* init(chr* filename) {
+    T* t = (T*) sys.malloc(T_ptr_size)
+    t.failures = 0
+    t.suite_name = filename
+    t.fds = (int*) sys.malloc(2 * 32)
+    return t
+}
+
+
+-- prepares `T` data structure for a new test
+void setup(T* t, chr* test_name) {
+    t.failure = false
+    t.test_name = test_name
+
+    sys.pipe(t.fds)
+
+    fds := t.fds
+    t.out = io.fdopen(fds[io.STDOUT], "w")
+}
+
+
+-- print test outcome
+void run(T* t, int _unused) {
+    fds := t.fds
+
+    io.fflush(t.out)
+    io.close(fds[io.STDOUT])
+
+    stderr := io.fdopen(io.STDERR, "w")
+    if t.failure {
+        io.fprintf(stderr, "[ \1B[31mERROR\1B[0m ] %s: \0A", t.test_name)
+
+        _read_all(fds[io.STDIN])
+    } else {
+        io.fprintf(stderr, "[ \1B[32mOK\1B[0m    ] %s\0A", t.test_name)
+    }
+    io.close(fds[io.STDIN])
+}
+
+
+void cleanup(T* t) {
+    sys.free((chr*) t)
+}
+
+void _read_all(int fd) {
+    int len = 1024
+    chr* buf = sys.malloc(len)
+    int read = 0
+
+    bool quit = false
+    for ; quit == false ; {
+        read = io.read(fd, buf, len)
+        if read > 0 {
+            io.write(io.STDERR, buf, len)
+        } else {
+            quit = true
+        }
+    }
+
+    io.write(io.STDERR, "\0A", 1)
+    sys.free(buf)
+}
+
+
+
+-- assert functions
+void assert_equal_int(T* t, int expect, got) {
+    if expect != got {
+        t.failure = true
+        io.fprintf(t.out, "expected '%d', got '%d'", expect, got)
+    }
+}
