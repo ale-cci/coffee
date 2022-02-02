@@ -78,3 +78,13 @@ extern int fscanf(File* stream, chr* format, ...args)
 
 extern File* tmpfile()
 extern int fseek(File* stream, int offset, int whence)
+
+
+extern void sync()
+
+extern int fflush(File* f)
+extern int fsync(int fd)
+
+-- get file descriptor from file data structure
+extern int fileno(File* f)
+extern int fclose(File* f)

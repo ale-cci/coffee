@@ -1,52 +1,71 @@
-import "./std/test_mockup" as test
+-- import "./std/test_mockup" as test
 import "./std/io" as io
 import "./std/sys" as sys
 import "./peeker" as peeker
+import "./std/testing" as testing
 
 
 int main() {
-    test.init_file("./peeker.test.bn")
+    t := testing.init("peeker.test.bn")
 
-    test.setup("reads characters from file descriptor")
-    test.run(peeker_reads_chars())
+    testing.setup(t, "reads characters from file descriptor")
+    testing.run(t, peeker_reads_chars(t))
 
-    test.setup("peeker can seek in file position")
-    test.run(peeker_can_seek())
 
+    testing.setup(t, "peeker can seek in file position")
+    testing.run(t, peeker_can_seek(t))
+    -- test.run(t, peeker_can_seek())
+
+    testing.cleanup(t)
     return 0
 }
 
 
-bool peeker_reads_chars() {
+int peeker_reads_chars(testing.T* t) {
     -- write to input pipe, read from output pipe
-    int* pipes = test.new_pipe()
+    int* pipes = new_pipe()
     p := peeker.new(pipes[io.STDIN])
-    test.write_n_close(pipes[io.STDOUT], "abc")
+    write_n_close(pipes[io.STDOUT], "abc")
 
-    bool fail = false
-    fail = fail | test.assert_equal_chr(".1", 'a',   peeker.read(p))
-    fail = fail | test.assert_equal_chr(".2", 'b',   peeker.read(p))
-    fail = fail | test.assert_equal_chr(".3", 'c',   peeker.read(p))
-    fail = fail | test.assert_equal_chr(".4", '\00', peeker.read(p))
-    fail = fail | test.assert_equal_chr(".5", '\00', peeker.read(p))
-    fail = fail | test.assert_true("reach EOF", p.eof)
+    testing.assert_equal_chr(t, 'a',   peeker.read(p))
+    testing.assert_equal_chr(t, 'b',   peeker.read(p))
+    testing.assert_equal_chr(t, 'c',   peeker.read(p))
+    testing.assert_equal_chr(t,'\00', peeker.read(p))
+    testing.assert_equal_chr(t, '\00', peeker.read(p))
+    testing.assert_true(t, "reach EOF", p.eof)
 
-    io.close(pipes[io.STDIN])
     sys.free((chr*) pipes)
-    return fail
+    return 0
 }
 
-bool peeker_can_seek() {
-    int* pipes = test.new_pipe()
-    p := peeker.new(pipes[io.STDIN])
-    test.write_n_close(pipes[io.STDOUT], "abc")
+int peeker_can_seek(testing.T* t) {
+    fd := io.fopen("/tmp/test.txt", "w")
+    io.fprintf(fd, "abc")
+    io.fclose(fd)
 
-    bool fail = false
+    fd = io.fopen("/tmp/test.txt", "r")
+    f_no := io.fileno(fd)
+
+    p := peeker.new(f_no)
     peeker.read(p)
     peeker.seek(p, 0)
 
-    fail = fail | test.assert_equal_chr(".1", 'a', peeker.read(p))
-    io.close(pipes[io.STDIN])
-    sys.free((chr*) pipes)
-    return fail
+    testing.assert_equal_chr(t, 'a', peeker.read(p))
+
+    io.fclose(fd)
+    return 0
+}
+
+
+void write_n_close(int fd, str string) {
+    int length = io.strlen(string) + 1
+    sys.assert(io.write(fd, string, length) == length, "Not all bytes were written")
+    io.close(fd)
+}
+
+
+int* new_pipe() {
+    int* fds = (int*) sys.malloc(32 * 2)
+    sys.assert(sys.pipe(fds) == 0, "Unable to create pipe")
+    return fds
 }

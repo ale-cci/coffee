@@ -86,3 +86,17 @@ void assert_equal_int(T* t, int expect, got) {
         io.fprintf(t.out, "expected '%d', got '%d'", expect, got)
     }
 }
+
+void assert_equal_chr(T* t, chr expect, got) {
+    if expect != got {
+        t.failure = true
+        io.fprintf(t.out, "expected '%c' (%d), got '%c' (%d)", expect, expect, got, got)
+    }
+}
+
+void assert_true(T* t, chr* label, bool val) {
+    if val == false {
+        t.failure = true
+        io.fprintf(t.out, "value %s is not truthy", label)
+    }
+}
