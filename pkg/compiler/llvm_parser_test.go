@@ -1326,18 +1326,21 @@ func TestParsing(t *testing.T) {
 			name: "parses null keyword",
 			program: strings.Join(
 				[]string{
-					"void main() {",
+					"int* main() {",
 					"    int* t = null",
+					"    return (int*) null",
 					"}",
 				}, "\n",
 			),
 			expect: strings.Join(
 				[]string{
-					"define void @main() {",
+					"define i32* @main() {",
 					"",
 					"%t = alloca i32*",
 					"store ptr null, i32** %t",
-					"ret void",
+					"",
+					"%.tmp0 = bitcast ptr null to i32*",
+					"ret i32* %.tmp0",
 					"}",
 				}, "\n",
 			),

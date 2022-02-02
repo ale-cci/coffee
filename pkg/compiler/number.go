@@ -2,7 +2,6 @@ package compiler
 
 import (
 	"fmt"
-	"log"
 )
 
 func NewInt(val string) *Number {
@@ -70,7 +69,6 @@ func (*Null) TypeRepr(scopes Scopes) (string, error) {
 	return "ptr", nil
 }
 func (*Null) ToLLVM(scopes *Scopes) (string, error) {
-	log.Panicf("null must be treated as immediate value")
 	return "", nil
 }
 

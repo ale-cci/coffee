@@ -225,15 +225,18 @@ func (d *Declaration) ToLLVM(scopes *Scopes) (string, error) {
 	var ssa *SSAInfo = &SSAInfo{}
 	var err error
 
-	realType := ""
+	realTypeRepr := ""
 	assignment := ""
+	var realType Type
+
 	if d.Value == nil {
 		if d.To.Type == "" || d.To.Type == nil {
 			return "", fmt.Errorf("Unable to infer type for variable: %#v", d.To)
 		}
 		ssa.RealType = d.To.Type
+		realType = ssa.RealType
 		ssa.TypeRepr, err = scopes.TypeRepr(ssa.RealType)
-		realType = ssa.TypeRepr
+		realTypeRepr = ssa.TypeRepr
 	} else {
 
 		ssa, err = ParseSSA(d.Value.(SSAValue), scopes)
@@ -241,15 +244,18 @@ func (d *Declaration) ToLLVM(scopes *Scopes) (string, error) {
 			return "", err
 		}
 
-		realType = ssa.TypeRepr
+		realTypeRepr = ssa.TypeRepr
+		realType = ssa.RealType
+
 		if d.To.Type != nil {
-			realType, err = scopes.TypeRepr(d.To.Type)
+			realTypeRepr, err = scopes.TypeRepr(d.To.Type)
+			realType = d.To.Type
 			if err != nil {
 				log.Panicf("%v", err)
 			}
 		}
 
-		assignment = fmt.Sprintf("store %s %s, %s* %%%s", ssa.TypeRepr, ssa.Uid, realType, d.To.Name)
+		assignment = fmt.Sprintf("store %s %s, %s* %%%s", ssa.TypeRepr, ssa.Uid, realTypeRepr, d.To.Name)
 	}
 
 	if err != nil {
@@ -257,14 +263,14 @@ func (d *Declaration) ToLLVM(scopes *Scopes) (string, error) {
 	}
 
 	uid := fmt.Sprintf("%%%s", d.To.Name)
-	if err := scopes.DefineVariable(d.To.Name, ssa.RealType, uid); err != nil {
+	if err := scopes.DefineVariable(d.To.Name, realType, uid); err != nil {
 		return "", err
 	}
 
 	return strings.Join(
 		[]string{
 			ssa.Init,
-			fmt.Sprintf("%s = alloca %s", uid, realType),
+			fmt.Sprintf("%s = alloca %s", uid, realTypeRepr),
 			assignment,
 		}, "\n",
 	), nil

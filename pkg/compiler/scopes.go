@@ -50,6 +50,22 @@ type NameInfo struct {
 // should be mutable
 
 func SameType(t1, t2 Type) bool {
+	if t1 == "null" {
+		_, ok := t2.(*Pointer)
+		return ok || t2 == "null" || t2 == "str"
+	}
+	if t2 == "null" {
+		_, ok := t1.(*Pointer)
+		return ok || t1 == "null" || t1 == "str"
+	}
+	if t2 == "str" {
+		t1 := RealTypeRepr(t1)
+		return t1 == "chr*" || t1 == "null"
+	}
+	if t1 == "str" {
+		t2 := RealTypeRepr(t2)
+		return t2 == "chr*" || t2 == "null"
+	}
 	return RealTypeRepr(t1) == RealTypeRepr(t2)
 }
 
