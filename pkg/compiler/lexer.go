@@ -61,6 +61,7 @@ const (
 	T_INT
 	T_CHAR
 	VARARG
+	NULL
 )
 
 type Token struct {
@@ -84,6 +85,7 @@ func Tokenize(stream *bytes.Reader) ([]Token, error) {
 		"extern": KW_EXTERN,
 		"struct": KW_STRUCT,
 		"alias":  KW_ALIAS,
+		"null": NULL,
 
 		"void": T_VOID,
 		"int":  T_INT,

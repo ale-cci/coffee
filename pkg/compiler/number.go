@@ -1,6 +1,9 @@
 package compiler
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+)
 
 func NewInt(val string) *Number {
 	return &Number{
@@ -50,3 +53,24 @@ func (n *Number) Id() (string, error) {
 	}
 	return n.uid, nil
 }
+
+func (n *Null) Id() (string, error) {
+	return "null", nil
+}
+func (*Null) ToImmediateLLVM(scopes *Scopes) (*LLVMImmediateValue, error) {
+	return &LLVMImmediateValue{
+		Type: "null",
+		Value: "null",
+	}, nil
+}
+func (*Null) RealType(scopes Scopes) (Type, error) {
+	return "null", nil
+}
+func (*Null) TypeRepr(scopes Scopes) (string, error) {
+	return "ptr", nil
+}
+func (*Null) ToLLVM(scopes *Scopes) (string, error) {
+	log.Panicf("null must be treated as immediate value")
+	return "", nil
+}
+

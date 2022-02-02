@@ -1322,6 +1322,26 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "parses null keyword",
+			program: strings.Join(
+				[]string{
+					"void main() {",
+					"    int* t = null",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"define void @main() {",
+					"",
+					"%t = alloca i32*",
+					"store ptr null, i32** %t",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {

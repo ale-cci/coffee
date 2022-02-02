@@ -25,6 +25,7 @@ type Import struct {
 	Path string
 	As   string
 }
+type Null struct {}
 
 type Pointer struct {
 	Of Type

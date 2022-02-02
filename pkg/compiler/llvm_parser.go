@@ -471,6 +471,7 @@ func BuildScopes(defaultScope string) *Scopes {
 			TypeAliases: map[string]string{
 				"void": "void",
 				"int": "i32",
+				"null": "ptr",
 				"chr": "i8",
 				"bool": "i1",
 				"str": "i8*",
@@ -486,6 +487,7 @@ func BuildScopes(defaultScope string) *Scopes {
 	scopes.currentmod = defaultScope
 	return &scopes
 }
+
 
 func (c *Constant) ToLLVM(scopes *Scopes) (string, error) {
 	imm, ok := c.Value.(LLVMImmediate)
@@ -673,3 +675,5 @@ func (addr *Addr) TypeRepr(scopes Scopes) (string, error) {
 	repr, err := scopes.TypeRepr(rt)
 	return repr, err
 }
+
+

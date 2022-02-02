@@ -521,6 +521,9 @@ func ParseAtomicAssignable(p *TokenPeeker) (Assignable, error) {
 			Type:  "int",
 			Value: tok.Value,
 		}, nil
+	} else if tok.Type == NULL {
+		p.Read()
+		return &Null{}, nil
 	} else if tok.Type == CHAR {
 		p.Read()
 		return &Number{

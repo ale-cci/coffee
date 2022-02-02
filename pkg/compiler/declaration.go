@@ -225,6 +225,7 @@ func (d *Declaration) ToLLVM(scopes *Scopes) (string, error) {
 	var ssa *SSAInfo = &SSAInfo{}
 	var err error
 
+	realType := ""
 	assignment := ""
 	if d.Value == nil {
 		if d.To.Type == "" || d.To.Type == nil {
@@ -232,13 +233,23 @@ func (d *Declaration) ToLLVM(scopes *Scopes) (string, error) {
 		}
 		ssa.RealType = d.To.Type
 		ssa.TypeRepr, err = scopes.TypeRepr(ssa.RealType)
+		realType = ssa.TypeRepr
 	} else {
 
 		ssa, err = ParseSSA(d.Value.(SSAValue), scopes)
 		if err != nil {
 			return "", err
 		}
-		assignment = fmt.Sprintf("store %s %s, %s* %%%s", ssa.TypeRepr, ssa.Uid, ssa.TypeRepr, d.To.Name)
+
+		realType = ssa.TypeRepr
+		if d.To.Type != nil {
+			realType, err = scopes.TypeRepr(d.To.Type)
+			if err != nil {
+				log.Panicf("%v", err)
+			}
+		}
+
+		assignment = fmt.Sprintf("store %s %s, %s* %%%s", ssa.TypeRepr, ssa.Uid, realType, d.To.Name)
 	}
 
 	if err != nil {
@@ -253,7 +264,7 @@ func (d *Declaration) ToLLVM(scopes *Scopes) (string, error) {
 	return strings.Join(
 		[]string{
 			ssa.Init,
-			fmt.Sprintf("%s = alloca %s", uid, ssa.TypeRepr),
+			fmt.Sprintf("%s = alloca %s", uid, realType),
 			assignment,
 		}, "\n",
 	), nil
