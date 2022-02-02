@@ -1,7 +1,6 @@
 import "./std/io" as io
 import "./std/sys" as sys
 
-int buf2 = 3
 
 alias PeekerInfo = struct {
     int pos,

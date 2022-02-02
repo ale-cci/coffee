@@ -23,9 +23,10 @@ int main() {
 
 int peeker_reads_chars(testing.T* t) {
     -- write to input pipe, read from output pipe
-    int* pipes = new_pipe()
-    p := peeker.new(pipes[io.STDIN])
-    write_n_close(pipes[io.STDOUT], "abc")
+    fd := newfile("abc")
+    f_no := io.fileno(fd)
+
+    p := peeker.new(f_no)
 
     testing.assert_equal_chr(t, 'a',   peeker.read(p))
     testing.assert_equal_chr(t, 'b',   peeker.read(p))
@@ -33,17 +34,11 @@ int peeker_reads_chars(testing.T* t) {
     testing.assert_equal_chr(t,'\00', peeker.read(p))
     testing.assert_equal_chr(t, '\00', peeker.read(p))
     testing.assert_true(t, "reach EOF", p.eof)
-
-    sys.free((chr*) pipes)
     return 0
 }
 
 int peeker_can_seek(testing.T* t) {
-    fd := io.fopen("/tmp/test.txt", "w")
-    io.fprintf(fd, "abc")
-    io.fclose(fd)
-
-    fd = io.fopen("/tmp/test.txt", "r")
+    fd := newfile("abc")
     f_no := io.fileno(fd)
 
     p := peeker.new(f_no)
@@ -57,10 +52,11 @@ int peeker_can_seek(testing.T* t) {
 }
 
 
-void write_n_close(int fd, str string) {
-    int length = io.strlen(string) + 1
-    sys.assert(io.write(fd, string, length) == length, "Not all bytes were written")
-    io.close(fd)
+File* newfile(chr* content) {
+    fd := io.tmpfile()
+    io.fprintf(fd, content)
+    io.rewind(fd)
+    return fd
 }
 
 

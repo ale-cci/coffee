@@ -88,3 +88,6 @@ extern int fsync(int fd)
 -- get file descriptor from file data structure
 extern int fileno(File* f)
 extern int fclose(File* f)
+
+
+extern void rewind(File* f)
