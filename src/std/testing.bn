@@ -134,6 +134,14 @@ void assert_null(T* t, chr* ptr) {
     }
 }
 
+void assert_not_null(T* t, chr* ptr) {
+    t.test_no = t.test_no + 1
+    if ptr == null {
+        fail(t)
+        io.fprintf(t.out, "expected pointer, got: (null)")
+    }
+}
+
 File* tempfile(chr* content) {
     fd := io.tmpfile()
     io.fprintf(fd, content)
