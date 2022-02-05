@@ -28,6 +28,9 @@ int main() {
     testing.setup(t, "parses rule")
     testing.run(t, should_parse_matching_rule(t))
 
+    testing.setup(t, "parses multiple rules")
+    testing.run(t, should_parse_multiple_rules(t))
+
     testing.cleanup(t)
     return 0
 }
@@ -111,5 +114,21 @@ int should_parse_matching_rule(testing.T* t) {
     testing.assert_equal_str(t, "rule_name", rule.name)
     testing.assert_equal_str(t, "example", rule.matcher.querys.value)
     testing.assert_equal_str(t, "pattern", rule.matcher.querys.next.value)
+    return 0
+}
+
+int should_parse_multiple_rules(testing.T* t) {
+    f := testing.tempfile("rule_name: first a\0Asecond: b")
+    ctx := parser.new_context(f)
+    grammar := parser.parse_grammar(ctx)
+
+    testing.assert_equal_str(t, ctx.current_token.type, "EOF")
+    sys.free((chr*) ctx)
+
+    rule0 := grammar[0]
+    testing.assert_equal_str(t, "rule_name", rule0.name)
+
+    rule1 := grammar[1]
+    testing.assert_equal_str(t, "second", rule1.name)
     return 0
 }

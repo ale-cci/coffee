@@ -189,6 +189,23 @@ void parser_error(ParsingContext* ctx, chr* error) {
     sys.exit(1)
 }
 
+-- a grammar is buildt by one or more rules,
+-- the entire grammar describes how the ast is buildt
+Rule** parse_grammar(ParsingContext* ctx) {
+    int max_rules = 40
+    Rule** grammar = (Rule**) sys.malloc(sys.ptr_size * max_rules)
+
+    for i := 0; string.strcmp(ctx.current_token.type, "EOF") != 0; i = i + 1 {
+        grammar[i] = parse_rule(ctx)
+        -- remove empty rules
+        for ; string.strcmp(ctx.current_token.value, "\0A") == 0; {
+            ctx.current_token = ctx.current_token.next
+        }
+    }
+
+    return (Rule**) grammar
+}
+
 -- given a list of tokens, return the respective ast
 -- :param grammar: a list of null-terminated rules
 -- Node* ast(Rule** grammar, Token* tokens) {
