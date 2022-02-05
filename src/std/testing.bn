@@ -51,6 +51,9 @@ void run(T* t, int _unused) {
         io.fprintf(stderr, "[ \1B[31mERROR\1B[0m ] %s: \0A", t.test_name)
 
         _read_all(fds[io.STDIN])
+    } elif t.test_no == 0 {
+        io.fprintf(stderr, "[ \1B[33mWARN\1B[0m  ] %s: no tests\0A", t.test_name)
+
     } else {
         io.fprintf(stderr, "[ \1B[32mOK\1B[0m    ] %s\0A", t.test_name)
     }
