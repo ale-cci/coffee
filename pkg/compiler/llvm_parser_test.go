@@ -1345,6 +1345,32 @@ func TestParsing(t *testing.T) {
 				}, "\n",
 			),
 		},
+		{
+			name: "correctly parses external pointer type access",
+			program: strings.Join(
+				[]string{
+					"import \"../test_cases/import_types/sample\" as x",
+					"void fn(x.T* var) {",
+					" eof := var.t",
+					"}",
+				}, "\n",
+			),
+			expect: strings.Join(
+				[]string{
+					"%.type.T = type {i32}",
+					"define void @fn(%.type.T* %.arg.var) {",
+					"%var = alloca %.type.T*",
+					"store %.type.T* %.arg.var, %.type.T** %var",
+					"%.tmp1 = load %.type.T*, %.type.T** %var",
+					"%.tmp2 = getelementptr %.type.T, %.type.T* %.tmp1, i32 0, i32 0",
+					"%.tmp3 = load i32, i32* %.tmp2",
+					"%eof = alloca i32",
+					"store i32 %.tmp3, i32* %eof",
+					"ret void",
+					"}",
+				}, "\n",
+			),
+		},
 	}
 
 	for i, tc := range tt {

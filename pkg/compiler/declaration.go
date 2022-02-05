@@ -84,9 +84,14 @@ func (v *Var) AddrToLLVM(scopes *Scopes) (string, error) {
 				log.Panicf("Unable to represent type %#v: %v", v.Type, err)
 			}
 			dereference()
+
 			for ;; {
 				str, ok := v.Type.(string)
 				if !ok {
+					if imp, ok := v.Type.(*ImportType); ok {
+						v.Type = imp.Type
+						continue
+					}
 					break
 				}
 				typ, repr, err := scopes.GetDefinedType(str)
