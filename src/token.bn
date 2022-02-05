@@ -1,6 +1,0 @@
-int id(chr* token_name) {
-    if token_name == null {
-        return 0
-    }
-    return 0
-}
