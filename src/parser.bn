@@ -50,12 +50,12 @@ int Rule_size = 16 -- matcher size + 1
 alias Node = struct {
     chr* type,
     Node* parent,
-    Node* childrens,
+    Node** childrens,
 }
 
 
 alias ParsingContext = struct {
-    Token* current_token,
+    lexer.Token* current_token,
 }
 int ParsingContext_size = 8
 
@@ -71,24 +71,68 @@ ParsingContext* new_context(io.File* f) {
     return ctx
 }
 
+Matcher* new_matcher() {
+    Matcher* m = (Matcher*) sys.malloc(Matcher_size)
+    m.mode = '&'
+    m.times = '1'
+    m.children = null
+    m.querys = null
+    return m
+}
+
 
 Matcher* parse_matcher(ParsingContext* ctx) {
-    m := parse_simple_matcher(ctx)
+    Matcher* m
+    if string.strcmp(ctx.current_token.value, "(") == 0 {
+        ctx.current_token = ctx.current_token.next
+        int max_matchers = 10
+        matchers := (Matcher**) sys.malloc(sys.ptr_size * max_matchers)
+
+        i := 0
+        for i = 0; string.strcmp(ctx.current_token.value, ")") != 0 & string.strcmp(ctx.current_token.type, "EOF") != 0; i = i + 1 {
+            sys.assert(i < max_matchers -1, "Max length reached for matchers (parser.bn). increase max_matchers")
+            matchers[i] = parse_simple_matcher(ctx)
+
+            if string.strcmp(ctx.current_token.value, "|") != 0 & string.strcmp(ctx.current_token.value, ")") != 0 {
+                io.printf("[%d:%d] malformed grammar, expected | got '%s'\0A", ctx.current_token.line, ctx.current_token.char_of_line, ctx.current_token.value)
+                sys.exit(1)
+            }
+            if string.strcmp(ctx.current_token.value, "|") == 0 {
+                ctx.current_token = ctx.current_token.next
+            }
+        }
+        matchers[i] = null
+
+        m = new_matcher()
+        m.mode = '|'
+        m.children = matchers
+
+        if string.strcmp(ctx.current_token.value, ")") != 0 {
+            -- panic, wrong grammar
+            parser_error(ctx, "open brace not closed")
+        }
+        ctx.current_token = ctx.current_token.next
+
+    } else {
+        m = parse_simple_matcher(ctx)
+    }
 
     if string.strcmp(ctx.current_token.value, "+") == 0 {
         ctx.current_token = ctx.current_token.next
         m.times = '+'
+    } elif string.strcmp(ctx.current_token.value, "*") == 0 {
+        ctx.current_token = ctx.current_token.next
+        m.times = '*'
+    } elif string.strcmp(ctx.current_token.value, "?") == 0 {
+        ctx.current_token = ctx.current_token.next
+        m.times = '?'
     }
 
     return m
 }
 
 Matcher* parse_simple_matcher(ParsingContext* ctx) {
-    Matcher* m = (Matcher*) sys.malloc(Matcher_size)
-
-    m.mode = '&'
-    m.times = '1'
-    m.children = null
+    Matcher* m = new_matcher()
 
     -- count number of 'words'
     int count
@@ -120,8 +164,8 @@ Matcher* parse_simple_matcher(ParsingContext* ctx) {
 }
 
 
-void parse_error(ParsingContext* ctx, chr* error) {
-    io.printf("error: %s\0A")
+void parser_error(ParsingContext* ctx, chr* error) {
+    io.printf("%d:%d error: %s\0A", ctx.current_token.line, ctx.current_token.char_of_line, error)
 }
 
 -- given a list of tokens, return the respective ast

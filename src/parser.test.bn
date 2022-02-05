@@ -13,8 +13,18 @@ int main() {
     testing.setup(t, "parses multiple words matcher")
     testing.run(t, should_parse_two_consecutive_tokens(t))
 
-    testing.setup(t, "parses repeating condition")
-    testing.run(t, should_parse_repeating_condition(t))
+    testing.setup(t, "parses repeating condition +")
+    testing.run(t, should_parse_repeating_condition_plus(t))
+
+    testing.setup(t, "parses repeating condition *")
+    testing.run(t, should_parse_repeating_condition_times(t))
+
+    testing.setup(t, "should parse or condition")
+    testing.run(t, should_parse_or_condition(t))
+
+    testing.setup(t, "parses repeating condition ?")
+    testing.run(t, should_parse_repeating_condition_question(t))
+
     testing.cleanup(t)
     return 0
 }
@@ -60,8 +70,31 @@ int should_parse_two_consecutive_tokens(testing.T* t) {
     return 0
 }
 
-int should_parse_repeating_condition(testing.T* t) {
+int should_parse_repeating_condition_plus(testing.T* t) {
     matcher := build_matcher("a + ")
     testing.assert_equal_chr(t, '+', matcher.times)
+    return 0
+}
+
+int should_parse_repeating_condition_times(testing.T* t) {
+    matcher := build_matcher("a * ")
+    testing.assert_equal_chr(t, '*', matcher.times)
+    return 0
+}
+
+int should_parse_or_condition(testing.T* t) {
+    matcher := build_matcher("(a | b)")
+
+    testing.assert_equal_chr(t, '|', matcher.mode)
+    testing.assert_null(t, (chr*) matcher.querys)
+    testing.assert_equal_chr(t, '1', matcher.times)
+
+    return 0
+}
+
+int should_parse_repeating_condition_question(testing.T* t) {
+    matcher := build_matcher("(a b)?")
+    testing.assert_null(t, (chr*) matcher.querys)
+    testing.assert_equal_chr(t, '?', matcher.times)
     return 0
 }
