@@ -29,6 +29,9 @@ int main() {
 
     testing.setup(t, "parses curly brackets")
     testing.run(t, should_parse_curly_brackets(t))
+
+    testing.setup(t, "parses list of tokens")
+    testing.run(t, should_parse_list_of_tokens(t))
     return 0
 }
 
@@ -43,7 +46,7 @@ peeker.PeekerInfo* new_peeker(chr* file_content) {
 
 int should_parse_empty_file(testing.T* t) {
     p := new_peeker("")
-    token_list := lexer.parse(p)
+    token_list := lexer.tokenize(p)
 
     testing.assert_equal_str(t, "EOF", token_list.type)
     testing.assert_equal_str(t, "", token_list.value)
@@ -56,7 +59,7 @@ int should_parse_empty_file(testing.T* t) {
 
 int should_parse_int_number(testing.T* t) {
     p := new_peeker("1")
-    token_list := lexer.parse(p)
+    token_list := lexer.tokenize(p)
 
     testing.assert_equal_str(t, "NUMBER", token_list.type)
     testing.assert_equal_str(t, "1", token_list.value)
@@ -73,7 +76,7 @@ int should_parse_int_number(testing.T* t) {
 
 int should_parse_consecutive_numbers(testing.T* t) {
     p := new_peeker("123")
-    token_list := lexer.parse(p)
+    token_list := lexer.tokenize(p)
 
     testing.assert_equal_str(t, "NUMBER", token_list.type)
     testing.assert_equal_str(t, "123", token_list.value)
@@ -84,7 +87,7 @@ int should_parse_consecutive_numbers(testing.T* t) {
 
 int should_ignore_whitespaces(testing.T* t) {
     p := new_peeker(" \09")
-    token_list := lexer.parse(p)
+    token_list := lexer.tokenize(p)
 
     testing.assert_equal_str(t, "EOF", token_list.type)
     testing.assert_equal_str(t, "", token_list.value)
@@ -97,7 +100,7 @@ int should_ignore_whitespaces(testing.T* t) {
 
 int should_parse_words_token(testing.T* t) {
     p := new_peeker("sAmp_le")
-    token_list := lexer.parse(p)
+    token_list := lexer.tokenize(p)
 
     testing.assert_equal_str(t, "WORD", token_list.type)
     testing.assert_equal_str(t, "sAmp_le", token_list.value)
@@ -108,7 +111,7 @@ int should_parse_words_token(testing.T* t) {
 
 int should_parse_parens_operators(testing.T* t) {
     p := new_peeker("()")
-    token_list := lexer.parse(p)
+    token_list := lexer.tokenize(p)
 
     testing.assert_equal_str(t, "OPERATOR", token_list.type)
     testing.assert_equal_str(t, "(", token_list.value)
@@ -121,7 +124,7 @@ int should_parse_parens_operators(testing.T* t) {
 
 int should_parse_curly_brackets(testing.T* t) {
     p := new_peeker("{}")
-    token_list := lexer.parse(p)
+    token_list := lexer.tokenize(p)
 
     testing.assert_equal_str(t, "OPERATOR", token_list.type)
     testing.assert_equal_str(t, "{", token_list.value)
@@ -129,5 +132,15 @@ int should_parse_curly_brackets(testing.T* t) {
     testing.assert_equal_str(t, "OPERATOR", token_list.next.type)
     testing.assert_equal_str(t, "}", token_list.next.value)
     sys.free((chr*) p)
+    return 0
+}
+
+int should_parse_list_of_tokens(testing.T* t) {
+    p := new_peeker("a: b")
+    token_list := lexer.tokenize(p)
+
+    testing.assert_equal_str(t, "a", token_list.value)
+    testing.assert_equal_str(t, ":", token_list.next.value)
+    testing.assert_equal_str(t, "b", token_list.next.next.value)
     return 0
 }

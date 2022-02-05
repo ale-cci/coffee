@@ -10,8 +10,7 @@ alias T = struct {
     int* fds,
     File* out,
 }
-
-int T_ptr_size = 32
+int T_ptr_size = 48
 
 
 -- initialize test suite for a given file
@@ -31,11 +30,12 @@ void setup(T* t, chr* test_name) {
     t.failure = false
     t.test_name = test_name
 
-    sys.pipe(t.fds)
+    sys.assert(sys.pipe(t.fds) >= 0, "unable to open pipe")
 
     t.test_no = 0
     fds := t.fds
     t.out = io.fdopen(fds[io.STDOUT], "w")
+    sys.assert(t.out != null, "unable to open stdout")
 }
 
 
@@ -62,6 +62,8 @@ void run(T* t, int _unused) {
 
 
 void cleanup(T* t) {
+    io.fclose(t.out)
+    sys.free((chr*) t.fds)
     sys.free((chr*) t)
 }
 

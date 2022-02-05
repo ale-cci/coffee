@@ -1,0 +1,131 @@
+import "./std/io" as io
+import "./std/sys" as sys
+import "./std/string" as string
+import "./peeker" as peeker
+import "./lexer" as lexer
+
+
+alias Query = struct {
+    -- 'v': value
+    -- 'r': rule
+    chr  type,
+    chr* value,
+
+    Query* next,
+}
+int Query_size = 24 -- 2 * sys.ptr_size + 1
+
+alias Matcher = struct {
+    -- list of names to match.
+    -- reserved names are for a specific token type, which could be
+    -- NUMBER, STRING, WORD, CHAR, EOF
+    Query* querys,
+
+    -- how to match the querys:
+    -- [&] all should match (default)
+    -- [|] only one should match
+    chr mode,
+
+    -- how many times this matcher should be applied
+    -- [1] just one tim (default)
+    -- [+] one or more
+    -- [?] one or none
+    -- [*] none or more
+    chr times,
+
+    -- in case this matcher fails call the following matcher
+    Matcher** children,
+}
+int Matcher_size = 32
+
+
+alias Rule = struct {
+    chr*      name,
+    Matcher*  matcher,
+}
+int Rule_size = 16 -- matcher size + 1
+
+
+-- basic node for 'ast' representation
+alias Node = struct {
+    chr* type,
+    Node* parent,
+    Node* childrens,
+}
+
+
+alias ParsingContext = struct {
+    Token* current_token,
+}
+int ParsingContext_size = 8
+
+ParsingContext* new_context(io.File* f) {
+    ParsingContext* ctx = (ParsingContext*) sys.malloc(ParsingContext_size)
+
+    fd := io.fileno(f)
+    p := peeker.new(fd)
+    token_list := lexer.tokenize(p)
+    sys.free((chr*) p)
+
+    ctx.current_token = token_list
+    return ctx
+}
+
+
+Matcher* parse_matcher(ParsingContext* ctx) {
+    m := parse_simple_matcher(ctx)
+
+    if string.strcmp(ctx.current_token.value, "+") == 0 {
+        ctx.current_token = ctx.current_token.next
+        m.times = '+'
+    }
+
+    return m
+}
+
+Matcher* parse_simple_matcher(ParsingContext* ctx) {
+    Matcher* m = (Matcher*) sys.malloc(Matcher_size)
+
+    m.mode = '&'
+    m.times = '1'
+    m.children = null
+
+    -- count number of 'words'
+    int count
+    ptr := ctx.current_token
+    for count = 0; string.strcmp(ptr.type, "WORD") == 0; {
+        count = count + 1
+        ptr = ptr.next
+    }
+
+    if Query_size > 0 {
+        m.querys = (Query*) sys.malloc(Query_size)
+    } else {
+        m.querys = null
+    }
+
+    q := m.querys
+    for i := 0; i < count; i = i + 1 {
+        if i > 0 {
+            q.next = (Query*) sys.malloc(Query_size)
+            q = q.next
+        }
+        q.type = 'r'
+        q.value = ctx.current_token.value
+        q.next = null
+        ctx.current_token = ctx.current_token.next
+    }
+
+    return m
+}
+
+
+void parse_error(ParsingContext* ctx, chr* error) {
+    io.printf("error: %s\0A")
+}
+
+-- given a list of tokens, return the respective ast
+-- :param grammar: a list of null-terminated rules
+-- Node* ast(Rule** grammar, Token* tokens) {
+--     return (Node*) null
+-- }

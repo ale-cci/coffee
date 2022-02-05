@@ -17,7 +17,8 @@ alias Token = struct {
     Token* next,
     Token* prev,
 }
-int Token_size = 192-- 4 * ptr_size + 64
+-- int Token_size = 192-- 4 * ptr_size + 64
+int Token_size = 48
 
 
 alias ParseCtx = struct {
@@ -39,6 +40,7 @@ Token* push_token(ParseCtx* c, str type, value) {
     root.line = c.line
     root.char_of_line = c.char_of_line
     root.prev = c.curr_token
+    root.next = null
 
     if c.curr_token != null {
         c.curr_token.next = root
@@ -63,7 +65,7 @@ Token* push_token(ParseCtx* c, str type, value) {
 --    ["] -> STRING
 --    ['] -> CHR
 --    [+-/*=[({])}|] -> OPERATOR or COMMENT
-Token* parse(peeker.PeekerInfo* p) {
+Token* tokenize(peeker.PeekerInfo* p) {
     ParseCtx* ctx = (ParseCtx*) sys.malloc(ParseCtx_size)
     ctx.root = null
     ctx.curr_token = null
@@ -74,13 +76,14 @@ Token* parse(peeker.PeekerInfo* p) {
     int idx = 0
 
 
+    c := peeker.read(p)
     for ; p.eof == false ; {
-        c := peeker.read(p)
         ctx.line = p.line
         ctx.char_of_line = p.char_of_line
 
         if c == '\00' {
             -- eof
+            c = peeker.read(p)
 
         } elif string.is_digit(c) {
             buf = sys.malloc(max_token_size)
@@ -107,6 +110,7 @@ Token* parse(peeker.PeekerInfo* p) {
 
         } elif string.is_whitespace(c) {
             -- ignore whitespaces and tabs for now
+            c = peeker.read(p)
 
         } else {
             -- check for operator
@@ -120,6 +124,7 @@ Token* parse(peeker.PeekerInfo* p) {
             buf[1] = '\00'
 
             push_token(ctx, "OPERATOR", buf)
+            c = peeker.read(p)
         }
     }
 

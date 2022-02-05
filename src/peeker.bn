@@ -12,7 +12,7 @@ alias PeekerInfo = struct {
     bool eof,
 }
 -- size of peekerinfo 4 * 32
-int S_PeekerInfo = 129
+int PeekerInfo_size = 34
 chr EOF = 0
 
 
@@ -46,7 +46,7 @@ void seek(PeekerInfo* p, int pos) {
 }
 
 PeekerInfo* new(int fd) {
-    PeekerInfo* p = (PeekerInfo*) sys.malloc(S_PeekerInfo)
+    PeekerInfo* p = (PeekerInfo*) sys.malloc(PeekerInfo_size)
     p.pos = 0
     p.line = 1
     p.char_of_line = 0

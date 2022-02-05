@@ -12,6 +12,7 @@ extern chr* realloc(chr* ptr, int size)
 -- free dynamic memory allocation
 extern void free(chr* ptr)
 
+int ptr_size = 8
 
 void assert(bool condition, str message) {
     if condition != true {
