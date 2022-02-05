@@ -1,16 +1,17 @@
+-- breaks up file in one or multiple tokens
 import "./std/sys" as sys
 import "./std/string" as string
 import "./std/io" as io
 
 import "./peeker" as peeker
 
--- breaks up file in one or multiple tokens
+
 alias Token = struct {
     chr* type,
     chr* value,
 
     int line,
-    int chr_of_line,
+    int char_of_line,
     chr* filename,
 
     Token* next,
@@ -18,15 +19,17 @@ alias Token = struct {
 }
 int Token_size = 192-- 4 * ptr_size + 64
 
+
 alias ParseCtx = struct {
     chr* filename,
     int line,
-    int chr_of_line,
+    int char_of_line,
 
     Token* root,
     Token* curr_token,
 }
 int ParseCtx_size = 160
+
 
 Token* push_token(ParseCtx* c, str type, value) {
     Token* root = (Token*) sys.malloc(Token_size)
@@ -34,7 +37,7 @@ Token* push_token(ParseCtx* c, str type, value) {
     root.value = value
     root.filename = c.filename
     root.line = c.line
-    root.chr_of_line = c.chr_of_line
+    root.char_of_line = c.char_of_line
     root.prev = c.curr_token
 
     if c.curr_token != null {
@@ -69,8 +72,12 @@ Token* parse(peeker.PeekerInfo* p) {
     chr* buf = (chr*) null
 
     int idx = 0
+
+
     for ; p.eof == false ; {
         c := peeker.read(p)
+        ctx.line = p.line
+        ctx.char_of_line = p.char_of_line
 
         if c == '\00' {
             -- eof
@@ -102,17 +109,26 @@ Token* parse(peeker.PeekerInfo* p) {
             -- ignore whitespaces and tabs for now
 
         } else {
-            io.printf("Token: '%c'\0A", c)
-            sys.assert(false, "Unparsable token")
+            -- check for operator
+            if c > '\7E' {
+                io.printf("Position %d:%d found non ascii token: '%c' (%d)\0A", ctx.line, ctx.char_of_line, c, c)
+                sys.exit(1)
+            }
+
+            buf = sys.malloc(2)
+            buf[0] = c
+            buf[1] = '\00'
+
+            push_token(ctx, "OPERATOR", buf)
         }
     }
 
     -- set curr_token as eof
     push_token(ctx, "EOF", "")
 
-
     Token* root = ctx.root
     sys.free((chr*) ctx)
     return (Token*) root
 }
+
 

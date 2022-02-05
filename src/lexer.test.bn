@@ -24,6 +24,11 @@ int main() {
     testing.setup(t, "parses words token")
     testing.run(t, should_parse_words_token(t))
 
+    testing.setup(t, "parses parens operators")
+    testing.run(t, should_parse_parens_operators(t))
+
+    testing.setup(t, "parses curly brackets")
+    testing.run(t, should_parse_curly_brackets(t))
     return 0
 }
 
@@ -97,6 +102,32 @@ int should_parse_words_token(testing.T* t) {
     testing.assert_equal_str(t, "WORD", token_list.type)
     testing.assert_equal_str(t, "sAmp_le", token_list.value)
 
+    sys.free((chr*) p)
+    return 0
+}
+
+int should_parse_parens_operators(testing.T* t) {
+    p := new_peeker("()")
+    token_list := lexer.parse(p)
+
+    testing.assert_equal_str(t, "OPERATOR", token_list.type)
+    testing.assert_equal_str(t, "(", token_list.value)
+
+    testing.assert_equal_str(t, "OPERATOR", token_list.next.type)
+    testing.assert_equal_str(t, ")", token_list.next.value)
+    sys.free((chr*) p)
+    return 0
+}
+
+int should_parse_curly_brackets(testing.T* t) {
+    p := new_peeker("{}")
+    token_list := lexer.parse(p)
+
+    testing.assert_equal_str(t, "OPERATOR", token_list.type)
+    testing.assert_equal_str(t, "{", token_list.value)
+
+    testing.assert_equal_str(t, "OPERATOR", token_list.next.type)
+    testing.assert_equal_str(t, "}", token_list.next.value)
     sys.free((chr*) p)
     return 0
 }
