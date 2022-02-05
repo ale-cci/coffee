@@ -2,7 +2,7 @@
 case $1 in
 
     clean)
-        rm -f *.ll *.s run a.out a.out.ll a.out.s
+        rm -f *.ll *.s run *.out
         ;;
 
     test)
