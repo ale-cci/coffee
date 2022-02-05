@@ -98,6 +98,8 @@ func (v *Var) AddrToLLVM(scopes *Scopes) (string, error) {
 				if err == nil {
 					currtyperepr = repr
 					v.Type = typ
+				} else {
+					break
 				}
 			}
 
@@ -344,9 +346,10 @@ func (a *Assignment) ToLLVM(scopes *Scopes) (string, error) {
 		log.Panicf("In assignment: %v", err)
 	}
 
-	if !SameType(vartype, ssaInfo.RealType) {
-		log.Printf("Fst: %#v", a.To)
-		log.Printf("Snd: %#v", a.Value)
+	if !SameType(scopes, vartype, ssaInfo.RealType) {
+		log.Printf("AssT: %#v", RealTypeRepr(scopes, vartype))
+		log.Printf("ValT: %#v", RealTypeRepr(scopes, ssaInfo.RealType))
+		log.Printf("%#v = %#v", a.To, a.Value)
 		log.Panicf("Implicit casting not implemented!!! %#v != %#v", ssaInfo.RealType, vartype)
 	}
 

@@ -49,7 +49,7 @@ type NameInfo struct {
 
 // should be mutable
 
-func SameType(t1, t2 Type) bool {
+func SameType(s *Scopes, t1, t2 Type) bool {
 	if t1 == "null" {
 		_, ok := t2.(*Pointer)
 		return ok || t2 == "null" || t2 == "str"
@@ -59,14 +59,14 @@ func SameType(t1, t2 Type) bool {
 		return ok || t1 == "null" || t1 == "str"
 	}
 	if t2 == "str" {
-		t1 := RealTypeRepr(t1)
+		t1 := RealTypeRepr(s, t1)
 		return t1 == "chr*" || t1 == "null"
 	}
 	if t1 == "str" {
-		t2 := RealTypeRepr(t2)
+		t2 := RealTypeRepr(s, t2)
 		return t2 == "chr*" || t2 == "null"
 	}
-	return RealTypeRepr(t1) == RealTypeRepr(t2)
+	return RealTypeRepr(s, t1) == RealTypeRepr(s, t2)
 }
 
 func (s *Scopes) DefineVar(name string, typeval Type, args []Argument, alias string, extern bool) {
@@ -182,16 +182,26 @@ func (s *Scopes) DefineVariable(name string, typename Type, alias string) error 
 }
 
 // returns real type
-func RealTypeRepr(typename Type) string {
+func RealTypeRepr(s *Scopes, typename Type) string {
 	if name, ok := typename.(string); ok {
 		return name
 	} else if arr, ok := typename.(*ArrayType); ok {
-		basename := RealTypeRepr(arr.Base)
+		basename := RealTypeRepr(s, arr.Base)
 		return fmt.Sprintf("%s[%d]", basename, arr.Size)
 	} else if arr, ok := typename.(*Pointer); ok {
-		basename := RealTypeRepr(arr.Of)
+		basename := RealTypeRepr(s, arr.Of)
 		return fmt.Sprintf("%s*", basename)
+	} else if st, ok := typename.(*StructType); ok {
+		fields := []string{}
+		for _, f := range st.Fields {
+			f := RealTypeRepr(s, f.Type)
+			fields = append(fields, f)
+		}
+		return fmt.Sprintf("{%s}", strings.Join(fields, ","))
+	} else if imp, ok := typename.(*ImportType); ok {
+		 return RealTypeRepr(s, imp.Type)
 	}
+
 	log.Panicf("Unable to convert type: %#v", typename)
 	return ""
 }

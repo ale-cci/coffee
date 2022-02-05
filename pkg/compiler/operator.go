@@ -90,7 +90,7 @@ func (o *Operator) ToLLVM(scopes *Scopes) (string, error) {
 		}
 	}
 
-	if !SameType(rtype, ltype) {
+	if !SameType(scopes, rtype, ltype) {
 		return "", fmt.Errorf("Mismatching types: %#v != %#v", ltype, rtype)
 	}
 
