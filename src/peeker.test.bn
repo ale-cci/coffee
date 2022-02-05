@@ -29,17 +29,10 @@ int main() {
 }
 
 
-File* newfile(chr* content) {
-    fd := io.tmpfile()
-    io.fprintf(fd, content)
-    io.rewind(fd)
-    return fd
-}
-
 
 int peeker_reads_chars(testing.T* t) {
     -- write to input pipe, read from output pipe
-    fd := newfile("abc")
+    fd := testing.tempfile("abc")
     f_no := io.fileno(fd)
 
     p := peeker.new(f_no)
@@ -56,7 +49,7 @@ int peeker_reads_chars(testing.T* t) {
 }
 
 int peeker_can_seek(testing.T* t) {
-    fd := newfile("abc")
+    fd := testing.tempfile("abc")
     f_no := io.fileno(fd)
 
     p := peeker.new(f_no)
@@ -70,7 +63,7 @@ int peeker_can_seek(testing.T* t) {
 }
 
 int peeker_keeps_track_of_current_cursor_position(testing.T* t) {
-    fd := newfile("123")
+    fd := testing.tempfile("123")
     f_no := io.fileno(fd)
 
     p := peeker.new(f_no)
@@ -88,7 +81,7 @@ int peeker_keeps_track_of_current_cursor_position(testing.T* t) {
 }
 
 int peeker_counts_lines(testing.T* t) {
-    fd := newfile("1\0A3")
+    fd := testing.tempfile("1\0A3")
     f_no := io.fileno(fd)
 
     p := peeker.new(f_no)
@@ -104,7 +97,7 @@ int peeker_counts_lines(testing.T* t) {
 }
 
 int peeker_counts_character_position_of_line(testing.T* t) {
-    fd := newfile("1\0A3")
+    fd := testing.tempfile("1\0A3")
     f_no := io.fileno(fd)
 
     p := peeker.new(f_no)

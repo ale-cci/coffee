@@ -1,11 +1,12 @@
 import "./sys" as sys
+import "./string" as string
 import "./io" as io
 
 alias T = struct {
-    int failures,
     bool failure,
     chr* suite_name,
     chr* test_name,
+    int test_no,
     int* fds,
     File* out,
 }
@@ -16,7 +17,6 @@ int T_ptr_size = 32
 -- initialize test suite for a given file
 T* init(chr* filename) {
     T* t = (T*) sys.malloc(T_ptr_size)
-    t.failures = 0
     t.suite_name = filename
     t.fds = (int*) sys.malloc(2 * 32)
 
@@ -33,6 +33,7 @@ void setup(T* t, chr* test_name) {
 
     sys.pipe(t.fds)
 
+    t.test_no = 0
     fds := t.fds
     t.out = io.fdopen(fds[io.STDOUT], "w")
 }
@@ -80,26 +81,59 @@ void _read_all(int fd) {
     sys.free(buf)
 }
 
+void fail(T* t) {
+    t.failure = true
+    io.fprintf(t.out, "#%d: ", t.test_no)
+}
 
 
 -- assert functions
 void assert_equal_int(T* t, int expect, got) {
+    t.test_no = t.test_no + 1
     if expect != got {
-        t.failure = true
+        fail(t)
         io.fprintf(t.out, "expected '%d', got '%d'\0A", expect, got)
     }
 }
 
 void assert_equal_chr(T* t, chr expect, got) {
+    t.test_no = t.test_no + 1
     if expect != got {
-        t.failure = true
+        fail(t)
         io.fprintf(t.out, "expected '%c' (%d), got '%c' (%d)\0A", expect, expect, got, got)
     }
 }
 
 void assert_true(T* t, chr* label, bool val) {
+    t.test_no = t.test_no + 1
     if val == false {
-        t.failure = true
+        fail(t)
         io.fprintf(t.out, "value %s is not truthy\0A", label)
     }
+}
+
+void assert_equal_str(T* t, chr* expect, got) {
+    t.test_no = t.test_no + 1
+    if got == null {
+        fail(t)
+        io.fprintf(t.out, "expected '%s', got (null)\0A", expect, got)
+    } elif string.strcmp(expect, got) != 0 {
+        fail(t)
+        io.fprintf(t.out, "expected '%s', got '%s'\0A", expect, got)
+    }
+}
+
+void assert_null(T* t, chr* ptr) {
+    t.test_no = t.test_no + 1
+    if ptr != null {
+        fail(t)
+        io.fprintf(t.out, "expected null pointer, got: %p", ptr)
+    }
+}
+
+File* tempfile(chr* content) {
+    fd := io.tmpfile()
+    io.fprintf(fd, content)
+    io.rewind(fd)
+    return fd
 }

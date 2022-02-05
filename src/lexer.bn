@@ -1,0 +1,68 @@
+import "./std/sys" as sys
+import "./peeker" as peeker
+
+-- breaks up file in one or multiple tokens
+alias Token = struct {
+    chr* type,
+    chr* value,
+
+    int line,
+    int chr_of_line,
+    chr* filename,
+
+    Token* next,
+    Token* prev,
+}
+int Token_size = 192-- 4 * ptr_size + 64
+
+alias ParseCtx = struct {
+    chr* filename,
+    int line,
+    int chr_of_line,
+
+    Token* root,
+    Token* curr_token,
+}
+int ParseCtx_size = 160
+
+Token* push_token(ParseCtx* c, str type, value) {
+    Token* root = (Token*) sys.malloc(Token_size)
+    root.type = type
+    root.value = value
+    root.filename = c.filename
+    root.line = c.line
+    root.chr_of_line = c.chr_of_line
+    root.prev = c.curr_token
+
+    if c.curr_token != null {
+        c.curr_token.next = root
+    }
+    c.curr_token = root
+
+    if c.root == null {
+        c.root = root
+    }
+
+    return root
+}
+
+
+-- takes a peeker in input, returns the sequence of tokens
+Token* parse(peeker.PeekerInfo* p) {
+    ParseCtx* ctx = (ParseCtx*) sys.malloc(ParseCtx_size)
+    ctx.root = null
+    ctx.curr_token = null
+
+    for ; p.eof == false ; {
+        peeker.read(p)
+    }
+
+    -- set curr_token as eof
+    push_token(ctx, "EOF", "")
+
+
+    Token* root = ctx.root
+    sys.free((chr*) ctx)
+    return (Token*) root
+}
+

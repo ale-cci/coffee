@@ -1,0 +1,34 @@
+import "./std/io" as io
+import "./std/testing" as testing
+
+import "./lexer" as lexer
+import "./peeker" as peeker
+
+
+int main() {
+    t := testing.init("lexer.test.bn")
+
+    testing.setup(t, "parses EOF token")
+    testing.run(t, lexer_parses_numbers(t))
+
+    return 0
+}
+
+
+int lexer_parses_numbers(testing.T* t) {
+    f := testing.tempfile("")
+    f_no := io.fileno(f)
+
+    p := peeker.new(f_no)
+
+    token_list := lexer.parse(p)
+
+    testing.assert_equal_str(t, "EOF", token_list.type)
+    testing.assert_equal_str(t, "", token_list.value)
+    testing.assert_null(t, (chr*) token_list.next)
+    testing.assert_null(t, (chr*) token_list.prev)
+
+    return 0
+}
+
+
