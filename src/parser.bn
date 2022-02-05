@@ -164,8 +164,29 @@ Matcher* parse_simple_matcher(ParsingContext* ctx) {
 }
 
 
+Rule* parse_rule(ParsingContext* ctx) {
+    rule_name := ctx.current_token.value
+    if string.strcmp(ctx.current_token.type, "WORD") != 0 {
+        parser_error(ctx, "rule identifier must be a WORD")
+    }
+    ctx.current_token = ctx.current_token.next
+
+    if string.strcmp(ctx.current_token.value, ":") != 0 {
+        parser_error(ctx, "expected : after rule name")
+    }
+    ctx.current_token = ctx.current_token.next
+
+    Rule* rule = (Rule*) sys.malloc(Rule_size)
+    rule.name = rule_name
+
+
+    rule.matcher = parse_matcher(ctx)
+    return rule
+}
+
 void parser_error(ParsingContext* ctx, chr* error) {
     io.printf("%d:%d error: %s\0A", ctx.current_token.line, ctx.current_token.char_of_line, error)
+    sys.exit(1)
 }
 
 -- given a list of tokens, return the respective ast
