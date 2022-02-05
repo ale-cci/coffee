@@ -1,0 +1,16 @@
+-- compare strings
+-- returns:
+--     0. if the two strings are equals
+--    -1. if str1 is greater than str2
+--     1. if str1 is lower than str2
+extern int strcmp(chr* str1, str2)
+
+-- like strcmp but limits the comparison at the first n characters
+extern int strncmp(chr* str1, str2, int n)
+
+-- get string length
+extern int strlen(str message)
+
+-- catenate two strings
+extern chr* strcat(chr* dest, src)
+extern chr* strncat(chr* dest, src, int n)

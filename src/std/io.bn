@@ -53,8 +53,6 @@ int O_TRUNC = 512
 extern int open(str pathname, int flags)
 
 
--- get string length
-extern int strlen(str message)
 
 
 -- file like operations

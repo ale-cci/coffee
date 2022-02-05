@@ -21,7 +21,7 @@ T* init(chr* filename) {
     t.fds = (int*) sys.malloc(2 * 32)
 
     stderr := io.fdopen(io.STDERR, "w")
-    io.fprintf(stderr, "Running %s\0A", filename)
+    io.fprintf(stderr, "Running tests in %s\0A", filename)
     return t
 }
 
