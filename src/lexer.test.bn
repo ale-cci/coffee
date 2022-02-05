@@ -1,4 +1,5 @@
 import "./std/io" as io
+import "./std/sys" as sys
 import "./std/testing" as testing
 
 import "./lexer" as lexer
@@ -9,18 +10,34 @@ int main() {
     t := testing.init("lexer.test.bn")
 
     testing.setup(t, "parses EOF token")
-    testing.run(t, lexer_parses_numbers(t))
+    testing.run(t, should_parse_empty_file(t))
+
+    testing.setup(t, "parses single number")
+    testing.run(t, should_parse_int_number(t))
+
+    testing.setup(t, "parses consecutive numbers")
+    testing.run(t, should_parse_consecutive_numbers(t))
+
+    testing.setup(t, "ignores whitespace tokens")
+    testing.run(t, should_ignore_whitespaces(t))
+
+    testing.setup(t, "parses words token")
+    testing.run(t, should_parse_words_token(t))
 
     return 0
 }
 
-
-int lexer_parses_numbers(testing.T* t) {
-    f := testing.tempfile("")
+peeker.PeekerInfo* new_peeker(chr* file_content) {
+    f := testing.tempfile(file_content)
     f_no := io.fileno(f)
-
     p := peeker.new(f_no)
 
+    return p
+}
+
+
+int should_parse_empty_file(testing.T* t) {
+    p := new_peeker("")
     token_list := lexer.parse(p)
 
     testing.assert_equal_str(t, "EOF", token_list.type)
@@ -28,7 +45,58 @@ int lexer_parses_numbers(testing.T* t) {
     testing.assert_null(t, (chr*) token_list.next)
     testing.assert_null(t, (chr*) token_list.prev)
 
+    sys.free((chr*) p)
     return 0
 }
 
+int should_parse_int_number(testing.T* t) {
+    p := new_peeker("1")
+    token_list := lexer.parse(p)
 
+    testing.assert_equal_str(t, "NUMBER", token_list.type)
+    testing.assert_equal_str(t, "1", token_list.value)
+    testing.assert_null(t, (chr*) token_list.prev)
+    testing.assert_not_null(t, (chr*) token_list.next)
+
+    -- NOTE: could crash the test
+    testing.assert_null(t, (chr*) token_list.next.next)
+    testing.assert_equal_str(t, "NUMBER", token_list.next.prev.type)
+
+    sys.free((chr*) p)
+    return 0
+}
+
+int should_parse_consecutive_numbers(testing.T* t) {
+    p := new_peeker("123")
+    token_list := lexer.parse(p)
+
+    testing.assert_equal_str(t, "NUMBER", token_list.type)
+    testing.assert_equal_str(t, "123", token_list.value)
+
+    sys.free((chr*) p)
+    return 0
+}
+
+int should_ignore_whitespaces(testing.T* t) {
+    p := new_peeker(" \09")
+    token_list := lexer.parse(p)
+
+    testing.assert_equal_str(t, "EOF", token_list.type)
+    testing.assert_equal_str(t, "", token_list.value)
+    testing.assert_null(t, (chr*) token_list.next)
+    testing.assert_null(t, (chr*) token_list.prev)
+
+    sys.free((chr*) p)
+    return 0
+}
+
+int should_parse_words_token(testing.T* t) {
+    p := new_peeker("sAmp_le")
+    token_list := lexer.parse(p)
+
+    testing.assert_equal_str(t, "WORD", token_list.type)
+    testing.assert_equal_str(t, "sAmp_le", token_list.value)
+
+    sys.free((chr*) p)
+    return 0
+}

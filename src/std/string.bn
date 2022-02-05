@@ -14,3 +14,16 @@ extern int strlen(str message)
 -- catenate two strings
 extern chr* strcat(chr* dest, src)
 extern chr* strncat(chr* dest, src, int n)
+
+
+bool is_letter(chr c) {
+    return c >= 'a' & c <= 'z' | c >= 'A' & c <= 'Z'
+}
+
+bool is_digit(chr c) {
+    return c >= '0' & c <= '9'
+}
+
+bool is_whitespace(chr c) {
+    return c == ' ' | c == '\09'
+}

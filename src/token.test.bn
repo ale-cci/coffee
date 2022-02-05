@@ -4,7 +4,7 @@ import "./token" as token
 int main() {
     t := testing.init("token.test.bn")
 
-    testing.setup(t, "does not parse 'null' token name")
+    testing.setup(t, "does not parse invalid <null> token pointer")
     testing.run(t, should_not_parse_null_token_name(t))
 
     return 0

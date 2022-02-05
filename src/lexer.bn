@@ -1,4 +1,7 @@
 import "./std/sys" as sys
+import "./std/string" as string
+import "./std/io" as io
+
 import "./peeker" as peeker
 
 -- breaks up file in one or multiple tokens
@@ -48,13 +51,60 @@ Token* push_token(ParseCtx* c, str type, value) {
 
 
 -- takes a peeker in input, returns the sequence of tokens
+-- depending on the first character, start parsing a
+-- specific token.
+-- Here are the rules:
+--
+--    [0-9] -> INT_NUMBER
+--    [a-zA-Z_] -> WORD
+--    ["] -> STRING
+--    ['] -> CHR
+--    [+-/*=[({])}|] -> OPERATOR or COMMENT
 Token* parse(peeker.PeekerInfo* p) {
     ParseCtx* ctx = (ParseCtx*) sys.malloc(ParseCtx_size)
     ctx.root = null
     ctx.curr_token = null
 
+    int max_token_size = 64
+    chr* buf = (chr*) null
+
+    int idx = 0
     for ; p.eof == false ; {
-        peeker.read(p)
+        c := peeker.read(p)
+
+        if c == '\00' {
+            -- eof
+
+        } elif string.is_digit(c) {
+            buf = sys.malloc(max_token_size)
+
+            for idx = 0 ; string.is_digit(c); c = peeker.read(p) {
+                buf[idx] = c
+                idx = idx + 1
+                sys.assert(idx < max_token_size, "digit too large")
+            }
+            buf[idx] = '\00'
+
+            push_token(ctx, "NUMBER", buf)
+
+        } elif string.is_letter(c) | c == '_' {
+            buf = sys.malloc(max_token_size)
+
+            for idx = 0 ; string.is_letter(c) | string.is_digit(c) | c == '_'; c = peeker.read(p) {
+                buf[idx] = c
+                idx = idx + 1
+                sys.assert(idx < max_token_size, "digit too large")
+            }
+            buf[idx] = '\00'
+            push_token(ctx, "WORD", buf)
+
+        } elif string.is_whitespace(c) {
+            -- ignore whitespaces and tabs for now
+
+        } else {
+            io.printf("Token: '%c'\0A", c)
+            sys.assert(false, "Unparsable token")
+        }
     }
 
     -- set curr_token as eof

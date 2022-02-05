@@ -6,7 +6,7 @@ case $1 in
         ;;
 
     test)
-        find . -name '*.test.bn' -exec sh -c "echo && coffee -in {} && ./a.out " \;
+        find . -name '*.test.bn' -exec sh -c "echo && coffee -in {} -out {}.out && ./{}.out " \;
         rm -rf a.out
         ;;
     install)
