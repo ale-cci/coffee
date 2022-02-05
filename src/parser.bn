@@ -91,7 +91,7 @@ Matcher* parse_matcher(ParsingContext* ctx) {
         i := 0
         for i = 0; string.strcmp(ctx.current_token.value, ")") != 0 & string.strcmp(ctx.current_token.type, "EOF") != 0; i = i + 1 {
             sys.assert(i < max_matchers -1, "Max length reached for matchers (parser.bn). increase max_matchers")
-            matchers[i] = parse_simple_matcher(ctx)
+            matchers[i] = parse_matcher(ctx)
 
             if string.strcmp(ctx.current_token.value, "|") != 0 & string.strcmp(ctx.current_token.value, ")") != 0 {
                 io.printf("[%d:%d] malformed grammar, expected | got '%s'\0A", ctx.current_token.line, ctx.current_token.char_of_line, ctx.current_token.value)
