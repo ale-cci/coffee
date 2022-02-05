@@ -46,13 +46,6 @@ alias Rule = struct {
 int Rule_size = 16 -- matcher size + 1
 
 
--- basic node for 'ast' representation
-alias Node = struct {
-    chr* type,
-    Node* parent,
-    Node** childrens,
-}
-
 
 alias ParsingContext = struct {
     lexer.Token* current_token,
@@ -206,8 +199,46 @@ Rule** parse_grammar(ParsingContext* ctx) {
     return (Rule**) grammar
 }
 
+
+-- basic node for 'ast' representation
+alias Node = struct {
+    chr* type,
+    Node* parent,
+
+    Node* childrens,
+    Node* next,      -- required for a list of child nodes
+}
+int Node_size = 32
+
+Node* new_node() {
+    Node* n = (Node*) sys.malloc(Node_size)
+    n.type = null
+    n.parent = null
+    n.childrens = null
+    n.next = null
+    return n
+}
+
+
+alias AstContext = struct {
+    lexer.Token* current_token,
+    Rule** grammar,
+}
+
+Rule* find_rule(Rule** grammar, str rule_name) {
+    for i := 0; true ;i = i + 1 {
+        rule := grammar[i]
+        if string.strcmp(rule.name, rule_name) == 0 {
+            return rule
+        }
+    }
+    return (Rule*) null
+}
+
 -- given a list of tokens, return the respective ast
 -- :param grammar: a list of null-terminated rules
--- Node* ast(Rule** grammar, Token* tokens) {
---     return (Node*) null
--- }
+Node* ast(Rule** grammar, str start, Token* tokens) {
+    -- find starting rule
+
+    return (Node*) null
+}
