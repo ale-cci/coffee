@@ -25,7 +25,7 @@ int main() {
  - llvm (requires llc executable to be in "$PATH")
  - gcc
 
-```sh
+```shell
 $ go build ./cli/coffee.go # or go install ./cli/coffee.go
 $ coffee -in samples/hello.bn -out hello
 File hello compiled successfully!
