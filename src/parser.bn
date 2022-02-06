@@ -278,19 +278,11 @@ alias ParseResult = struct {
 }
 int ParseResult_size = 16 -- sys.ptr_size * 2
 
-
--- start parsing the list of tokens by applying a specific rule
-ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
-    res := (ParseResult*) sys.malloc(ParseResult_size)
-    res.err = null
-    res.node = new_node(c.current_token, rule.name, (chr*) null)
-
-    start_match := c.current_token
+-- mutates base node, assigning to it the parsed results
+void parse_query(AstContext* c, Matcher* m, Node* base) {
     Node* child
-
-    -- start matching querys tokens
     match_failure := false
-    for q := rule.matcher.querys; q != null & match_failure == false; q = q.next {
+    for q := m.querys; q != null & match_failure == false; q = q.next {
         if q.type == 'v' {
             -- match by exact token value
             qv := q.value
@@ -299,7 +291,7 @@ ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
             if string.strncmp(&qv_1, c.current_token.value, string.strlen(q.value) -2) == 0 {
                 -- we have a match on this node
                 child = new_node(c.current_token, c.current_token.type, c.current_token.value)
-                append_child(res.node, child)
+                append_child(base, child)
 
                 c.current_token = c.current_token.next
             } else {
@@ -313,7 +305,7 @@ ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
             if string.strcmp(q.value, c.current_token.type) == 0 {
                 -- we have a match
                 child = new_node(c.current_token, c.current_token.type, c.current_token.value)
-                append_child(res.node, child)
+                append_child(base, child)
                 c.current_token = c.current_token.next
             } else {
                 match_failure = true
@@ -328,7 +320,7 @@ ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
                 parse_result := parse_to_ast(c, alias_rule)
                 -- ensure no errors
 
-                append_child(res.node, parse_result.node)
+                append_child(base, parse_result.node)
                 sys.free((chr*) parse_result)
             }
 
@@ -336,6 +328,36 @@ ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
             sys.assert(false, "parser.bn: query matcher not implemented")
         }
     }
+
+    if m.children != null {
+        children := m.children
+        for idx := 0; children[idx] != null; idx = idx + 1 {
+            child_match := children[idx]
+            parse_query(c, child_match, base)
+        }
+    }
+}
+
+-- start parsing the list of tokens by applying a specific rule
+ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
+    res := (ParseResult*) sys.malloc(ParseResult_size)
+    res.err = null
+    res.node = new_node(c.current_token, rule.name, (chr*) null)
+
+    start_match := c.current_token
+
+    -- start matching querys tokens
+    parse_query(c, rule.matcher, res.node)
+
+    if rule.matcher.children != null {
+        -- find the first children who matches the rule / the longest
+        -- matcher that matches the list of rules
+        children := rule.matcher.children
+        for idx := 0; children[idx] != null; idx = idx + 1 {
+            child_match := children[idx]
+        }
+    }
+
 
     return res
 }

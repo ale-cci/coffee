@@ -48,6 +48,9 @@ int main() {
     testing.setup(t, "should_parse_node_using_alias_rules")
     testing.run(t, should_parse_node_using_alias_rules(t))
 
+    testing.setup(t, "should_parse_alternative_rules")
+    testing.run(t, should_parse_alternative_rules(t))
+
     testing.cleanup(t)
     return 0
 }
@@ -243,5 +246,26 @@ int should_parse_node_using_alias_rules(testing.T* t) {
     testing.assert_equal_str(t, "a", node.children.type)
     -- testing.assert_equal_str(t, "WORD", node.children.type)
     testing.assert_not_null(t, (chr*) node.children.children)
+    return 0
+}
+
+int should_parse_alternative_rules(testing.T* t) {
+    f := testing.tempfile("start: ( WORD | STRING )")
+    ctx := parser.new_context(f)
+    grammar := parser.parse_grammar(ctx)
+    sys.free((chr*) ctx)
+
+    source := testing.tempfile("\22sample\22")
+    fd := io.fileno(source)
+    p := peeker.new(fd)
+    source_tokens := lexer.tokenize(p)
+    sys.free((chr*) p)
+
+    node := parser.ast(grammar, "start", source_tokens)
+    testing.assert_not_null(t, (chr*) node)
+
+    testing.assert_not_null(t, (chr*) node.children)
+    testing.assert_equal_str(t, "STRING", node.children.type)
+
     return 0
 }
