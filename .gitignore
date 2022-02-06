@@ -2,10 +2,12 @@ coffee
 samples/*
 !samples/*.bn
 llvm/*
+!llvm/README.md
 !llvm/*.ll
 !llvm/compile.sh
 
 src/*
+!src/README.md
 !src/*.bn
 !src/*/
 !src/build
