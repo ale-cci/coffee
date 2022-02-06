@@ -308,7 +308,6 @@ ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
                 match_failure = true
             }
 
-
         } elif q.type == 't' {
             -- match by token type
             if string.strcmp(q.value, c.current_token.type) == 0 {
@@ -318,6 +317,19 @@ ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
                 c.current_token = c.current_token.next
             } else {
                 match_failure = true
+            }
+
+        } elif q.type == 'a' {
+            -- retrieve parse rule
+            alias_rule := _find_rule(c.grammar, q.value)
+            if alias_rule == null {
+                match_failure = true
+            } else {
+                parse_result := parse_to_ast(c, alias_rule)
+                -- ensure no errors
+
+                append_child(res.node, parse_result.node)
+                sys.free((chr*) parse_result)
             }
 
         } else {
