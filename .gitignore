@@ -7,6 +7,7 @@ llvm/*
 !llvm/compile.sh
 
 src/*
+!src/*.txt
 !src/README.md
 !src/*.bn
 !src/*/
