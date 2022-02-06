@@ -167,19 +167,29 @@ int should_parse_multiple_rules(testing.T* t) {
 }
 
 
-int should_parse_node_using_rule(testing.T* t) {
-    f := testing.tempfile("start: \22a\22 \22b\22")
+Rule** gen_grammar(chr* grammar_content) {
+    f := testing.tempfile(grammar_content)
     ctx := parser.new_context(f)
     grammar := parser.parse_grammar(ctx)
     sys.free((chr*) ctx)
+    return grammar
+}
 
-    source := testing.tempfile("a b")
+Node* parse_file(Rule** grammar, chr* file_content) {
+    source := testing.tempfile(file_content)
     fd := io.fileno(source)
     p := peeker.new(fd)
     source_tokens := lexer.tokenize(p)
     sys.free((chr*) p)
 
     node := parser.ast(grammar, "start", source_tokens)
+    return node
+}
+
+int should_parse_node_using_rule(testing.T* t) {
+    grammar := gen_grammar("start: \22a\22 \22b\22")
+    node := parse_file(grammar, "a b")
+
     -- asserts the following
     -- {
     --   type: "start", value: "", line: 1, char_of_line: 1,
@@ -203,18 +213,9 @@ int should_parse_node_using_rule(testing.T* t) {
 }
 
 int should_parse_node_using_rules_with_words(testing.T* t) {
-    f := testing.tempfile("start: STRING WORD")
-    ctx := parser.new_context(f)
-    grammar := parser.parse_grammar(ctx)
-    sys.free((chr*) ctx)
+    grammar := gen_grammar("start: STRING WORD")
+    node := parse_file(grammar, "\22a\22 b")
 
-    source := testing.tempfile("\22a\22 b")
-    fd := io.fileno(source)
-    p := peeker.new(fd)
-    source_tokens := lexer.tokenize(p)
-    sys.free((chr*) p)
-
-    node := parser.ast(grammar, "start", source_tokens)
     testing.assert_not_null(t, (chr*) node)
 
     testing.assert_equal_str(t, "STRING", node.children.type)
@@ -226,18 +227,8 @@ int should_parse_node_using_rules_with_words(testing.T* t) {
 }
 
 int should_parse_node_using_alias_rules(testing.T* t) {
-    f := testing.tempfile("start: a a\0Aa: WORD")
-    ctx := parser.new_context(f)
-    grammar := parser.parse_grammar(ctx)
-    sys.free((chr*) ctx)
-
-    source := testing.tempfile("a b")
-    fd := io.fileno(source)
-    p := peeker.new(fd)
-    source_tokens := lexer.tokenize(p)
-    sys.free((chr*) p)
-
-    node := parser.ast(grammar, "start", source_tokens)
+    grammar := gen_grammar("start: a a\0Aa: WORD")
+    node := parse_file(grammar, "a b")
 
     testing.assert_not_null(t, (chr*) node.children)
     if node.children == null {
@@ -250,22 +241,20 @@ int should_parse_node_using_alias_rules(testing.T* t) {
 }
 
 int should_parse_alternative_rules(testing.T* t) {
-    f := testing.tempfile("start: ( WORD | STRING )")
-    ctx := parser.new_context(f)
-    grammar := parser.parse_grammar(ctx)
-    sys.free((chr*) ctx)
+    grammar := gen_grammar("start: ( WORD | STRING )")
+    node := parse_file(grammar, "\22sample\22")
 
-    source := testing.tempfile("\22sample\22")
-    fd := io.fileno(source)
-    p := peeker.new(fd)
-    source_tokens := lexer.tokenize(p)
-    sys.free((chr*) p)
-
-    node := parser.ast(grammar, "start", source_tokens)
     testing.assert_not_null(t, (chr*) node)
 
     testing.assert_not_null(t, (chr*) node.children)
     testing.assert_equal_str(t, "STRING", node.children.type)
 
+    return 0
+}
+
+int should_revert_cursor(testing.T* t) {
+    f := testing.tempfile("start: ( WORD STRING | STRING )")
+    ctx := parser.new_context(f)
+    -- grammar :=
     return 0
 }
