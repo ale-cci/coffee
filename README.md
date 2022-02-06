@@ -31,6 +31,13 @@ of these are doable, but there they are:
 
 - rich ast library apis for easier to write linting tools, lsps, etc...
 
+#### Documentation
+waiting for a better way to host it, [here](./docs) you could find the documentation
+for this language.
+
+If you find something not easy to understand, please let me know or open an issue,
+i would really appreciate it.
+
 #### Dependencies
  - go (for now)
  - llvm (requires llc executable to be in "$PATH")
