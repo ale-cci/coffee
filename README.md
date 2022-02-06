@@ -4,6 +4,21 @@
 I don't have the time to do it right the first time, but surely i have the
 time to do it twice.
 
+```
+#!/usr/bin/env coffee
+import "./std/io" as io
+
+
+-- this is a comment
+int main() {
+
+    for i := 0; i < 10; i = i + 1 {
+        io.printf("Hello from coffee!\0A")
+    }
+
+    return 0
+}
+```
 ### Scope of this project:
 I've pretty high standards, and i'm still too new on the field to know if all
 of these are doable, but there they are:
@@ -55,33 +70,3 @@ Hello from coffee!
 ```
 
 NOTE: if you do `go install`, you probably need to add `$HOME/go/bin` to your `"$PATH"`
-
-#### Sample syntax (Not all implemented yet)
-```
-#!/usr/bin/env coffee
--- example of multiline docstring
--- the second line
--- the third line
-import "something" as something_else
-
--- Example function declaration
-int main(int argc, str* argv) {
-    -- example closure declaration
-    int clojure() {
-        return len(argv)
-    }
-
-    int t = 0
-    dec j = 10.0
-
-    for t = 0; t < 69; t += 1 {
-        print(t)
-    }
-
-    -- Variable swapping
-    t, j = j, t
-
-    printf("%f", dec(t) + j)
-    return 0 -- exit code
-}
-```
