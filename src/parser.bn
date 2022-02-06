@@ -394,6 +394,14 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
             err = errors.from(c.current_token, "Token is not matched by any rule")
         }
     }
+
+    -- based on the matching rules
+    if m.times == '1' {
+        -- done
+    } elif m.times == '+' {
+        -- repeat the exact same matching another time
+        parse_query(c, m, base)
+    }
     return (errors.Error*) null
 }
 
