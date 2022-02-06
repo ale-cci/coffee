@@ -243,7 +243,7 @@ Node* new_node(Token* t, chr* type, chr* value) {
     return node
 }
 
-void append_child(Node* parent, Node* child) {
+void child_append(Node* parent, Node* child) {
     if parent.children == null {
         parent.children = child
     } else {
@@ -253,6 +253,29 @@ void append_child(Node* parent, Node* child) {
         c.next = child
     }
     child.next = null
+}
+
+-- retrieve last child
+void child_pop(Node* parent) {
+    if parent.children == null {
+        -- no children to pop
+        return
+    }
+
+    c := parent.children
+    if c.next == null {
+        -- parent node has only one child
+        sys.free((chr*) c)
+        parent.children = null
+        return
+    }
+
+    -- retrive previous to last child
+    for ; c.next.next != null; c = c.next {
+    }
+
+    sys.free((chr*) c.next)
+    c.next = null
 }
 
 alias AstContext = struct {
@@ -278,26 +301,33 @@ alias ParseResult = struct {
 }
 int ParseResult_size = 16 -- sys.ptr_size * 2
 
+
 -- mutates base node, assigning to it the parsed results
-void parse_query(AstContext* c, Matcher* m, Node* base) {
+errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
     Node* child
-    match_failure := false
-    for q := m.querys; q != null & match_failure == false; q = q.next {
+    start_token := c.current_token
+
+    new_children := 0
+    errors.Error* err = (errors.Error*) null
+
+    for q := m.querys; q != null & err == null; q = q.next {
         if q.type == 'v' {
             -- match by exact token value
             qv := q.value
             qv_1 := qv[1]
+            qv_len := string.strlen(q.value) -2
 
-            if string.strncmp(&qv_1, c.current_token.value, string.strlen(q.value) -2) == 0 {
+            if string.strncmp(&qv_1, c.current_token.value, qv_len) == 0 {
                 -- we have a match on this node
                 child = new_node(c.current_token, c.current_token.type, c.current_token.value)
-                append_child(base, child)
+                child_append(base, child)
+                new_children = new_children + 1
 
                 c.current_token = c.current_token.next
             } else {
                 -- match failure, depending on the parsing mode choose the
                 -- appropriate outcome
-                match_failure = true
+                err = errors.from(c.current_token, "unable to match token by value")
             }
 
         } elif q.type == 't' {
@@ -305,22 +335,27 @@ void parse_query(AstContext* c, Matcher* m, Node* base) {
             if string.strcmp(q.value, c.current_token.type) == 0 {
                 -- we have a match
                 child = new_node(c.current_token, c.current_token.type, c.current_token.value)
-                append_child(base, child)
+                child_append(base, child)
+                new_children = new_children + 1
                 c.current_token = c.current_token.next
             } else {
-                match_failure = true
+                err = errors.from(c.current_token, "unable to match token by type")
             }
 
         } elif q.type == 'a' {
             -- retrieve parse rule
             alias_rule := _find_rule(c.grammar, q.value)
             if alias_rule == null {
-                match_failure = true
+                err = errors.from(c.current_token, "unable to retrieve alias rule")
             } else {
                 parse_result := parse_to_ast(c, alias_rule)
-                -- ensure no errors
 
-                append_child(base, parse_result.node)
+                if parse_result.err != null {
+                    err = parse_result.err
+                } else {
+                    child_append(base, parse_result.node)
+                    new_children = new_children + 1
+                }
                 sys.free((chr*) parse_result)
             }
 
@@ -329,13 +364,37 @@ void parse_query(AstContext* c, Matcher* m, Node* base) {
         }
     }
 
+    if err != null {
+        -- restore previous token position
+        c.current_token = start_token
+        for i := 0; i < new_children; i = i + 1 {
+            child_pop(base)
+        }
+        return err
+    }
+
     if m.children != null {
         children := m.children
-        for idx := 0; children[idx] != null; idx = idx + 1 {
+        match_found := false
+
+        -- for now, assume that matchers could only work in 'or' mode
+        for idx := 0; children[idx] != null & match_found == false; idx = idx + 1 {
             child_match := children[idx]
-            parse_query(c, child_match, base)
+            err = parse_query(c, child_match, base)
+            if err != null {
+                -- for now, ignore this error
+                sys.free((chr*) err)
+                err = null
+            } else {
+                match_found = true
+            }
+        }
+
+        if match_found == false {
+            err = errors.from(c.current_token, "Token is not matched by any rule")
         }
     }
+    return (errors.Error*) null
 }
 
 -- start parsing the list of tokens by applying a specific rule
@@ -343,22 +402,10 @@ ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
     res := (ParseResult*) sys.malloc(ParseResult_size)
     res.err = null
     res.node = new_node(c.current_token, rule.name, (chr*) null)
-
     start_match := c.current_token
 
     -- start matching querys tokens
-    parse_query(c, rule.matcher, res.node)
-
-    if rule.matcher.children != null {
-        -- find the first children who matches the rule / the longest
-        -- matcher that matches the list of rules
-        children := rule.matcher.children
-        for idx := 0; children[idx] != null; idx = idx + 1 {
-            child_match := children[idx]
-        }
-    }
-
-
+    res.err = parse_query(c, rule.matcher, res.node)
     return res
 }
 

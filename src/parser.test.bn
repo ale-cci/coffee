@@ -51,6 +51,9 @@ int main() {
     testing.setup(t, "should_parse_alternative_rules")
     testing.run(t, should_parse_alternative_rules(t))
 
+    testing.setup(t, "should_rollback_if_rule_does_not_match")
+    testing.run(t, should_rollback_if_rule_does_not_match(t))
+
     testing.cleanup(t)
     return 0
 }
@@ -252,9 +255,19 @@ int should_parse_alternative_rules(testing.T* t) {
     return 0
 }
 
-int should_revert_cursor(testing.T* t) {
-    f := testing.tempfile("start: ( WORD STRING | STRING )")
-    ctx := parser.new_context(f)
-    -- grammar :=
+int should_rollback_if_rule_does_not_match(testing.T* t) {
+    grammar := gen_grammar("start: ( conda | condb )\0Aconda: WORD STRING\0Acondb: WORD WORD")
+    node := parse_file(grammar, "a b")
+
+    testing.assert_not_null(t, (chr*) node)
+    testing.assert_not_null(t, (chr*) node.children)
+    testing.assert_equal_str(t, "condb", node.children.type)
+    testing.assert_not_null(t, (chr*) node.children.children)
+    if node.children.children == null {
+        return 0
+    }
+    testing.assert_equal_str(t, "a", node.children.children.value)
+    testing.assert_not_null(t, (chr*) node.children.children.next)
+
     return 0
 }
