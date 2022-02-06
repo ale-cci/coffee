@@ -397,6 +397,7 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
     return (errors.Error*) null
 }
 
+
 -- start parsing the list of tokens by applying a specific rule
 ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
     res := (ParseResult*) sys.malloc(ParseResult_size)
@@ -408,6 +409,7 @@ ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
     res.err = parse_query(c, rule.matcher, res.node)
     return res
 }
+
 
 -- Parse a list of tokens
 --

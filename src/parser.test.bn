@@ -268,6 +268,7 @@ int should_rollback_if_rule_does_not_match(testing.T* t) {
     }
     testing.assert_equal_str(t, "a", node.children.children.value)
     testing.assert_not_null(t, (chr*) node.children.children.next)
+    testing.assert_equal_str(t, "b", node.children.children.next.value)
 
     return 0
 }
