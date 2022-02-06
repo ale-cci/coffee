@@ -3,12 +3,14 @@ import "./std/sys" as sys
 import "./std/string" as string
 import "./peeker" as peeker
 import "./lexer" as lexer
+import "./errors" as errors
 
 
 alias Query = struct {
-    -- 'v': value
-    -- 'r': rule
-    chr  type,
+    -- 'v': .value contains the value of the token
+    -- 'a': .value is an alias to a rule
+    -- 't': .value contains the type of the token ex: EOF, STRING, CHAR...
+    chr type,
     chr* value,
 
     Query* next,
@@ -147,7 +149,20 @@ Matcher* parse_simple_matcher(ParsingContext* ctx) {
             q.next = (Query*) sys.malloc(Query_size)
             q = q.next
         }
-        q.type = 'r'
+
+        -- STRING it's used to match by token value
+        -- WORD UPPERCASE is used to match by token type
+        -- WORD LOWERCASE is used to alias another rule
+        if string.strcmp(ctx.current_token.type, "STRING") == 0 {
+            q.type = 'v'
+        } elif string.is_lower(ctx.current_token.value) {
+            q.type = 'a'
+        } elif string.is_upper(ctx.current_token.value) {
+            q.type = 't'
+        } else {
+            io.printf("rule name: '%s'\0A", ctx.current_token.value)
+            sys.assert(false, "malformed rule name")
+        }
         q.value = ctx.current_token.value
         q.next = null
         ctx.current_token = ctx.current_token.next
@@ -179,7 +194,8 @@ Rule* parse_rule(ParsingContext* ctx) {
 }
 
 void parser_error(ParsingContext* ctx, chr* error) {
-    io.printf("%d:%d error: %s\0A", ctx.current_token.line, ctx.current_token.char_of_line, error)
+    e := errors.from(ctx.current_token, error)
+    errors.report(e)
     sys.exit(1)
 }
 
@@ -211,20 +227,33 @@ alias Node = struct {
 
     Node* parent,
 
-    Node* childrens,
+    Node* children,
     Node* next,      -- required for a list of child nodes
 }
 int Node_size = 48
 
-Node* new_node() {
-    Node* n = (Node*) sys.malloc(Node_size)
-    n.type = null
-    n.parent = null
-    n.childrens = null
-    n.next = null
-    return n
+Node* new_node(Token* t, chr* type, chr* value) {
+    node := (Node*) sys.malloc(Node_size)
+    node.type = type
+    node.value = value
+    node.line = t.line
+    node.char_of_line = t.char_of_line
+    node.parent = null
+    node.children = null
+    return node
 }
 
+void append_child(Node* parent, Node* child) {
+    if parent.children == null {
+        parent.children = child
+    } else {
+        c := parent.children
+        for ; c.next != null; c = c.next {
+        }
+        c.next = child
+    }
+    child.next = null
+}
 
 alias AstContext = struct {
     lexer.Token* current_token,
@@ -242,8 +271,61 @@ Rule* _find_rule(Rule** grammar, str rule_name) {
     return (Rule*) null
 }
 
-Node* parse_tokens(AstContext* c, Rule* rule) {
-    return (Node*) null
+
+alias ParseResult = struct {
+    errors.Error* err,
+    Node* node,
+}
+int ParseResult_size = 16 -- sys.ptr_size * 2
+
+
+-- start parsing the list of tokens by applying a specific rule
+ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
+    res := (ParseResult*) sys.malloc(ParseResult_size)
+    res.err = null
+    res.node = new_node(c.current_token, rule.name, (chr*) null)
+
+    start_match := c.current_token
+    Node* child
+
+    -- start matching querys tokens
+    match_failure := false
+    for q := rule.matcher.querys; q != null & match_failure == false; q = q.next {
+        if q.type == 'v' {
+            -- match by exact token value
+            qv := q.value
+            qv_1 := qv[1]
+
+            if string.strncmp(&qv_1, c.current_token.value, string.strlen(q.value) -2) == 0 {
+                -- we have a match on this node
+                child = new_node(c.current_token, c.current_token.type, c.current_token.value)
+                append_child(res.node, child)
+
+                c.current_token = c.current_token.next
+            } else {
+                -- match failure, depending on the parsing mode choose the
+                -- appropriate outcome
+                match_failure = true
+            }
+
+
+        } elif q.type == 't' {
+            -- match by token type
+            if string.strcmp(q.value, c.current_token.type) == 0 {
+                -- we have a match
+                child = new_node(c.current_token, c.current_token.type, c.current_token.value)
+                append_child(res.node, child)
+                c.current_token = c.current_token.next
+            } else {
+                match_failure = true
+            }
+
+        } else {
+            sys.assert(false, "parser.bn: query matcher not implemented")
+        }
+    }
+
+    return res
 }
 
 -- Parse a list of tokens
@@ -260,5 +342,14 @@ Node* ast(Rule** grammar, str start, Token* tokens) {
     c.current_token = tokens
     c.grammar = grammar
 
-    return parse_tokens(&c, start_matcher)
+    result := parse_to_ast(&c, start_matcher)
+    if result.err != null {
+        errors.report(result.err)
+        sys.free((chr*) result.err)
+        return (Node*) null
+    }
+
+    node := result.node
+    sys.free((chr*) result)
+    return node
 }

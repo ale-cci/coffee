@@ -12,6 +12,12 @@ int main() {
     testing.setup(t, "parses one word matcher")
     testing.run(t, should_parse_one_word_matcher(t))
 
+    testing.setup(t, "should_parse_string_as_value_matcher")
+    testing.run(t, should_parse_string_as_value_matcher(t))
+
+    testing.setup(t, "should_parse_lowercase_words_as_rule_alias")
+    testing.run(t, should_parse_string_as_value_matcher(t))
+
     testing.setup(t, "parses multiple words matcher")
     testing.run(t, should_parse_two_consecutive_tokens(t))
 
@@ -36,6 +42,9 @@ int main() {
     testing.setup(t, "parses node using rule")
     testing.run(t, should_parse_node_using_rule(t))
 
+    testing.setup(t, "should_parse_node_using_rules_with_words")
+    testing.run(t, should_parse_node_using_rules_with_words(t))
+
     testing.cleanup(t)
     return 0
 }
@@ -59,9 +68,22 @@ int should_parse_one_word_matcher(testing.T* t) {
     testing.assert_not_null(t, (chr*) matcher.querys)
 
     qs := matcher.querys
-    testing.assert_equal_chr(t, 'r', qs.type)
+    testing.assert_equal_chr(t, 't', qs.type)
     testing.assert_null(t, (chr*) qs.next)
     testing.assert_equal_str(t, "NUMBER", qs.value)
+    return 0
+}
+
+int should_parse_lowercase_words_as_rule_alias(testing.T* t) {
+    matcher := build_matcher("number")
+    testing.assert_equal_chr(t, 'a', matcher.querys.type)
+    return 0
+}
+
+int should_parse_string_as_value_matcher(testing.T* t) {
+    matcher := build_matcher("\22NUMBER\22")
+
+    testing.assert_equal_chr(t, 'v', matcher.querys.type)
     return 0
 }
 
@@ -138,6 +160,7 @@ int should_parse_multiple_rules(testing.T* t) {
     return 0
 }
 
+
 int should_parse_node_using_rule(testing.T* t) {
     f := testing.tempfile("start: \22a\22 \22b\22")
     ctx := parser.new_context(f)
@@ -145,7 +168,7 @@ int should_parse_node_using_rule(testing.T* t) {
     sys.free((chr*) ctx)
 
     source := testing.tempfile("a b")
-    fd := io.fileno(f)
+    fd := io.fileno(source)
     p := peeker.new(fd)
     source_tokens := lexer.tokenize(p)
     sys.free((chr*) p)
@@ -161,5 +184,37 @@ int should_parse_node_using_rule(testing.T* t) {
     -- }
 
     testing.assert_not_null(t, (chr*) node)
+    testing.assert_equal_str(t, "start", node.type)
+    testing.assert_not_null(t, (chr*) node.children)
+    testing.assert_equal_str(t, "a", node.children.value)
+    testing.assert_equal_str(t, "WORD", node.children.type)
+
+    testing.assert_not_null(t, (chr*) node.children.next)
+    testing.assert_equal_str(t, "b", node.children.next.value)
+    testing.assert_equal_str(t, "WORD", node.children.next.type)
+    testing.assert_equal_int(t, 3, node.children.next.char_of_line)
+    return 0
+}
+
+int should_parse_node_using_rules_with_words(testing.T* t) {
+    f := testing.tempfile("start: STRING WORD")
+    ctx := parser.new_context(f)
+    grammar := parser.parse_grammar(ctx)
+    sys.free((chr*) ctx)
+
+    source := testing.tempfile("\22a\22 b")
+    fd := io.fileno(source)
+    p := peeker.new(fd)
+    source_tokens := lexer.tokenize(p)
+    sys.free((chr*) p)
+
+    node := parser.ast(grammar, "start", source_tokens)
+    testing.assert_not_null(t, (chr*) node)
+
+    testing.assert_equal_str(t, "STRING", node.children.type)
+    testing.assert_equal_str(t, "\22a\22", node.children.value)
+
+    testing.assert_equal_str(t, "WORD", node.children.next.type)
+    testing.assert_equal_str(t, "b", node.children.next.value)
     return 0
 }

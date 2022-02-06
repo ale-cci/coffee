@@ -5,7 +5,12 @@
 --     1. if str1 is lower than str2
 extern int strcmp(chr* str1, str2)
 
+
 -- like strcmp but limits the comparison at the first n characters
+-- Compares up to num characters of the C string str1 to those of the C
+-- string str2.
+-- https://www.cplusplus.com/reference/cstring/strncmp/
+
 extern int strncmp(chr* str1, str2, int n)
 
 -- get string length
@@ -26,4 +31,25 @@ bool is_digit(chr c) {
 
 bool is_whitespace(chr c) {
     return c == ' ' | c == '\09'
+}
+
+
+bool is_lower(chr* string) {
+    for idx := 0; string[idx] != '\00'; idx = idx + 1 {
+        c := string[idx]
+        if c < 'a' | c > 'z' {
+            return false
+        }
+    }
+    return true
+}
+
+bool is_upper(chr* string) {
+    for idx := 0; string[idx] != '\00'; idx = idx + 1 {
+        c := string[idx]
+        if c < 'A' | c > 'Z' {
+            return false
+        }
+    }
+    return true
 }

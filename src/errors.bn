@@ -1,0 +1,30 @@
+import "./std/sys" as sys
+import "./std/io" as io
+import "./lexer" as lexer
+
+-- error reporting message
+alias Error = struct {
+    int line,
+    int char_of_line,
+    chr* filename,
+    chr* message,
+}
+int Error_size = 24
+
+
+Error* from(lexer.Token* t, chr* message) {
+    return new((chr*) null, t.line, t.char_of_line, message)
+}
+
+Error* new(chr* filename, int line, char_of_line, chr* message) {
+    Error* e = (Error*) sys.malloc(Error_size)
+    e.line = line
+    e.char_of_line = char_of_line
+    e.message = message
+    e.filename = filename
+    return e
+}
+
+void report(Error* e) {
+    io.printf("[%d:%d] error: %s\0A", e.line, e.char_of_line, e.message)
+}

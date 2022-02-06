@@ -1,0 +1,1 @@
+basictype: ( 'int' | 'str' | 'chr' | 'void' )
