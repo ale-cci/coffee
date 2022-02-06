@@ -23,11 +23,6 @@ alias Matcher = struct {
     -- NUMBER, STRING, WORD, CHAR, EOF
     Query* querys,
 
-    -- how to match the querys:
-    -- [&] all should match (default)
-    -- [|] only one should match
-    chr mode,
-
     -- how many times this matcher should be applied
     -- [1] just one tim (default)
     -- [+] one or more
@@ -36,7 +31,8 @@ alias Matcher = struct {
     chr times,
 
     -- in case this matcher fails call the following matcher
-    Matcher** children,
+    Matcher* alternative,
+    Matcher* next,
 }
 int Matcher_size = 32
 
@@ -68,9 +64,9 @@ ParsingContext* new_context(io.File* f) {
 
 Matcher* new_matcher() {
     Matcher* m = (Matcher*) sys.malloc(Matcher_size)
-    m.mode = '&'
     m.times = '1'
-    m.children = null
+    m.alternative = null
+    m.next = null
     m.querys = null
     return m
 }
@@ -81,26 +77,31 @@ Matcher* parse_matcher(ParsingContext* ctx) {
     if string.strcmp(ctx.current_token.value, "(") == 0 {
         ctx.current_token = ctx.current_token.next
         int max_matchers = 10
-        matchers := (Matcher**) sys.malloc(sys.ptr_size * max_matchers)
 
-        i := 0
-        for i = 0; string.strcmp(ctx.current_token.value, ")") != 0 & string.strcmp(ctx.current_token.type, "EOF") != 0; i = i + 1 {
-            sys.assert(i < max_matchers -1, "Max length reached for matchers (parser.bn). increase max_matchers")
-            matchers[i] = parse_matcher(ctx)
+        m = parse_matcher(ctx)
+        -- ) | EOF
 
-            if string.strcmp(ctx.current_token.value, "|") != 0 & string.strcmp(ctx.current_token.value, ")") != 0 {
-                io.printf("[%d:%d] malformed grammar, expected | got '%s'\0A", ctx.current_token.line, ctx.current_token.char_of_line, ctx.current_token.value)
-                sys.exit(1)
+        if string.strcmp(ctx.current_token.value, "|") == 0 {
+            -- parse matcher chain
+            ctx.current_token = ctx.current_token.next
+            last_matcher := m
+
+            for ; string.strcmp(ctx.current_token.value, ")") != 0 & string.strcmp(ctx.current_token.type, "EOF") != 0 ; {
+                last_matcher.alternative = parse_matcher(ctx)
+                last_matcher = last_matcher.alternative
+
+                if string.strcmp(ctx.current_token.value, "|") != 0 & string.strcmp(ctx.current_token.value, ")") != 0 {
+                    io.printf("[%d:%d] malformed grammar, expected | got '%s'\0A", ctx.current_token.line, ctx.current_token.char_of_line, ctx.current_token.value)
+                    sys.exit(1)
+                }
+
+                if string.strcmp(ctx.current_token.value, "|") == 0 {
+                    ctx.current_token = ctx.current_token.next
+                }
+
             }
-            if string.strcmp(ctx.current_token.value, "|") == 0 {
-                ctx.current_token = ctx.current_token.next
-            }
+
         }
-        matchers[i] = null
-
-        m = new_matcher()
-        m.mode = '|'
-        m.children = matchers
 
         if string.strcmp(ctx.current_token.value, ")") != 0 {
             -- panic, wrong grammar
@@ -108,19 +109,26 @@ Matcher* parse_matcher(ParsingContext* ctx) {
         }
         ctx.current_token = ctx.current_token.next
 
+        -- parse molteplicity
+        if string.strcmp(ctx.current_token.value, "+") == 0 {
+            ctx.current_token = ctx.current_token.next
+            m.times = '+'
+        } elif string.strcmp(ctx.current_token.value, "*") == 0 {
+            ctx.current_token = ctx.current_token.next
+            m.times = '*'
+        } elif string.strcmp(ctx.current_token.value, "?") == 0 {
+            ctx.current_token = ctx.current_token.next
+            m.times = '?'
+        }
+
     } else {
         m = parse_simple_matcher(ctx)
     }
 
-    if string.strcmp(ctx.current_token.value, "+") == 0 {
-        ctx.current_token = ctx.current_token.next
-        m.times = '+'
-    } elif string.strcmp(ctx.current_token.value, "*") == 0 {
-        ctx.current_token = ctx.current_token.next
-        m.times = '*'
-    } elif string.strcmp(ctx.current_token.value, "?") == 0 {
-        ctx.current_token = ctx.current_token.next
-        m.times = '?'
+    -- if a bracket is opened, another matcher should be parsed
+    -- this allows for (a b) (c d) or a (b c)? d
+    if string.strcmp(ctx.current_token.value, "(") == 0 | string.strcmp(ctx.current_token.type, "WORD") == 0 {
+        m.next = parse_matcher(ctx)
     }
 
     return m
@@ -175,7 +183,7 @@ Matcher* parse_simple_matcher(ParsingContext* ctx) {
 Rule* parse_rule(ParsingContext* ctx) {
     rule_name := ctx.current_token.value
     if string.strcmp(ctx.current_token.type, "WORD") != 0 {
-        io.printf("Identifier: {type: %s, value: %s}\0A", ctx.current_token.type, ctx.current_token.value)
+        io.printf("Identifier: {type: %s, value: '%s'}\0A", ctx.current_token.type, ctx.current_token.value)
         parser_error(ctx, "rule identifier must be a WORD")
     }
     ctx.current_token = ctx.current_token.next
@@ -364,6 +372,12 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
         }
     }
 
+    if m.alternative != null {
+        -- ignore errors on or matcher
+        err = parse_query(c, m.alternative, base)
+    }
+
+
     if err != null {
         -- restore previous token position
         c.current_token = start_token
@@ -373,36 +387,14 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
         return err
     }
 
-    if m.children != null {
-        children := m.children
-        match_found := false
-
-        -- for now, assume that matchers could only work in 'or' mode
-        for idx := 0; children[idx] != null & match_found == false; idx = idx + 1 {
-            child_match := children[idx]
-            err = parse_query(c, child_match, base)
-            if err != null {
-                -- for now, ignore this error
-                sys.free((chr*) err)
-                err = null
-            } else {
-                match_found = true
-            }
-        }
-
-        if match_found == false {
-            err = errors.from(c.current_token, "Token is not matched by any rule")
-        }
-    }
-
-    -- based on the matching rules
     if m.times == '1' {
         -- done
-    } elif m.times == '+' {
+    } elif m.times == '+' & err == null {
         -- repeat the exact same matching another time
+        -- ignore returned errors
         parse_query(c, m, base)
     }
-    return (errors.Error*) null
+    return (errors.Error*) err
 }
 
 

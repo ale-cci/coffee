@@ -21,6 +21,9 @@ int main() {
     testing.setup(t, "parses multiple words matcher")
     testing.run(t, should_parse_two_consecutive_tokens(t))
 
+    testing.setup(t, "should parse catenated matchers")
+    testing.run(t, should_parse_catenated_matchers(t))
+
     testing.setup(t, "parses repeating condition +")
     testing.run(t, should_parse_repeating_condition_plus(t))
 
@@ -57,6 +60,9 @@ int main() {
     testing.setup(t, "should_match_with_repeating_conditions")
     testing.run(t, should_match_with_repeating_conditions(t))
 
+    testing.setup(t, "should_parse_with_optional_parser")
+    testing.run(t, should_parse_with_optional_parser(t))
+
     testing.cleanup(t)
     return 0
 }
@@ -74,9 +80,8 @@ int should_parse_one_word_matcher(testing.T* t) {
     matcher := build_matcher("NUMBER")
 
     -- testing.assert_not_null(t, (chr*) matcher)
-    testing.assert_null(t, (chr*) matcher.children)
+    testing.assert_null(t, (chr*) matcher.alternative)
     testing.assert_equal_chr(t, '1', matcher.times)
-    testing.assert_equal_chr(t, '&', matcher.mode)
     testing.assert_not_null(t, (chr*) matcher.querys)
 
     qs := matcher.querys
@@ -102,7 +107,7 @@ int should_parse_string_as_value_matcher(testing.T* t) {
 int should_parse_two_consecutive_tokens(testing.T* t) {
     matcher := build_matcher("a b")
 
-    testing.assert_null(t, (chr*) matcher.children)
+    testing.assert_null(t, (chr*) matcher.alternative)
 
     qs := matcher.querys
     testing.assert_equal_str(t, "a", qs.value)
@@ -115,14 +120,20 @@ int should_parse_two_consecutive_tokens(testing.T* t) {
     return 0
 }
 
+int should_parse_catenated_matchers(testing.T* t) {
+    matcher := build_matcher("(a) (b)")
+    testing.assert_not_null(t, (chr*) matcher.next)
+    return 0
+}
+
 int should_parse_repeating_condition_plus(testing.T* t) {
-    matcher := build_matcher("a + ")
+    matcher := build_matcher("(a) + ")
     testing.assert_equal_chr(t, '+', matcher.times)
     return 0
 }
 
 int should_parse_repeating_condition_times(testing.T* t) {
-    matcher := build_matcher("a * ")
+    matcher := build_matcher("(a) * ")
     testing.assert_equal_chr(t, '*', matcher.times)
     return 0
 }
@@ -130,8 +141,9 @@ int should_parse_repeating_condition_times(testing.T* t) {
 int should_parse_or_condition(testing.T* t) {
     matcher := build_matcher("(a | b)")
 
-    testing.assert_equal_chr(t, '|', matcher.mode)
-    testing.assert_null(t, (chr*) matcher.querys)
+    testing.assert_not_null(t, (chr*) matcher.querys)
+    testing.assert_not_null(t, (chr*) matcher.alternative)
+    testing.assert_null(t, (chr*) matcher.alternative.alternative)
     testing.assert_equal_chr(t, '1', matcher.times)
 
     return 0
@@ -139,7 +151,8 @@ int should_parse_or_condition(testing.T* t) {
 
 int should_parse_repeating_condition_question(testing.T* t) {
     matcher := build_matcher("(a b)?")
-    testing.assert_null(t, (chr*) matcher.querys)
+    testing.assert_not_null(t, (chr*) matcher.querys)
+    testing.assert_null(t, (chr*) matcher.alternative)
     testing.assert_equal_chr(t, '?', matcher.times)
     return 0
 }
@@ -251,8 +264,10 @@ int should_parse_alternative_rules(testing.T* t) {
     node := parse_file(grammar, "\22sample\22")
 
     testing.assert_not_null(t, (chr*) node)
-
     testing.assert_not_null(t, (chr*) node.children)
+    if node.children == null {
+        return 0
+    }
     testing.assert_equal_str(t, "STRING", node.children.type)
 
     return 0
@@ -264,6 +279,9 @@ int should_rollback_if_rule_does_not_match(testing.T* t) {
 
     testing.assert_not_null(t, (chr*) node)
     testing.assert_not_null(t, (chr*) node.children)
+    if node.children == null {
+        return 0
+    }
     testing.assert_equal_str(t, "condb", node.children.type)
     testing.assert_not_null(t, (chr*) node.children.children)
     if node.children.children == null {
@@ -277,10 +295,28 @@ int should_rollback_if_rule_does_not_match(testing.T* t) {
 }
 
 int should_match_with_repeating_conditions(testing.T* t) {
-    grammar := gen_grammar("start: WORD+")
-    node := parse_file(grammar, "a b c d")
+    grammar := gen_grammar("start: (WORD)+")
+    node := parse_file(grammar, "a b c")
 
     testing.assert_not_null(t, (chr*) node.children)
+    if node.children == null {
+        return 0
+    }
     testing.assert_not_null(t, (chr*) node.children.next)
+    if node.children.next == null {
+        return 0
+    }
+    testing.assert_not_null(t, (chr*) node.children.next.next)
+    return 0
+}
+
+int should_parse_with_optional_parser(testing.T* t) {
+    grammar := gen_grammar("start: WORD ( STRING )?")
+    node := parse_file(grammar, "a")
+
+    testing.assert_not_null(t, (chr*) node)
+    if node == null {
+        return 0
+    }
     return 0
 }
