@@ -32,6 +32,11 @@ int main() {
 
     testing.setup(t, "parses list of tokens")
     testing.run(t, should_parse_list_of_tokens(t))
+
+    testing.setup(t, "parses STRING token")
+    testing.run(t, should_parse_string_token(t))
+
+    testing.cleanup(t)
     return 0
 }
 
@@ -142,5 +147,17 @@ int should_parse_list_of_tokens(testing.T* t) {
     testing.assert_equal_str(t, "a", token_list.value)
     testing.assert_equal_str(t, ":", token_list.next.value)
     testing.assert_equal_str(t, "b", token_list.next.next.value)
+    return 0
+}
+
+int should_parse_string_token(testing.T* t) {
+    p := new_peeker("\22b\22")
+    token_list := lexer.tokenize(p)
+
+    testing.assert_equal_str(t, "STRING", token_list.type)
+    testing.assert_equal_str(t, "\22b\22", token_list.value)
+
+    sys.free((chr*) p)
+    sys.free((chr*) token_list)
     return 0
 }

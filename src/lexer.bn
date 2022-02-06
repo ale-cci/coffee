@@ -112,10 +112,30 @@ Token* tokenize(peeker.PeekerInfo* p) {
             -- ignore whitespaces and tabs for now
             c = peeker.read(p)
 
+        } elif c == '\22' {
+            buf = sys.malloc(max_token_size)
+            buf[0] = c
+
+            -- read string content
+            c = peeker.read(p)
+            for idx = 1; c != '\22'; c = peeker.read(p) {
+                sys.assert(c != '\00', "lexer: reached end of file while scanning for 'STRING' token")
+
+                sys.assert(idx < max_token_size - 2, "string too large")
+                buf[idx] = c
+                idx = idx + 1
+            }
+
+            -- read terminator character
+            buf[idx] = c
+            buf[idx + 1] = '\00'
+            c = peeker.read(p)
+
+            push_token(ctx, "STRING", buf)
         } else {
             -- check for operator
             if c > '\7E' {
-                io.printf("Position %d:%d found non ascii token: '%c' (%d)\0A", ctx.line, ctx.char_of_line, c, c)
+                io.printf("%d:%d error: found non ascii token: '%c' (%d)\0A", ctx.line, ctx.char_of_line, c, c)
                 sys.exit(1)
             }
 

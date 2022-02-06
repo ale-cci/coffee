@@ -6,6 +6,8 @@
 extern int printf(str format, ...args)
 extern int sprintf(chr* dest, str format, ...args)
 
+extern void perror(str error)
+
 
 -- prints text + adds newline
 extern int puts(str text)

@@ -130,7 +130,7 @@ Matcher* parse_simple_matcher(ParsingContext* ctx) {
     -- count number of 'words'
     int count
     ptr := ctx.current_token
-    for count = 0; string.strcmp(ptr.type, "WORD") == 0; {
+    for count = 0; string.strcmp(ptr.type, "WORD") == 0 | string.strcmp(ptr.type, "STRING") == 0; {
         count = count + 1
         ptr = ptr.next
     }
@@ -160,6 +160,7 @@ Matcher* parse_simple_matcher(ParsingContext* ctx) {
 Rule* parse_rule(ParsingContext* ctx) {
     rule_name := ctx.current_token.value
     if string.strcmp(ctx.current_token.type, "WORD") != 0 {
+        io.printf("Identifier: {type: %s, value: %s}\0A", ctx.current_token.type, ctx.current_token.value)
         parser_error(ctx, "rule identifier must be a WORD")
     }
     ctx.current_token = ctx.current_token.next
@@ -203,12 +204,17 @@ Rule** parse_grammar(ParsingContext* ctx) {
 -- basic node for 'ast' representation
 alias Node = struct {
     chr* type,
+    chr* value,
+
+    int line,
+    int char_of_line,
+
     Node* parent,
 
     Node* childrens,
     Node* next,      -- required for a list of child nodes
 }
-int Node_size = 32
+int Node_size = 48
 
 Node* new_node() {
     Node* n = (Node*) sys.malloc(Node_size)
@@ -225,7 +231,8 @@ alias AstContext = struct {
     Rule** grammar,
 }
 
-Rule* find_rule(Rule** grammar, str rule_name) {
+
+Rule* _find_rule(Rule** grammar, str rule_name) {
     for i := 0; true ;i = i + 1 {
         rule := grammar[i]
         if string.strcmp(rule.name, rule_name) == 0 {
@@ -235,10 +242,23 @@ Rule* find_rule(Rule** grammar, str rule_name) {
     return (Rule*) null
 }
 
--- given a list of tokens, return the respective ast
--- :param grammar: a list of null-terminated rules
+Node* parse_tokens(AstContext* c, Rule* rule) {
+    return (Node*) null
+}
+
+-- Parse a list of tokens
+--
+-- :param grammar: list of null terminated grammar rules
+-- :param start: starting rule to use for token parsing
+-- :param tokens: list of tokens of the language
 Node* ast(Rule** grammar, str start, Token* tokens) {
     -- find starting rule
+    Rule* start_matcher = _find_rule(grammar, start)
+    sys.assert(start_matcher != null, "Unable to find starting rule in the grammar")
 
-    return (Node*) null
+    AstContext c
+    c.current_token = tokens
+    c.grammar = grammar
+
+    return parse_tokens(&c, start_matcher)
 }
