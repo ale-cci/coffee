@@ -6,19 +6,46 @@ time to do it twice.
 
 ```
 #!/usr/bin/env coffee
-import "./std/io" as io
-
+extern int printf(str template, ...args)
 
 -- this is a comment
 int main() {
 
-    for i := 0; i < 10; i = i + 1 {
-        io.printf("Hello from coffee!\0A")
+    for i := 0; i < 3; i = i + 1 {
+        printf("Hello from coffee!\0A")
     }
 
     return 0
 }
 ```
+
+#### Getting started
+###### Dependencies:
+ - go (for now)
+ - llvm (requires llc executable to be in "$PATH")
+ - gcc
+
+```sh
+$ go build ./cli/coffee.go # or go install ./cli/coffee.go
+$ coffee -in samples/hello.bn -out hello
+File hello compiled successfully!
+$ ./hello
+Hello from coffee!
+Hello from coffee!
+Hello from coffee!
+```
+
+NOTE: if you do `go install`, you probably need to add `$HOME/go/bin` to your `"$PATH"`
+
+
+#### Documentation
+waiting for a better way to host it, [here](./docs) you could find the documentation
+for this language.
+
+If you find something not easy to understand, please let me know or open an issue,
+i would really appreciate it.
+
+
 ### Scope of this project:
 I've pretty high standards, and i'm still too new on the field to know if all
 of these are doable, but there they are:
@@ -45,28 +72,3 @@ of these are doable, but there they are:
     * easier function pointer syntax
 
 - rich ast library apis for easier to write linting tools, lsps, etc...
-
-#### Documentation
-waiting for a better way to host it, [here](./docs) you could find the documentation
-for this language.
-
-If you find something not easy to understand, please let me know or open an issue,
-i would really appreciate it.
-
-#### Dependencies
- - go (for now)
- - llvm (requires llc executable to be in "$PATH")
- - gcc
-
-#### Getting started
-```sh
-$ go build ./cli/coffee.go # or go install ./cli/coffee.go
-
-$ # build & run one of the samples
-$ coffee -in samples/hello.bn -out hello
-File hello compiled successfully!
-$ ./hello
-Hello from coffee!
-```
-
-NOTE: if you do `go install`, you probably need to add `$HOME/go/bin` to your `"$PATH"`
