@@ -41,7 +41,9 @@ You can find more examples [here](../samples).
 ## TODOs:
 - [ ] first class functions
 - [ ] keyword argument: `int fd = io.open(file: "something", mode: 0)`
-- [ ] Union
-- [ ] more operators `&& || !`
-- [ ] pointer type
+- [ ] Unions
+- [ ] clojures
+- [ ] something like va\_args
+- [ ] lazy operands `&& ||`, negation operator `!`
 - [ ] enums
+- [ ] multiline strings (https://jameshfisher.com/2016/11/30/c-multiline-literal/)
