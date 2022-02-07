@@ -416,7 +416,7 @@ ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
 -- :param grammar: list of null terminated grammar rules
 -- :param start: starting rule to use for token parsing
 -- :param tokens: list of tokens of the language
-Node* ast(Rule** grammar, str start, Token* tokens) {
+ParseResult* ast(Rule** grammar, str start, Token* tokens) {
     -- find starting rule
     Rule* start_matcher = _find_rule(grammar, start)
     sys.assert(start_matcher != null, "Unable to find starting rule in the grammar")
@@ -425,14 +425,5 @@ Node* ast(Rule** grammar, str start, Token* tokens) {
     c.current_token = tokens
     c.grammar = grammar
 
-    result := parse_to_ast(&c, start_matcher)
-    if result.err != null {
-        errors.report(result.err)
-        sys.free((chr*) result.err)
-        return (Node*) null
-    }
-
-    node := result.node
-    sys.free((chr*) result)
-    return node
+    return parse_to_ast(&c, start_matcher)
 }

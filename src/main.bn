@@ -1,6 +1,7 @@
 #!/usr/bin/env coffee
 import "./std/io" as io
 import "./std/sys" as sys
+import "./std/string" as string
 import "./peeker" as peeker
 
 alias Token = struct {
@@ -47,7 +48,7 @@ void check_args(int argc, str* argv) {
     }
 
     tmpl := "Usage: %s <filename>"
-    int len_filename = io.strlen(argv[0]) + io.strlen(tmpl)
+    int len_filename = string.strlen(argv[0]) + string.strlen(tmpl)
     chr* buf = sys.malloc(len_filename)
     io.sprintf(buf, tmpl, argv[0])
 

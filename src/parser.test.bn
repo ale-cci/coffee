@@ -63,6 +63,9 @@ int main() {
     testing.setup(t, "should_parse_with_optional_parser")
     testing.run(t, should_parse_with_optional_parser(t))
 
+    testing.setup(t, "should_report_error_if_element_is_not_matched")
+    testing.run(t, should_report_error_if_element_is_not_matched(t))
+
     testing.cleanup(t)
     return 0
 }
@@ -201,8 +204,10 @@ Node* parse_file(Rule** grammar, chr* file_content) {
     source_tokens := lexer.tokenize(p)
     sys.free((chr*) p)
 
-    node := parser.ast(grammar, "start", source_tokens)
-    return node
+    result := parser.ast(grammar, "start", source_tokens)
+    rv := result.node
+    sys.free((chr*) result)
+    return rv
 }
 
 int should_parse_node_using_rule(testing.T* t) {
@@ -318,5 +323,19 @@ int should_parse_with_optional_parser(testing.T* t) {
     if node == null {
         return 0
     }
+    return 0
+}
+
+int should_report_error_if_element_is_not_matched(testing.T* t) {
+    grammar := gen_grammar("start: ( WORD WORD STRING | WORD STRING )")
+    source := testing.tempfile("a a a")
+    fd := io.fileno(source)
+    p := peeker.new(fd)
+    source_tokens := lexer.tokenize(p)
+    sys.free((chr*) p)
+
+    result := parser.ast(grammar, "start", source_tokens)
+    testing.assert_not_null(t, (chr*) result.err)
+    testing.assert_equal_int(t, 5, result.err.char_of_line)
     return 0
 }
