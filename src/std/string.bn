@@ -37,7 +37,8 @@ bool is_whitespace(chr c) {
 bool is_lower(chr* string) {
     for idx := 0; string[idx] != '\00'; idx = idx + 1 {
         c := string[idx]
-        if c < 'a' | c > 'z' {
+        if c == '_' {
+        } elif c < 'a' | c > 'z' {
             return false
         }
     }
@@ -47,7 +48,8 @@ bool is_lower(chr* string) {
 bool is_upper(chr* string) {
     for idx := 0; string[idx] != '\00'; idx = idx + 1 {
         c := string[idx]
-        if c < 'A' | c > 'Z' {
+        if c == '_' {
+        } elif c < 'A' | c > 'Z' {
             return false
         }
     }
