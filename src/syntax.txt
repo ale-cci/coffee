@@ -1,1 +1,4 @@
-basictype: ( 'int' | 'str' | 'chr' | 'void' )
+type: "void"
+fnargs: "(" ")"
+block: "{" "}"
+start: type "main" fnargs block

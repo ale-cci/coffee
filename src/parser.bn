@@ -215,6 +215,7 @@ Rule** parse_grammar(ParsingContext* ctx) {
 
     for i := 0; string.strcmp(ctx.current_token.type, "EOF") != 0; i = i + 1 {
         grammar[i] = parse_rule(ctx)
+
         -- remove empty rules
         for ; string.strcmp(ctx.current_token.value, "\0A") == 0; {
             ctx.current_token = ctx.current_token.next
@@ -321,11 +322,11 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
     for q := m.querys; q != null & err == null; q = q.next {
         if q.type == 'v' {
             -- match by exact token value
-            qv := q.value
-            qv_1 := qv[1]
             qv_len := string.strlen(q.value) -2
+            tmp_buff := sys.malloc(qv_len + 1)
+            io.sscanf(q.value, "\22%s\22", tmp_buff)
 
-            if string.strncmp(&qv_1, c.current_token.value, qv_len) == 0 {
+            if string.strncmp(tmp_buff, c.current_token.value, qv_len) == 0 {
                 -- we have a match on this node
                 child = new_node(c.current_token, c.current_token.type, c.current_token.value)
                 child_append(base, child)
@@ -335,8 +336,21 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
             } else {
                 -- match failure, depending on the parsing mode choose the
                 -- appropriate outcome
-                err = errors.from(c.current_token, "unable to match token by value")
+
+                token_value := c.current_token.value
+                if token_value == null {
+                    token_value = "(null)"
+                }
+
+                err_fmt := "%s: %s != %s"
+                err_msg := "unable to match token by value"
+                err_len := string.strlen(err_msg) + string.strlen(tmp_buff) + string.strlen(token_value) + string.strlen(err_fmt) - 3 * 2 + 1
+                err_buf := sys.malloc(err_len)
+
+                io.snprintf(err_buf, err_len, err_fmt, err_msg, tmp_buff, token_value)
+                err = errors.from(c.current_token, err_buf)
             }
+            sys.free(tmp_buff)
 
         } elif q.type == 't' {
             -- match by token type
@@ -425,5 +439,10 @@ ParseResult* ast(Rule** grammar, str start, Token* tokens) {
     c.current_token = tokens
     c.grammar = grammar
 
-    return parse_to_ast(&c, start_matcher)
+    res := parse_to_ast(&c, start_matcher)
+    if string.strcmp(c.current_token.type, "EOF") != 0 & res.err == null {
+        res.err = errors.from(c.current_token, "syntax parsing ended here")
+    }
+
+    return res
 }

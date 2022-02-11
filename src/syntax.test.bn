@@ -1,0 +1,114 @@
+import "./std/testing" as testing
+import "./std/string" as string
+import "./std/sys" as sys
+import "./std/io" as io
+
+import "./errors" as errors
+import "./parser" as parser
+import "./peeker" as peeker
+import "./lexer" as lexer
+
+
+int main() {
+    t := testing.init("./syntax.test.bn")
+
+    testing.setup(t, "grammar parses empty function")
+    testing.run(t, test_grammar_parses_empty_function(t))
+    testing.cleanup(t)
+    return 0
+}
+
+
+
+chr* node_to_string(parse.Node* n) {
+    tmp := io.tmpfile()
+    _node_to_string(n, tmp, 1)
+    str_len := io.ftell(tmp)
+
+    tmp_fd := io.fileno(tmp)
+    io.lseek(tmp_fd, 0, SEEK_SET)
+
+
+    chr* buf = sys.malloc(str_len)
+    read := io.read(tmp_fd, buf, str_len)
+
+    if read != str_len {
+        sys.free(buf)
+        buf = null
+    }
+    return buf
+}
+
+void print_indent(io.File* stdout, int indent){
+    io.fprintf(stdout, "\0A")
+    for i := 0; i < indent; i = i + 1 {
+        io.fprintf(stdout, "  ")
+    }
+}
+
+void _node_to_string(parse.Node* node, io.File* stdout, int indent) {
+    if node == null {
+        io.fprintf(stdout, "(null)")
+        return
+    }
+    io.fprintf(stdout, "{")
+    print_indent(stdout, indent)
+    io.fprintf(stdout, "\22type\22: \22%s\22", node.type)
+    print_indent(stdout, indent)
+    io.fprintf(stdout, "\22value\22: %s", node.value)
+    print_indent(stdout, indent)
+    io.fprintf(stdout, "\22line\22: %d", node.line)
+    print_indent(stdout, indent)
+    io.fprintf(stdout, "\22char_of_line\22: %d", node.char_of_line)
+
+    print_indent(stdout, indent)
+    io.fprintf(stdout, "\22parent\22: ")
+    _node_to_string(node.parent, stdout, indent + 1)
+
+    print_indent(stdout, indent)
+    io.fprintf(stdout, "\22children\22: ")
+    _node_to_string(node.children, stdout, indent + 1)
+
+    print_indent(stdout, indent)
+    io.fprintf(stdout, "\22next\22: ")
+    _node_to_string(node.next, stdout, indent + 1)
+
+    print_indent(stdout, indent - 1)
+    io.fprintf(stdout, "}")
+}
+
+
+parser.ParseResult* match_rule(chr* rule_name, chr* program) {
+    grammar_file := io.fopen("syntax.txt", "r")
+    ctx := parser.new_context(grammar_file)
+    grammar := parser.parse_grammar(ctx)
+    sys.free((chr*) ctx)
+
+    tmp := testing.tempfile(program)
+    fd := io.fileno(tmp)
+    p := peeker.new(fd)
+    tokens := lexer.tokenize(p)
+
+    sys.free((chr*) p)
+    res := parser.ast(grammar, "start", tokens)
+    sys.free((chr*) tokens)
+    sys.free((chr*) grammar)
+
+    return res
+}
+
+
+int test_grammar_parses_empty_function(testing.T* t) {
+    res := match_rule("start", "void main() {}")
+
+    if res.err != null {
+        errors.report(res.err)
+        sys.free((chr*) res.err)
+    } else {
+        repr := node_to_string(res.node)
+        -- io.printf("%s\0A", repr)
+        sys.free(repr)
+    }
+    sys.free((chr*) res)
+    return 0
+}

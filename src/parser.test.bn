@@ -66,6 +66,9 @@ int main() {
     testing.setup(t, "should_report_error_if_element_is_not_matched")
     testing.run(t, should_report_error_if_element_is_not_matched(t))
 
+    testing.setup(t, "should_fail_if_source_is_not_fully_parsed")
+    testing.run(t, should_fail_if_source_is_not_fully_parsed(t))
+
     testing.cleanup(t)
     return 0
 }
@@ -337,5 +340,23 @@ int should_report_error_if_element_is_not_matched(testing.T* t) {
     result := parser.ast(grammar, "start", source_tokens)
     testing.assert_not_null(t, (chr*) result.err)
     testing.assert_equal_int(t, 5, result.err.char_of_line)
+    return 0
+}
+
+
+int should_fail_if_source_is_not_fully_parsed(testing.T* t) {
+    grammar := gen_grammar("start: \22a\22")
+    source := testing.tempfile("a b")
+    fd := io.fileno(source)
+    p := peeker.new(fd)
+    source_tokens := lexer.tokenize(p)
+    sys.free((chr*) p)
+
+    result := parser.ast(grammar, "start", source_tokens)
+    testing.assert_not_null(t, (chr*) result.err)
+    if result.err == null {
+        return 0
+    }
+    testing.assert_equal_int(t, 3, result.err.char_of_line)
     return 0
 }

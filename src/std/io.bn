@@ -5,6 +5,7 @@
 --  printf("number: %d", 3)
 extern int printf(str format, ...args)
 extern int sprintf(chr* dest, str format, ...args)
+extern int snprintf(chr* dest, int size, str format, ...args)
 
 extern void perror(str error)
 
@@ -89,5 +90,6 @@ extern int fsync(int fd)
 extern int fileno(File* f)
 extern int fclose(File* f)
 
+extern int ftell(File* f)
 
 extern void rewind(File* f)
