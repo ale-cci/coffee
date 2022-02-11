@@ -53,3 +53,7 @@ bool is_upper(chr* string) {
     }
     return true
 }
+
+
+extern chr* strcpy(chr* dest, chr* src)
+extern chr* strncpy(chr* dest, chr* src, int n)

@@ -324,7 +324,7 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
             -- match by exact token value
             qv_len := string.strlen(q.value) -2
             tmp_buff := sys.malloc(qv_len + 1)
-            io.sscanf(q.value, "\22%s\22", tmp_buff)
+            io.sscanf(q.value, "\22%[^\22]\22", tmp_buff)
 
             if string.strncmp(tmp_buff, c.current_token.value, qv_len) == 0 {
                 -- we have a match on this node
@@ -336,7 +336,6 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
             } else {
                 -- match failure, depending on the parsing mode choose the
                 -- appropriate outcome
-
                 token_value := c.current_token.value
                 if token_value == null {
                     token_value = "(null)"
@@ -388,7 +387,7 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
 
     if m.alternative != null {
         -- ignore errors on or matcher
-        err = parse_query(c, m.alternative, base)
+        parse_query(c, m.alternative, base)
     }
 
 

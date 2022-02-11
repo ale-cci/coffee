@@ -29,6 +29,8 @@ extern int fork()
 extern int waitpid(int pid, int* stat_loc, int options)
 
 
+extern chr* memmove(chr* dest, chr* src, int n)
+
 chr* memset(chr* buf, chr val, int n) {
     for i := 0; i < n; i = i + 1 {
         buf[i] = val

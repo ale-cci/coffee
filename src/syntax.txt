@@ -1,4 +1,4 @@
-type: "void"
-fnargs: "(" ")"
+type: ( "void" | "int" )
+fnargs: ( "(" ) ( type WORD )* ( ")" )
 block: "{" "}"
 start: type "main" fnargs block
