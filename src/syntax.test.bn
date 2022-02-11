@@ -61,17 +61,18 @@ void _node_to_string(parse.Node* node, io.File* stdout, int indent) {
     print_indent(stdout, indent)
     io.fprintf(stdout, "\22char_of_line\22: %d", node.char_of_line)
 
-    print_indent(stdout, indent)
-    io.fprintf(stdout, "\22parent\22: ")
-    _node_to_string(node.parent, stdout, indent + 1)
-
-    print_indent(stdout, indent)
-    io.fprintf(stdout, "\22children\22: ")
-    _node_to_string(node.children, stdout, indent + 1)
+    -- for now avoid recursive call loop
+    -- print_indent(stdout, indent)
+    -- io.fprintf(stdout, "\22parent\22: ")
+    -- _node_to_string(node.parent, stdout, indent + 1)
 
     print_indent(stdout, indent)
     io.fprintf(stdout, "\22next\22: ")
     _node_to_string(node.next, stdout, indent + 1)
+
+    print_indent(stdout, indent)
+    io.fprintf(stdout, "\22children\22: ")
+    _node_to_string(node.children, stdout, indent + 1)
 
     print_indent(stdout, indent - 1)
     io.fprintf(stdout, "}")
@@ -90,7 +91,7 @@ parser.ParseResult* match_rule(chr* rule_name, chr* program) {
     tokens := lexer.tokenize(p)
 
     sys.free((chr*) p)
-    res := parser.ast(grammar, "start", tokens)
+    res := parser.ast(grammar, rule_name, tokens)
     sys.free((chr*) tokens)
     sys.free((chr*) grammar)
 
@@ -98,17 +99,50 @@ parser.ParseResult* match_rule(chr* rule_name, chr* program) {
 }
 
 
-int test_grammar_parses_empty_function(testing.T* t) {
-    res := match_rule("start", "void main() {}")
+parser.Node* new_node(chr* type, value, int line, char_of_line, parser.Node* next, children) {
+    parser.Node* n = (parser.Node*) sys.malloc(Node_size)
+    n.type = type
+    n.value = value
+    n.next = next
+    n.children = children
+    n.line = line
+    n.char_of_line = char_of_line
 
+    for bc := children; bc != null; bc = bc.next {
+        bc.parent = n
+    }
+    return (parser.Node*) n
+}
+
+void assert_node_eq(testing.T* t, parser.Node* a, b) {
+    repr_a := node_to_string(a)
+    repr_b := node_to_string(b)
+
+    testing.assert_equal_str(t, repr_a, repr_b)
+
+    sys.free(repr_a)
+    sys.free(repr_b)
+}
+
+int test_grammar_parses_empty_function(testing.T* t) {
+    res := match_rule("type", "void")
+
+
+    -- new_node("WORD", "main", 1, 6, null, null,
     if res.err != null {
         errors.report(res.err)
         sys.free((chr*) res.err)
-    } else {
-        repr := node_to_string(res.node)
-        -- io.printf("%s\0A", repr)
-        sys.free(repr)
+        return 0
     }
+
+
+    void_type := new_node("WORD", "void", 1, 1, (Node*) null, (Node*) null)
+    n := new_node("type", (chr*) null, 1, 1, (Node*) null, void_type)
+
+    assert_node_eq(t, res.node, n)
+
     sys.free((chr*) res)
     return 0
 }
+
+
