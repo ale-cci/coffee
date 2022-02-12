@@ -1,3 +1,7 @@
+-- :Parser module:
+-- build AST from the source code,
+-- the rules are expressed in a specific grammar
+
 import "./std/io" as io
 import "./std/sys" as sys
 import "./std/string" as string
@@ -45,6 +49,9 @@ int Rule_size = 16 -- matcher size + 1
 
 
 
+-- parsing context, it's used to keep track of the current token being parsed.
+-- a new parsing context could be obtained starting from an `io.File*` by using
+-- the function `new_context`
 alias ParsingContext = struct {
     lexer.Token* current_token,
 }
@@ -62,6 +69,7 @@ ParsingContext* new_context(io.File* f) {
     return ctx
 }
 
+-- matcher constructor
 Matcher* new_matcher() {
     Matcher* m = (Matcher*) sys.malloc(Matcher_size)
     m.times = '1'
@@ -72,6 +80,7 @@ Matcher* new_matcher() {
 }
 
 
+-- parse the grammar file, starting from the current "context cursor position"
 Matcher* parse_matcher(ParsingContext* ctx) {
     Matcher* m
     if string.strcmp(ctx.current_token.value, "(") == 0 {
@@ -98,9 +107,7 @@ Matcher* parse_matcher(ParsingContext* ctx) {
                 if string.strcmp(ctx.current_token.value, "|") == 0 {
                     ctx.current_token = ctx.current_token.next
                 }
-
             }
-
         }
 
         if string.strcmp(ctx.current_token.value, ")") != 0 {
@@ -133,6 +140,8 @@ Matcher* parse_matcher(ParsingContext* ctx) {
 
     return m
 }
+
+
 
 Matcher* parse_simple_matcher(ParsingContext* ctx) {
     Matcher* m = new_matcher()
@@ -169,7 +178,7 @@ Matcher* parse_simple_matcher(ParsingContext* ctx) {
             q.type = 't'
         } else {
             io.printf("rule name: '%s'\0A", ctx.current_token.value)
-            sys.assert(false, "malformed rule name")
+            parser_error(ctx, "Some characters are not allowed in this rule name")
         }
         q.value = ctx.current_token.value
         q.next = null
@@ -252,6 +261,7 @@ Node* new_node(Token* t, chr* type, chr* value) {
     return node
 }
 
+-- append child to a node
 void child_append(Node* parent, Node* child) {
     if parent.children == null {
         parent.children = child
@@ -264,7 +274,8 @@ void child_append(Node* parent, Node* child) {
     child.next = null
 }
 
--- retrieve last child
+
+-- remove last node's child
 void child_pop(Node* parent) {
     if parent.children == null {
         -- no children to pop
@@ -286,6 +297,7 @@ void child_pop(Node* parent) {
     sys.free((chr*) c.next)
     c.next = null
 }
+
 
 alias AstContext = struct {
     lexer.Token* current_token,
@@ -385,28 +397,49 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
         }
     }
 
-    if m.alternative != null {
-        -- ignore errors on or matcher
-        parse_query(c, m.alternative, base)
-    }
-
-
     if err != null {
         -- restore previous token position
         c.current_token = start_token
         for i := 0; i < new_children; i = i + 1 {
             child_pop(base)
         }
-        return err
     }
+
+    if m.alternative != null & err != null{
+        -- ignore errors on or matcher
+        parse_query(c, m.alternative, base)
+    }
+
 
     if m.times == '1' {
         -- done
     } elif m.times == '+' & err == null {
         -- repeat the exact same matching another time
         -- ignore returned errors
-        parse_query(c, m, base)
+        err = parse_query(c, m, base)
+
+    } elif m.times == '?' & err != null {
+        sys.free((chr*) err)
+        err = null
+
+    } elif m.times == '*' {
+        -- match one or more times
+        if err != null {
+            sys.free((chr*) err)
+            err = null
+        } else {
+            out := parse_query(c, m, base)
+            if out != null {
+                sys.free((chr*) out)
+            }
+        }
     }
+
+    if m.next != null & err == null {
+        err = parse_query(c, m.next, base)
+    }
+
+
     return (errors.Error*) err
 }
 

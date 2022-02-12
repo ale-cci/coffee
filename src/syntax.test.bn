@@ -14,6 +14,11 @@ int main() {
 
     testing.setup(t, "grammar parses empty function")
     testing.run(t, test_grammar_parses_empty_function(t))
+
+    testing.setup(t, "test_parses_assignable")
+    testing.run(t, test_parses_assignable(t))
+
+
     testing.cleanup(t)
     return 0
 }
@@ -111,7 +116,7 @@ parser.Node* new_node(chr* type, value, int line, char_of_line, parser.Node* nex
     for bc := children; bc != null; bc = bc.next {
         bc.parent = n
     }
-    return (parser.Node*) n
+    return n
 }
 
 void assert_node_eq(testing.T* t, parser.Node* a, b) {
@@ -124,25 +129,39 @@ void assert_node_eq(testing.T* t, parser.Node* a, b) {
     sys.free(repr_b)
 }
 
+
 int test_grammar_parses_empty_function(testing.T* t) {
     res := match_rule("type", "void")
 
-
-    -- new_node("WORD", "main", 1, 6, null, null,
     if res.err != null {
         errors.report(res.err)
         sys.free((chr*) res.err)
+        sys.free((chr*) res)
         return 0
     }
-
 
     void_type := new_node("WORD", "void", 1, 1, (Node*) null, (Node*) null)
     n := new_node("type", (chr*) null, 1, 1, (Node*) null, void_type)
 
     assert_node_eq(t, res.node, n)
-
     sys.free((chr*) res)
     return 0
 }
 
 
+int test_parses_assignable(testing.T* t) {
+    res := match_rule("assignable", "a.b[3]")
+    testing.assert_null(t, (chr*) res.err)
+
+    if res.err != null {
+        errors.report(res.err)
+        sys.free((chr*) res.err)
+        sys.free((chr*) res)
+        return 0
+    }
+
+    -- repr := node_to_string(res.node)
+    -- io.printf("Value of node: %s\0A", repr)
+    -- sys.free((chr*) res)
+    return 0
+}

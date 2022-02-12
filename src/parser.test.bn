@@ -4,6 +4,7 @@ import "./std/testing" as testing
 import "./parser" as parser
 import "./lexer" as lexer
 import "./peeker" as peeker
+import "./errors" as errors
 
 
 int main() {
@@ -62,6 +63,12 @@ int main() {
 
     testing.setup(t, "should_parse_with_optional_parser")
     testing.run(t, should_parse_with_optional_parser(t))
+
+    testing.setup(t, "test_optional_operator_matches_records")
+    testing.run(t, test_optional_operator_matches_records(t))
+
+    testing.setup(t, "test_optionals_dont_interrupt_matching_chain")
+    testing.run(t, test_optionals_dont_interrupt_matching_chain(t))
 
     testing.setup(t, "should_report_error_if_element_is_not_matched")
     testing.run(t, should_report_error_if_element_is_not_matched(t))
@@ -325,6 +332,36 @@ int should_parse_with_optional_parser(testing.T* t) {
     testing.assert_not_null(t, (chr*) node)
     if node == null {
         return 0
+    }
+    return 0
+}
+
+int test_optional_operator_matches_records(testing.T* t) {
+    grammar := gen_grammar("start: WORD (WORD)?")
+    node := parse_file(grammar, "a b")
+
+    testing.assert_not_null(t, (chr*) node.children)
+    if node.children == null {
+        return 0
+    }
+
+    testing.assert_not_null(t, (chr*) node.children.next)
+    return 0
+}
+
+int test_optionals_dont_interrupt_matching_chain(testing.T* t) {
+    grammar := gen_grammar("start: WORD (\22.\22 start)?")
+    source := testing.tempfile("a.b")
+    fd := io.fileno(source)
+    p := peeker.new(fd)
+    source_tokens := lexer.tokenize(p)
+    sys.free((chr*) p)
+
+    result := parser.ast(grammar, "start", source_tokens)
+    testing.assert_null(t, (chr*) result.err)
+    if result.err != null {
+        errors.report(result.err)
+        sys.free((chr*) result.err)
     }
     return 0
 }

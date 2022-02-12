@@ -1,4 +1,19 @@
+start: (statement)*
+
+statement: (include | function | global )
+
+extern: "extern" type WORD "(" (type WORD)* ( ")" )
+
+include: "include" STRING "as" WORD
+
+global: type WORD "=" WORD
+
+function: type "main" fn_args block
+
 type: ( "void" | "int" )
-fnargs: ( "(" ) ( type WORD )* ( ")" )
+
+fn_args: ( "(" ) ( type WORD )* ( ")" )
+
 block: "{" "}"
-start: type "main" fnargs block
+
+assignable: WORD ( "[" NUMBER "]" )* ( "." assignable )?
