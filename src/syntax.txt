@@ -16,4 +16,9 @@ fn_args: ( "(" ) ( type WORD )* ( ")" )
 
 block: "{" "}"
 
-assignable: WORD ( "[" NUMBER "]" )* ( "." assignable )?
+
+var_atom: WORD ( "[" atom "]" )* ( "." var_atom )?
+
+const_atom: ( NUMBER | STRING )
+
+atom: ( var_atom | const_atom )

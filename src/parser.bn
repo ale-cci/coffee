@@ -372,7 +372,13 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
                 new_children = new_children + 1
                 c.current_token = c.current_token.next
             } else {
-                err = errors.from(c.current_token, "unable to match token by type")
+                err_fmt_t := "%s: %s != %s"
+                err_msg_t := "unable to match token by type"
+                err_len_t := string.strlen(err_fmt_t) + string.strlen(err_msg_t) + string.strlen(q.value) + string.strlen(c.current_token.type)
+                err_buf_t := sys.malloc(err_len_t)
+
+                io.snprintf(err_buf_t, err_len_t, err_fmt_t, err_msg_t, q.value, c.current_token.type)
+                err = errors.from(c.current_token, err_buf_t)
             }
 
         } elif q.type == 'a' {
@@ -405,9 +411,14 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
         }
     }
 
-    if m.alternative != null & err != null{
+    if m.alternative != null & err != null {
         -- ignore errors on or matcher
-        parse_query(c, m.alternative, base)
+        new_err := parse_query(c, m.alternative, base)
+        if new_err == null {
+            err = null
+        } else {
+            sys.free((chr*) new_err)
+        }
     }
 
 
@@ -438,7 +449,6 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
     if m.next != null & err == null {
         err = parse_query(c, m.next, base)
     }
-
 
     return (errors.Error*) err
 }
