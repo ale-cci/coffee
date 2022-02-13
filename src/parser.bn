@@ -62,7 +62,7 @@ ParsingContext* new_context(io.File* f) {
 
     fd := io.fileno(f)
     p := peeker.new(fd)
-    token_list := lexer.tokenize(p)
+    token_list := lexer.tokenize(p, false)
     sys.free((chr*) p)
 
     ctx.current_token = token_list

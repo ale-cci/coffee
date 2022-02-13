@@ -211,7 +211,7 @@ Node* parse_file(Rule** grammar, chr* file_content) {
     source := testing.tempfile(file_content)
     fd := io.fileno(source)
     p := peeker.new(fd)
-    source_tokens := lexer.tokenize(p)
+    source_tokens := lexer.tokenize(p, false)
     sys.free((chr*) p)
 
     result := parser.ast(grammar, "start", source_tokens)
@@ -354,7 +354,7 @@ int test_optionals_dont_interrupt_matching_chain(testing.T* t) {
     source := testing.tempfile("a.b")
     fd := io.fileno(source)
     p := peeker.new(fd)
-    source_tokens := lexer.tokenize(p)
+    source_tokens := lexer.tokenize(p, false)
     sys.free((chr*) p)
 
     result := parser.ast(grammar, "start", source_tokens)
@@ -371,7 +371,7 @@ int should_report_error_if_element_is_not_matched(testing.T* t) {
     source := testing.tempfile("a a a")
     fd := io.fileno(source)
     p := peeker.new(fd)
-    source_tokens := lexer.tokenize(p)
+    source_tokens := lexer.tokenize(p, false)
     sys.free((chr*) p)
 
     result := parser.ast(grammar, "start", source_tokens)
@@ -386,7 +386,7 @@ int should_fail_if_source_is_not_fully_parsed(testing.T* t) {
     source := testing.tempfile("a b")
     fd := io.fileno(source)
     p := peeker.new(fd)
-    source_tokens := lexer.tokenize(p)
+    source_tokens := lexer.tokenize(p, false)
     sys.free((chr*) p)
 
     result := parser.ast(grammar, "start", source_tokens)

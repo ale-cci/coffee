@@ -24,7 +24,6 @@ int main() {
 }
 
 
-
 chr* node_to_string(parse.Node* n) {
     tmp := io.tmpfile()
     _node_to_string(n, tmp, 1)
@@ -93,7 +92,7 @@ parser.ParseResult* match_rule(chr* rule_name, chr* program) {
     tmp := testing.tempfile(program)
     fd := io.fileno(tmp)
     p := peeker.new(fd)
-    tokens := lexer.tokenize(p)
+    tokens := lexer.tokenize(p, false)
 
     sys.free((chr*) p)
     res := parser.ast(grammar, rule_name, tokens)
@@ -150,7 +149,7 @@ int test_grammar_parses_empty_function(testing.T* t) {
 
 
 int test_parses_atom(testing.T* t) {
-    res := match_rule("atom", "3")
+    res := match_rule("atom", "a.b[3]")
     testing.assert_null(t, (chr*) res.err)
 
     if res.err != null {

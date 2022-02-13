@@ -1,21 +1,23 @@
 start: (statement)*
 
-statement: (include | function | global )
+statement: (import | function | global | typealias | NL )
+
+typealias: "alias" WORD "=" type
 
 extern: "extern" type WORD "(" (type WORD)* ( ")" )
 
-include: "include" STRING "as" WORD
+import: "import" STRING "as" WORD
 
 global: type WORD "=" WORD
 
 function: type "main" fn_args block
 
-type: ( "void" | "int" )
+structdef: ( "struct" "{" NL ) ( type WORD "," NL | NL )* ( "}" )
+type: ( "void" | "int" | "bool" | "chr" | structdef )
 
 fn_args: ( "(" ) ( type WORD )* ( ")" )
 
 block: "{" "}"
-
 
 var_atom: WORD ( "[" atom "]" )* ( "." var_atom )?
 

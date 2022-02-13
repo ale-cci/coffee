@@ -1,7 +1,6 @@
 import "./std/io" as io
 import "./std/sys" as sys
 
-
 alias PeekerInfo = struct {
     int pos,
 
@@ -11,6 +10,7 @@ alias PeekerInfo = struct {
     chr last_chr,
     bool eof,
 }
+
 -- size of peekerinfo 4 * 32
 int PeekerInfo_size = 34
 chr EOF = 0
