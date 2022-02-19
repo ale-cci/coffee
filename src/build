@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 case $1 in
-
     clean)
         rm -f *.ll *.s run *.out
         ;;
@@ -8,6 +7,12 @@ case $1 in
     test)
         find . -name '*.test.bn' -exec sh -c "echo && coffee -in {} -out {}.out && ./{}.out " \;
         rm -rf a.out
+        ;;
+
+    test:watch)
+        echo "Watchig for file changes..."
+        fswatch --include='.bn$' --exclude='.*' . | xargs -I{} bash -c "clear && $0 test && echo 'Test suite completed'"
+
         ;;
     install)
         # 1. compile the project
