@@ -18,6 +18,11 @@ int main() {
     testing.setup(t, "test_parses_atom")
     testing.run(t, test_parses_atom(t))
 
+    testing.setup(t, "test_parses_struct")
+    testing.run(t, test_parses_struct(t))
+
+    testing.setup(t, "test_parses_function_arguments")
+    testing.run(t, test_parses_function_arguments(t))
 
     testing.cleanup(t)
     return 0
@@ -87,6 +92,7 @@ parser.ParseResult* match_rule(chr* rule_name, chr* program) {
     grammar_file := io.fopen("syntax.txt", "r")
     ctx := parser.new_context(grammar_file)
     grammar := parser.parse_grammar(ctx)
+
     sys.free((chr*) ctx)
 
     tmp := testing.tempfile(program)
@@ -162,5 +168,27 @@ int test_parses_atom(testing.T* t) {
     -- repr := node_to_string(res.node)
     -- io.printf("Value of node: %s\0A", repr)
     -- sys.free((chr*) res)
+    return 0
+}
+
+int test_parses_struct(testing.T* t) {
+    res := match_rule("structdef", "struct {\0Aint t,\0A}")
+    testing.assert_null(t, (chr*) res.err)
+
+    if res.err != null {
+        errors.report(res.err)
+        sys.free((chr*) res.err)
+        sys.free((chr*) res)
+        return 0
+    }
+
+    return 0
+}
+
+
+int test_parses_function_arguments(testing.T* t) {
+    res := match_rule("fn_args", "(int t)")
+    testing.assert_null(t, (chr*) res.err)
+
     return 0
 }

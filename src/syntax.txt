@@ -1,6 +1,6 @@
 start: (statement)*
 
-statement: (import | function | global | typealias | NL )
+statement: (NL | import | function | global | typealias)
 
 typealias: "alias" WORD "=" type
 
@@ -13,6 +13,7 @@ global: type WORD "=" WORD
 function: type "main" fn_args block
 
 structdef: ( "struct" "{" NL ) ( type WORD "," NL | NL )* ( "}" )
+
 type: ( "void" | "int" | "bool" | "chr" | structdef )
 
 fn_args: ( "(" ) ( type WORD )* ( ")" )

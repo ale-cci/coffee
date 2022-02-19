@@ -1,6 +1,6 @@
 -- :Parser module:
--- build AST from the source code,
--- the rules are expressed in a specific grammar
+-- builds grammar from syntax file
+-- uses grammar to build ast
 
 import "./std/io" as io
 import "./std/sys" as sys
@@ -21,6 +21,7 @@ alias Query = struct {
 }
 int Query_size = 24 -- 2 * sys.ptr_size + 1
 
+
 alias Matcher = struct {
     -- list of names to match.
     -- reserved names are for a specific token type, which could be
@@ -40,6 +41,25 @@ alias Matcher = struct {
 }
 int Matcher_size = 32
 
+-- visually represent matcher, used only for debug purposes
+void debug_matcher(Matcher* m) {
+    -- print querys
+    io.printf("{")
+    io.printf("\22querys\22: [\0A")
+    for q := m.querys; q != null; q = q.next {
+        io.printf("{\22type\22: \22%c\22, \22value\22: \22%s\22},\0A", q.type, q.value)
+    }
+    io.printf("],\0A\22alt\22: [")
+
+    if m.alternative != null {
+        debug_matcher(m.alternative)
+    }
+    io.printf("],\0A\22next\22: [")
+    if m.next != null {
+        debug_matcher(m.next)
+    }
+    io.printf("]}")
+}
 
 alias Rule = struct {
     chr*      name,
@@ -48,14 +68,14 @@ alias Rule = struct {
 int Rule_size = 16 -- matcher size + 1
 
 
-
--- parsing context, it's used to keep track of the current token being parsed.
--- a new parsing context could be obtained starting from an `io.File*` by using
--- the function `new_context`
+-- parsing context, it's used to keep track of the current token being
+-- parsed. a new parsing context could be obtained starting from an
+-- `io.File*` by using the function `new_context`
 alias ParsingContext = struct {
     lexer.Token* current_token,
 }
 int ParsingContext_size = 8
+
 
 ParsingContext* new_context(io.File* f) {
     ParsingContext* ctx = (ParsingContext*) sys.malloc(ParsingContext_size)
@@ -80,7 +100,8 @@ Matcher* new_matcher() {
 }
 
 
--- parse the grammar file, starting from the current "context cursor position"
+-- parse the grammar file, starting from the current "context cursor
+-- position"
 Matcher* parse_matcher(ParsingContext* ctx) {
     Matcher* m
     if string.strcmp(ctx.current_token.value, "(") == 0 {
@@ -353,7 +374,7 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
                     token_value = "(null)"
                 }
 
-                err_fmt := "%s: %s != %s"
+                err_fmt := "%s: %s != \22%s\22"
                 err_msg := "unable to match token by value"
                 err_len := string.strlen(err_msg) + string.strlen(tmp_buff) + string.strlen(token_value) + string.strlen(err_fmt) - 3 * 2 + 1
                 err_buf := sys.malloc(err_len)
@@ -425,9 +446,19 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
     if m.times == '1' {
         -- done
     } elif m.times == '+' & err == null {
-        -- repeat the exact same matching another time
-        -- ignore returned errors
+        -- it should be ensured that this matcher runs at lest one time.
+        -- and it should not run the 'parse_query' with 'm.next'
+        -- multiple times, in order to avoid failures.
+
+        -- therefor the execution of the 'next' is delegated to the last one
+        -- where the next has a failure
         err = parse_query(c, m, base)
+        if err != null {
+            sys.free((chr*) err)
+            err = null
+        } else {
+            return (errors.Error*) null
+        }
 
     } elif m.times == '?' & err != null {
         sys.free((chr*) err)
@@ -439,10 +470,10 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
             sys.free((chr*) err)
             err = null
         } else {
-            out := parse_query(c, m, base)
-            if out != null {
-                sys.free((chr*) out)
-            }
+            -- a 'star' matcher ends it's matching when error is not null
+            -- when the error is null, the execution is delegated to
+            -- at the last match.
+            return parse_query(c, m, base)
         }
     }
 
