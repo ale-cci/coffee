@@ -1,6 +1,6 @@
-start: (headstring)? (statement)*
+start: (head_comment)? (statement)*
 
-headstring: "#" (OPERATOR | WORD)* NL
+head_comment: "#" (OPERATOR | WORD)* NL
 
 statement: (NL | import | typealias | extern | global | function )
 
