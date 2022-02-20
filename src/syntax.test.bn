@@ -24,6 +24,21 @@ int main() {
     testing.setup(t, "test_parses_function_arguments")
     testing.run(t, test_parses_function_arguments(t))
 
+    testing.setup(t, "test_parses_type_alias")
+    testing.run(t, test_parses_type_alias(t))
+
+    testing.setup(t, "test_parses_global_variable")
+    testing.run(t, test_parses_global_variable(t))
+
+    testing.setup(t, "test_parses_variable_addr")
+    testing.run(t, test_parses_variable_addr(t))
+
+    testing.setup(t, "test_parses_function_call")
+    testing.run(t, test_parses_function_call(t))
+
+    testing.setup(t, "test_parses_function_call_arguments")
+    testing.run(t, test_parses_function_call_arguments(t))
+
     testing.cleanup(t)
     return 0
 }
@@ -92,6 +107,7 @@ parser.ParseResult* match_rule(chr* rule_name, chr* program) {
     grammar_file := io.fopen("syntax.txt", "r")
     ctx := parser.new_context(grammar_file)
     grammar := parser.parse_grammar(ctx)
+
 
     sys.free((chr*) ctx)
 
@@ -187,8 +203,46 @@ int test_parses_struct(testing.T* t) {
 
 
 int test_parses_function_arguments(testing.T* t) {
-    res := match_rule("fn_args", "(int t)")
+    res := match_rule("fn_params", "int t, chr b")
     testing.assert_null(t, (chr*) res.err)
+    return 0
+}
 
+int test_parses_type_alias(testing.T* t) {
+    res := match_rule("statement", "alias t = struct{ \0A int t, \0A \0A int j,\0A}")
+    testing.assert_null(t, (chr*) res.err)
+    return 0
+}
+
+int test_parses_global_variable(testing.T* t) {
+    -- grammar_file := io.fopen("syntax.txt", "r")
+    -- ctx := parser.new_context(grammar_file)
+    -- grammar := parser.parse_grammar(ctx)
+    -- r := parser._find_rule(grammar, "structdef")
+    -- parser.debug_matcher(r.matcher)
+    -- io.printf("\0A")
+
+    res := match_rule("statement", "int something = 3")
+    testing.assert_null(t, (chr*) res.err)
+    return 0
+}
+
+int test_parses_variable_addr(testing.T* t) {
+    res := match_rule("assignable", "&a.b")
+    testing.assert_null(t, (chr*) res.err)
+    return 0
+}
+
+
+int test_parses_function_call(testing.T* t) {
+    res := match_rule("assignable", "c(a)")
+    testing.assert_null(t, (chr*) res.err)
+    return 0
+}
+
+
+int test_parses_function_call_arguments(testing.T* t) {
+    res := match_rule("fn_args", "a")
+    testing.assert_null(t, (chr*) res.err)
     return 0
 }

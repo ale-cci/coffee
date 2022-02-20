@@ -1,27 +1,65 @@
-start: (statement)*
+start: (headstring)? (statement)*
 
-statement: (NL | import | function | global | typealias)
+headstring: "#" (OPERATOR | WORD)* NL
+
+statement: (NL | import | typealias | extern | global | function )
 
 typealias: "alias" WORD "=" type
 
-extern: "extern" type WORD "(" (type WORD)* ( ")" )
+extern: "extern" type WORD "(" (fn_params)? ( ")" )
 
 import: "import" STRING "as" WORD
 
-global: type WORD "=" WORD
+destination: dotted_name ( "[" assignable "]" )*
 
-function: type "main" fn_args block
+dotted_name: WORD ( "." WORD )*
 
-structdef: ( "struct" "{" NL ) ( type WORD "," NL | NL )* ( "}" )
+boolean: ("true" | "false")
 
-type: ( "void" | "int" | "bool" | "chr" | structdef )
+addr_destination: ("&")* (destination)
 
-fn_args: ( "(" ) ( type WORD )* ( ")" )
+operator: ( "+" | "=" "=" | "!" "=" | "|" | "&" | "<" "=" | ">" "=" | "<" | ">" | "*" | "-" )
 
-block: "{" "}"
+mono_assignable: ( fn_call | addr_destination | NUMBER | CHR | boolean | STRING  )
+
+assignable: (cast)? mono_assignable ( operator mono_assignable)*
+
+global: type WORD "=" assignable
+
+cast: "(" type ")"
+
+fn_params: ( type WORD) ("," type WORD | "," WORD )*
+
+function: type WORD "(" (fn_params)? ( ")" block )
+
+structdef: ( "struct" "{" NL ) ( ( type WORD "," NL ) | ( NL ) )* ( "}" )
+
+type: ( "void" | "int" | "bool" | "chr" | "str" | structdef | dotted_name | "." "." "." ) ("*")*
+
+if_block: "if" assignable block (elif_block)* (else_block)? (NL)
+
+elif_block: "elif" assignable block
+
+else_block: "else" block
+
+return: "return" (assignable)? (NL)
+
+declaration: ( type WORD "=" assignable | WORD ":" "=" assignable | type WORD )
+
+assignment: destination "=" assignable
+
+fn_args: assignable ( "," assignable )*
+
+fn_call: (destination "(") (fn_args)? (")")
+
+expression: ( if_block | return | for_loop | assignment | fn_call | declaration | NL )
+
+block: "{" NL (expression)* ("}")
 
 var_atom: WORD ( "[" atom "]" )* ( "." var_atom )?
 
 const_atom: ( NUMBER | STRING )
 
 atom: ( var_atom | const_atom )
+
+for_loop: "for" (declaration | assignment)? (";") (assignable)? (";") (assignment)? block

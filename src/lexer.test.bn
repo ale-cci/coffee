@@ -36,11 +36,17 @@ int main() {
     testing.setup(t, "parses STRING token")
     testing.run(t, should_parse_string_token(t))
 
+    testing.setup(t, "parses CHR token")
+    testing.run(t, should_parse_chr_token(t))
+
     testing.setup(t, "parses NL token")
     testing.run(t, should_parse_nl_token(t))
 
     testing.setup(t, "parses COMMENT tokens")
     testing.run(t, should_parse_comment_tokens(t))
+
+    testing.setup(t, "test_parses_eqq_as_operator")
+    testing.run(t, test_parses_eqq_as_operator(t))
 
     testing.cleanup(t)
     return 0
@@ -184,6 +190,30 @@ int should_parse_comment_tokens(testing.T* t) {
 
     testing.assert_equal_str(t, "COMMENT", token_list.type)
     testing.assert_equal_str(t, "-- sample", token_list.value)
+
+    sys.free((chr*) p)
+    sys.free((chr*) token_list)
+    return 0
+}
+
+int should_parse_chr_token(testing.T* t) {
+    p := new_peeker("'a'")
+    token_list := lexer.tokenize(p, true)
+
+    testing.assert_equal_str(t, "CHR", token_list.type)
+    testing.assert_equal_str(t, "'a'", token_list.value)
+
+    sys.free((chr*) p)
+    sys.free((chr*) token_list)
+    return 0
+}
+
+int test_parses_eqq_as_operator(testing.T* t) {
+    p := new_peeker("==")
+    token_list := lexer.tokenize(p, true)
+
+    testing.assert_equal_str(t, "OPERATOR", token_list.type)
+    testing.assert_equal_str(t, "==", token_list.value)
 
     sys.free((chr*) p)
     sys.free((chr*) token_list)

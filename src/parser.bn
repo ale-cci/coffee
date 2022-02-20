@@ -23,6 +23,7 @@ int Query_size = 24 -- 2 * sys.ptr_size + 1
 
 
 alias Matcher = struct {
+
     -- list of names to match.
     -- reserved names are for a specific token type, which could be
     -- NUMBER, STRING, WORD, CHAR, EOF
@@ -44,21 +45,24 @@ int Matcher_size = 32
 -- visually represent matcher, used only for debug purposes
 void debug_matcher(Matcher* m) {
     -- print querys
-    io.printf("{")
-    io.printf("\22querys\22: [\0A")
+    io.printf("{\0A\22querys\22: [")
     for q := m.querys; q != null; q = q.next {
-        io.printf("{\22type\22: \22%c\22, \22value\22: \22%s\22},\0A", q.type, q.value)
+        if q.type == 'v' {
+            io.printf("\0A{\22type\22: \22%c\22, \22value\22: %s},", q.type, q.value)
+        } else {
+            io.printf("\0A{\22type\22: \22%c\22, \22value\22: \22%s\22},", q.type, q.value)
+        }
     }
-    io.printf("],\0A\22alt\22: [")
+    io.printf("],\0A\22next\22: [\0A")
+    if m.next != null {
+        debug_matcher(m.next)
+    }
+    io.printf("],\0A\22alt\22: [\0A")
 
     if m.alternative != null {
         debug_matcher(m.alternative)
     }
-    io.printf("],\0A\22next\22: [")
-    if m.next != null {
-        debug_matcher(m.next)
-    }
-    io.printf("]}")
+    io.printf("]\0A}\0A")
 }
 
 alias Rule = struct {
@@ -359,7 +363,7 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
             tmp_buff := sys.malloc(qv_len + 1)
             io.sscanf(q.value, "\22%[^\22]\22", tmp_buff)
 
-            if string.strncmp(tmp_buff, c.current_token.value, qv_len) == 0 {
+            if string.strncmp(tmp_buff, c.current_token.value, qv_len) == 0 & qv_len == string.strlen(c.current_token.value) {
                 -- we have a match on this node
                 child = new_node(c.current_token, c.current_token.type, c.current_token.value)
                 child_append(base, child)
@@ -431,6 +435,7 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
             child_pop(base)
         }
     }
+
 
     if m.alternative != null & err != null {
         -- ignore errors on or matcher
