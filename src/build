@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 case $1 in
     clean)
-        rm -f *.ll *.s run *.out
+        rm -rf *.ll *.s run *.out *.dSYM
         ;;
 
     test)
