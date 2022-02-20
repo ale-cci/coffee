@@ -1,0 +1,31 @@
+import "../std/sys" as sys
+import "../std/io" as io
+import "../parser" as parser
+
+import "../parser.debug" as parser_debug
+
+
+alias CompilerCtx = struct {
+    parser.Node* root,
+    io.File* ir,
+}
+int CompilerCtx_size = 16
+
+CompilerCtx* new_context() {
+    CompilerCtx* ctx = (CompilerCtx*) sys.malloc(CompilerCtx_size)
+    ctx.ir = io.tmpfile()
+    ctx.root = (parser.Node*) null
+
+    return (CompilerCtx*) ctx
+}
+
+void compile(CompilerCtx* ctx, parser.Node* ast) {
+    -- foreach node in start
+    -- parse statement
+    io.fprintf(ctx.ir, "define i32 @main() {\0A")
+    io.fprintf(ctx.ir, "ret i32 0\0A")
+    io.fprintf(ctx.ir, "}\0A")
+
+    -- io.printf("ast: %s\0A", parser_debug.node_to_string(ast))
+}
+

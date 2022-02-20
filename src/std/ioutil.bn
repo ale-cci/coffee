@@ -1,0 +1,25 @@
+import "./io" as io
+import "./sys" as sys
+
+-- fully read file content, remember to free the return value
+-- once you have used it
+chr* readall(int fd) {
+    int buf_len = 1024
+    chr* buf = sys.malloc(buf_len)
+
+    int content_len = 0
+    chr* content = sys.malloc(1)
+
+    read_bytes := io.read(fd, buf, buf_len)
+    for ; read_bytes > 0; read_bytes = io.read(fd, buf, buf_len) {
+        content = sys.realloc(content, content_len + read_bytes)
+        for i := 0; i < read_bytes; i = i + 1 {
+            content[i + content_len] = buf[i]
+        }
+        content_len = content_len + read_bytes
+    }
+    content[content_len] = '\00'
+    sys.free(buf)
+    return content
+}
+

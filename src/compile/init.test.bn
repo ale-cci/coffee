@@ -1,0 +1,84 @@
+import "./init" as compile
+import "../std/testing" as testing
+import "../std/string" as string
+import "../std/io" as io
+import "../std/ioutil" as ioutil
+import "../std/sys" as sys
+import "../parser" as parser
+import "../peeker" as peeker
+import "../lexer" as lexer
+
+
+chr* _build_filename(str filename, str ext) {
+    name_len := string.strlen(filename) + string.strlen(ext) + 1
+    chr* full_filename = sys.malloc(name_len)
+    io.sprintf(full_filename, "%s.%s", filename, ext)
+    return full_filename
+}
+
+chr* read_testfile(str filename, str ext) {
+    full_filename := _build_filename(filename, ext)
+
+    f := io.fopen(full_filename, "r")
+    if f == null {
+        sys.free(full_filename)
+        return (chr*) null
+    }
+
+    sys.free(full_filename)
+
+    fd := io.fileno(f)
+    content := ioutil.readall(fd)
+    io.fclose(f)
+    return content
+}
+
+-- reads content of input file
+-- expects content of output file
+int testfile(testing.T* t, str filename) {
+    testing.setup(t, filename)
+
+    -- prepare grammar file
+    grammar_file := io.fopen("./syntax.txt", "r")
+    ctx := parser.new_context(grammar_file)
+    grammar := parser.parse_grammar(ctx)
+    sys.free((chr*) ctx)
+
+    input_filename := _build_filename(filename, "in")
+    int input_fd = io.open(input_filename, io.O_RDONLY)
+
+    if input_fd <= 0 {
+        testing.fail(t)
+        return 0
+    }
+    p := peeker.new(input_fd)
+    tokens := lexer.tokenize(p, false)
+    sys.free((chr*) p)
+
+    ast := parser.ast(grammar, "start", tokens)
+    compiler_ctx := compile.new_context()
+    compile.compile(compiler_ctx, ast.node)
+
+    expect := read_testfile(filename, "out")
+    if expect == null {
+        testing.fail(t)
+        io.fprintf(t.out, "Unable to open %s.out\0A", filename)
+        return 0
+    }
+
+    io.rewind(compiler_ctx.ir)
+    got := ioutil.readall(io.fileno(compiler_ctx.ir))
+
+    testing.assert_equal_str(t, expect, got)
+    return 0
+}
+
+int main() {
+    t := testing.init("compile/init.test.bn")
+
+    testing.run(t, testfile(t, "./compile/__test__/01-empty_main"))
+
+    testing.cleanup(t)
+    return 0
+}
+

@@ -34,9 +34,9 @@ extern int write(int fd, str buffer, int n)
 extern int read(int fd, chr* buf, int bytes_to_read)
 
 
+
 -- close a opened file descriptor
 extern int close(int fd)
-
 
 -- seek location of a file,
 -- :param whence:

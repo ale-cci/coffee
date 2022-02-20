@@ -5,6 +5,7 @@ import "./std/io" as io
 
 import "./errors" as errors
 import "./parser" as parser
+import "./parser.debug" as parser_debug
 import "./peeker" as peeker
 import "./lexer" as lexer
 
@@ -42,66 +43,6 @@ int main() {
     testing.cleanup(t)
     return 0
 }
-
-
-chr* node_to_string(parse.Node* n) {
-    tmp := io.tmpfile()
-    _node_to_string(n, tmp, 1)
-    str_len := io.ftell(tmp)
-
-    tmp_fd := io.fileno(tmp)
-    io.lseek(tmp_fd, 0, SEEK_SET)
-
-
-    chr* buf = sys.malloc(str_len)
-    read := io.read(tmp_fd, buf, str_len)
-
-    if read != str_len {
-        sys.free(buf)
-        buf = null
-    }
-    return buf
-}
-
-void print_indent(io.File* stdout, int indent){
-    io.fprintf(stdout, "\0A")
-    for i := 0; i < indent; i = i + 1 {
-        io.fprintf(stdout, "  ")
-    }
-}
-
-void _node_to_string(parse.Node* node, io.File* stdout, int indent) {
-    if node == null {
-        io.fprintf(stdout, "(null)")
-        return
-    }
-    io.fprintf(stdout, "{")
-    print_indent(stdout, indent)
-    io.fprintf(stdout, "\22type\22: \22%s\22", node.type)
-    print_indent(stdout, indent)
-    io.fprintf(stdout, "\22value\22: %s", node.value)
-    print_indent(stdout, indent)
-    io.fprintf(stdout, "\22line\22: %d", node.line)
-    print_indent(stdout, indent)
-    io.fprintf(stdout, "\22char_of_line\22: %d", node.char_of_line)
-
-    -- for now avoid recursive call loop
-    -- print_indent(stdout, indent)
-    -- io.fprintf(stdout, "\22parent\22: ")
-    -- _node_to_string(node.parent, stdout, indent + 1)
-
-    print_indent(stdout, indent)
-    io.fprintf(stdout, "\22next\22: ")
-    _node_to_string(node.next, stdout, indent + 1)
-
-    print_indent(stdout, indent)
-    io.fprintf(stdout, "\22children\22: ")
-    _node_to_string(node.children, stdout, indent + 1)
-
-    print_indent(stdout, indent - 1)
-    io.fprintf(stdout, "}")
-}
-
 
 parser.ParseResult* match_rule(chr* rule_name, chr* program) {
     grammar_file := io.fopen("syntax.txt", "r")
@@ -141,8 +82,8 @@ parser.Node* new_node(chr* type, value, int line, char_of_line, parser.Node* nex
 }
 
 void assert_node_eq(testing.T* t, parser.Node* a, b) {
-    repr_a := node_to_string(a)
-    repr_b := node_to_string(b)
+    repr_a := parser_debug.node_to_string(a)
+    repr_b := parser_debug.node_to_string(b)
 
     testing.assert_equal_str(t, repr_a, repr_b)
 
