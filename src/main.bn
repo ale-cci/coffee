@@ -7,6 +7,7 @@ import "./peeker" as peeker
 import "./parser" as parser
 import "./errors" as errors
 import "./lexer" as lexer
+import "./compile/init" as compile
 
 
 int main(int argc, str* argv) {
@@ -27,13 +28,44 @@ int main(int argc, str* argv) {
     sys.free((chr*) tokens)
 
     if res.err != null {
+        -- file contains syntaxerrors, the ast
+        -- was not created successfully,
+        -- aborting
+
         errors.report(res.err)
         sys.free((chr*) res.err)
+        io.close(fd)
+        return 0
     }
 
-    -- read file content
-    -- chr* buf = readfile(fd)
-    -- sys.free(buf)
+
+    proc := sys.popen("llc - > out.s", "w")
+
+    stderr := io.fdopen(io.STDERR, "w")
+    if proc == null {
+        io.fprintf(stderr, "unable to spawn subprocess\0A")
+        return 0
+    }
+
+    -- write IR on llc popen
+    compiler_ctx := compile.new_context(proc)
+    compile.compile(compiler_ctx, res.node)
+
+    if sys.pclose(proc) != 0 {
+        io.fprintf(stderr, "error on llc execution")
+    }
+
+    gcc_proc := sys.popen("gcc out.s -o out", "w")
+    if gcc_proc == null {
+        io.fprintf(stderr, "unable to spawn subprocess\0A")
+        return 0
+    }
+    if sys.pclose(proc) != 0 {
+        io.fprintf(stderr, "error on gcc execution")
+    } else {
+        io.printf("File %s compiled successfully!\0A", argv[1])
+    }
+
     io.close(fd)
     return 0
 }

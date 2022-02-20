@@ -7,9 +7,13 @@ llvm/*
 !llvm/compile.sh
 
 src/*
+src/**/*
+!src/*/
+!src/**/*/
+!src/compile/__test__/*
+!src/**/*.bn
 !src/*.txt
 !src/README.md
 !src/*.bn
-!src/*/
 !src/build
 *.dSYM

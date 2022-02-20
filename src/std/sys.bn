@@ -40,3 +40,9 @@ chr* memset(chr* buf, chr val, int n) {
 
 
 extern int pipe(int* fds)
+
+-- popen, pclose - pipe stream to or from a process
+extern io.File* popen(str command, str type)
+extern int pclose(io.File* stream)
+
+

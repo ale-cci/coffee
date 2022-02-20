@@ -56,7 +56,7 @@ int testfile(testing.T* t, str filename) {
     sys.free((chr*) p)
 
     ast := parser.ast(grammar, "start", tokens)
-    compiler_ctx := compile.new_context()
+    compiler_ctx := compile.new_context(io.tmpfile())
     compile.compile(compiler_ctx, ast.node)
 
     expect := read_testfile(filename, "out")

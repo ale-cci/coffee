@@ -11,9 +11,9 @@ alias CompilerCtx = struct {
 }
 int CompilerCtx_size = 16
 
-CompilerCtx* new_context() {
+CompilerCtx* new_context(io.File* fd) {
     CompilerCtx* ctx = (CompilerCtx*) sys.malloc(CompilerCtx_size)
-    ctx.ir = io.tmpfile()
+    ctx.ir = fd
     ctx.root = (parser.Node*) null
 
     return (CompilerCtx*) ctx
