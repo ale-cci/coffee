@@ -1,31 +1,179 @@
 import "../std/sys" as sys
 import "../std/io" as io
 import "../parser" as parser
+import "../std/string" as string
 
 import "../parser.debug" as parser_debug
+import "../errors" as errors
 
+alias ErrorList = struct {
+    errors.Error* err,
+    ErrorList* next,
+}
+int ErrorList_size = 16
+
+alias Type = struct {
+    Type* of,
+    chr* container,
+}
+int Type_size = 16
+
+alias NameInfo = struct{
+    chr* id,
+    chr* name_type, -- (function, global, external...)
+    Type* type,
+}
+
+alias AssignableInfo = struct {
+    chr* id,
+    Type* type,
+}
+int AssignableInfo_size = 16
+
+alias ScopeItem = struct {
+    chr* name,
+    NameInfo* info,
+    ScopeItem* next,
+}
+
+alias Scope = struct {
+    ScopeItem* item,
+    Scope* prev,
+}
+int Scope_size = 16
 
 alias CompilerCtx = struct {
     parser.Node* root,
     io.File* ir,
+    ErrorList* errors,
+    Scope *scopes,
+    int counter,
 }
-int CompilerCtx_size = 16
+
+int CompilerCtx_size = 36
+
 
 CompilerCtx* new_context(io.File* fd) {
     CompilerCtx* ctx = (CompilerCtx*) sys.malloc(CompilerCtx_size)
     ctx.ir = fd
     ctx.root = (parser.Node*) null
+    ctx.errors = null
+    ctx.counter = 0
+    ctx.scopes = null
 
     return (CompilerCtx*) ctx
 }
 
-void compile(CompilerCtx* ctx, parser.Node* ast) {
-    -- foreach node in start
-    -- parse statement
-    io.fprintf(ctx.ir, "define i32 @main() {\0A")
-    io.fprintf(ctx.ir, "ret i32 0\0A")
-    io.fprintf(ctx.ir, "}\0A")
+bool compile(CompilerCtx* ctx, parser.Node* ast) {
+    if string.strcmp(ast.type, "start") != 0 {
+        return false
+    }
 
-    -- io.printf("ast: %s\0A", parser_debug.node_to_string(ast))
+    for s := ast.children; s != null; s = s.next {
+        compile_statement(ctx, s.children)
+    }
+
+    has_errors := ctx.errors != null
+    for err := ctx.errors; err != null; err = err.next {
+        errors.report(err.err)
+    }
+    -- TODO: free errors
+    return has_errors
 }
 
+void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
+    if string.strcmp(stmt.type, "NL") == 0 {
+        return
+    } elif string.strcmp(stmt.type, "function") == 0 {
+        name := syn_function_name(stmt)
+        io.fprintf(ctx.ir, "define i32 @%s() {\0A", name)
+        compile_block(ctx, skip_to_type(stmt.children, "block"))
+        io.fprintf(ctx.ir, "}\0A")
+
+    } else {
+
+        msg := "Unable to convert statement of type %s to ast"
+        msg_len := string.strlen(msg) -2 + string.strlen(stmt.type)
+        err_buf := sys.malloc(msg_len + 1)
+
+        io.sprintf(err_buf, msg, stmt.type)
+        new_error(ctx, stmt, err_buf)
+    }
+}
+
+void compile_block(CompilerCtx* ctx, parser.Node* stmt) {
+    -- parse only expressions
+    for b := stmt.children; b != null ; b = b.next {
+        if string.strcmp(b.type, "expression") == 0 {
+            compile_expression(ctx, b)
+        }
+    }
+}
+
+void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
+    expr_type := stmt.children.type
+    if string.strcmp(expr_type, "return") == 0 {
+        -- io.printf("ast: %s\0A", parser_debug.node_to_string(stmt.children.children.next))
+        info := compile_assignable(ctx, stmt.children.children.next)
+        io.fprintf(ctx.ir, "ret %s %s\0A", type_repr(info.type), info.id)
+
+    } else {
+        io.printf("compiling expression: %s\0A", expr_type)
+    }
+}
+
+
+void new_error(CompilerCtx* c, parser.Node* curr_node, str msg) {
+    if curr_node != null {
+        err := errors.new(curr_node.filename, curr_node.line, curr_node.char_of_line, msg)
+        append_error(c, err)
+    } else {
+        sys.assert(false, "What?")
+    }
+}
+
+AssignableInfo* compile_assignable(CompilerCtx* c, parser.Node* curr_node) {
+    assignable_info := (AssignableInfo*) sys.malloc(AssignableInfo_size)
+    mono := skip_to_type(curr_node.children, "mono_assignable")
+
+    if string.strcmp(mono.children.type, "NUMBER") == 0 {
+        assignable_info.type = (Type*) sys.malloc(Type_size)
+        assignable_info.type.of = null
+        assignable_info.type.container = "int"
+        assignable_info.id = mono.children.value
+    }
+
+    return (AssignableInfo*) assignable_info
+}
+
+chr* type_repr(Type* type) {
+    if string.strcmp(type.container, "int") == 0 {
+        return "i32"
+    }
+    return (chr*) null
+}
+
+void append_error(CompilerCtx* ctx, errors.Error* e) {
+    new_err := (ErrorList*) sys.malloc(ErrorList_size)
+    new_err.err = e
+    new_err.next = null
+
+    if ctx.errors == null {
+        ctx.errors = new_err
+        return
+    }
+
+    for last := ctx.errors; last.next != null ; last = last.next {
+    }
+
+    last.next = new_err
+}
+
+chr* syn_function_name(parser.Node* stmt) {
+    return stmt.children.next.value
+}
+parser.Node* skip_to_type(parser.Node* node, str type) {
+    for n := node; string.strcmp(n.type, type) != 0; n = n.next {
+    }
+    return n
+}

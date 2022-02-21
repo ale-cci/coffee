@@ -8,6 +8,16 @@ import "../parser" as parser
 import "../peeker" as peeker
 import "../lexer" as lexer
 
+int main() {
+    t := testing.init("compile/init.test.bn")
+
+    testing.run(t, testfile(t, "./compile/__test__/01-empty_main"))
+    testing.run(t, testfile(t, "./compile/__test__/02-return-digit"))
+
+    testing.cleanup(t)
+    return 0
+}
+
 
 chr* _build_filename(str filename, str ext) {
     name_len := string.strlen(filename) + string.strlen(ext) + 1
@@ -70,15 +80,6 @@ int testfile(testing.T* t, str filename) {
     got := ioutil.readall(io.fileno(compiler_ctx.ir))
 
     testing.assert_equal_str(t, expect, got)
-    return 0
-}
-
-int main() {
-    t := testing.init("compile/init.test.bn")
-
-    testing.run(t, testfile(t, "./compile/__test__/01-empty_main"))
-
-    testing.cleanup(t)
     return 0
 }
 

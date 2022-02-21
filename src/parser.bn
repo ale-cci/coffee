@@ -264,6 +264,7 @@ Rule** parse_grammar(ParsingContext* ctx) {
 alias Node = struct {
     chr* type,
     chr* value,
+    chr* filename,
 
     int line,
     int char_of_line,
@@ -273,13 +274,14 @@ alias Node = struct {
     Node* children,
     Node* next,      -- required for a list of child nodes
 }
-int Node_size = 48
+int Node_size = 56
 
 Node* new_node(Token* t, chr* type, chr* value) {
     node := (Node*) sys.malloc(Node_size)
     node.type = type
     node.value = value
     node.line = t.line
+    node.filename = null
     node.char_of_line = t.char_of_line
     node.parent = null
     node.children = null
