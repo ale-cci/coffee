@@ -86,8 +86,39 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
         return
     } elif string.strcmp(stmt.type, "function") == 0 {
         name := syn_function_name(stmt)
-        io.fprintf(ctx.ir, "define i32 @%s() {\0A", name)
-        compile_block(ctx, skip_to_type(stmt.children, "block"))
+        type := syn_function_type(stmt.children)
+
+        io.fprintf(ctx.ir, "define %s @%s() {\0A", type_repr(type), name)
+        fn_block := skip_to_type(stmt.children, "block")
+        compile_block(ctx, fn_block)
+
+
+        parser.Node* last_valid_instruction = (parser.Node*) null
+
+        -- check if last instruction is a return stmt
+        -- otherwise add implicit void return
+        -- or signal an error
+        for ci := fn_block.children; ci.next != null; ci = ci.next {
+            if string.strcmp(ci.type, "NL") != 0 & string.strcmp(ci.type, "OPERATOR") != 0 {
+                last_valid_instruction = ci
+            }
+        }
+
+        add_implicit_return := false
+        if last_valid_instruction == null {
+            add_implicit_return = true
+        } elif string.strcmp(last_valid_instruction.children.type, "return") != 0 {
+            add_implicit_return = true
+        }
+
+        if add_implicit_return {
+            if string.strcmp(type_repr(type), "void") != 0 {
+                new_error(ctx, fn_block, "missing return value")
+            } else {
+                io.fprintf(ctx.ir, "ret void\0A")
+            }
+        }
+
         io.fprintf(ctx.ir, "}\0A")
 
     } else {
@@ -113,9 +144,12 @@ void compile_block(CompilerCtx* ctx, parser.Node* stmt) {
 void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
     expr_type := stmt.children.type
     if string.strcmp(expr_type, "return") == 0 {
-        -- io.printf("ast: %s\0A", parser_debug.node_to_string(stmt.children.children.next))
-        info := compile_assignable(ctx, stmt.children.children.next)
-        io.fprintf(ctx.ir, "ret %s %s\0A", type_repr(info.type), info.id)
+        if string.strcmp(stmt.children.children.next.type, "NL") != 0 {
+            info := compile_assignable(ctx, stmt.children.children.next)
+            io.fprintf(ctx.ir, "ret %s %s\0A", type_repr(info.type), info.id)
+        } else {
+            io.fprintf(ctx.ir, "ret void\0A")
+        }
 
     } else {
         io.printf("compiling expression: %s\0A", expr_type)
@@ -149,6 +183,8 @@ AssignableInfo* compile_assignable(CompilerCtx* c, parser.Node* curr_node) {
 chr* type_repr(Type* type) {
     if string.strcmp(type.container, "int") == 0 {
         return "i32"
+    } elif string.strcmp(type.container, "void") == 0 {
+        return "void"
     }
     return (chr*) null
 }
@@ -176,4 +212,15 @@ parser.Node* skip_to_type(parser.Node* node, str type) {
     for n := node; string.strcmp(n.type, type) != 0; n = n.next {
     }
     return n
+}
+
+Type* syn_function_type(parser.Node* stmt) {
+    return node_to_type(stmt.children)
+}
+
+Type* node_to_type(parser.Node* stmt) {
+    t := (Type*) sys.malloc(Type_size)
+    t.of = null
+    t.container = stmt.value
+    return t
 }

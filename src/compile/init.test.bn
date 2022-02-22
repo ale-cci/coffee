@@ -13,6 +13,7 @@ int main() {
 
     testing.run(t, testfile(t, "./compile/__test__/01-empty_main"))
     testing.run(t, testfile(t, "./compile/__test__/02-return-digit"))
+    testing.run(t, testfile(t, "./compile/__test__/03-return-void"))
 
     testing.cleanup(t)
     return 0

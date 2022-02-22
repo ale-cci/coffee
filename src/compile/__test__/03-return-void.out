@@ -1,0 +1,6 @@
+define void @fn() {
+ret void
+}
+define void @main() {
+ret void
+}

@@ -18,7 +18,7 @@ chr* readall(int fd) {
         }
         content_len = content_len + read_bytes
     }
-    content[content_len] = '\00'
+    content[content_len-1] = '\00'
     sys.free(buf)
     return content
 }
