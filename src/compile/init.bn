@@ -318,6 +318,23 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
         }
 
         var_type_repr := type_repr(info.type)
+        if a_info != null {
+            a_type_repr := type_repr(a_info.type)
+            type_error := false
+            if string.strlen(a_type_repr) != string.strlen(var_type_repr) {
+                type_error = true
+            } elif string.strcmp(a_type_repr, var_type_repr) != 0 {
+                type_error = true
+            }
+
+            if type_error {
+                chr* err_msg
+                io.asprintf(&err_msg, "cannot assign type '%s' to variable of type '%s'", a_type_repr, var_type_repr)
+                new_error(ctx, stmt, err_msg)
+            }
+
+        }
+
         io.fprintf(ctx.ir, "%s = alloca %s\0A", info.id, var_type_repr)
         if a_info != null {
             io.fprintf(ctx.ir, "store %s %s, %s* %s\0A", type_repr(a_info.type), a_info.id, var_type_repr, info.id)
