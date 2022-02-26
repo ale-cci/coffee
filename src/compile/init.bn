@@ -132,11 +132,39 @@ str name_mangle(str original_name, str filename, Type* type) {
 }
 
 void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
+    AssignableInfo* info
+    Type* return_type
+
     if string.strcmp(stmt.type, "NL") == 0 {
         return
+    } elif string.strcmp(stmt.type, "extern") == 0 {
+        info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
+        info.type = syn_function_type(stmt.children.next)
+        info.name_type = "extern"
+        io.asprintf(&info.id, "@%s", stmt.children.next.next.value)
+        info.line = stmt.line
+        info.char_of_line = stmt.char_of_line
+
+        -- copy defined function return type
+        return_type = (Type*) sys.malloc(Type_size)
+        return_type.next = null
+        return_type.container = info.type.of.container
+        return_type.of = info.type.of.of
+
+        io.fprintf(ctx.ir, "declare %s %s(", type_repr(return_type), info.id)
+        for pt := info.type.of.next; pt != null; pt = pt.next {
+            if pt != info.type.of.next {
+                io.fprintf(ctx.ir, ", ")
+            }
+            io.fprintf(ctx.ir, "%s", type_repr(pt))
+        }
+
+        io.fprintf(ctx.ir, ")\0A")
+        sys.free((chr*) return_type)
+
     } elif string.strcmp(stmt.type, "function") == 0 {
         -- function definition
-        info := (AssignableInfo*) sys.malloc(AssignableInfo_size)
+        info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
         info.name_type = "function"
         info.type = syn_function_type(stmt.children)
 
@@ -147,7 +175,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
         define_assignable(ctx, name, info)
 
         -- copy defined function return type
-        return_type := (Type*) sys.malloc(Type_size)
+        return_type = (Type*) sys.malloc(Type_size)
         return_type.next = null
         return_type.container = info.type.of.container
         return_type.of = info.type.of.of
@@ -422,6 +450,7 @@ parser.Node* skip_to_type(parser.Node* node, str type) {
     return (parser.Node*) null
 }
 
+
 Type* syn_function_type(parser.Node* stmt) {
     function_type := (Type*) sys.malloc(Type_size)
 
@@ -436,7 +465,7 @@ Type* syn_function_type(parser.Node* stmt) {
         param_type := node_to_type(param_ptr.children)
         last_type.next = param_type
         last_type = param_type
-        param_ptr = param_ptr.next.next
+        param_ptr = param_ptr.next
     }
 
     -- start parsing argument types

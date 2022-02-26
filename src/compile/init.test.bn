@@ -16,6 +16,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/03-return-void"))
     testing.run(t, testfile(t, "./compile/__test__/04-function-call"))
     testing.run(t, testfile(t, "./compile/__test__/05-compiles-functions-with-params"))
+    testing.run(t, testfile(t, "./compile/__test__/06-parses-extern-functions"))
 
     testing.cleanup(t)
     return 0
