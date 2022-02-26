@@ -142,6 +142,15 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
 
     if string.strcmp(stmt.type, "NL") == 0 {
         return
+    } elif string.strcmp(stmt.type, "global") == 0 {
+        assignable := skip_to_type(stmt.children, "assignable")
+        a_info := compile_assignable(ctx, assignable)
+
+        info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
+        io.asprintf(&info.id, "@%s", stmt.children.next.value)
+        info.type = a_info.type
+
+        io.fprintf(ctx.ir, "%s = constant %s %s\0A", info.id, type_repr(info.type), a_info.id)
     } elif string.strcmp(stmt.type, "extern") == 0 {
         info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
         info.type = syn_function_type(stmt.children.next)

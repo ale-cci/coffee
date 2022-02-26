@@ -9,6 +9,7 @@ chr* readall(int fd) {
 
     int content_len = 0
     chr* content = sys.malloc(1)
+    content[0] = '\00'
 
     read_bytes := io.read(fd, buf, buf_len)
     for ; read_bytes > 0; read_bytes = io.read(fd, buf, buf_len) {
