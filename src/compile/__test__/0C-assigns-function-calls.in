@@ -1,0 +1,7 @@
+int call() {
+    return 4
+}
+
+void fn() {
+    t := call()
+}

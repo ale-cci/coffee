@@ -284,6 +284,49 @@ void compile_block(CompilerCtx* ctx, parser.Node* stmt) {
     pop_scope(ctx)
 }
 
+AssignableInfo* compile_fn_call(CompilerCtx* ctx, parser.Node* stmt) {
+    info := compile_addr(ctx, stmt)
+    args := skip_to_type(stmt, "fn_args")
+    chr* params_buff = ""
+    chr* tmp
+    if args != null {
+        start := skip_to_type(args.children, "assignable")
+        for pp := start; pp != null; pp = skip_to_type(pp, "assignable") {
+            if pp != start {
+                io.asprintf(&tmp, "%s, ", params_buff)
+                chr* tmp_buff = params_buff
+                params_buff = tmp
+                tmp = tmp_buff
+                sys.free(tmp)
+            }
+            a_info := compile_assignable(ctx, pp)
+            io.asprintf(&params_buff, "%s%s %s", params_buff, type_repr(a_info.type), a_info.id)
+            pp = pp.next
+        }
+    }
+
+    chr* uid = ""
+    if string.strcmp(type_repr(info.type.of), "void") != 0 {
+        io.asprintf(&uid, "%%.tmp%d", new_uid(ctx))
+    }
+
+    if string.strcmp(uid, "") == 0 {
+        io.fprintf(ctx.ir, "call %s %s(%s)\0A", type_repr(info.type), info.id, params_buff)
+        return (AssignableInfo*) null
+
+    } else {
+        io.fprintf(ctx.ir, "%s = call %s %s(%s)\0A", uid, type_repr(info.type), info.id, params_buff)
+    }
+    -- get function arguments
+
+    AssignableInfo* call_info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
+    call_info.type = info.type.of
+    call_info.type.next = null
+    call_info.id = uid
+
+    return (AssignableInfo*) call_info
+}
+
 void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
     chr* err_msg
     expr_type := stmt.type
@@ -303,27 +346,7 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
     } elif string.strcmp(expr_type, "NL") == 0 {
     } elif string.strcmp(expr_type, "fn_call") == 0 {
         -- get function name from destination
-
-        info = compile_addr(ctx, stmt.children)
-        args := skip_to_type(stmt.children, "fn_args")
-        chr* params_buff = ""
-        chr* tmp
-        if args != null {
-            start := skip_to_type(args.children, "assignable")
-            for pp := start; pp != null; pp = skip_to_type(pp, "assignable") {
-                if pp != start {
-                    io.asprintf(&tmp, "%s, ", params_buff)
-                    chr* tmp_buff = params_buff
-                    params_buff = tmp
-                    tmp = tmp_buff
-                    sys.free(tmp)
-                }
-                a_info = compile_assignable(ctx, pp)
-                io.asprintf(&params_buff, "%s%s %s", params_buff, type_repr(a_info.type), a_info.id)
-                pp = pp.next
-            }
-        }
-        io.fprintf(ctx.ir, "call %s %s(%s)\0A", type_repr(info.type), info.id, params_buff)
+        compile_fn_call(ctx, stmt.children)
         -- get function arguments
     } elif string.strcmp(expr_type, "declaration") == 0 {
         Type* decl_type = (Type*) null
@@ -440,7 +463,7 @@ AssignableInfo* find_defined(CompilerCtx* ctx, parser.Node* dotted_name) {
 -- returns address for node
 AssignableInfo* compile_addr(CompilerCtx* c, parser.Node* curr_node) {
     if string.strcmp(curr_node.type, "destination") != 0 {
-        io.printf("'compile_addr' could only be called on destinations for now")
+        io.printf("'compile_addr' could only be called on destinations for now. (called on %s)\0A", curr_node.type)
         return (AssignableInfo*) null
     }
 
@@ -473,15 +496,17 @@ AssignableInfo* compile_addr(CompilerCtx* c, parser.Node* curr_node) {
 
 
 AssignableInfo* compile_assignable(CompilerCtx* ctx, parser.Node* curr_node) {
-    assignable_info := (AssignableInfo*) sys.malloc(AssignableInfo_size)
+    AssignableInfo* assignable_info = (AssignableInfo*) null
     mono := skip_to_type(curr_node.children, "mono_assignable")
 
     if string.strcmp(mono.children.type, "NUMBER") == 0 {
+        assignable_info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
         assignable_info.type = (Type*) sys.malloc(Type_size)
         assignable_info.type.of = null
         assignable_info.type.container = "int"
         assignable_info.id = mono.children.value
     } elif string.strcmp(mono.children.type, "addr_destination") == 0 {
+        assignable_info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
         dest := skip_to_type(mono.children.children, "destination")
 
         var_info := find_defined(ctx, dest.children)
@@ -493,6 +518,7 @@ AssignableInfo* compile_assignable(CompilerCtx* ctx, parser.Node* curr_node) {
         io.fprintf(ctx.ir, "%s = load %s, %s* %s\0A", assignable_info.id, var_type_repr, var_type_repr, var_info.id)
 
     } elif string.strcmp(mono.children.type, "boolean") == 0 {
+        assignable_info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
         assignable_info.type = (Type*) sys.malloc(Type_size)
         assignable_info.type.of = null
         assignable_info.type.container = "bool"
@@ -501,8 +527,11 @@ AssignableInfo* compile_assignable(CompilerCtx* ctx, parser.Node* curr_node) {
         } else {
             assignable_info.id = "1"
         }
+    } elif string.strcmp(mono.children.type, "fn_call") == 0 {
+        assignable_info = compile_fn_call(ctx, mono.children.children)
     } else {
         io.printf(":coffee-error: unable to compile assignable of type %s\0A", mono.children.type)
+        return (AssignableInfo*) null
     }
 
     assignable_info.line = curr_node.line
