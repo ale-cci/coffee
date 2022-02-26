@@ -1,0 +1,4 @@
+define void @f.v() {
+%t = alloca i32
+store i32 3, i32* %t
+}

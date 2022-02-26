@@ -18,6 +18,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/05-compiles-functions-with-params"))
     testing.run(t, testfile(t, "./compile/__test__/06-parses-extern-functions"))
     testing.run(t, testfile(t, "./compile/__test__/07-parses-variable-declaration"))
+    testing.run(t, testfile(t, "./compile/__test__/08-parses-variable-assignment"))
 
     testing.cleanup(t)
     return 0
