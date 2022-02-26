@@ -264,20 +264,20 @@ void compile_block(CompilerCtx* ctx, parser.Node* stmt) {
     -- parse only expressions
     for b := stmt.children; b != null ; b = b.next {
         if string.strcmp(b.type, "expression") == 0 {
-            compile_expression(ctx, b)
+            compile_expression(ctx, b.children)
         }
     }
     pop_scope(ctx)
 }
 
 void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
-    expr_type := stmt.children.type
+    expr_type := stmt.type
 
     AssignableInfo* info = (AssignableInfo*) null
 
     if string.strcmp(expr_type, "return") == 0 {
-        if string.strcmp(stmt.children.children.next.type, "NL") != 0 {
-            info = compile_assignable(ctx, stmt.children.children.next)
+        if string.strcmp(stmt.children.next.type, "NL") != 0 {
+            info = compile_assignable(ctx, stmt.children.next)
             io.fprintf(ctx.ir, "ret %s %s\0A", type_repr(info.type), info.id)
         } else {
             io.fprintf(ctx.ir, "ret void\0A")
@@ -287,9 +287,42 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
     } elif string.strcmp(expr_type, "fn_call") == 0 {
         -- get function name from destination
 
-        info = compile_addr(ctx, stmt.children.children)
+        info = compile_addr(ctx, stmt.children)
         io.fprintf(ctx.ir, "call %s %s()\0A", type_repr(info.type), info.id)
         -- get function arguments
+    } elif string.strcmp(expr_type, "declaration") == 0 {
+        Type* decl_type = (Type*) null
+        if string.strcmp(stmt.children.type, "type") == 0 {
+            decl_type = node_to_type(stmt.children.children)
+        }
+
+        assignable := skip_to_type(stmt.children, "assignable")
+        AssignableInfo* a_info = (AssignableInfo*) null
+        if assignable != null {
+            a_info = compile_assignable(ctx, assignable)
+        }
+
+        info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
+        info.name_type = "variable"
+        info.line = stmt.line
+        info.char_of_line = stmt.char_of_line
+        var_name := skip_to_type(stmt.children, "WORD")
+
+        sys.assert(var_name != null, ":coffee-error: unalbe to get declaration name")
+
+        io.asprintf(&info.id, "%%%s", var_name.value)
+        if decl_type != null {
+            info.type = decl_type
+        } elif a_info != null {
+            info.type = a_info.type
+        }
+
+        var_type_repr := type_repr(info.type)
+        io.fprintf(ctx.ir, "%s = alloca %s\0A", info.id, var_type_repr)
+        if a_info != null {
+            io.fprintf(ctx.ir, "store %s %s, %s* %s\0A", type_repr(a_info.type), a_info.id, var_type_repr, info.id)
+        }
+
     } else {
         io.printf("compiling expression: %s\0A", expr_type)
     }
