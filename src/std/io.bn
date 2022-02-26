@@ -6,6 +6,7 @@
 extern int printf(str format, ...args)
 extern int sprintf(chr* dest, str format, ...args)
 extern int snprintf(chr* dest, int size, str format, ...args)
+extern int asprintf(chr** string_pointer, chr* format, ...args)
 
 extern void perror(str error)
 

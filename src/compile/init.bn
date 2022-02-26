@@ -13,28 +13,37 @@ alias ErrorList = struct {
 int ErrorList_size = 16
 
 alias Type = struct {
-    Type* of,
     chr* container,
-}
-int Type_size = 16
 
-alias NameInfo = struct{
-    chr* id,
-    chr* name_type, -- (function, global, external...)
-    Type* type,
+    -- NOTE: each "basic" type is not allowed to have a 'next'
+    -- value
+
+    Type* of,
+    Type* next,
+
+    -- Type* of,
+    -- chr* container,
 }
+int Type_size = 24
 
 alias AssignableInfo = struct {
+    -- uniquely identifies assignable
     chr* id,
+    chr* name_type,
     Type* type,
+
+    -- where was the assignable defined
+    int line,
+    int char_of_line,
 }
-int AssignableInfo_size = 16
+int AssignableInfo_size = 32
 
 alias ScopeItem = struct {
     chr* name,
-    NameInfo* info,
+    AssignableInfo* info,
     ScopeItem* next,
 }
+int ScopeItem_size = 24
 
 alias Scope = struct {
     ScopeItem* item,
@@ -64,10 +73,25 @@ CompilerCtx* new_context(io.File* fd) {
     return (CompilerCtx*) ctx
 }
 
+void push_scope(CompilerCtx* ctx) {
+    s := (Scope*) sys.malloc(Scope_size)
+    s.prev = ctx.scopes
+    s.item = null
+    ctx.scopes = s
+}
+void pop_scope(CompilerCtx* ctx) {
+    -- TODO: free this scope -> s := ctx.scopes
+    sys.assert(ctx.scopes != null, ":coffee-error: 'pop_scope' called when ctx.scopes is null")
+    ctx.scopes = ctx.scopes.prev
+}
+
 bool compile(CompilerCtx* ctx, parser.Node* ast) {
     if string.strcmp(ast.type, "start") != 0 {
         return false
     }
+
+    -- push global context scope
+    push_scope(ctx)
 
     for s := ast.children; s != null; s = s.next {
         compile_statement(ctx, s.children)
@@ -77,18 +101,41 @@ bool compile(CompilerCtx* ctx, parser.Node* ast) {
     for err := ctx.errors; err != null; err = err.next {
         errors.report(err.err)
     }
+    pop_scope(ctx)
     -- TODO: free errors
     return has_errors
+}
+
+str name_mangle(str original_name, str filename, Type* type) {
+    chr* mangled_name
+
+    io.asprintf(&mangled_name, "@%s", original_name)
+
+    return mangled_name
 }
 
 void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
     if string.strcmp(stmt.type, "NL") == 0 {
         return
     } elif string.strcmp(stmt.type, "function") == 0 {
-        name := syn_function_name(stmt)
-        type := syn_function_type(stmt.children)
+        -- function definition
+        info := (AssignableInfo*) sys.malloc(AssignableInfo_size)
+        info.name_type = "function"
+        info.type = syn_function_type(stmt.children)
 
-        io.fprintf(ctx.ir, "define %s @%s() {\0A", type_repr(type), name)
+        name := syn_function_name(stmt)
+        info.id = name_mangle(name, "", info.type)
+        info.line = stmt.line
+        info.char_of_line = stmt.char_of_line
+        define_assignable(ctx, name, info)
+
+        -- copy defined function return type
+        return_type := (Type*) sys.malloc(Type_size)
+        return_type.next = null
+        return_type.container = info.type.of.container
+        return_type.of = info.type.of.of
+
+        io.fprintf(ctx.ir, "define %s %s() {\0A", type_repr(return_type), info.id)
         fn_block := skip_to_type(stmt.children, "block")
         compile_block(ctx, fn_block)
 
@@ -112,7 +159,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
         }
 
         if add_implicit_return {
-            if string.strcmp(type_repr(type), "void") != 0 {
+            if string.strcmp(type_repr(return_type), "void") != 0 {
                 new_error(ctx, fn_block, "missing return value")
             } else {
                 io.fprintf(ctx.ir, "ret void\0A")
@@ -123,34 +170,43 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
 
     } else {
 
-        msg := "Unable to convert statement of type %s to ast"
-        msg_len := string.strlen(msg) -2 + string.strlen(stmt.type)
-        err_buf := sys.malloc(msg_len + 1)
-
-        io.sprintf(err_buf, msg, stmt.type)
+        chr* err_buf
+        io.asprintf(&err_buf, "Unable to convert statement of type %s to ast", stmt.type)
         new_error(ctx, stmt, err_buf)
     }
 }
 
 void compile_block(CompilerCtx* ctx, parser.Node* stmt) {
+    push_scope(ctx)
     -- parse only expressions
     for b := stmt.children; b != null ; b = b.next {
         if string.strcmp(b.type, "expression") == 0 {
             compile_expression(ctx, b)
         }
     }
+    pop_scope(ctx)
 }
 
 void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
     expr_type := stmt.children.type
+
+    AssignableInfo* info = (AssignableInfo*) null
+
     if string.strcmp(expr_type, "return") == 0 {
         if string.strcmp(stmt.children.children.next.type, "NL") != 0 {
-            info := compile_assignable(ctx, stmt.children.children.next)
+            info = compile_assignable(ctx, stmt.children.children.next)
             io.fprintf(ctx.ir, "ret %s %s\0A", type_repr(info.type), info.id)
         } else {
             io.fprintf(ctx.ir, "ret void\0A")
         }
 
+    } elif string.strcmp(expr_type, "NL") == 0 {
+    } elif string.strcmp(expr_type, "fn_call") == 0 {
+        -- get function name from destination
+
+        info = compile_addr(ctx, stmt.children.children)
+        io.fprintf(ctx.ir, "call %s %s()\0A", type_repr(info.type), info.id)
+        -- get function arguments
     } else {
         io.printf("compiling expression: %s\0A", expr_type)
     }
@@ -162,9 +218,79 @@ void new_error(CompilerCtx* c, parser.Node* curr_node, str msg) {
         err := errors.new(curr_node.filename, curr_node.line, curr_node.char_of_line, msg)
         append_error(c, err)
     } else {
-        sys.assert(false, "What?")
+        sys.assert(false, "Programming error, unable to create new error from null node")
     }
 }
+
+-- binds the assignable to a given name in the current scope
+void define_assignable(CompilerCtx* ctx, str name, AssignableInfo* info) {
+    sys.assert(ctx.scopes != null, ":coffee-error: 'define_assignable' could not be called if context scopes are null")
+    current_scope := ctx.scopes
+
+    -- check that assignable is not defined on this context
+    -- for item := current_scope.item; item != null; item = item.next {
+    -- }
+
+    newitem := (ScopeItem*) sys.malloc(ScopeItem_size)
+    newitem.name = name
+    newitem.info = info
+    newitem.next = null
+
+    if current_scope.item == null {
+        current_scope.item = newitem
+        return
+    }
+
+    for last_item := current_scope.item; last_item.next != null; last_item = last_item.next {
+    }
+    last_item.next = newitem
+}
+
+AssignableInfo* find_defined(CompilerCtx* ctx, str assignable_name) {
+    sys.assert(ctx.scopes != null, ":coffee-error: 'find_defined' could not be called if context scopes are null")
+
+    for s := ctx.scopes; s != null; s = s.prev {
+        for item := s.item; item != null; item = item.next {
+            if string.strcmp(item.name, assignable_name) == 0 {
+                return item.info
+            }
+        }
+    }
+    return (AssignableInfo*) null
+}
+
+-- returns address for node
+AssignableInfo* compile_addr(CompilerCtx* c, parser.Node* curr_node) {
+    if string.strcmp(curr_node.type, "destination") != 0 {
+        io.printf("'compile_addr' could only be called on destinations for now")
+        return (AssignableInfo*) null
+    }
+
+    -- type + id of addr
+    assignable_name := curr_node.children.children.value
+    info := find_defined(c, assignable_name)
+    if info == null {
+        return (AssignableInfo*) null
+    }
+
+    if string.strcmp(info.name_type, "function") == 0 {
+        return info
+    }
+
+    -- info := (AssignableInfo*) sys.malloc(AssignableInfo_size)
+    -- io.asprintf(&info.id, "@%s", fn_name)
+
+    -- build type
+
+
+    -- type
+
+
+    -- io.printf("Retrieving addr of: %s\0A", curr_node.type)
+    -- io.printf("function called: %s\0A", curr_node.children.children.value)
+    return (AssignableInfo*) null
+}
+
 
 AssignableInfo* compile_assignable(CompilerCtx* c, parser.Node* curr_node) {
     assignable_info := (AssignableInfo*) sys.malloc(AssignableInfo_size)
@@ -181,11 +307,19 @@ AssignableInfo* compile_assignable(CompilerCtx* c, parser.Node* curr_node) {
 }
 
 chr* type_repr(Type* type) {
+    sys.assert(type != null, "called 'type_repr' on null")
+    sys.assert(type.container != null, "called 'type_repr' with malformed type, container is null.")
+
     if string.strcmp(type.container, "int") == 0 {
         return "i32"
     } elif string.strcmp(type.container, "void") == 0 {
         return "void"
+    } elif string.strcmp(type.container, "function") == 0 {
+        chr* buf
+        io.asprintf(&buf, "%s()", type_repr(type.of))
+        return buf
     }
+
     return (chr*) null
 }
 
@@ -214,8 +348,19 @@ parser.Node* skip_to_type(parser.Node* node, str type) {
     return n
 }
 
+Type* parse_type(parser.Node* stmt) {
+    return (Type*) null
+}
+
 Type* syn_function_type(parser.Node* stmt) {
-    return node_to_type(stmt.children)
+    function_type := (Type*) sys.malloc(Type_size)
+
+    return_value_type := node_to_type(stmt.children)
+    function_type.container = "function"
+    function_type.of = return_value_type
+
+    -- start parsing argument types
+    return function_type
 }
 
 Type* node_to_type(parser.Node* stmt) {

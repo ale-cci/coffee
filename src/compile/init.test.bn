@@ -14,6 +14,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/01-empty_main"))
     testing.run(t, testfile(t, "./compile/__test__/02-return-digit"))
     testing.run(t, testfile(t, "./compile/__test__/03-return-void"))
+    testing.run(t, testfile(t, "./compile/__test__/04-function-call"))
 
     testing.cleanup(t)
     return 0
