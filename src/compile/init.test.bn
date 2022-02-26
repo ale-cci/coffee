@@ -21,6 +21,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/08-parses-variable-assignment"))
     testing.run(t, testfile(t, "./compile/__test__/09-parse-function-parameters"))
     testing.run(t, testfile(t, "./compile/__test__/0A-parses-global-variable"))
+    testing.run(t, testfile(t, "./compile/__test__/0B-assigns-boolean-values"))
 
     testing.cleanup(t)
     return 0

@@ -20,7 +20,7 @@ addr_destination: ("&")* (destination)
 
 operator: ( "+" | "=" "=" | "!" "=" | "|" | "&" | "<" "=" | ">" "=" | "<" | ">" | "*" | "-" )
 
-mono_assignable: ( fn_call | addr_destination | NUMBER | CHR | boolean | STRING  )
+mono_assignable: ( fn_call | boolean | addr_destination | NUMBER | CHR | STRING  )
 
 assignable: (cast)? mono_assignable ( operator mono_assignable)*
 

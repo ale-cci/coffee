@@ -492,6 +492,15 @@ AssignableInfo* compile_assignable(CompilerCtx* ctx, parser.Node* curr_node) {
 
         io.fprintf(ctx.ir, "%s = load %s, %s* %s\0A", assignable_info.id, var_type_repr, var_type_repr, var_info.id)
 
+    } elif string.strcmp(mono.children.type, "boolean") == 0 {
+        assignable_info.type = (Type*) sys.malloc(Type_size)
+        assignable_info.type.of = null
+        assignable_info.type.container = "bool"
+        if string.strcmp(mono.children.children.value, "false") == 0 {
+            assignable_info.id = "0"
+        } else {
+            assignable_info.id = "1"
+        }
     } else {
         io.printf(":coffee-error: unable to compile assignable of type %s\0A", mono.children.type)
     }
@@ -523,6 +532,8 @@ str type_repr(Type* type) {
         return "i32"
     } elif string.strcmp(type.container, "void") == 0 {
         return "void"
+    } elif string.strcmp(type.container, "bool") == 0 {
+        return "i1"
     } elif string.strcmp(type.container, "chr") == 0 {
         return "i8"
     } elif string.strcmp(type.container, "function") == 0 {
