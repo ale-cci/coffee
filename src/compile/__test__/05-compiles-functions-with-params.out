@@ -1,0 +1,7 @@
+define void @fn.v.i.c(i32 %.t.arg, i8 %.j.arg) {
+%t = alloca i32
+store i32 %.t.arg, i32* %t
+%j = alloca i8
+store i8 %.j.arg, i8* %j
+ret void
+}

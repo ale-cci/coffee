@@ -1,4 +1,4 @@
-define void @fn() {
+define void @fn.v() {
 ret void
 }
 define void @main() {

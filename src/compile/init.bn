@@ -106,10 +106,27 @@ bool compile(CompilerCtx* ctx, parser.Node* ast) {
     return has_errors
 }
 
+
 str name_mangle(str original_name, str filename, Type* type) {
     chr* mangled_name
 
     io.asprintf(&mangled_name, "@%s", original_name)
+    if string.strcmp(type.container, "function") == 0 {
+        -- function  name is the concatenation of module, original name
+        -- return value and parameters type
+        if string.strcmp(original_name, "main") != 0 {
+            chr* tmp_buff
+            chr* swap_var
+            for tp := type.of; tp != null; tp = tp.next {
+                io.asprintf(&tmp_buff, "%s.%s", mangled_name, type_abbr(tp))
+
+                swap_var = tmp_buff
+                tmp_buff = mangled_name
+                mangled_name = swap_var
+                sys.free(tmp_buff)
+            }
+        }
+    }
 
     return mangled_name
 }
@@ -135,7 +152,21 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
         return_type.container = info.type.of.container
         return_type.of = info.type.of.of
 
-        io.fprintf(ctx.ir, "define %s %s() {\0A", type_repr(return_type), info.id)
+        io.fprintf(ctx.ir, "define %s %s(", type_repr(return_type), info.id)
+        params := syn_function_params(stmt.children)
+        for param_ptr := params; param_ptr != null ; {
+            if param_ptr != params {
+                param_ptr = param_ptr.next
+                io.fprintf(ctx.ir, ", ")
+            }
+            param_type := node_to_type(param_ptr.children)
+            io.fprintf(ctx.ir, "%s %%.%s.arg", type_repr(param_type), param_ptr.next.value)
+            param_ptr = param_ptr.next.next
+        }
+        -- build function parameters string
+        io.fprintf(ctx.ir, ") {\0A")
+        compile_fn_params(ctx, params)
+
         fn_block := skip_to_type(stmt.children, "block")
         compile_block(ctx, fn_block)
 
@@ -175,6 +206,30 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
         new_error(ctx, stmt, err_buf)
     }
 }
+
+void compile_fn_params(CompilerCtx* ctx, parser.Node* fn_params) {
+    for param_ptr := fn_params; param_ptr != null ; {
+        if param_ptr != fn_params {
+            param_ptr = param_ptr.next
+        }
+
+        var_name := param_ptr.next.value
+
+        param_info := (AssignableInfo*) sys.malloc(AssignableInfo_size)
+        io.asprintf(&param_info.id, "%%%s", var_name)
+        param_info.name_type = "variable"
+        param_info.type = node_to_type(param_ptr.children)
+        param_info.line = param_ptr.line
+        param_info.char_of_line = param_ptr.char_of_line
+
+        param_info_tr := type_repr(param_info.type)
+        io.fprintf(ctx.ir, "%s = alloca %s\0A", param_info.id, param_info_tr)
+        define_assignable(ctx, var_name, param_info)
+        io.fprintf(ctx.ir, "store %s %%.%s.arg, %s* %s\0A", param_info_tr, var_name, param_info_tr, param_info.id)
+        param_ptr = param_ptr.next.next
+    }
+}
+
 
 void compile_block(CompilerCtx* ctx, parser.Node* stmt) {
     push_scope(ctx)
@@ -306,7 +361,21 @@ AssignableInfo* compile_assignable(CompilerCtx* c, parser.Node* curr_node) {
     return (AssignableInfo*) assignable_info
 }
 
-chr* type_repr(Type* type) {
+str type_abbr(Type* type) {
+    sys.assert(type != null, "called 'abbr' on null")
+    sys.assert(type.container != null, "called 'type_abbr' with malformed type, container is null.")
+    if string.strcmp(type.container, "int") == 0 {
+        return "i"
+    } elif string.strcmp(type.container, "void") == 0 {
+        return "v"
+    } elif string.strcmp(type.container, "chr") == 0 {
+        return "c"
+    }
+    return (chr*) null
+}
+
+
+str type_repr(Type* type) {
     sys.assert(type != null, "called 'type_repr' on null")
     sys.assert(type.container != null, "called 'type_repr' with malformed type, container is null.")
 
@@ -314,6 +383,8 @@ chr* type_repr(Type* type) {
         return "i32"
     } elif string.strcmp(type.container, "void") == 0 {
         return "void"
+    } elif string.strcmp(type.container, "chr") == 0 {
+        return "i8"
     } elif string.strcmp(type.container, "function") == 0 {
         chr* buf
         io.asprintf(&buf, "%s()", type_repr(type.of))
@@ -343,13 +414,12 @@ chr* syn_function_name(parser.Node* stmt) {
     return stmt.children.next.value
 }
 parser.Node* skip_to_type(parser.Node* node, str type) {
-    for n := node; string.strcmp(n.type, type) != 0; n = n.next {
+    for n := node; n != null; n = n.next {
+        if string.strcmp(n.type, type) == 0 {
+            return n
+        }
     }
-    return n
-}
-
-Type* parse_type(parser.Node* stmt) {
-    return (Type*) null
+    return (parser.Node*) null
 }
 
 Type* syn_function_type(parser.Node* stmt) {
@@ -359,13 +429,32 @@ Type* syn_function_type(parser.Node* stmt) {
     function_type.container = "function"
     function_type.of = return_value_type
 
+    last_type := return_value_type
+    params := syn_function_params(stmt)
+
+    for param_ptr := params; param_ptr != null ; param_ptr = skip_to_type(param_ptr, "type") {
+        param_type := node_to_type(param_ptr.children)
+        last_type.next = param_type
+        last_type = param_type
+        param_ptr = param_ptr.next.next
+    }
+
     -- start parsing argument types
     return function_type
+}
+
+parser.Node* syn_function_params(parser.Node* stmt) {
+    params := skip_to_type(stmt, "fn_params")
+    if params == null {
+        return (parser.Node*) null
+    }
+    return params.children
 }
 
 Type* node_to_type(parser.Node* stmt) {
     t := (Type*) sys.malloc(Type_size)
     t.of = null
+    t.next = null
     t.container = stmt.value
     return t
 }
