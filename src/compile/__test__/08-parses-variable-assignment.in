@@ -1,4 +1,5 @@
 void f() {
     int t
     t = 3
+    k := t
 }

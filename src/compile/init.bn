@@ -58,6 +58,11 @@ alias CompilerCtx = struct {
     Scope *scopes,
     int counter,
 }
+int new_uid(CompilerCtx* ctx) {
+    uid := ctx.counter
+    ctx.counter = ctx.counter + 1
+    return uid
+}
 
 int CompilerCtx_size = 36
 
@@ -391,9 +396,10 @@ void define_assignable(CompilerCtx* ctx, str name, AssignableInfo* info) {
     last_item.next = newitem
 }
 
-AssignableInfo* find_defined(CompilerCtx* ctx, str assignable_name) {
+AssignableInfo* find_defined(CompilerCtx* ctx, parser.Node* dotted_name) {
     sys.assert(ctx.scopes != null, ":coffee-error: 'find_defined' could not be called if context scopes are null")
 
+    assignable_name := dotted_name.children.value
     for s := ctx.scopes; s != null; s = s.prev {
         for item := s.item; item != null; item = item.next {
             if string.strcmp(item.name, assignable_name) == 0 {
@@ -412,7 +418,7 @@ AssignableInfo* compile_addr(CompilerCtx* c, parser.Node* curr_node) {
     }
 
     -- type + id of addr
-    assignable_name := curr_node.children.children.value
+    assignable_name := curr_node.children
     info := find_defined(c, assignable_name)
     if info == null {
         return (AssignableInfo*) null
@@ -439,7 +445,7 @@ AssignableInfo* compile_addr(CompilerCtx* c, parser.Node* curr_node) {
 }
 
 
-AssignableInfo* compile_assignable(CompilerCtx* c, parser.Node* curr_node) {
+AssignableInfo* compile_assignable(CompilerCtx* ctx, parser.Node* curr_node) {
     assignable_info := (AssignableInfo*) sys.malloc(AssignableInfo_size)
     mono := skip_to_type(curr_node.children, "mono_assignable")
 
@@ -448,8 +454,23 @@ AssignableInfo* compile_assignable(CompilerCtx* c, parser.Node* curr_node) {
         assignable_info.type.of = null
         assignable_info.type.container = "int"
         assignable_info.id = mono.children.value
+    } elif string.strcmp(mono.children.type, "addr_destination") == 0 {
+        dest := skip_to_type(mono.children.children, "destination")
+
+        var_info := find_defined(ctx, dest.children)
+        var_type_repr := type_repr(var_info.type)
+
+        io.asprintf(&assignable_info.id, "%%.tmp%d", new_uid(ctx))
+        assignable_info.type = var_info.type
+
+        io.fprintf(ctx.ir, "%s = load %s, %s* %s\0A", assignable_info.id, var_type_repr, var_type_repr, var_info.id)
+
+    } else {
+        io.printf(":coffee-error: unable to compile assignable of type %s\0A", mono.children.type)
     }
 
+    assignable_info.line = curr_node.line
+    assignable_info.char_of_line = curr_node.char_of_line
     return (AssignableInfo*) assignable_info
 }
 
