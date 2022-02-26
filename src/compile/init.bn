@@ -515,6 +515,8 @@ str type_abbr(Type* type) {
     sys.assert(type.container != null, "called 'type_abbr' with malformed type, container is null.")
     if string.strcmp(type.container, "int") == 0 {
         return "i"
+    } elif string.strcmp(type.container, "bool") == 0 {
+        return "b"
     } elif string.strcmp(type.container, "void") == 0 {
         return "v"
     } elif string.strcmp(type.container, "chr") == 0 {
