@@ -1,0 +1,7 @@
+void f2(int a, int b) {
+}
+
+void f() {
+    int a = 4
+    f2(3, a)
+}

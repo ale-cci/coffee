@@ -296,7 +296,25 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
         -- get function name from destination
 
         info = compile_addr(ctx, stmt.children)
-        io.fprintf(ctx.ir, "call %s %s()\0A", type_repr(info.type), info.id)
+        args := skip_to_type(stmt.children, "fn_args")
+        chr* params_buff = ""
+        chr* tmp
+        if args != null {
+            start := skip_to_type(args.children, "assignable")
+            for pp := start; pp != null; pp = skip_to_type(pp, "assignable") {
+                if pp != start {
+                    io.asprintf(&tmp, "%s, ", params_buff)
+                    chr* tmp_buff = params_buff
+                    params_buff = tmp
+                    tmp = tmp_buff
+                    sys.free(tmp)
+                }
+                a_info = compile_assignable(ctx, pp)
+                io.asprintf(&params_buff, "%s%s %s", params_buff, type_repr(a_info.type), a_info.id)
+                pp = pp.next
+            }
+        }
+        io.fprintf(ctx.ir, "call %s %s(%s)\0A", type_repr(info.type), info.id, params_buff)
         -- get function arguments
     } elif string.strcmp(expr_type, "declaration") == 0 {
         Type* decl_type = (Type*) null
@@ -500,7 +518,14 @@ str type_repr(Type* type) {
         return "i8"
     } elif string.strcmp(type.container, "function") == 0 {
         chr* buf
-        io.asprintf(&buf, "%s()", type_repr(type.of))
+        io.asprintf(&buf, "%s(", type_repr(type.of))
+        for p := type.of.next; p != null; p = p.next {
+            if p != type.of.next {
+                io.asprintf(&buf, "%s,", buf)
+            }
+            io.asprintf(&buf, "%s%s", buf, type_repr(p))
+        }
+        io.asprintf(&buf, "%s)", buf)
         return buf
     }
 
