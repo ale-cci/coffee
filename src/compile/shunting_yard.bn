@@ -23,8 +23,18 @@ SYStack* sy_algorithm(parser.Node* assignable) {
     out_stack := stack_new()
     op_stack := stack_new()
 
+    token_stack := stack_new()
+
+    parser.Node* ptr
+    for ptr = assignable ; ptr != null ; ptr = ptr.next {
+        token_stack = stack_push(token_stack, ptr)
+    }
+
     -- while tokens to be read
-    for ptr := assignable ; ptr != null ; ptr = ptr.next {
+    for ptr = token_stack.n; ptr != null; ptr = token_stack.n {
+        cs := token_stack
+        token_stack = token_stack.prev
+        sys.free((chr*) cs)
         -- assignable -> put it to the output-queue
         if string.strcmp(ptr.type, "mono_assignable") == 0 {
             out_stack = stack_push(out_stack, ptr)

@@ -588,10 +588,10 @@ AssignableInfo* compile_assignable_stack(CompilerCtx* ctx, StackHead* stack) {
     operator := stack.h.n
 
     stack.h = stack.h.prev
-    B := compile_assignable_stack(ctx, stack)
+    A := compile_assignable_stack(ctx, stack)
 
     stack.h = stack.h.prev
-    A := compile_assignable_stack(ctx, stack)
+    B := compile_assignable_stack(ctx, stack)
 
     op_info := (AssignableInfo*) sys.malloc(AssignableInfo_size)
     op_info.type = operator_type(operator)
