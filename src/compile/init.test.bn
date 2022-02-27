@@ -23,6 +23,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/0A-parses-global-variable"))
     testing.run(t, testfile(t, "./compile/__test__/0B-assigns-boolean-values"))
     testing.run(t, testfile(t, "./compile/__test__/0C-assigns-function-calls"))
+    testing.run(t, testfile(t, "./compile/__test__/0D-parses-string"))
 
     testing.cleanup(t)
     return 0
@@ -86,8 +87,9 @@ int testfile(testing.T* t, str filename) {
         return 0
     }
 
-    io.rewind(compiler_ctx.ir)
-    got := ioutil.readall(io.fileno(compiler_ctx.ir))
+    outfile := compiler_ctx.ir
+    io.rewind(outfile)
+    got := ioutil.readall(io.fileno(outfile))
 
     testing.assert_equal_str(t, expect, got)
     return 0

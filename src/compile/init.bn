@@ -45,6 +45,15 @@ alias ScopeItem = struct {
 }
 int ScopeItem_size = 24
 
+alias GlobalName = struct {
+    chr* identifier,
+
+    chr* global_type, -- string, function
+    AssignableInfo* info,
+    GlobalName* next,
+}
+int GlobalName_size = 32
+
 alias Scope = struct {
     ScopeItem* item,
     Scope* prev,
@@ -56,15 +65,17 @@ alias CompilerCtx = struct {
     io.File* ir,
     ErrorList* errors,
     Scope *scopes,
+    GlobalName* globals,
     int counter,
 }
+int CompilerCtx_size = 52
+
 int new_uid(CompilerCtx* ctx) {
     uid := ctx.counter
     ctx.counter = ctx.counter + 1
     return uid
 }
 
-int CompilerCtx_size = 36
 
 
 CompilerCtx* new_context(io.File* fd) {
@@ -74,6 +85,7 @@ CompilerCtx* new_context(io.File* fd) {
     ctx.errors = null
     ctx.counter = 0
     ctx.scopes = null
+    ctx.globals = null
 
     return (CompilerCtx*) ctx
 }
@@ -107,10 +119,37 @@ bool compile(CompilerCtx* ctx, parser.Node* ast) {
         errors.report(err.err)
     }
     pop_scope(ctx)
+
+
+    -- add globals
+    for g := ctx.globals; g != null; g = g.next {
+        compile_global(ctx, g)
+    }
+
     -- TODO: free errors
     return has_errors
 }
 
+str string_to_llvm(chr* text) {
+    chr* buf
+    str_len := string.strlen(text)
+    chr* substr = sys.malloc(str_len)
+    for i := 0; i < str_len -2; i = i + 1 {
+        substr[i] = text[i + 1]
+    }
+    substr[str_len -2] = '\00'
+    io.asprintf(&buf, "c\22%s\5C00\22", substr)
+    sys.free(substr)
+
+    return buf
+}
+
+void compile_global(CompilerCtx* ctx, GlobalName* g) {
+    if string.strcmp(g.global_type, "string") == 0 {
+        repr := string_to_llvm(g.identifier)
+        io.fprintf(ctx.ir, "%s = constant %s %s\0A", g.info.id, type_repr(g.info.type), repr)
+    }
+}
 
 str name_mangle(str original_name, str filename, Type* type) {
     chr* mangled_name
@@ -529,6 +568,19 @@ AssignableInfo* compile_assignable(CompilerCtx* ctx, parser.Node* curr_node) {
         }
     } elif string.strcmp(mono.children.type, "fn_call") == 0 {
         assignable_info = compile_fn_call(ctx, mono.children.children)
+    } elif string.strcmp(mono.children.type, "STRING") == 0 {
+        string_info := define_string(ctx, mono.children.value) -- defines strings for future reuse, plus defines global functions or data structures when used
+        assignable_info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
+        io.asprintf(&assignable_info.id, "%%.tmp%d", new_uid(ctx))
+
+        str_tr := type_repr(string_info.type)
+        io.fprintf(ctx.ir, "%s = getelementptr %s, %s*%s, i32 0, i32 0\0A", assignable_info.id, str_tr, str_tr, string_info.id)
+
+        assignable_info.type = (Type*) sys.malloc(Type_size)
+        assignable_info.type.container = "ptr"
+        assignable_info.type.of = (Type*) sys.malloc(Type_size)
+        assignable_info.type.of.container = "chr"
+        assignable_info.type.of.of = null
     } else {
         io.printf(":coffee-error: unable to compile assignable of type %s\0A", mono.children.type)
         return (AssignableInfo*) null
@@ -554,10 +606,42 @@ str type_abbr(Type* type) {
     return (chr*) null
 }
 
+AssignableInfo* define_string(CompilerCtx* ctx, str text) {
+    info := (AssignableInfo*) sys.malloc(AssignableInfo_size)
+    io.asprintf(&info.id, "@.str%d", new_uid(ctx))
+    info.type = (Type*) sys.malloc(Type_size)
+    info.type.container = "array"
+    info.type.of = (Type*) sys.malloc(Type_size)
+    info.type.of.container = "chr"
+    info.type.of.of = null
+    info.type.of.next = (Type*) sys.malloc(Type_size)
+    info.type.of.next.of = null
+    io.asprintf(&info.type.of.next.container, "%d", string.strlen(text) -2 +1)
+
+    global := (GlobalName*) sys.malloc(GlobalName_size)
+    global.identifier = text
+    global.global_type = "string"
+    global.next = null
+    global.info = info
+    append_global(ctx, global)
+    return info
+}
+
+void append_global(CompilerCtx* ctx, GlobalName* g) {
+    if ctx.globals == null {
+        ctx.globals = g
+    } else {
+        GlobalName* last_global
+        for last_global = ctx.globals; last_global.next != null; last_global = last_global.next {
+        }
+        last_global.next = g
+    }
+}
 
 str type_repr(Type* type) {
     sys.assert(type != null, "called 'type_repr' on null")
     sys.assert(type.container != null, "called 'type_repr' with malformed type, container is null.")
+    chr* buf
 
     if string.strcmp(type.container, "int") == 0 {
         return "i32"
@@ -568,7 +652,6 @@ str type_repr(Type* type) {
     } elif string.strcmp(type.container, "chr") == 0 {
         return "i8"
     } elif string.strcmp(type.container, "function") == 0 {
-        chr* buf
         io.asprintf(&buf, "%s(", type_repr(type.of))
         for p := type.of.next; p != null; p = p.next {
             if p != type.of.next {
@@ -578,6 +661,14 @@ str type_repr(Type* type) {
         }
         io.asprintf(&buf, "%s)", buf)
         return buf
+    } elif string.strcmp(type.container, "ptr") == 0 {
+        io.asprintf(&buf, "%s*", type_repr(type.of))
+        return buf
+    } elif string.strcmp(type.container, "array") == 0 {
+        io.asprintf(&buf, "[%s x %s]", type.of.next.container, type_repr(type.of))
+        return buf
+    } else {
+        io.printf(":coffee-error: 'type_repr' not implemented for type %s\0A", type.container)
     }
 
     return (chr*) null
