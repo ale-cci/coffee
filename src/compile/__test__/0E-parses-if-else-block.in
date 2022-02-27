@@ -1,4 +1,6 @@
 void f() {
     if false {
+    } elif true {
+    } else {
     }
 }

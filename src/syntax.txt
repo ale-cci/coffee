@@ -36,9 +36,10 @@ structdef: ( "struct" "{" NL ) ( ( type WORD "," NL ) | ( NL ) )* ( "}" )
 
 type: ( "void" | "int" | "bool" | "chr" | "str" | structdef | dotted_name | "." "." "." ) ("*")*
 
-if_block: "if" assignable block (elif_block)* (else_block)? (NL)
 
-elif_block: "elif" assignable block
+if_block: "if" assignable block (elif_block)? (NL)
+
+elif_block: ("elif" assignable block (elif_block)? | else_block)
 
 else_block: "else" block
 
