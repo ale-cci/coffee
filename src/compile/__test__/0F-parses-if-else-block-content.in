@@ -1,0 +1,7 @@
+void f() {
+    if true {
+        int t
+    } else {
+        int t
+    }
+}

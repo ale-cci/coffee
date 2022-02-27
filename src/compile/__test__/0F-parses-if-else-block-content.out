@@ -1,0 +1,11 @@
+define void @f.v() {
+br i1 1, label %.if.true.0, label %.if.false.0
+.if.true.0:
+%t = alloca i32
+br label %.if.end.0
+.if.false.0:
+%t = alloca i32
+br label %.if.end.0
+.if.end.0:
+ret void
+}

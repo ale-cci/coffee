@@ -462,13 +462,16 @@ void compile_if_block(CompilerCtx* ctx, parser.Node* stmt) {
     if_id := new_uid(ctx)
     io.fprintf(ctx.ir, "br %s %s, label %%.if.true.%d, label %%.if.false.%d\0A", type_repr(a_info.type), a_info.id, if_id, if_id)
     io.fprintf(ctx.ir, ".if.true.%d:\0A", if_id)
+    block := skip_to_type(stmt.children, "block")
+    compile_block(ctx, block)
     io.fprintf(ctx.ir, "br label %%.if.end.%d\0A", if_id)
     io.fprintf(ctx.ir, ".if.false.%d:\0A", if_id)
 
     else_block := skip_to_type(stmt.children, "elif_block")
     if else_block != null {
         if string.strcmp(else_block.children.type, "else_block") == 0 {
-            -- normally compile else block
+            block = skip_to_type(else_block.children.children, "block")
+            compile_block(ctx, block)
         } else {
             compile_if_block(ctx, else_block)
         }

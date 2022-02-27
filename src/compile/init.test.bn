@@ -25,6 +25,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/0C-assigns-function-calls"))
     testing.run(t, testfile(t, "./compile/__test__/0D-parses-string"))
     testing.run(t, testfile(t, "./compile/__test__/0E-parses-if-else-block"))
+    testing.run(t, testfile(t, "./compile/__test__/0F-parses-if-else-block-content"))
 
     testing.cleanup(t)
     return 0
