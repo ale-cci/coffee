@@ -446,6 +446,18 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
         a_info = compile_assignable(ctx, assignable)
 
         io.fprintf(ctx.ir, "store %s %s, %s* %s\0A", type_repr(a_info.type), a_info.id, type_repr(dest.type), dest.id)
+    } elif string.strcmp(expr_type, "if_block") == 0 {
+        if_id := new_uid(ctx)
+
+        assignable = skip_to_type(stmt.children, "assignable")
+        a_info = compile_assignable(ctx, assignable)
+
+        io.fprintf(ctx.ir, "br %s %s, label %%.if.true.%d, label %%.if.false.%d\0A", type_repr(a_info.type), a_info.id, if_id, if_id)
+        io.fprintf(ctx.ir, ".if.true.%d:\0A", if_id)
+        io.fprintf(ctx.ir, "br label %%.if.end.%d\0A", if_id)
+        io.fprintf(ctx.ir, ".if.false.%d:\0A", if_id)
+        io.fprintf(ctx.ir, "br label %%.if.end.%d\0A", if_id)
+        io.fprintf(ctx.ir, ".if.end.%d:\0A", if_id)
     } else {
         io.printf("compiling expression: %s\0A", expr_type)
     }
