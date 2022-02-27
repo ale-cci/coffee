@@ -1,0 +1,77 @@
+-- implementation of the Shunting-yard_algorithm
+-- https://en.wikipedia.org/wiki/Shunting-yard_algorithm#The_algorithm_in_detail
+import "../std/sys" as sys
+import "../std/io" as io
+import "../parser" as parser
+import "../std/string" as string
+
+-- implementation of the shunting yard alogirhtm
+alias SYStack = struct {
+    parser.Node* n,
+    SYStack* prev,
+}
+int SYStack_size = 16
+
+SYStack* stack_new() {
+    SYStack* s = (SYStack*) sys.malloc(SYStack_size)
+    s.n = null
+    s.prev = null
+    return s
+}
+
+SYStack* sy_algorithm(parser.Node* assignable) {
+    out_stack := stack_new()
+    op_stack := stack_new()
+
+    -- while tokens to be read
+    for ptr := assignable ; ptr != null ; ptr = ptr.next {
+        -- assignable -> put it to the output-queue
+        if string.strcmp(ptr.type, "mono_assignable") == 0 {
+            out_stack = stack_push(out_stack, ptr)
+        } elif string.strcmp(ptr.type, "operator") == 0 {
+            quit := false
+            for top := op_stack; quit == false; {
+                if top.n == null {
+                    -- reached end of the stack
+                    quit = true
+                } elif op_precedence(top.n) > op_precedence(ptr) {
+                    -- pop operator from the stack
+                } else {
+                    quit = true
+                }
+            }
+            -- push operator in operator stack
+            op_stack = stack_push(op_stack, ptr)
+        } else {
+            io.printf(":coffee-error: node of type %s could not be parsed in sy_algorithm\0A", ptr.type)
+        }
+        -- operator
+        -- lparen?
+        -- rparen?
+    }
+
+    for ; op_stack.n != null ; {
+        -- pop operator on the stack to the output queue
+        node := op_stack.n
+        s := op_stack
+        op_stack = op_stack.prev
+        sys.free((chr*) s)
+
+        out_stack = stack_push(out_stack, node)
+    }
+
+    return out_stack
+}
+
+SYStack* stack_push(SYStack* curr_stack, parser.Node* node) {
+    SYStack* s = (SYStack*) sys.malloc(SYStack_size)
+    s.n = node
+    s.prev = curr_stack
+    return s
+}
+
+int op_precedence(parser.Node* n) {
+    -- https://en.cppreference.com/w/c/language/operator_precedence
+    return 4
+}
+

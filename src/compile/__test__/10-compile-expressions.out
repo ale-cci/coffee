@@ -1,0 +1,6 @@
+define void @f.v() {
+%.tmp0 = add i32 3, 4
+%t = alloca i32
+store i32 %.tmp0, i32* %t
+ret void
+}

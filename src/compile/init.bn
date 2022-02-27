@@ -5,6 +5,7 @@ import "../std/string" as string
 
 import "../parser.debug" as parser_debug
 import "../errors" as errors
+import "./shunting_yard" as sy
 
 alias ErrorList = struct {
     errors.Error* err,
@@ -565,9 +566,58 @@ AssignableInfo* compile_addr(CompilerCtx* c, parser.Node* curr_node) {
 }
 
 
+alias StackHead = struct {
+    sy.SYStack* h,
+}
+int StackHead_size = 8
+
 AssignableInfo* compile_assignable(CompilerCtx* ctx, parser.Node* curr_node) {
+    assignable_start := skip_to_type(curr_node.children, "mono_assignable")
+    operator_stack := sy.sy_algorithm(assignable_start)
+
+    stack := (StackHead*) sys.malloc(StackHead_size)
+    stack.h = operator_stack
+
+    return compile_assignable_stack(ctx, stack)
+}
+
+AssignableInfo* compile_assignable_stack(CompilerCtx* ctx, StackHead* stack) {
+    if string.strcmp(stack.h.n.type, "mono_assignable") == 0 {
+        return compile_mono_assignable(ctx, stack.h.n)
+    }
+    operator := stack.h.n
+
+    stack.h = stack.h.prev
+    B := compile_assignable_stack(ctx, stack)
+
+    stack.h = stack.h.prev
+    A := compile_assignable_stack(ctx, stack)
+
+    op_info := (AssignableInfo*) sys.malloc(AssignableInfo_size)
+    op_info.type = operator_type(operator)
+
+    op_id := new_uid(ctx)
+    io.asprintf(&op_info.id, "%%.tmp%d", op_id)
+    io.fprintf(ctx.ir, "%s = %s %s %s, %s\0A", op_info.id, operator_op(operator), type_repr(A.type), A.id, B.id)
+
+    return op_info
+}
+
+str operator_op(parser.Node* op) {
+    return "add"
+}
+
+Type* operator_type(parser.Node* op) {
+    type := (Type*) sys.malloc(Type_size)
+    type.container = "int"
+    type.of = null
+    type.next = null
+    return type
+}
+
+AssignableInfo* compile_mono_assignable(CompilerCtx* ctx, parser.Node* curr_node) {
     AssignableInfo* assignable_info = (AssignableInfo*) null
-    mono := skip_to_type(curr_node.children, "mono_assignable")
+    mono := curr_node
 
     if string.strcmp(mono.children.type, "NUMBER") == 0 {
         assignable_info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
