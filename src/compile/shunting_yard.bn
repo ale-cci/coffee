@@ -40,12 +40,16 @@ SYStack* sy_algorithm(parser.Node* assignable) {
             out_stack = stack_push(out_stack, ptr)
         } elif string.strcmp(ptr.type, "operator") == 0 {
             quit := false
-            for top := op_stack; quit == false; {
-                if top.n == null {
+            for ; quit == false; {
+                if op_stack.n == null {
                     -- reached end of the stack
                     quit = true
-                } elif op_precedence(top.n) > op_precedence(ptr) {
+                } elif op_precedence(op_stack.n) < op_precedence(ptr) {
                     -- pop operator from the stack
+                    top := op_stack
+                    op_stack = op_stack.prev
+                    out_stack = stack_push(out_stack, top.n)
+                    sys.free((chr*) top)
                 } else {
                     quit = true
                 }
@@ -55,9 +59,6 @@ SYStack* sy_algorithm(parser.Node* assignable) {
         } else {
             io.printf(":coffee-error: node of type %s could not be parsed in sy_algorithm\0A", ptr.type)
         }
-        -- operator
-        -- lparen?
-        -- rparen?
     }
 
     for ; op_stack.n != null ; {
@@ -82,6 +83,15 @@ SYStack* stack_push(SYStack* curr_stack, parser.Node* node) {
 
 int op_precedence(parser.Node* n) {
     -- https://en.cppreference.com/w/c/language/operator_precedence
+    op := n.children
+    if string.strcmp(op.value, "+") == 0 | string.strcmp(op.value, "-") == 0 {
+        return 4
+    } elif string.strcmp(op.value, "*") == 0 | string.strcmp(op.value, "/") == 0 {
+        return 3
+    } elif string.strcmp(op.value, "==") == 0 {
+        return 7
+    }
+    io.printf(":coffee-error: priority not defined for operator with value: %s\0A", op.value)
     return 4
 }
 

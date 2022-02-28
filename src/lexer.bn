@@ -182,12 +182,19 @@ Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
             -- TODO: some operators are composed by two or more characters
             -- ex. != or ==
 
-            buf = sys.malloc(2)
-            buf[0] = c
-            buf[1] = '\00'
+            prev_c := c
 
-            push_token(ctx, "OPERATOR", buf)
             c = peeker.read(p)
+
+            if prev_c == '=' & c == '=' {
+                io.asprintf(&buf, "==")
+                c = peeker.read(p)
+            } else {
+                buf = sys.malloc(2)
+                buf[0] = prev_c
+                buf[1] = '\00'
+            }
+            push_token(ctx, "OPERATOR", buf)
         }
     }
 

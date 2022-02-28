@@ -585,7 +585,7 @@ AssignableInfo* compile_assignable_stack(CompilerCtx* ctx, StackHead* stack) {
     if string.strcmp(stack.h.n.type, "mono_assignable") == 0 {
         return compile_mono_assignable(ctx, stack.h.n)
     }
-    operator := stack.h.n
+    operator := stack.h.n.children
 
     stack.h = stack.h.prev
     A := compile_assignable_stack(ctx, stack)
@@ -604,14 +604,35 @@ AssignableInfo* compile_assignable_stack(CompilerCtx* ctx, StackHead* stack) {
 }
 
 str operator_op(parser.Node* op) {
+    if op == null {
+        io.printf(":cofee-error: called 'operator_op' with null\0A")
+    }
+    if string.strcmp(op.value, "+") == 0 {
+        return "add"
+    } elif string.strcmp(op.value, "-") == 0 {
+        return "sub"
+    } elif string.strcmp(op.value, "*") == 0 {
+        return "mul"
+    } elif string.strcmp(op.value, "/") == 0 {
+        return "sdiv"
+    } elif string.strcmp(op.value, "==") == 0 {
+        return "icmp eq"
+    } else {
+
+        io.printf(":coffee-error: operator '%s' not implemented\0A", op.value)
+    }
     return "add"
 }
 
 Type* operator_type(parser.Node* op) {
     type := (Type*) sys.malloc(Type_size)
-    type.container = "int"
     type.of = null
     type.next = null
+    if string.strcmp(op.value, "==") == 0 {
+        type.container = "bool"
+    } else {
+        type.container = "int"
+    }
     return type
 }
 
