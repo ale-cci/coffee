@@ -16,6 +16,9 @@ int ErrorList_size = 16
 alias Type = struct {
     chr* container,
 
+
+    chr* info, -- extra info attached to this type entry (for struct field names)
+
     -- NOTE: each "basic" type is not allowed to have a 'next'
     -- value
 
@@ -25,7 +28,7 @@ alias Type = struct {
     -- Type* of,
     -- chr* container,
 }
-int Type_size = 24
+int Type_size = 32
 
 alias AssignableInfo = struct {
     -- uniquely identifies assignable
@@ -202,6 +205,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
         -- copy defined function return type
         return_type = (Type*) sys.malloc(Type_size)
         return_type.next = null
+        return_type.info = null
         return_type.container = info.type.of.container
         return_type.of = info.type.of.of
 
@@ -230,6 +234,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
 
         -- copy defined function return type
         return_type = (Type*) sys.malloc(Type_size)
+        return_type.info = null
         return_type.next = null
         return_type.container = info.type.of.container
         return_type.of = info.type.of.of
@@ -517,6 +522,7 @@ void define_assignable(CompilerCtx* ctx, str name, AssignableInfo* info) {
     last_item.next = newitem
 }
 
+-- returns the 'base' information of the dotted name
 AssignableInfo* find_defined(CompilerCtx* ctx, parser.Node* dotted_name) {
     sys.assert(ctx.scopes != null, ":coffee-error: 'find_defined' could not be called if context scopes are null")
 
@@ -531,6 +537,66 @@ AssignableInfo* find_defined(CompilerCtx* ctx, parser.Node* dotted_name) {
     return (AssignableInfo*) null
 }
 
+AssignableInfo* get_dotted_name(CompilerCtx* c, parser.Node* dot_name_ptr, AssignableInfo* info) {
+    chr* err_msg
+
+    if string.strcmp(info.name_type, "function") == 0 {
+        -- got a function, cannot read dot names anymore
+        if dot_name_ptr.next != null {
+            io.asprintf(&err_msg, "cannot get attribute %s from function type %s", dot_name_ptr.next.next.value, dot_name_ptr.value)
+            new_error(c, dot_name_ptr, err_msg)
+        }
+        return info
+    } elif string.strcmp(info.name_type, "variable") == 0 & dot_name_ptr.next != null{
+        if string.strcmp(info.type.container, "struct") != 0 {
+            io.asprintf(&err_msg, "cannot get attribute %s from non struct type %s", dot_name_ptr.next.next.value, dot_name_ptr.value)
+            new_error(c, dot_name_ptr, err_msg)
+        }
+
+        field_name := dot_name_ptr.next.next.value
+
+        -- struct
+        quit := false
+        field_id := 0
+        found_field := (Type*) null
+
+        for field := info.type.of; quit == false; field = field.next {
+            if field == null {
+                quit = true
+            } elif string.strcmp(field.info, field_name) == 0 {
+                quit = true
+                found_field = field
+            } else {
+                field_id = field_id + 1
+            }
+        }
+
+        if found_field == null {
+            io.asprintf(&err_msg, "field %s not defined in struct %s", field_name, dot_name_ptr.value)
+            new_error(c, dot_name_ptr, err_msg)
+            return (AssignableInfo*) null
+        }
+
+        new_info := (AssignableInfo*) sys.malloc(AssignableInfo_size)
+        new_info.type = found_field
+        io.asprintf(&new_info.id, "%%.tmp%d", new_uid(c))
+        new_info.name_type = "variable"
+        new_info.line = dot_name_ptr.line
+        new_info.char_of_line = dot_name_ptr.char_of_line
+
+        info_tr := type_repr(info.type)
+        io.fprintf(c.ir, "%s = getelementptr %s, %s* %s, i32 0, i32 %d\0A", new_info.id, info_tr, info_tr, info.id, field_id)
+
+        return get_dotted_name(c, dot_name_ptr.next.next, new_info)
+
+    } elif string.strcmp(info.name_type, "variable") == 0 {
+        return info
+    }
+
+    io.printf(":coffee-error: `get_dotted_name` does not handle type: %s\0A", info.name_type)
+    return (AssignableInfo*) null
+}
+
 -- returns address for node
 AssignableInfo* compile_addr(CompilerCtx* c, parser.Node* curr_node) {
     if string.strcmp(curr_node.type, "destination") != 0 {
@@ -542,14 +608,33 @@ AssignableInfo* compile_addr(CompilerCtx* c, parser.Node* curr_node) {
     assignable_name := curr_node.children
     info := find_defined(c, assignable_name)
     if info == null {
+        -- error! name is not defined
+        chr* err_msg
+        io.asprintf(&err_msg, "name %s is not defined\0A", assignable_name.value)
+        new_error(c, curr_node, err_msg)
         return (AssignableInfo*) null
     }
 
-    if string.strcmp(info.name_type, "function") == 0 {
-        return info
-    } elif string.strcmp(info.name_type, "variable") == 0 {
-        return info
-    }
+    -- TODO: given base
+    base := get_dotted_name(c, assignable_name.children, info)
+    return base
+--     if string.strcmp(info.name_type, "function") == 0 {
+--         return info
+--     } elif string.strcmp(info.name_type, "variable") == 0 {
+--         -- a dotted name could contain a function, just a variable
+--         -- or a struct
+--         for base := curr_node.children.children; base.next != null; {
+--             -- base is a dot
+--         }
+--
+--         if base.next != null {
+--             if string.strcmp(info.type.container, "struct") == 0 {
+--                 io.printf("Accessing value %s of struct")
+--                     io.printf("info is: %s\0A", info.type.container)
+--             }
+--         }
+--         return info
+--     }
 
     -- info := (AssignableInfo*) sys.malloc(AssignableInfo_size)
     -- io.asprintf(&info.id, "@%s", fn_name)
@@ -562,7 +647,7 @@ AssignableInfo* compile_addr(CompilerCtx* c, parser.Node* curr_node) {
 
     -- io.printf("Retrieving addr of: %s\0A", curr_node.type)
     -- io.printf("function called: %s\0A", curr_node.children.children.value)
-    return (AssignableInfo*) null
+    -- return (AssignableInfo*) null
 }
 
 
@@ -626,6 +711,7 @@ str operator_op(parser.Node* op) {
 
 Type* operator_type(parser.Node* op) {
     type := (Type*) sys.malloc(Type_size)
+    type.info = null
     type.of = null
     type.next = null
     if string.strcmp(op.value, "==") == 0 {
@@ -644,6 +730,7 @@ AssignableInfo* compile_mono_assignable(CompilerCtx* ctx, parser.Node* curr_node
         assignable_info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
         assignable_info.type = (Type*) sys.malloc(Type_size)
         assignable_info.type.of = null
+        assignable_info.type.info = null
         assignable_info.type.container = "int"
         assignable_info.id = mono.children.value
     } elif string.strcmp(mono.children.type, "addr_destination") == 0 {
@@ -661,6 +748,7 @@ AssignableInfo* compile_mono_assignable(CompilerCtx* ctx, parser.Node* curr_node
     } elif string.strcmp(mono.children.type, "boolean") == 0 {
         assignable_info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
         assignable_info.type = (Type*) sys.malloc(Type_size)
+        assignable_info.type.info = null
         assignable_info.type.of = null
         assignable_info.type.container = "bool"
         if string.strcmp(mono.children.children.value, "false") == 0 {
@@ -679,8 +767,10 @@ AssignableInfo* compile_mono_assignable(CompilerCtx* ctx, parser.Node* curr_node
         io.fprintf(ctx.ir, "%s = getelementptr %s, %s*%s, i32 0, i32 0\0A", assignable_info.id, str_tr, str_tr, string_info.id)
 
         assignable_info.type = (Type*) sys.malloc(Type_size)
+        assignable_info.type.info = null
         assignable_info.type.container = "ptr"
         assignable_info.type.of = (Type*) sys.malloc(Type_size)
+        assignable_info.type.of.info = null
         assignable_info.type.of.container = "chr"
         assignable_info.type.of.of = null
     } else {
@@ -712,11 +802,14 @@ AssignableInfo* define_string(CompilerCtx* ctx, str text) {
     info := (AssignableInfo*) sys.malloc(AssignableInfo_size)
     io.asprintf(&info.id, "@.str%d", new_uid(ctx))
     info.type = (Type*) sys.malloc(Type_size)
+    info.type.info = null
     info.type.container = "array"
     info.type.of = (Type*) sys.malloc(Type_size)
+    info.type.of.info = null
     info.type.of.container = "chr"
     info.type.of.of = null
     info.type.of.next = (Type*) sys.malloc(Type_size)
+    info.type.of.next.info = null
     info.type.of.next.of = null
     io.asprintf(&info.type.of.next.container, "%d", string.strlen(text) -2 +1)
 
@@ -766,6 +859,17 @@ str type_repr(Type* type) {
     } elif string.strcmp(type.container, "ptr") == 0 {
         io.asprintf(&buf, "%s*", type_repr(type.of))
         return buf
+    } elif string.strcmp(type.container, "struct") == 0 {
+        -- io.asprintf(&buf, "{%s}", type_repr(type.of)
+        io.asprintf(&buf, "{")
+        for t := type.of; t != null; t = t.next {
+            if t != type.of {
+                io.asprintf(&buf, "%s,", buf)
+            }
+            io.asprintf(&buf, "%s%s", buf, type_repr(t))
+        }
+        io.asprintf(&buf, "%s}", buf)
+        return buf
     } elif string.strcmp(type.container, "array") == 0 {
         io.asprintf(&buf, "[%s x %s]", type.of.next.container, type_repr(type.of))
         return buf
@@ -807,6 +911,7 @@ parser.Node* skip_to_type(parser.Node* node, str type) {
 
 Type* syn_function_type(parser.Node* stmt) {
     function_type := (Type*) sys.malloc(Type_size)
+    function_type.info = null
 
     return_value_type := node_to_type(stmt.children)
     function_type.container = "function"
@@ -838,6 +943,25 @@ Type* node_to_type(parser.Node* stmt) {
     t := (Type*) sys.malloc(Type_size)
     t.of = null
     t.next = null
-    t.container = stmt.value
+    if string.strcmp(stmt.type, "structdef") == 0 {
+        t.container = "struct"
+        t.info = null
+
+        curr_type := skip_to_type(stmt.children, "type")
+        if curr_type != null {
+            t.of = node_to_type(curr_type.children)
+            t.of.info = curr_type.next.value
+
+            curr_t := t.of
+            for curr_type = skip_to_type(curr_type.next, "type"); curr_type != null; curr_type = skip_to_type(curr_type.next, "type") {
+                curr_t.next = node_to_type(curr_type.children)
+                curr_t.next.info = curr_type.next.value
+                curr_t = curr_t.next
+            }
+        }
+        -- parse struct fields
+    } else {
+        t.container = stmt.value
+    }
     return t
 }

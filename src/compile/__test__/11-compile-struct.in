@@ -1,0 +1,7 @@
+void f() {
+    struct {
+        int a,
+        int b,
+    } t
+    t.b = 3
+}

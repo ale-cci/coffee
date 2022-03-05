@@ -27,6 +27,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/0E-parses-if-else-block"))
     testing.run(t, testfile(t, "./compile/__test__/0F-parses-if-else-block-content"))
     testing.run(t, testfile(t, "./compile/__test__/10-compile-expressions"))
+    testing.run(t, testfile(t, "./compile/__test__/11-compile-struct"))
 
     testing.cleanup(t)
     return 0
