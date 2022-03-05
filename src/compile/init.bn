@@ -618,36 +618,6 @@ AssignableInfo* compile_addr(CompilerCtx* c, parser.Node* curr_node) {
     -- TODO: given base
     base := get_dotted_name(c, assignable_name.children, info)
     return base
---     if string.strcmp(info.name_type, "function") == 0 {
---         return info
---     } elif string.strcmp(info.name_type, "variable") == 0 {
---         -- a dotted name could contain a function, just a variable
---         -- or a struct
---         for base := curr_node.children.children; base.next != null; {
---             -- base is a dot
---         }
---
---         if base.next != null {
---             if string.strcmp(info.type.container, "struct") == 0 {
---                 io.printf("Accessing value %s of struct")
---                     io.printf("info is: %s\0A", info.type.container)
---             }
---         }
---         return info
---     }
-
-    -- info := (AssignableInfo*) sys.malloc(AssignableInfo_size)
-    -- io.asprintf(&info.id, "@%s", fn_name)
-
-    -- build type
-
-
-    -- type
-
-
-    -- io.printf("Retrieving addr of: %s\0A", curr_node.type)
-    -- io.printf("function called: %s\0A", curr_node.children.children.value)
-    -- return (AssignableInfo*) null
 }
 
 
@@ -742,8 +712,23 @@ AssignableInfo* compile_mono_assignable(CompilerCtx* ctx, parser.Node* curr_node
 
         io.asprintf(&assignable_info.id, "%%.tmp%d", new_uid(ctx))
         assignable_info.type = var_info.type
+        for ptr := mono.children.children; ptr != dest; ptr = ptr.next {
+            new_type := (Type*) sys.malloc(Type_size)
+            new_type.of = assignable_info.type
+            new_type.container = "ptr"
+            new_type.next = null
+            new_type.info = null
 
-        io.fprintf(ctx.ir, "%s = load %s, %s* %s\0A", assignable_info.id, var_type_repr, var_type_repr, var_info.id)
+            assignable_info.type = new_type
+        }
+
+        if mono.children.children != dest {
+            -- it's a pointer, load it's address
+            io.fprintf(ctx.ir, "%s = getelementptr %s, %s* %s, i32 0\0A", assignable_info.id, var_type_repr, var_type_repr, var_info.id)
+        } else {
+            -- it's a variable, load it's content
+            io.fprintf(ctx.ir, "%s = load %s, %s* %s\0A", assignable_info.id, var_type_repr, var_type_repr, var_info.id)
+        }
 
     } elif string.strcmp(mono.children.type, "boolean") == 0 {
         assignable_info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
