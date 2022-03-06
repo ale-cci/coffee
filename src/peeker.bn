@@ -10,10 +10,10 @@ alias PeekerInfo = struct {
     int char_of_line,
     chr last_chr,
     bool eof,
+    chr* filename,
 }
 
--- size of peekerinfo 4 * 32
-int PeekerInfo_size = 34
+int PeekerInfo_size = 32
 chr EOF = 0
 
 
@@ -54,5 +54,6 @@ PeekerInfo* new(int fd) {
     p.fd = fd
     p.last_chr = '\00'
     p.eof = false
+    p.filename = ""
     return p
 }

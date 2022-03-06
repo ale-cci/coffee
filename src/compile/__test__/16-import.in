@@ -1,0 +1,5 @@
+import "./test-imports" as imp
+
+void main() {
+    imp.main()
+}

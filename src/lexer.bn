@@ -67,6 +67,7 @@ Token* push_token(ParseCtx* c, str type, value) {
 --    [+-/*=[({])}|] -> OPERATOR or COMMENT
 Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
     ParseCtx* ctx = (ParseCtx*) sys.malloc(ParseCtx_size)
+    ctx.filename = p.filename
     ctx.root = null
     ctx.curr_token = null
 

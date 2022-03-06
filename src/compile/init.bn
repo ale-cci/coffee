@@ -2,10 +2,13 @@ import "../std/sys" as sys
 import "../std/io" as io
 import "../parser" as parser
 import "../std/string" as string
+import "../peeker" as peeker
+import "../lexer" as lexer
 
 import "../parser.debug" as parser_debug
 import "../errors" as errors
 import "./shunting_yard" as sy
+
 
 alias ErrorList = struct {
     errors.Error* err,
@@ -52,27 +55,50 @@ int ScopeItem_size = 24
 alias GlobalName = struct {
     chr* identifier,
 
-    chr* global_type, -- string, function, typealias
+    chr* global_type, -- string, typealias, module
     AssignableInfo* info,
     GlobalName* next,
 }
 int GlobalName_size = 32
 
 alias Scope = struct {
+    chr* filename,
     ScopeItem* item,
     Scope* prev,
 }
-int Scope_size = 16
+int Scope_size = 24
+
+alias ModuleLookup = struct {
+    chr* abspath,
+    chr* prefix,
+    ModuleLookup* next,
+    Scope* scopes,
+}
+int ModuleLookup_size = 32
+
 
 alias CompilerCtx = struct {
     parser.Node* root,
     io.File* ir,
     ErrorList* errors,
-    Scope *scopes,
     GlobalName* globals,
     int counter,
+    ModuleLookup* modules,
+    chr* current_module,
 }
-int CompilerCtx_size = 52
+int CompilerCtx_size = 60
+
+ModuleLookup* get_module(CompilerCtx* ctx, str filename) {
+    for m := ctx.modules; m != null; m = m.next {
+        if string.strcmp(m.abspath, filename) == 0 {
+            return m
+        }
+    }
+    return (ModuleLookup*) null
+}
+ModuleLookup* get_current_module(CompilerCtx* ctx) {
+    return get_module(ctx, ctx.current_module)
+}
 
 int new_uid(CompilerCtx* ctx) {
     uid := ctx.counter
@@ -80,31 +106,55 @@ int new_uid(CompilerCtx* ctx) {
     return uid
 }
 
-
-
-CompilerCtx* new_context(io.File* fd) {
+CompilerCtx* new_context(io.File* fd, str filename) {
     CompilerCtx* ctx = (CompilerCtx*) sys.malloc(CompilerCtx_size)
     ctx.ir = fd
     ctx.root = (parser.Node*) null
     ctx.errors = null
     ctx.counter = 0
-    ctx.scopes = null
     ctx.globals = null
+    ctx.current_module = filename
+
+    ctx.modules = (ModuleLookup*) sys.malloc(ModuleLookup_size)
+    ctx.modules.abspath = filename -- TODO: add initial filename here
+    ctx.modules.scopes = null
+    ctx.modules.prefix = ""
+    ctx.modules.next = null
 
     return (CompilerCtx*) ctx
 }
 
 void push_scope(CompilerCtx* ctx) {
     s := (Scope*) sys.malloc(Scope_size)
-    s.prev = ctx.scopes
+
+    m := get_current_module(ctx)
+    s.prev = m.scopes
     s.item = null
-    ctx.scopes = s
+    m.scopes = s
 }
 void pop_scope(CompilerCtx* ctx) {
     -- TODO: free this scope -> s := ctx.scopes
-    sys.assert(ctx.scopes != null, ":coffee-error: 'pop_scope' called when ctx.scopes is null")
-    ctx.scopes = ctx.scopes.prev
+    m := get_current_module(ctx)
+    sys.assert(m.scopes != null, ":coffee-error: 'pop_scope' called when module.scopes is null")
+    m.scopes = m.scopes.prev
 }
+
+bool compile_file(CompilerCtx* ctx, str filepath) {
+    grammar_file := io.fopen("./syntax.txt", "r")
+    grammar_ctx := parser.new_context(grammar_file)
+    grammar := parser.parse_grammar(grammar_ctx)
+    sys.free((chr*) grammar_ctx)
+
+    int input_fd = io.open(filepath, io.O_RDONLY)
+
+    p := peeker.new(input_fd)
+    p.filename = filepath
+
+    tokens := lexer.tokenize(p, false)
+    ast := parser.ast(grammar, "start", tokens)
+    return compile(ctx, ast.node)
+}
+
 
 bool compile(CompilerCtx* ctx, parser.Node* ast) {
     if string.strcmp(ast.type, "start") != 0 {
@@ -117,12 +167,11 @@ bool compile(CompilerCtx* ctx, parser.Node* ast) {
     for s := ast.children; s != null; s = s.next {
         compile_statement(ctx, s.children)
     }
-
     has_errors := ctx.errors != null
     for err := ctx.errors; err != null; err = err.next {
         errors.report(err.err)
     }
-    pop_scope(ctx)
+    -- pop_scope(ctx)
 
 
     -- add globals
@@ -155,14 +204,22 @@ void compile_global(CompilerCtx* ctx, GlobalName* g) {
     }
 }
 
-str name_mangle(str original_name, str filename, Type* type) {
+
+chr* get_mod_prefix(CompilerCtx* ctx, str module_abspath) {
+    m := get_current_module(ctx)
+    return m.prefix
+}
+
+str name_mangle(CompilerCtx* ctx, parser.Node* fn, str original_name, Type* type) {
     chr* mangled_name
 
-    io.asprintf(&mangled_name, "@%s", original_name)
+    chr* prefix = get_mod_prefix(ctx, fn.filename)
+
+    io.asprintf(&mangled_name, "@%s%s", prefix, original_name)
     if string.strcmp(type.container, "function") == 0 {
         -- function  name is the concatenation of module, original name
         -- return value and parameters type
-        if string.strcmp(original_name, "main") != 0 {
+        if string.strcmp(mangled_name, "@main") != 0 {
             chr* tmp_buff
             chr* swap_var
             for tp := type.of; tp != null; tp = tp.next {
@@ -182,6 +239,7 @@ str name_mangle(str original_name, str filename, Type* type) {
 void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
     AssignableInfo* info
     Type* return_type
+    chr* err_buf
 
     if string.strcmp(stmt.type, "NL") == 0 {
         return
@@ -245,7 +303,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
         info.type = syn_function_type(ctx, stmt.children)
 
         name := syn_function_name(stmt)
-        info.id = name_mangle(name, "", info.type)
+        info.id = name_mangle(ctx, stmt, name, info.type)
         info.line = stmt.line
         info.char_of_line = stmt.char_of_line
         define_assignable(ctx, name, info)
@@ -304,11 +362,62 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
 
         io.fprintf(ctx.ir, "}\0A")
 
+    } elif string.strcmp(stmt.type, "import") == 0 {
+        -- 1. get file cwd
+        -- check if module is already imported in module lookup
+        mod_name := stmt.children.next.value
+        -- mod_abspath := sys.malloc(4096)
+        mod_abspath := stmt.filename
+
+        cwd := sys.malloc(4096)
+        cwd = sys.getcwd(cwd, 4096)
+
+        mod_abspath = sys.dirname(mod_abspath)
+        io.asprintf(&mod_abspath, "%s/%s/", cwd, mod_abspath)
+
+        offset := string.strlen(mod_abspath)
+
+        for i := 1; mod_name[i] != '\22'; i = i + 1 {
+            mod_abspath[offset + i-1] = mod_name[i]
+        }
+        last_idx := offset + string.strlen(mod_name) - 2
+        mod_abspath[last_idx + 0] = '.'
+        mod_abspath[last_idx + 1] = 'b'
+        mod_abspath[last_idx + 2] = 'n'
+        mod_abspath[last_idx + 3] = '\00'
+
+        mod_abspath = sys.realpath(mod_abspath, sys.malloc(4096))
+        if mod_abspath == null {
+            io.asprintf(&err_buf, "'%s' file not found.", mod_name)
+            return
+        }
+
+        -- define module lookup if not found
+        -- found := false
+        -- for m := ctx.modules; m.next != null & found == false; m = m.next {
+        --     found = string.strcmp()
+        -- }
+
+        mod := (ModuleLookup*) sys.malloc(ModuleLookup_size)
+        mod.abspath = mod_abspath
+        mod.next = null
+        io.asprintf(&mod.prefix, "%d.", new_uid(ctx))
+
+        for m := ctx.modules; m.next != null; m = m.next {
+        }
+        m.next = mod
+        asname := stmt.children.next.next.next.value
+
+        define_module(ctx, stmt, asname, mod.abspath)
+
+        curr_mod := ctx.current_module
+        ctx.current_module = mod.abspath
+        compile_file(ctx, mod.abspath)
+        ctx.current_module = curr_mod
+
     } else {
 
-        chr* err_buf
-        io.asprintf(&err_buf, "Unable to convert statement of type %s to ast", stmt.type)
-        new_error(ctx, stmt, err_buf)
+        io.printf(":coffee-error: statement of type %s is not implemented\0A", stmt.type)
     }
 }
 
@@ -366,6 +475,11 @@ AssignableInfo* compile_fn_call(CompilerCtx* ctx, parser.Node* stmt) {
             io.asprintf(&params_buff, "%s%s %s", params_buff, type_repr(a_info.type), a_info.id)
             pp = pp.next
         }
+    }
+
+    if info == null {
+        -- error
+        return (AssignableInfo*) null
     }
 
     chr* uid = ""
@@ -518,8 +632,9 @@ void new_error(CompilerCtx* c, parser.Node* curr_node, str msg) {
 
 -- binds the assignable to a given name in the current scope
 void define_assignable(CompilerCtx* ctx, str name, AssignableInfo* info) {
-    sys.assert(ctx.scopes != null, ":coffee-error: 'define_assignable' could not be called if context scopes are null")
-    current_scope := ctx.scopes
+    mod := get_current_module(ctx)
+    sys.assert(mod.scopes != null, ":coffee-error: 'define_assignable' could not be called if context scopes are null")
+    current_scope := mod.scopes
 
     -- check that assignable is not defined on this context
     -- for item := current_scope.item; item != null; item = item.next {
@@ -540,12 +655,12 @@ void define_assignable(CompilerCtx* ctx, str name, AssignableInfo* info) {
     last_item.next = newitem
 }
 
--- returns the 'base' information of the dotted name
-AssignableInfo* find_defined(CompilerCtx* ctx, parser.Node* dotted_name) {
-    sys.assert(ctx.scopes != null, ":coffee-error: 'find_defined' could not be called if context scopes are null")
+AssignableInfo* find_defined_in(CompilerCtx* ctx, str module, parser.Node* dotted_name) {
+    mod := get_module(ctx, module)
+    sys.assert(mod.scopes != null, ":coffee-error: 'find_defined' could not be called if context scopes are null")
 
-    assignable_name := dotted_name.children.value
-    for s := ctx.scopes; s != null; s = s.prev {
+    assignable_name := dotted_name.value
+    for s := mod.scopes; s != null; s = s.prev {
         for item := s.item; item != null; item = item.next {
             if string.strcmp(item.name, assignable_name) == 0 {
                 return item.info
@@ -553,7 +668,7 @@ AssignableInfo* find_defined(CompilerCtx* ctx, parser.Node* dotted_name) {
         }
     }
 
-    -- check global scopes
+    -- check global scopes, hmmmmmmm
     for g := ctx.globals; g != null; g = g.next {
         if string.strcmp(g.global_type, "string") != 0 {
             if string.strcmp(g.identifier, assignable_name) == 0 {
@@ -563,6 +678,11 @@ AssignableInfo* find_defined(CompilerCtx* ctx, parser.Node* dotted_name) {
     }
 
     return (AssignableInfo*) null
+}
+
+-- returns the 'base' information of the dotted name
+AssignableInfo* find_defined(CompilerCtx* ctx, parser.Node* dotted_name) {
+    return find_defined_in(ctx, ctx.current_module, dotted_name.children)
 }
 
 AssignableInfo* get_dotted_name(CompilerCtx* c, parser.Node* dot_name_ptr, AssignableInfo* info) {
@@ -627,8 +747,9 @@ AssignableInfo* get_dotted_name(CompilerCtx* c, parser.Node* dot_name_ptr, Assig
 
 -- returns address for node
 AssignableInfo* compile_addr(CompilerCtx* ctx, parser.Node* curr_node) {
+    chr* err_msg
     if string.strcmp(curr_node.type, "destination") != 0 {
-        io.printf("'compile_addr' could only be called on destinations for now. (called on %s)\0A", curr_node.type)
+        io.printf(":coffee-error: 'compile_addr' could only be called on destinations for now. (called on %s)\0A", curr_node.type)
         return (AssignableInfo*) null
     }
 
@@ -637,14 +758,25 @@ AssignableInfo* compile_addr(CompilerCtx* ctx, parser.Node* curr_node) {
     info := find_defined(ctx, assignable_name)
     if info == null {
         -- error! name is not defined
-        chr* err_msg
-        io.asprintf(&err_msg, "name %s is not defined\0A", assignable_name.value)
+        io.asprintf(&err_msg, "name '%s' is not defined\0A", assignable_name.children.value)
         new_error(ctx, curr_node, err_msg)
         return (AssignableInfo*) null
     }
 
+    if string.strcmp(info.name_type, "module") == 0 {
+        got := find_defined_in(ctx, info.id, assignable_name.children.next.next)
+        if info == null {
+            io.asprintf(&err_msg, "name '%s' is not defined in %s", assignable_name.children.next.next.value, info.id)
+            new_error(ctx, curr_node, err_msg)
+            return (AssignableInfo*) null
+        }
+        info = got
+        assignable_name = assignable_name.children.next.next
+    } else {
+        assignable_name = assignable_name.children
+    }
 
-    base := get_dotted_name(ctx, assignable_name.children, info)
+    base := get_dotted_name(ctx, assignable_name, info)
 
     -- node has a following square bracket, do something
     for addr := curr_node.children.next; addr != null; addr = addr.next.next.next {
@@ -934,6 +1066,22 @@ GlobalName* define_typealias(CompilerCtx* ctx, AssignableInfo* typeinfo, str nam
     append_global(ctx, global)
 
     return global
+}
+
+void define_module(CompilerCtx* ctx, parser.Node* mod, str as_name, abspath) {
+    g := (GlobalName*) sys.malloc(GlobalName_size)
+    g.identifier = as_name
+    g.global_type = "module"
+    g.next = null
+
+    g.info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
+    g.info.id = abspath
+    g.info.name_type = "module"
+    g.info.type = null
+    g.info.line = mod.line
+    g.info.char_of_line = mod.char_of_line
+
+    append_global(ctx, g)
 }
 
 void append_global(CompilerCtx* ctx, GlobalName* g) {

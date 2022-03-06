@@ -32,6 +32,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/13-compiles-type-alias"))
     testing.run(t, testfile(t, "./compile/__test__/14-casting"))
     testing.run(t, testfile(t, "./compile/__test__/15-array-address"))
+    testing.run(t, testfile(t, "./compile/__test__/16-import"))
 
     testing.cleanup(t)
     return 0
@@ -81,11 +82,13 @@ int testfile(testing.T* t, str filename) {
         return 0
     }
     p := peeker.new(input_fd)
+    p.filename = input_filename
+
     tokens := lexer.tokenize(p, false)
     sys.free((chr*) p)
 
     ast := parser.ast(grammar, "start", tokens)
-    compiler_ctx := compile.new_context(io.tmpfile())
+    compiler_ctx := compile.new_context(io.tmpfile(), input_filename)
     compile.compile(compiler_ctx, ast.node)
 
     expect := read_testfile(filename, "out")
