@@ -412,6 +412,7 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
         compile_fn_call(ctx, stmt.children)
         -- get function arguments
     } elif string.strcmp(expr_type, "declaration") == 0 {
+
         Type* decl_type = (Type*) null
         if string.strcmp(stmt.children.type, "type") == 0 {
             decl_type = node_to_type(ctx, stmt.children.children)
@@ -436,7 +437,6 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
         } elif a_info != null {
             info.type = a_info.type
         }
-
         var_type_repr := type_repr(info.type)
         if a_info != null {
             a_type_repr := type_repr(a_info.type)
@@ -473,7 +473,7 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
     } elif string.strcmp(expr_type, "if_block") == 0 {
         compile_if_block(ctx, stmt)
     } else {
-        io.printf("compiling expression: %s\0A", expr_type)
+        io.printf(":coffee-error: unable to compile expression '%s'\0A", expr_type)
     }
 }
 
@@ -661,7 +661,22 @@ AssignableInfo* compile_assignable(CompilerCtx* ctx, parser.Node* curr_node) {
     stack := (StackHead*) sys.malloc(StackHead_size)
     stack.h = operator_stack
 
-    return compile_assignable_stack(ctx, stack)
+    info := compile_assignable_stack(ctx, stack)
+
+    cast := skip_to_type(curr_node.children, "cast")
+    if cast != null {
+        cast_type := skip_to_type(cast.children, "type")
+
+        new_type := node_to_type(ctx, cast_type.children)
+        chr* new_id
+        io.asprintf(&new_id, "%%.tmp%d", new_uid(ctx))
+
+        io.fprintf(ctx.ir, "%s = bitcast %s %s to %s\0A", new_id, type_repr(info.type), info.id, type_repr(new_type))
+
+        info.id = new_id
+        info.type = new_type
+    }
+    return info
 }
 
 AssignableInfo* compile_assignable_stack(CompilerCtx* ctx, StackHead* stack) {
@@ -729,13 +744,34 @@ AssignableInfo* compile_mono_assignable(CompilerCtx* ctx, parser.Node* curr_node
         assignable_info.type = (Type*) sys.malloc(Type_size)
         assignable_info.type.of = null
         assignable_info.type.info = null
+        assignable_info.type.next = null
         assignable_info.type.container = "int"
         assignable_info.id = mono.children.value
+
+    } elif string.strcmp(mono.children.type, "WORD") == 0 {
+        if string.strcmp(mono.children.value, "null") != 0 {
+            io.printf(":coffee-error: unable to interpret %s as mono_assignable\0A")
+            return (AssignableInfo*) null
+        }
+        assignable_info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
+        assignable_info.type = (Type*) sys.malloc(Type_size)
+        assignable_info.id = "null"
+        assignable_info.type.info = null
+        assignable_info.type.next = null
+        assignable_info.type.container = "nullptr"
+        assignable_info.type.of = null
+
     } elif string.strcmp(mono.children.type, "addr_destination") == 0 {
         assignable_info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
         dest := skip_to_type(mono.children.children, "destination")
 
         var_info := find_defined(ctx, dest.children)
+        if var_info == null {
+            chr* err_buf
+            io.asprintf(&err_buf, "Name %s is not defined in this scope", dest.children.children.value)
+            new_error(ctx, curr_node, err_buf)
+            return assignable_info
+        }
         var_type_repr := type_repr(var_info.type)
 
         io.asprintf(&assignable_info.id, "%%.tmp%d", new_uid(ctx))
@@ -868,6 +904,8 @@ str type_repr(Type* type) {
         return "void"
     } elif string.strcmp(type.container, "bool") == 0 {
         return "i1"
+    } elif string.strcmp(type.container, "nullptr") == 0 {
+        return "ptr"
     } elif string.strcmp(type.container, "chr") == 0 {
         return "i8"
     } elif string.strcmp(type.container, "function") == 0 {

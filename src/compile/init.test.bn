@@ -30,6 +30,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/11-compile-struct"))
     testing.run(t, testfile(t, "./compile/__test__/12-compiles-ptr"))
     testing.run(t, testfile(t, "./compile/__test__/13-compiles-type-alias"))
+    testing.run(t, testfile(t, "./compile/__test__/14-casting"))
 
     testing.cleanup(t)
     return 0

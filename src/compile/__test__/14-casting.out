@@ -1,0 +1,6 @@
+define void @f.v() {
+%.tmp0 = bitcast ptr null to i8*
+%t = alloca i8*
+store i8* %.tmp0, i8** %t
+ret void
+}
