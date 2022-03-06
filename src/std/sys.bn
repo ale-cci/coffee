@@ -45,4 +45,8 @@ extern int pipe(int* fds)
 extern io.File* popen(str command, str type)
 extern int pclose(io.File* stream)
 
+extern str dirname(str path)
 
+extern str basename(str path)
+
+extern chr* getcwd(chr* buf, int size)
