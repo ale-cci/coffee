@@ -626,7 +626,7 @@ AssignableInfo* get_dotted_name(CompilerCtx* c, parser.Node* dot_name_ptr, Assig
 }
 
 -- returns address for node
-AssignableInfo* compile_addr(CompilerCtx* c, parser.Node* curr_node) {
+AssignableInfo* compile_addr(CompilerCtx* ctx, parser.Node* curr_node) {
     if string.strcmp(curr_node.type, "destination") != 0 {
         io.printf("'compile_addr' could only be called on destinations for now. (called on %s)\0A", curr_node.type)
         return (AssignableInfo*) null
@@ -634,17 +634,39 @@ AssignableInfo* compile_addr(CompilerCtx* c, parser.Node* curr_node) {
 
     -- type + id of addr
     assignable_name := curr_node.children
-    info := find_defined(c, assignable_name)
+    info := find_defined(ctx, assignable_name)
     if info == null {
         -- error! name is not defined
         chr* err_msg
         io.asprintf(&err_msg, "name %s is not defined\0A", assignable_name.value)
-        new_error(c, curr_node, err_msg)
+        new_error(ctx, curr_node, err_msg)
         return (AssignableInfo*) null
     }
 
-    -- TODO: given base
-    base := get_dotted_name(c, assignable_name.children, info)
+
+    base := get_dotted_name(ctx, assignable_name.children, info)
+
+    -- node has a following square bracket, do something
+    for addr := curr_node.children.next; addr != null; addr = addr.next.next.next {
+        index := addr.next
+        index_info := compile_assignable(ctx, index)
+
+        base_type := type_repr(base.type)
+        index_type := type_repr(index_info.type)
+
+        tmp_id := new_uid(ctx)
+        io.fprintf(ctx.ir, "%%.tmp%d = load %s, %s* %s\0A", tmp_id, base_type, base_type, base.id)
+
+        chr* new_id
+        io.asprintf(&new_id, "%%.tmp%d", new_uid(ctx))
+
+        base.type = base.type.of
+        base_type_2 := type_repr(base.type)
+
+        io.fprintf(ctx.ir, "%s = getelementptr %s, %s* %%.tmp%d, %s %s\0A", new_id, base_type_2, base_type_2, tmp_id, index_type, index_info.id)
+
+        base.id = new_id
+    }
     return base
 }
 
@@ -738,6 +760,7 @@ Type* operator_type(parser.Node* op) {
 AssignableInfo* compile_mono_assignable(CompilerCtx* ctx, parser.Node* curr_node) {
     AssignableInfo* assignable_info = (AssignableInfo*) null
     mono := curr_node
+    chr* err_buf
 
     if string.strcmp(mono.children.type, "NUMBER") == 0 {
         assignable_info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
@@ -767,7 +790,6 @@ AssignableInfo* compile_mono_assignable(CompilerCtx* ctx, parser.Node* curr_node
 
         var_info := find_defined(ctx, dest.children)
         if var_info == null {
-            chr* err_buf
             io.asprintf(&err_buf, "Name %s is not defined in this scope", dest.children.children.value)
             new_error(ctx, curr_node, err_buf)
             return assignable_info
@@ -817,11 +839,39 @@ AssignableInfo* compile_mono_assignable(CompilerCtx* ctx, parser.Node* curr_node
 
         assignable_info.type = (Type*) sys.malloc(Type_size)
         assignable_info.type.info = null
+        assignable_info.type.next = null
         assignable_info.type.container = "ptr"
         assignable_info.type.of = (Type*) sys.malloc(Type_size)
         assignable_info.type.of.info = null
         assignable_info.type.of.container = "chr"
         assignable_info.type.of.of = null
+        assignable_info.type.of.next = null
+
+    } elif string.strcmp(mono.children.type, "CHR") == 0 {
+        assignable_info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
+        chr_len := string.strlen(mono.children.value)
+        assignable_info.id = "0"
+
+        if chr_len == 5 {
+            -- CHR in the form of "\XX" (hex numbers)
+            intval := 0
+            io.sscanf(mono.children.value, "'\5C%x'", &intval)
+            io.asprintf(&assignable_info.id, "%d", intval)
+
+        } elif chr_len == 3 {
+            -- CHR in the form of "X" (single character)
+            io.printf(":coffee-error: not implemented yet\0A")
+        } else {
+            -- malformed character
+            io.asprintf(&err_buf, "Invalid character")
+            new_error(ctx, mono, err_buf)
+        }
+
+        assignable_info.type = (Type*) sys.malloc(Type_size)
+        assignable_info.type.container = "chr"
+        assignable_info.type.of = null
+        assignable_info.type.info = null
+        assignable_info.type.next = null
     } else {
         io.printf(":coffee-error: unable to compile assignable of type %s\0A", mono.children.type)
         return (AssignableInfo*) null
@@ -843,6 +893,10 @@ str type_abbr(Type* type) {
         return "v"
     } elif string.strcmp(type.container, "chr") == 0 {
         return "c"
+    } elif string.strcmp(type.container, "ptr") == 0 {
+        chr* buf
+        io.asprintf(&buf, "%sp", type_abbr(type.of))
+        return buf
     }
     return (chr*) null
 }

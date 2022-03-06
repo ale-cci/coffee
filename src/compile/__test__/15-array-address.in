@@ -1,0 +1,3 @@
+void fn(chr* sample) {
+    sample[0] = '\00'
+}
