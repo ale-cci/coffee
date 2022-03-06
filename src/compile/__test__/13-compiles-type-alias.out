@@ -1,1 +1,2 @@
-%.T.type = type {i32}
+%.S.type = type {i32}
+%.T.type = type {i32,%.T.type*}

@@ -1,3 +1,7 @@
+alias S = struct {
+    int j,
+}
 alias T = struct {
     int j,
+    T* t,
 }

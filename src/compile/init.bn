@@ -52,7 +52,7 @@ int ScopeItem_size = 24
 alias GlobalName = struct {
     chr* identifier,
 
-    chr* global_type, -- string, function
+    chr* global_type, -- string, function, typealias
     AssignableInfo* info,
     GlobalName* next,
 }
@@ -194,18 +194,27 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
         info.type = a_info.type
 
         io.fprintf(ctx.ir, "%s = constant %s %s\0A", info.id, type_repr(info.type), a_info.id)
+
     } elif string.strcmp(stmt.type, "typealias") == 0 {
 
+        type_decl := skip_to_type(stmt.children, "type")
         type_name := stmt.children.next.value
 
-        type_decl := skip_to_type(stmt.children, "type")
-        type_struct := node_to_type(type_decl.children)
+        info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
+        io.asprintf(&info.id, "%%.%s.type", type_name)
+        info.name_type = "typealias"
+        info.line = stmt.line
+        info.char_of_line = stmt.char_of_line
 
-        io.fprintf(ctx.ir, "%%.%s.type = type %s\0A", type_name, type_repr(type_struct))
+        g := define_typealias(ctx, info, type_name)
+        type_struct := node_to_type(ctx, type_decl.children)
+        g.info.type = type_struct
+
+        io.fprintf(ctx.ir, "%s = type %s\0A", info.id, type_repr(type_struct))
 
     } elif string.strcmp(stmt.type, "extern") == 0 {
         info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
-        info.type = syn_function_type(stmt.children.next)
+        info.type = syn_function_type(ctx, stmt.children.next)
         info.name_type = "extern"
         io.asprintf(&info.id, "@%s", stmt.children.next.next.value)
         info.line = stmt.line
@@ -233,7 +242,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
         -- function definition
         info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
         info.name_type = "function"
-        info.type = syn_function_type(stmt.children)
+        info.type = syn_function_type(ctx, stmt.children)
 
         name := syn_function_name(stmt)
         info.id = name_mangle(name, "", info.type)
@@ -255,7 +264,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
                 param_ptr = param_ptr.next
                 io.fprintf(ctx.ir, ", ")
             }
-            param_type := node_to_type(param_ptr.children)
+            param_type := node_to_type(ctx, param_ptr.children)
             io.fprintf(ctx.ir, "%s %%.%s.arg", type_repr(param_type), param_ptr.next.value)
             param_ptr = param_ptr.next.next
         }
@@ -314,7 +323,7 @@ void compile_fn_params(CompilerCtx* ctx, parser.Node* fn_params) {
         param_info := (AssignableInfo*) sys.malloc(AssignableInfo_size)
         io.asprintf(&param_info.id, "%%%s", var_name)
         param_info.name_type = "variable"
-        param_info.type = node_to_type(param_ptr.children)
+        param_info.type = node_to_type(ctx, param_ptr.children)
         param_info.line = param_ptr.line
         param_info.char_of_line = param_ptr.char_of_line
 
@@ -405,7 +414,7 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
     } elif string.strcmp(expr_type, "declaration") == 0 {
         Type* decl_type = (Type*) null
         if string.strcmp(stmt.children.type, "type") == 0 {
-            decl_type = node_to_type(stmt.children.children)
+            decl_type = node_to_type(ctx, stmt.children.children)
         }
 
         assignable = skip_to_type(stmt.children, "assignable")
@@ -543,6 +552,16 @@ AssignableInfo* find_defined(CompilerCtx* ctx, parser.Node* dotted_name) {
             }
         }
     }
+
+    -- check global scopes
+    for g := ctx.globals; g != null; g = g.next {
+        if string.strcmp(g.global_type, "string") != 0 {
+            if string.strcmp(g.identifier, assignable_name) == 0 {
+                return g.info
+            }
+        }
+    }
+
     return (AssignableInfo*) null
 }
 
@@ -816,6 +835,17 @@ AssignableInfo* define_string(CompilerCtx* ctx, str text) {
     return info
 }
 
+GlobalName* define_typealias(CompilerCtx* ctx, AssignableInfo* typeinfo, str name) {
+    global := (GlobalName*) sys.malloc(GlobalName_size)
+    global.identifier = name
+    global.global_type = "type"
+    global.next = null
+    global.info = typeinfo
+    append_global(ctx, global)
+
+    return global
+}
+
 void append_global(CompilerCtx* ctx, GlobalName* g) {
     if ctx.globals == null {
         ctx.globals = g
@@ -867,8 +897,10 @@ str type_repr(Type* type) {
     } elif string.strcmp(type.container, "array") == 0 {
         io.asprintf(&buf, "[%s x %s]", type.of.next.container, type_repr(type.of))
         return buf
+    } elif string.strcmp(type.container, "typealias") == 0 {
+        return type.of.info
     } else {
-        io.printf(":coffee-error: 'type_repr' not implemented for type %s\0A", type.container)
+        io.printf(":coffee-error: 'type_repr' not implemented for type '%s'\0A", type.container)
     }
 
     return (chr*) null
@@ -903,11 +935,11 @@ parser.Node* skip_to_type(parser.Node* node, str type) {
 }
 
 
-Type* syn_function_type(parser.Node* stmt) {
+Type* syn_function_type(CompilerCtx* ctx, parser.Node* stmt) {
     function_type := (Type*) sys.malloc(Type_size)
     function_type.info = null
 
-    return_value_type := node_to_type(stmt.children)
+    return_value_type := node_to_type(ctx, stmt.children)
     function_type.container = "function"
     function_type.of = return_value_type
 
@@ -915,7 +947,7 @@ Type* syn_function_type(parser.Node* stmt) {
     params := syn_function_params(stmt)
 
     for param_ptr := params; param_ptr != null ; param_ptr = skip_to_type(param_ptr, "type") {
-        param_type := node_to_type(param_ptr.children)
+        param_type := node_to_type(ctx, param_ptr.children)
         last_type.next = param_type
         last_type = param_type
         param_ptr = param_ptr.next
@@ -933,29 +965,60 @@ parser.Node* syn_function_params(parser.Node* stmt) {
     return params.children
 }
 
-Type* node_to_type(parser.Node* stmt) {
+Type* node_to_type(CompilerCtx* ctx, parser.Node* stmt) {
     t := (Type*) sys.malloc(Type_size)
     t.of = null
     t.next = null
+    t.info = null
+
     if string.strcmp(stmt.type, "structdef") == 0 {
         t.container = "struct"
         t.info = null
 
         curr_type := skip_to_type(stmt.children, "type")
         if curr_type != null {
-            t.of = node_to_type(curr_type.children)
+            t.of = node_to_type(ctx, curr_type.children)
             t.of.info = curr_type.next.value
 
             curr_t := t.of
             for curr_type = skip_to_type(curr_type.next, "type"); curr_type != null; curr_type = skip_to_type(curr_type.next, "type") {
-                curr_t.next = node_to_type(curr_type.children)
+                curr_t.next = node_to_type(ctx, curr_type.children)
                 curr_t.next.info = curr_type.next.value
                 curr_t = curr_t.next
             }
         }
         -- parse struct fields
-    } else {
+    } elif string.strcmp(stmt.type, "WORD") == 0 {
         t.container = stmt.value
+    } elif string.strcmp(stmt.type, "dotted_name") == 0 {
+        -- 1st resolve dotted name
+        -- 2nd create type
+        base := find_defined(ctx, stmt)
+        if base == null {
+            chr* err_msg
+            io.asprintf(&err_msg, "Name %s is not defined in this scope", stmt.children.value)
+            new_error(ctx, stmt, err_msg)
+            t.container = "error"
+            return t
+        }
+
+        t.container = "typealias"
+        t.of = (Type*) sys.malloc(Type_size)
+        t.of.container = "alias"
+        t.of.next = null
+        t.of.info = base.id
+    } else {
+        io.printf(":coffee-error: unable to convert statement of type '%s' to type\0A", stmt.type)
     }
+
+    for ptr := stmt.next; ptr != null; ptr = ptr.next {
+        pt := (Type*) sys.malloc(Type_size)
+        pt.container = "ptr"
+        pt.of = t
+        pt.next = null
+        pt.info = null
+        t = pt
+    }
+
     return t
 }
