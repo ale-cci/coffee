@@ -112,7 +112,7 @@ int test_grammar_parses_empty_function(testing.T* t) {
 
 
 int test_parses_atom(testing.T* t) {
-    res := match_rule("atom", "a.b[3]")
+    res := match_rule("assignable", "a.b[3]")
     testing.assert_null(t, (chr*) res.err)
 
     if res.err != null {

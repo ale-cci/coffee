@@ -57,10 +57,4 @@ expression: ( if_block | return | for_loop | assignment | fn_call | declaration 
 
 block: "{" NL (expression)* ("}")
 
-var_atom: WORD ( "[" atom "]" )* ( "." var_atom )?
-
-const_atom: ( NUMBER | STRING )
-
-atom: ( var_atom | const_atom )
-
 for_loop: "for" (declaration | assignment)? (";") (assignable)? (";") (assignment)? block
