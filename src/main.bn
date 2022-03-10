@@ -48,7 +48,7 @@ int main(int argc, str* argv) {
     }
 
     -- write IR on llc popen
-    compiler_ctx := compile.new_context(proc)
+    compiler_ctx := compile.new_context(proc, argv[1])
     compile.compile(compiler_ctx, res.node)
 
     if sys.pclose(proc) != 0 {

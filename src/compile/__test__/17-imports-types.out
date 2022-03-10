@@ -1,0 +1,5 @@
+define void @f(%0.T.type* %.a.arg) {
+%a = alloca %0.T.type*
+store %0.T.type* %.a.arg, %0.T.type** %a
+ret void
+}

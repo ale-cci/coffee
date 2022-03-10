@@ -259,7 +259,8 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
         type_name := stmt.children.next.value
 
         info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
-        io.asprintf(&info.id, "%%.%s.type", type_name)
+        mod_from := get_current_module(ctx)
+        io.asprintf(&info.id, "%%%s.%s.type", mod_from.prefix, type_name)
         info.name_type = "typealias"
         info.line = stmt.line
         info.char_of_line = stmt.char_of_line
@@ -317,14 +318,19 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
 
         io.fprintf(ctx.ir, "define %s %s(", type_repr(return_type), info.id)
         params := syn_function_params(stmt.children)
+
+        Type* param_type
         for param_ptr := params; param_ptr != null ; {
             if param_ptr != params {
                 param_ptr = param_ptr.next
                 io.fprintf(ctx.ir, ", ")
             }
-            param_type := node_to_type(ctx, param_ptr.children)
-            io.fprintf(ctx.ir, "%s %%.%s.arg", type_repr(param_type), param_ptr.next.value)
-            param_ptr = param_ptr.next.next
+            if string.strcmp(param_ptr.type, "type") == 0 {
+                param_type = node_to_type(ctx, param_ptr.children)
+                param_ptr = param_ptr.next
+            }
+            io.fprintf(ctx.ir, "%s %%.%s.arg", type_repr(param_type), param_ptr.value)
+            param_ptr = param_ptr.next
         }
         -- build function parameters string
         io.fprintf(ctx.ir, ") {\0A")
@@ -424,25 +430,30 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
 }
 
 void compile_fn_params(CompilerCtx* ctx, parser.Node* fn_params) {
+    Type* param_type
     for param_ptr := fn_params; param_ptr != null ; {
         if param_ptr != fn_params {
             param_ptr = param_ptr.next
         }
 
-        var_name := param_ptr.next.value
-
         param_info := (AssignableInfo*) sys.malloc(AssignableInfo_size)
-        io.asprintf(&param_info.id, "%%%s", var_name)
         param_info.name_type = "variable"
-        param_info.type = node_to_type(ctx, param_ptr.children)
-        param_info.line = param_ptr.line
         param_info.char_of_line = param_ptr.char_of_line
+        if string.strcmp(param_ptr.type, "type") == 0 {
+            param_type = node_to_type(ctx, param_ptr.children)
+            param_ptr = param_ptr.next
+        }
+        param_info.type = param_type
+
+        var_name := param_ptr.value
+
+        io.asprintf(&param_info.id, "%%%s", var_name)
 
         param_info_tr := type_repr(param_info.type)
         io.fprintf(ctx.ir, "%s = alloca %s\0A", param_info.id, param_info_tr)
         define_assignable(ctx, var_name, param_info)
         io.fprintf(ctx.ir, "store %s %%.%s.arg, %s* %s\0A", param_info_tr, var_name, param_info_tr, param_info.id)
-        param_ptr = param_ptr.next.next
+        param_ptr = param_ptr.next
     }
 }
 
@@ -1027,10 +1038,16 @@ str type_abbr(Type* type) {
         return "v"
     } elif string.strcmp(type.container, "chr") == 0 {
         return "c"
+    } elif string.strcmp(type.container, "str") == 0 {
+        return "cp"
     } elif string.strcmp(type.container, "ptr") == 0 {
         chr* buf
         io.asprintf(&buf, "%sp", type_abbr(type.of))
         return buf
+    } elif string.strcmp(type.container, "typealias") == 0 {
+        return type.of.info
+    } else {
+        io.printf(":coffee-error: unable to abbreviate type %s", type.container)
     }
     return (chr*) null
 }
@@ -1141,6 +1158,8 @@ str type_repr(Type* type) {
         return buf
     } elif string.strcmp(type.container, "typealias") == 0 {
         return type.of.info
+    } elif string.strcmp(type.container, "str") == 0 {
+        return "i8*"
     } else {
         io.printf(":coffee-error: 'type_repr' not implemented for type '%s'\0A", type.container)
     }
@@ -1235,13 +1254,23 @@ Type* node_to_type(CompilerCtx* ctx, parser.Node* stmt) {
     } elif string.strcmp(stmt.type, "dotted_name") == 0 {
         -- 1st resolve dotted name
         -- 2nd create type
+        chr* err_msg
         base := find_defined(ctx, stmt)
         if base == null {
-            chr* err_msg
             io.asprintf(&err_msg, "Name %s is not defined in this scope", stmt.children.value)
             new_error(ctx, stmt, err_msg)
             t.container = "error"
             return t
+        }
+
+        if string.strcmp(base.name_type, "module") == 0 {
+            base = find_defined_in(ctx, base.id, stmt.children.next.next)
+            if base == null {
+                io.asprintf(&err_msg, "Name %s is not defined in this scope", stmt.children.next.next.value)
+                new_error(ctx, stmt.children.next.next, err_msg)
+                t.container = "error"
+                return t
+            }
         }
 
         t.container = "typealias"
@@ -1250,7 +1279,7 @@ Type* node_to_type(CompilerCtx* ctx, parser.Node* stmt) {
         t.of.next = null
         t.of.info = base.id
     } else {
-        io.printf(":coffee-error: unable to convert statement of type '%s' to type\0A", stmt.type)
+        io.printf(":coffee-error: unable to convert statement of type '%s' to type (%s)\0A", stmt.type, stmt.value)
     }
 
     for ptr := stmt.next; ptr != null; ptr = ptr.next {

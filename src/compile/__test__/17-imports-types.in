@@ -1,0 +1,4 @@
+import "./test-import-types" as imp
+
+void fn(imp.T* a) {
+}

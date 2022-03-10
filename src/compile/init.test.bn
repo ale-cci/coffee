@@ -33,6 +33,8 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/14-casting"))
     testing.run(t, testfile(t, "./compile/__test__/15-array-address"))
     testing.run(t, testfile(t, "./compile/__test__/16-import"))
+    testing.run(t, testfile(t, "./compile/__test__/17-imports-types"))
+    testing.run(t, testfile(t, "./compile/__test__/18-multi-parameters"))
 
     testing.cleanup(t)
     return 0
