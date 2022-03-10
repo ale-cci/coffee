@@ -284,6 +284,7 @@ Node* new_node(Token* t, chr* type, chr* value) {
     node.filename = t.filename
     node.char_of_line = t.char_of_line
     node.parent = null
+    node.next = null
     node.children = null
     return node
 }

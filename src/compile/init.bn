@@ -372,8 +372,9 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
         cwd := sys.malloc(4096)
         cwd = sys.getcwd(cwd, 4096)
 
-        mod_abspath = sys.dirname(mod_abspath)
-        io.asprintf(&mod_abspath, "%s/%s/", cwd, mod_abspath)
+        dirname := sys.dirname(mod_abspath)
+        io.asprintf(&mod_abspath, "%s/%s/", cwd, dirname)
+        mod_abspath = sys.realloc(mod_abspath, 4096)
 
         offset := string.strlen(mod_abspath)
 
@@ -401,6 +402,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
         mod := (ModuleLookup*) sys.malloc(ModuleLookup_size)
         mod.abspath = mod_abspath
         mod.next = null
+        mod.scopes = null
         io.asprintf(&mod.prefix, "%d.", new_uid(ctx))
 
         for m := ctx.modules; m.next != null; m = m.next {

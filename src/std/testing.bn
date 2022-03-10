@@ -1,6 +1,7 @@
 import "./sys" as sys
 import "./string" as string
 import "./io" as io
+import "./ioutil" as ioutil
 
 alias T = struct {
     bool failure,
@@ -50,7 +51,9 @@ void run(T* t, int _unused) {
     if t.failure {
         io.fprintf(stderr, "[ \1B[31mERROR\1B[0m ] %s: \0A", t.test_name)
 
-        _read_all(fds[io.STDIN])
+        out := ioutil.readall(fds[io.STDIN])
+        io.write(io.STDERR, out, string.strlen(out))
+        io.write(io.STDERR, "\0A", 1)
     } elif t.test_no == 0 {
         io.fprintf(stderr, "[ \1B[33mWARN\1B[0m  ] %s: no asserts found\0A", t.test_name)
 
@@ -67,24 +70,6 @@ void cleanup(T* t) {
     sys.free((chr*) t)
 }
 
-void _read_all(int fd) {
-    int len = 1024
-    chr* buf = sys.malloc(len)
-    int read = 0
-
-    bool quit = false
-    for ; quit == false ; {
-        read = io.read(fd, buf, len)
-        if read > 0 {
-            io.write(io.STDERR, buf, len)
-        } else {
-            quit = true
-        }
-    }
-
-    io.write(io.STDERR, "\0A", 1)
-    sys.free(buf)
-}
 
 void fail(T* t) {
     t.failure = true

@@ -6,6 +6,7 @@ import "./parser" as parser
 chr* node_to_string(parser.Node* n) {
     tmp := io.tmpfile()
     _node_to_string(n, tmp, 1)
+    io.fflush(tmp)
     str_len := io.ftell(tmp)
 
     tmp_fd := io.fileno(tmp)

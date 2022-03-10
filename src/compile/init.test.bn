@@ -39,15 +39,9 @@ int main() {
 }
 
 
-chr* _build_filename(str filename, str ext) {
-    name_len := string.strlen(filename) + string.strlen(ext) + 1
-    chr* full_filename = sys.malloc(name_len)
-    io.sprintf(full_filename, "%s.%s", filename, ext)
-    return full_filename
-}
-
 chr* read_testfile(str filename, str ext) {
-    full_filename := _build_filename(filename, ext)
+    chr* full_filename
+    io.asprintf(&full_filename, "%s.%s", filename, ext)
 
     f := io.fopen(full_filename, "r")
     if f == null {
@@ -74,7 +68,8 @@ int testfile(testing.T* t, str filename) {
     grammar := parser.parse_grammar(ctx)
     sys.free((chr*) ctx)
 
-    input_filename := _build_filename(filename, "in")
+    chr* input_filename
+    io.asprintf(&input_filename, "%s.%s", filename, "in")
     int input_fd = io.open(input_filename, io.O_RDONLY)
 
     if input_fd <= 0 {
