@@ -40,6 +40,9 @@ int main() {
     testing.setup(t, "test_parses_function_call_arguments")
     testing.run(t, test_parses_function_call_arguments(t))
 
+    testing.setup(t, "test_parses_function_definition")
+    testing.run(t, test_parses_function_definition(t))
+
     testing.cleanup(t)
     return 0
 }
@@ -187,3 +190,14 @@ int test_parses_function_call_arguments(testing.T* t) {
     testing.assert_null(t, (chr*) res.err)
     return 0
 }
+
+int test_parses_function_definition(testing.T* t) {
+    res := match_rule("fn_params", "str format, ... args")
+    testing.assert_null(t, (chr*) res.err)
+
+    if res.err != null {
+        errors.freport(t.out, res.err)
+    }
+    return 0
+}
+

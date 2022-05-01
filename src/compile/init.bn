@@ -1225,6 +1225,8 @@ str type_repr(Type* type) {
         return buf
     } elif string.strcmp(type.container, "str") == 0 {
         return "i8*"
+    } elif string.strcmp(type.container, "vararg") == 0 {
+        return "..."
     } else {
         io.printf(":coffee-error: 'type_repr' not implemented for type '%s'\0A", type.container)
     }
@@ -1361,8 +1363,10 @@ Type* node_to_type(CompilerCtx* ctx, parser.Node* stmt) {
         t.of.container = "alias"
         t.of.next = null
         t.of.info = base.id
+    } elif string.strcmp(stmt.value, "...") == 0 {
+        t.container = "vararg"
     } else {
-        io.printf(":coffee-error: unable to convert statement of type '%s' to type (%s)\0A", stmt.type, stmt.value)
+        io.printf(err_tmpl(ctx, stmt, "unable to convert statement of type '%s' to type (%s)"), stmt.type, stmt.value)
     }
 
     for ptr := stmt.next; ptr != null; ptr = ptr.next {

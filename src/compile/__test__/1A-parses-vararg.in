@@ -1,0 +1,1 @@
+extern int print(str format, ...args)

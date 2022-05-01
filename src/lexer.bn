@@ -4,7 +4,7 @@ import "./std/string" as string
 import "./std/io" as io
 
 import "./peeker" as peeker
-#import "./errors" as errors
+-- import "./errors" as errors
 
 
 alias Token = struct {
@@ -206,6 +206,7 @@ Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
                     io.asprintf(&buf, "...")
                     type = "KEYWORD"
                 }
+                c = peeker.read(p)
             } else {
                 buf = sys.malloc(2)
                 buf[0] = prev_c

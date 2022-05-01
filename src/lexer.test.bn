@@ -212,11 +212,14 @@ int should_parse_chr_token(testing.T* t) {
 }
 
 int parses_dots_as_vararg(testing.T* t) {
-    p := new_peeker("...")
+    p := new_peeker("... a")
     token_list := lexer.tokenize(p, true)
 
     testing.assert_equal_str(t, "KEYWORD", token_list.type)
     testing.assert_equal_str(t, "...", token_list.value)
+
+    testing.assert_equal_str(t, "WORD", token_list.next.type)
+    testing.assert_equal_str(t, "a", token_list.next.value)
 
     sys.free((chr*) p)
     sys.free((chr*) token_list)
