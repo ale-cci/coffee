@@ -45,6 +45,9 @@ int main() {
     testing.setup(t, "parses COMMENT tokens")
     testing.run(t, should_parse_comment_tokens(t))
 
+    testing.setup(t, "parses ... as vararg")
+    testing.run(t, parses_dots_as_vararg(t))
+
     testing.cleanup(t)
     return 0
 }
@@ -199,6 +202,18 @@ int should_parse_chr_token(testing.T* t) {
 
     testing.assert_equal_str(t, "CHR", token_list.type)
     testing.assert_equal_str(t, "'a'", token_list.value)
+
+    sys.free((chr*) p)
+    sys.free((chr*) token_list)
+    return 0
+}
+
+int parses_dots_as_vararg(testing.T* t) {
+    p := new_peeker("...")
+    token_list := lexer.tokenize(p, true)
+
+    testing.assert_equal_str(t, "KEYWORD", token_list.type)
+    testing.assert_equal_str(t, "...", token_list.value)
 
     sys.free((chr*) p)
     sys.free((chr*) token_list)

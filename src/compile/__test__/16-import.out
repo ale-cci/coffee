@@ -1,7 +1,7 @@
-define void @0.main.v() {
+define void @m0$main.v() {
 ret void
 }
 define void @main() {
-call void() @0.main.v()
+call void() @m0$main.v()
 ret void
 }

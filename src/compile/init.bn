@@ -19,7 +19,6 @@ int ErrorList_size = 16
 alias Type = struct {
     chr* container,
 
-
     chr* info, -- extra info attached to this type entry (for struct field names)
 
     -- NOTE: each "basic" type is not allowed to have a 'next'
@@ -33,9 +32,24 @@ alias Type = struct {
 }
 int Type_size = 32
 
+Type* type_clone(Type* t) {
+    if t == null {
+        return (Type*) null
+    }
+
+    Type* clone = (Type*) sys.malloc(Type_size)
+    clone.of = type_clone(t.of)
+    clone.next = type_clone(t.next)
+    clone.container = t.container
+    clone.info = t.info
+    return clone
+}
+
 alias AssignableInfo = struct {
     -- uniquely identifies assignable
     chr* id,
+
+    chr scope, -- adds @ before id if it's a global assignment, otherwise %
     chr* name_type,
     Type* type,
 
@@ -43,7 +57,45 @@ alias AssignableInfo = struct {
     int line,
     int char_of_line,
 }
-int AssignableInfo_size = 32
+int AssignableInfo_size = 40
+
+chr SCOPE_GLOBAL = '@'
+chr SCOPE_LOCAL = '%'
+chr SCOPE_CONST = ' '
+
+
+AssignableInfo* new_assignable_info(parser.Node* node) {
+    ptr := (AssignableInfo*) sys.malloc(AssignableInfo_size)
+    ptr.scope = SCOPE_CONST
+    ptr.id = null
+    ptr.name_type = null
+    ptr.type = null
+
+    -- copy line and char of line from specified node
+    if node != null {
+        ptr.line = node.line
+        ptr.char_of_line = node.char_of_line
+    } else {
+        ptr.line = 0
+        ptr.char_of_line = 0
+    }
+    return ptr
+}
+
+void set_assignable_id(AssignableInfo* info, chr scope, chr* id) {
+    info.id = id
+    info.scope = scope
+}
+
+chr* repr_assignable_id(AssignableInfo* info) {
+    if info.scope == SCOPE_CONST {
+        return info.id
+    }
+    chr* buf
+    io.asprintf(&buf, "%c%s", info.scope, info.id)
+    return buf
+}
+
 
 alias ScopeItem = struct {
     chr* name,
@@ -87,6 +139,12 @@ alias CompilerCtx = struct {
     chr* current_module,
 }
 int CompilerCtx_size = 60
+
+void set_assignable_tmp_id(CompilerCtx* ctx, AssignableInfo* info) {
+    chr* tmp_buff
+    io.asprintf(&tmp_buff, ".tmp%d", new_uid(ctx))
+    set_assignable_id(info, SCOPE_LOCAL, tmp_buff)
+}
 
 ModuleLookup* get_module(CompilerCtx* ctx, str filename) {
     for m := ctx.modules; m != null; m = m.next {
@@ -200,7 +258,7 @@ str string_to_llvm(chr* text) {
 void compile_global(CompilerCtx* ctx, GlobalName* g) {
     if string.strcmp(g.global_type, "string") == 0 {
         repr := string_to_llvm(g.identifier)
-        io.fprintf(ctx.ir, "%s = constant %s %s\0A", g.info.id, type_repr(g.info.type), repr)
+        io.fprintf(ctx.ir, "%s = constant %s %s\0A", repr_assignable_id(g.info), type_repr(g.info.type), repr)
     }
 }
 
@@ -210,16 +268,16 @@ chr* get_mod_prefix(CompilerCtx* ctx, str module_abspath) {
     return m.prefix
 }
 
+
 str name_mangle(CompilerCtx* ctx, parser.Node* fn, str original_name, Type* type) {
     chr* mangled_name
 
     chr* prefix = get_mod_prefix(ctx, fn.filename)
-
-    io.asprintf(&mangled_name, "@%s%s", prefix, original_name)
+    io.asprintf(&mangled_name, "%s%s", prefix, original_name)
     if string.strcmp(type.container, "function") == 0 {
         -- function  name is the concatenation of module, original name
         -- return value and parameters type
-        if string.strcmp(mangled_name, "@main") != 0 {
+        if string.strcmp(mangled_name, "main") != 0 {
             chr* tmp_buff
             chr* swap_var
             for tp := type.of; tp != null; tp = tp.next {
@@ -240,6 +298,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
     AssignableInfo* info
     Type* return_type
     chr* err_buf
+    chr* tmp_buff
 
     if string.strcmp(stmt.type, "NL") == 0 {
         return
@@ -248,10 +307,10 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
         a_info := compile_assignable(ctx, assignable)
 
         info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
-        io.asprintf(&info.id, "@%s", stmt.children.next.value)
+        set_assignable_id(info, SCOPE_GLOBAL, stmt.children.next.value)
         info.type = a_info.type
 
-        io.fprintf(ctx.ir, "%s = constant %s %s\0A", info.id, type_repr(info.type), a_info.id)
+        io.fprintf(ctx.ir, "%s = constant %s %s\0A", repr_assignable_id(info), type_repr(info.type), repr_assignable_id(a_info))
 
     } elif string.strcmp(stmt.type, "typealias") == 0 {
 
@@ -260,7 +319,10 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
 
         info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
         mod_from := get_current_module(ctx)
-        io.asprintf(&info.id, "%%%s.%s.type", mod_from.prefix, type_name)
+
+        io.asprintf(&tmp_buff, "%s.%s.type", mod_from.prefix, type_name)
+        set_assignable_id(info, SCOPE_LOCAL, tmp_buff)
+
         info.name_type = "typealias"
         info.line = stmt.line
         info.char_of_line = stmt.char_of_line
@@ -269,13 +331,13 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
         type_struct := node_to_type(ctx, type_decl.children)
         g.info.type = type_struct
 
-        io.fprintf(ctx.ir, "%s = type %s\0A", info.id, type_repr(type_struct))
+        io.fprintf(ctx.ir, "%s = type %s\0A", repr_assignable_id(info), type_repr(type_struct))
 
     } elif string.strcmp(stmt.type, "extern") == 0 {
         info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
         info.type = syn_function_type(ctx, stmt.children.next)
         info.name_type = "extern"
-        io.asprintf(&info.id, "@%s", stmt.children.next.next.value)
+        set_assignable_id(info, SCOPE_GLOBAL, stmt.children.next.next.value)
         info.line = stmt.line
         info.char_of_line = stmt.char_of_line
 
@@ -286,7 +348,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
         return_type.container = info.type.of.container
         return_type.of = info.type.of.of
 
-        io.fprintf(ctx.ir, "declare %s %s(", type_repr(return_type), info.id)
+        io.fprintf(ctx.ir, "declare %s %s(", type_repr(return_type), repr_assignable_id(info))
         for pt := info.type.of.next; pt != null; pt = pt.next {
             if pt != info.type.of.next {
                 io.fprintf(ctx.ir, ", ")
@@ -299,14 +361,14 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
 
     } elif string.strcmp(stmt.type, "function") == 0 {
         -- function definition
-        info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
+        info = new_assignable_info(stmt)
         info.name_type = "function"
         info.type = syn_function_type(ctx, stmt.children)
 
         name := syn_function_name(stmt)
-        info.id = name_mangle(ctx, stmt, name, info.type)
-        info.line = stmt.line
-        info.char_of_line = stmt.char_of_line
+        tmp_buff = name_mangle(ctx, stmt, name, info.type)
+        set_assignable_id(info, SCOPE_GLOBAL, tmp_buff)
+
         define_assignable(ctx, name, info)
 
         -- copy defined function return type
@@ -316,7 +378,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
         return_type.container = info.type.of.container
         return_type.of = info.type.of.of
 
-        io.fprintf(ctx.ir, "define %s %s(", type_repr(return_type), info.id)
+        io.fprintf(ctx.ir, "define %s %s(", type_repr(return_type), repr_assignable_id(info))
         params := syn_function_params(stmt.children)
 
         Type* param_type
@@ -409,7 +471,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
         mod.abspath = mod_abspath
         mod.next = null
         mod.scopes = null
-        io.asprintf(&mod.prefix, "%d.", new_uid(ctx))
+        io.asprintf(&mod.prefix, "m%d$", new_uid(ctx))
 
         for m := ctx.modules; m.next != null; m = m.next {
         }
@@ -436,9 +498,8 @@ void compile_fn_params(CompilerCtx* ctx, parser.Node* fn_params) {
             param_ptr = param_ptr.next
         }
 
-        param_info := (AssignableInfo*) sys.malloc(AssignableInfo_size)
+        param_info := new_assignable_info(fn_params)
         param_info.name_type = "variable"
-        param_info.char_of_line = param_ptr.char_of_line
         if string.strcmp(param_ptr.type, "type") == 0 {
             param_type = node_to_type(ctx, param_ptr.children)
             param_ptr = param_ptr.next
@@ -446,13 +507,12 @@ void compile_fn_params(CompilerCtx* ctx, parser.Node* fn_params) {
         param_info.type = param_type
 
         var_name := param_ptr.value
-
-        io.asprintf(&param_info.id, "%%%s", var_name)
+        set_assignable_id(param_info, SCOPE_LOCAL, var_name)
 
         param_info_tr := type_repr(param_info.type)
-        io.fprintf(ctx.ir, "%s = alloca %s\0A", param_info.id, param_info_tr)
+        io.fprintf(ctx.ir, "%s = alloca %s\0A", repr_assignable_id(param_info), param_info_tr)
         define_assignable(ctx, var_name, param_info)
-        io.fprintf(ctx.ir, "store %s %%.%s.arg, %s* %s\0A", param_info_tr, var_name, param_info_tr, param_info.id)
+        io.fprintf(ctx.ir, "store %s %%.%s.arg, %s* %s\0A", param_info_tr, var_name, param_info_tr, repr_assignable_id(param_info))
         param_ptr = param_ptr.next
     }
 }
@@ -485,7 +545,7 @@ AssignableInfo* compile_fn_call(CompilerCtx* ctx, parser.Node* stmt) {
                 sys.free(tmp)
             }
             a_info := compile_assignable(ctx, pp)
-            io.asprintf(&params_buff, "%s%s %s", params_buff, type_repr(a_info.type), a_info.id)
+            io.asprintf(&params_buff, "%s%s %s", params_buff, type_repr(a_info.type), repr_assignable_id(a_info))
             pp = pp.next
         }
     }
@@ -495,24 +555,17 @@ AssignableInfo* compile_fn_call(CompilerCtx* ctx, parser.Node* stmt) {
         return (AssignableInfo*) null
     }
 
-    chr* uid = ""
-    if string.strcmp(type_repr(info.type.of), "void") != 0 {
-        io.asprintf(&uid, "%%.tmp%d", new_uid(ctx))
-    }
-
-    if string.strcmp(uid, "") == 0 {
-        io.fprintf(ctx.ir, "call %s %s(%s)\0A", type_repr(info.type), info.id, params_buff)
+    if string.strcmp(type_repr(info.type.of), "void") == 0 {
+        io.fprintf(ctx.ir, "call %s %s(%s)\0A", type_repr(info.type), repr_assignable_id(info), params_buff)
         return (AssignableInfo*) null
-
-    } else {
-        io.fprintf(ctx.ir, "%s = call %s %s(%s)\0A", uid, type_repr(info.type), info.id, params_buff)
     }
-    -- get function arguments
 
-    AssignableInfo* call_info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
+    call_info := new_assignable_info(stmt)
+    set_assignable_tmp_id(ctx, call_info)
     call_info.type = info.type.of
     call_info.type.next = null
-    call_info.id = uid
+
+    io.fprintf(ctx.ir, "%s = call %s %s(%s)\0A", repr_assignable_id(call_info), type_repr(info.type), repr_assignable_id(info), params_buff)
 
     return (AssignableInfo*) call_info
 }
@@ -528,7 +581,7 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
     if string.strcmp(expr_type, "return") == 0 {
         if string.strcmp(stmt.children.next.type, "NL") != 0 {
             info = compile_assignable(ctx, stmt.children.next)
-            io.fprintf(ctx.ir, "ret %s %s\0A", type_repr(info.type), info.id)
+            io.fprintf(ctx.ir, "ret %s %s\0A", type_repr(info.type), repr_assignable_id(info))
         } else {
             io.fprintf(ctx.ir, "ret void\0A")
         }
@@ -550,15 +603,13 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
             a_info = compile_assignable(ctx, assignable)
         }
 
-        info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
+        info = new_assignable_info(stmt)
         info.name_type = "variable"
-        info.line = stmt.line
-        info.char_of_line = stmt.char_of_line
         var_name := skip_to_type(stmt.children, "WORD")
 
         sys.assert(var_name != null, ":coffee-error: unalbe to get declaration name")
+        set_assignable_id(info, SCOPE_LOCAL, var_name.value)
 
-        io.asprintf(&info.id, "%%%s", var_name.value)
         if decl_type != null {
             info.type = decl_type
         } elif a_info != null {
@@ -581,9 +632,9 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
         }
         define_assignable(ctx, var_name.value, info)
 
-        io.fprintf(ctx.ir, "%s = alloca %s\0A", info.id, var_type_repr)
+        io.fprintf(ctx.ir, "%s = alloca %s\0A", repr_assignable_id(info), var_type_repr)
         if a_info != null {
-            io.fprintf(ctx.ir, "store %s %s, %s* %s\0A", type_repr(a_info.type), a_info.id, var_type_repr, info.id)
+            io.fprintf(ctx.ir, "store %s %s, %s* %s\0A", type_repr(a_info.type), repr_assignable_id(a_info), var_type_repr, repr_assignable_id(info))
         }
 
     } elif string.strcmp(expr_type, "assignment") == 0 {
@@ -596,7 +647,7 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
         }
         a_info = compile_assignable(ctx, assignable)
 
-        io.fprintf(ctx.ir, "store %s %s, %s* %s\0A", type_repr(a_info.type), a_info.id, type_repr(dest.type), dest.id)
+        io.fprintf(ctx.ir, "store %s %s, %s* %s\0A", type_repr(a_info.type), repr_assignable_id(a_info), type_repr(dest.type), repr_assignable_id(dest))
     } elif string.strcmp(expr_type, "if_block") == 0 {
         compile_if_block(ctx, stmt)
     } else {
@@ -611,7 +662,7 @@ void compile_if_block(CompilerCtx* ctx, parser.Node* stmt) {
     a_info := compile_assignable(ctx, assignable)
 
     if_id := new_uid(ctx)
-    io.fprintf(ctx.ir, "br %s %s, label %%.if.true.%d, label %%.if.false.%d\0A", type_repr(a_info.type), a_info.id, if_id, if_id)
+    io.fprintf(ctx.ir, "br %s %s, label %%.if.true.%d, label %%.if.false.%d\0A", type_repr(a_info.type), repr_assignable_id(a_info), if_id, if_id)
     io.fprintf(ctx.ir, ".if.true.%d:\0A", if_id)
     block := skip_to_type(stmt.children, "block")
     compile_block(ctx, block)
@@ -700,6 +751,7 @@ AssignableInfo* find_defined(CompilerCtx* ctx, parser.Node* dotted_name) {
 
 AssignableInfo* get_dotted_name(CompilerCtx* c, parser.Node* dot_name_ptr, AssignableInfo* info) {
     chr* err_msg
+    chr* buf
 
     if string.strcmp(info.name_type, "function") == 0 {
         -- got a function, cannot read dot names anymore
@@ -738,15 +790,14 @@ AssignableInfo* get_dotted_name(CompilerCtx* c, parser.Node* dot_name_ptr, Assig
             return (AssignableInfo*) null
         }
 
-        new_info := (AssignableInfo*) sys.malloc(AssignableInfo_size)
+        new_info := new_assignable_info(dot_name_ptr)
         new_info.type = found_field
-        io.asprintf(&new_info.id, "%%.tmp%d", new_uid(c))
+
+        set_assignable_tmp_id(c, new_info)
         new_info.name_type = "variable"
-        new_info.line = dot_name_ptr.line
-        new_info.char_of_line = dot_name_ptr.char_of_line
 
         info_tr := type_repr(info.type)
-        io.fprintf(c.ir, "%s = getelementptr %s, %s* %s, i32 0, i32 %d\0A", new_info.id, info_tr, info_tr, info.id, field_id)
+        io.fprintf(c.ir, "%s = getelementptr %s, %s* %s, i32 0, i32 %d\0A", repr_assignable_id(new_info), info_tr, info_tr, repr_assignable_id(info), field_id)
 
         return get_dotted_name(c, dot_name_ptr.next.next, new_info)
 
@@ -777,9 +828,9 @@ AssignableInfo* compile_addr(CompilerCtx* ctx, parser.Node* curr_node) {
     }
 
     if string.strcmp(info.name_type, "module") == 0 {
-        got := find_defined_in(ctx, info.id, assignable_name.children.next.next)
+        got := find_defined_in(ctx, repr_assignable_id(info), assignable_name.children.next.next)
         if info == null {
-            io.asprintf(&err_msg, "name '%s' is not defined in %s", assignable_name.children.next.next.value, info.id)
+            io.asprintf(&err_msg, "name '%s' is not defined in %s", assignable_name.children.next.next.value, repr_assignable_id(info))
             new_error(ctx, curr_node, err_msg)
             return (AssignableInfo*) null
         }
@@ -800,17 +851,15 @@ AssignableInfo* compile_addr(CompilerCtx* ctx, parser.Node* curr_node) {
         index_type := type_repr(index_info.type)
 
         tmp_id := new_uid(ctx)
-        io.fprintf(ctx.ir, "%%.tmp%d = load %s, %s* %s\0A", tmp_id, base_type, base_type, base.id)
+        io.fprintf(ctx.ir, "%%.tmp%d = load %s, %s* %s\0A", tmp_id, base_type, base_type, repr_assignable_id(base))
 
-        chr* new_id
-        io.asprintf(&new_id, "%%.tmp%d", new_uid(ctx))
+        set_assignable_tmp_id(ctx, base)
 
         base.type = base.type.of
         base_type_2 := type_repr(base.type)
 
-        io.fprintf(ctx.ir, "%s = getelementptr %s, %s* %%.tmp%d, %s %s\0A", new_id, base_type_2, base_type_2, tmp_id, index_type, index_info.id)
+        io.fprintf(ctx.ir, "%s = getelementptr %s, %s* %%.tmp%d, %s %s\0A", repr_assignable_id(base), base_type_2, base_type_2, tmp_id, index_type, repr_assignable_id(index_info))
 
-        base.id = new_id
     }
     return base
 }
@@ -835,12 +884,13 @@ AssignableInfo* compile_assignable(CompilerCtx* ctx, parser.Node* curr_node) {
         cast_type := skip_to_type(cast.children, "type")
 
         new_type := node_to_type(ctx, cast_type.children)
-        chr* new_id
-        io.asprintf(&new_id, "%%.tmp%d", new_uid(ctx))
+        -- chr* new_id
+        -- io.asprintf(&new_id, "%%.tmp%d", new_uid(ctx))
+        prev_id := info.id
+        set_assignable_tmp_id(ctx, info)
 
-        io.fprintf(ctx.ir, "%s = bitcast %s %s to %s\0A", new_id, type_repr(info.type), info.id, type_repr(new_type))
+        io.fprintf(ctx.ir, "%s = bitcast %s %s to %s\0A", repr_assignable_id(info), type_repr(info.type), prev_id, type_repr(new_type))
 
-        info.id = new_id
         info.type = new_type
     }
     return info
@@ -858,12 +908,12 @@ AssignableInfo* compile_assignable_stack(CompilerCtx* ctx, StackHead* stack) {
     stack.h = stack.h.prev
     B := compile_assignable_stack(ctx, stack)
 
-    op_info := (AssignableInfo*) sys.malloc(AssignableInfo_size)
+    op_info := new_assignable_info((parser.Node*) null)
     op_info.type = operator_type(operator)
 
-    op_id := new_uid(ctx)
-    io.asprintf(&op_info.id, "%%.tmp%d", op_id)
-    io.fprintf(ctx.ir, "%s = %s %s %s, %s\0A", op_info.id, operator_op(operator), type_repr(A.type), A.id, B.id)
+    -- op_id := new_uid(ctx)
+    set_assignable_tmp_id(ctx, op_info)
+    io.fprintf(ctx.ir, "%s = %s %s %s, %s\0A", repr_assignable_id(op_info), operator_op(operator), type_repr(A.type), repr_assignable_id(A), repr_assignable_id(B))
 
     return op_info
 }
@@ -906,31 +956,32 @@ AssignableInfo* compile_mono_assignable(CompilerCtx* ctx, parser.Node* curr_node
     AssignableInfo* assignable_info = (AssignableInfo*) null
     mono := curr_node
     chr* err_buf
+    chr* buf
 
     if string.strcmp(mono.children.type, "NUMBER") == 0 {
-        assignable_info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
+        assignable_info = new_assignable_info(curr_node)
         assignable_info.type = (Type*) sys.malloc(Type_size)
         assignable_info.type.of = null
         assignable_info.type.info = null
         assignable_info.type.next = null
         assignable_info.type.container = "int"
-        assignable_info.id = mono.children.value
+        set_assignable_id(assignable_info, SCOPE_CONST, mono.children.value)
 
     } elif string.strcmp(mono.children.type, "WORD") == 0 {
         if string.strcmp(mono.children.value, "null") != 0 {
             io.printf(":coffee-error: unable to interpret %s as mono_assignable\0A")
             return (AssignableInfo*) null
         }
-        assignable_info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
+        assignable_info = new_assignable_info(curr_node)
         assignable_info.type = (Type*) sys.malloc(Type_size)
-        assignable_info.id = "null"
+        set_assignable_id(assignable_info, SCOPE_CONST, "null")
         assignable_info.type.info = null
         assignable_info.type.next = null
         assignable_info.type.container = "nullptr"
         assignable_info.type.of = null
 
     } elif string.strcmp(mono.children.type, "addr_destination") == 0 {
-        assignable_info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
+        assignable_info = new_assignable_info(curr_node)
         dest := skip_to_type(mono.children.children, "destination")
 
         var_info := find_defined(ctx, dest.children)
@@ -940,8 +991,8 @@ AssignableInfo* compile_mono_assignable(CompilerCtx* ctx, parser.Node* curr_node
             return assignable_info
         }
         var_type_repr := type_repr(var_info.type)
+        set_assignable_tmp_id(ctx, assignable_info)
 
-        io.asprintf(&assignable_info.id, "%%.tmp%d", new_uid(ctx))
         assignable_info.type = var_info.type
         for ptr := mono.children.children; ptr != dest; ptr = ptr.next {
             new_type := (Type*) sys.malloc(Type_size)
@@ -955,32 +1006,32 @@ AssignableInfo* compile_mono_assignable(CompilerCtx* ctx, parser.Node* curr_node
 
         if mono.children.children != dest {
             -- it's a pointer, load it's address
-            io.fprintf(ctx.ir, "%s = getelementptr %s, %s* %s, i32 0\0A", assignable_info.id, var_type_repr, var_type_repr, var_info.id)
+            io.fprintf(ctx.ir, "%s = getelementptr %s, %s* %s, i32 0\0A", repr_assignable_id(assignable_info), var_type_repr, var_type_repr, repr_assignable_id(var_info))
         } else {
             -- it's a variable, load it's content
-            io.fprintf(ctx.ir, "%s = load %s, %s* %s\0A", assignable_info.id, var_type_repr, var_type_repr, var_info.id)
+            io.fprintf(ctx.ir, "%s = load %s, %s* %s\0A", repr_assignable_id(assignable_info), var_type_repr, var_type_repr, repr_assignable_id(var_info))
         }
 
     } elif string.strcmp(mono.children.type, "boolean") == 0 {
-        assignable_info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
+        assignable_info = new_assignable_info(curr_node)
         assignable_info.type = (Type*) sys.malloc(Type_size)
         assignable_info.type.info = null
         assignable_info.type.of = null
         assignable_info.type.container = "bool"
         if string.strcmp(mono.children.children.value, "false") == 0 {
-            assignable_info.id = "0"
+            set_assignable_id(assignable_info, SCOPE_CONST, "0")
         } else {
-            assignable_info.id = "1"
+            set_assignable_id(assignable_info, SCOPE_CONST, "1")
         }
     } elif string.strcmp(mono.children.type, "fn_call") == 0 {
         assignable_info = compile_fn_call(ctx, mono.children.children)
     } elif string.strcmp(mono.children.type, "STRING") == 0 {
         string_info := define_string(ctx, mono.children.value) -- defines strings for future reuse, plus defines global functions or data structures when used
-        assignable_info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
-        io.asprintf(&assignable_info.id, "%%.tmp%d", new_uid(ctx))
+        assignable_info = new_assignable_info(curr_node)
+        set_assignable_tmp_id(ctx, assignable_info)
 
         str_tr := type_repr(string_info.type)
-        io.fprintf(ctx.ir, "%s = getelementptr %s, %s*%s, i32 0, i32 0\0A", assignable_info.id, str_tr, str_tr, string_info.id)
+        io.fprintf(ctx.ir, "%s = getelementptr %s, %s*%s, i32 0, i32 0\0A", repr_assignable_id(assignable_info), str_tr, str_tr, repr_assignable_id(string_info))
 
         assignable_info.type = (Type*) sys.malloc(Type_size)
         assignable_info.type.info = null
@@ -993,9 +1044,9 @@ AssignableInfo* compile_mono_assignable(CompilerCtx* ctx, parser.Node* curr_node
         assignable_info.type.of.next = null
 
     } elif string.strcmp(mono.children.type, "CHR") == 0 {
-        assignable_info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
+        assignable_info = new_assignable_info(curr_node)
         chr_len := string.strlen(mono.children.value)
-        assignable_info.id = "0"
+        set_assignable_id(assignable_info, SCOPE_CONST, "0")
 
         if chr_len == 5 {
             -- CHR in the form of "\XX" (hex numbers)
@@ -1053,8 +1104,11 @@ str type_abbr(Type* type) {
 }
 
 AssignableInfo* define_string(CompilerCtx* ctx, str text) {
-    info := (AssignableInfo*) sys.malloc(AssignableInfo_size)
-    io.asprintf(&info.id, "@.str%d", new_uid(ctx))
+    info := new_assignable_info((parser.Node*) null)
+    chr* tmp_buff
+    io.asprintf(&tmp_buff, ".str%d", new_uid(ctx))
+    set_assignable_id(info, SCOPE_GLOBAL, tmp_buff)
+
     info.type = (Type*) sys.malloc(Type_size)
     info.type.info = null
     info.type.container = "array"
@@ -1093,12 +1147,10 @@ void define_module(CompilerCtx* ctx, parser.Node* mod, str as_name, abspath) {
     g.global_type = "module"
     g.next = null
 
-    g.info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
-    g.info.id = abspath
+    g.info = new_assignable_info(mod)
+    set_assignable_id(g.info, SCOPE_CONST, abspath)
     g.info.name_type = "module"
     g.info.type = null
-    g.info.line = mod.line
-    g.info.char_of_line = mod.char_of_line
 
     append_global(ctx, g)
 }
@@ -1157,7 +1209,8 @@ str type_repr(Type* type) {
         io.asprintf(&buf, "[%s x %s]", type.of.next.container, type_repr(type.of))
         return buf
     } elif string.strcmp(type.container, "typealias") == 0 {
-        return type.of.info
+        io.asprintf(&buf, "%%%s", type.of.info)
+        return buf
     } elif string.strcmp(type.container, "str") == 0 {
         return "i8*"
     } else {
@@ -1207,11 +1260,29 @@ Type* syn_function_type(CompilerCtx* ctx, parser.Node* stmt) {
     last_type := return_value_type
     params := syn_function_params(stmt)
 
-    for param_ptr := params; param_ptr != null ; param_ptr = skip_to_type(param_ptr, "type") {
-        param_type := node_to_type(ctx, param_ptr.children)
-        last_type.next = param_type
-        last_type = param_type
-        param_ptr = param_ptr.next
+    for param_ptr := params; param_ptr != null ; {
+        if string.strcmp(param_ptr.type, "WORD") == 0 {
+            last_type.next = type_clone(last_type)
+            last_type.next.next = null
+            last_type = last_type.next
+
+            if param_ptr.next != null {
+                param_ptr = param_ptr.next
+            } else {
+                param_ptr = null
+            }
+        } else {
+            param_type := node_to_type(ctx, param_ptr.children)
+            last_type.next = param_type
+            last_type = param_type
+            param_ptr = param_ptr.next
+
+            if param_ptr.next != null {
+                param_ptr = param_ptr.next.next
+            } else {
+                param_ptr = null
+            }
+        }
     }
 
     -- start parsing argument types

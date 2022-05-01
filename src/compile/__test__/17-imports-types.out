@@ -1,5 +1,6 @@
-define void @f(%0.T.type* %.a.arg) {
-%a = alloca %0.T.type*
-store %0.T.type* %.a.arg, %0.T.type** %a
+%m0$.T.type = type {i32}
+define void @fn.v.m0$.T.typep(%m0$.T.type* %.a.arg) {
+%a = alloca %m0$.T.type*
+store %m0$.T.type* %.a.arg, %m0$.T.type** %a
 ret void
 }

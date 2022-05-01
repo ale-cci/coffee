@@ -4,6 +4,7 @@ import "./std/string" as string
 import "./std/io" as io
 
 import "./peeker" as peeker
+#import "./errors" as errors
 
 
 alias Token = struct {
@@ -187,15 +188,27 @@ Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
 
             c = peeker.read(p)
 
+            chr* type = "OPERATOR"
             if prev_c == '=' & c == '=' {
                 io.asprintf(&buf, "==")
                 c = peeker.read(p)
+            } elif prev_c == '.' & c == '.' {
+                -- ensure next token is . otherwise tokenerror raised
+                c = peeker.read(p)
+                if c != '.' {
+                    io.printf("error on ..\0A")
+                    -- err := new_error("unrecognized operand ..")
+                    sys.exit(1)
+                } else {
+                    io.asprintf(&buf, "...")
+                    type = "KEYWORD"
+                }
             } else {
                 buf = sys.malloc(2)
                 buf[0] = prev_c
                 buf[1] = '\00'
             }
-            push_token(ctx, "OPERATOR", buf)
+            push_token(ctx, type, buf)
         }
     }
 
@@ -206,5 +219,4 @@ Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
     sys.free((chr*) ctx)
     return (Token*) root
 }
-
 
