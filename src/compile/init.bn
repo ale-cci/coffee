@@ -222,7 +222,12 @@ bool compile(CompilerCtx* ctx, parser.Node* ast) {
     -- push global context scope
     push_scope(ctx)
 
-    for s := ast.children; s != null; s = s.next {
+    start := ast.children
+    if string.strcmp(start.type, "head_comment") == 0 {
+        start = start.next
+    }
+
+    for s := start; s != null; s = s.next {
         compile_statement(ctx, s.children)
     }
     has_errors := ctx.errors != null
@@ -486,9 +491,14 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
         ctx.current_module = curr_mod
 
     } else {
-
-        io.printf(":coffee-error: statement of type %s is not implemented\0A", stmt.type)
+        io.printf(err_tmpl(ctx, stmt, "statement of type %s is not implemented"), stmt.type)
     }
+}
+
+chr* err_tmpl(CompilerCtx* ctx, parser.Node* stmt, chr* msg) {
+    chr* buf
+    io.asprintf(&buf, ":coffee-error: (%s: %d:%d) %s\0A", ctx.current_module, stmt.line, stmt.char_of_line, msg)
+    return buf
 }
 
 void compile_fn_params(CompilerCtx* ctx, parser.Node* fn_params) {
@@ -913,15 +923,16 @@ AssignableInfo* compile_assignable_stack(CompilerCtx* ctx, StackHead* stack) {
 
     -- op_id := new_uid(ctx)
     set_assignable_tmp_id(ctx, op_info)
-    io.fprintf(ctx.ir, "%s = %s %s %s, %s\0A", repr_assignable_id(op_info), operator_op(operator), type_repr(A.type), repr_assignable_id(A), repr_assignable_id(B))
+    io.fprintf(ctx.ir, "%s = %s %s %s, %s\0A", repr_assignable_id(op_info), operator_op(ctx, operator), type_repr(A.type), repr_assignable_id(A), repr_assignable_id(B))
 
     return op_info
 }
 
-str operator_op(parser.Node* op) {
+str operator_op(CompilerCtx* ctx, parser.Node* op) {
     if op == null {
         io.printf(":cofee-error: called 'operator_op' with null\0A")
     }
+
     if string.strcmp(op.value, "+") == 0 {
         return "add"
     } elif string.strcmp(op.value, "-") == 0 {
@@ -932,9 +943,10 @@ str operator_op(parser.Node* op) {
         return "sdiv"
     } elif string.strcmp(op.value, "==") == 0 {
         return "icmp eq"
+    } elif string.strcmp(op.value, "!=") == 0 {
+        return "icmp neq"
     } else {
-
-        io.printf(":coffee-error: operator '%s' not implemented\0A", op.value)
+        io.printf(err_tmpl(ctx, op, "operator '%s' not implemented"), op.value)
     }
     return "add"
 }
@@ -944,7 +956,7 @@ Type* operator_type(parser.Node* op) {
     type.info = null
     type.of = null
     type.next = null
-    if string.strcmp(op.value, "==") == 0 {
+    if string.strcmp(op.value, "==") == 0 | string.strcmp(op.value, "!=") == 0 {
         type.container = "bool"
     } else {
         type.container = "int"

@@ -7,6 +7,7 @@ import "../std/sys" as sys
 import "../parser" as parser
 import "../peeker" as peeker
 import "../lexer" as lexer
+import "../errors" as errors
 
 int main() {
     t := testing.init("compile/init.test.bn")
@@ -35,6 +36,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/16-import"))
     testing.run(t, testfile(t, "./compile/__test__/17-imports-types"))
     testing.run(t, testfile(t, "./compile/__test__/18-multi-parameters"))
+    testing.run(t, testfile(t, "./compile/__test__/19-ignores-head-comment"))
 
     testing.cleanup(t)
     return 0
@@ -85,6 +87,12 @@ int testfile(testing.T* t, str filename) {
     sys.free((chr*) p)
 
     ast := parser.ast(grammar, "start", tokens)
+    if ast.err != null {
+        testing.fail(t)
+        errors.freport(t.out, ast.err)
+        return 0
+    }
+
     compiler_ctx := compile.new_context(io.tmpfile(), input_filename)
     compile.compile(compiler_ctx, ast.node)
 

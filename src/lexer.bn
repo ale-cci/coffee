@@ -192,6 +192,9 @@ Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
             if prev_c == '=' & c == '=' {
                 io.asprintf(&buf, "==")
                 c = peeker.read(p)
+            } elif prev_c == '!' & c == '=' {
+                io.asprintf(&buf, "!=")
+                c = peeker.read(p)
             } elif prev_c == '.' & c == '.' {
                 -- ensure next token is . otherwise tokenerror raised
                 c = peeker.read(p)
