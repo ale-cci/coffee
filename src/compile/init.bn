@@ -1110,15 +1110,16 @@ AssignableInfo* compile_mono_assignable(CompilerCtx* ctx, parser.Node* curr_node
         chr_len := string.strlen(mono.children.value)
         set_assignable_id(assignable_info, SCOPE_CONST, "0")
 
+        intval := 0
         if chr_len == 5 {
             -- CHR in the form of "\XX" (hex numbers)
-            intval := 0
             io.sscanf(mono.children.value, "'\5C%x'", &intval)
             io.asprintf(&assignable_info.id, "%d", intval)
 
         } elif chr_len == 3 {
             -- CHR in the form of "X" (single character)
-            io.printf(":coffee-error: not implemented yet\0A")
+            io.sscanf(mono.children.value, "'%c'", &intval)
+            io.asprintf(&assignable_info.id, "%d", intval)
         } else {
             -- malformed character
             io.asprintf(&err_buf, "Invalid character")

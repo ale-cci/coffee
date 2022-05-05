@@ -42,6 +42,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/1C-parses-for-loop-without-init"))
     testing.run(t, testfile(t, "./compile/__test__/1D-parses-for-loop-without-increment"))
     testing.run(t, testfile(t, "./compile/__test__/1E-parses-for-loop-with-assignment-as-increment"))
+    testing.run(t, testfile(t, "./compile/__test__/1F-compiles-char-values"))
 #
     testing.cleanup(t)
     return 0
