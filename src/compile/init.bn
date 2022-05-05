@@ -628,7 +628,12 @@ void compile_for_loop(CompilerCtx* ctx, parser.Node* stmt) {
 
     if string.strcmp(init_stmt.type, "declaration") == 0 {
         compile_declaration(ctx, init_stmt)
+    } elif string.strcmp(init_stmt.type, "assignment") == 0 {
+        compile_expression(ctx, init_stmt)
+    } else {
+        -- coffee error
     }
+
     io.fprintf(ctx.ir, "br label %%.for.start.%d\0A", for_id)
     io.fprintf(ctx.ir, ".for.start.%d:\0A", for_id)
 
