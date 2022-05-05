@@ -630,8 +630,12 @@ void compile_for_loop(CompilerCtx* ctx, parser.Node* stmt) {
         compile_declaration(ctx, init_stmt)
     } elif string.strcmp(init_stmt.type, "assignment") == 0 {
         compile_expression(ctx, init_stmt)
+    } elif string.strcmp(init_stmt.type, "OPERATOR") == 0 {
+        -- no init condition provided
     } else {
         -- coffee error
+        io.printf(err_tmpl(ctx, init_stmt, "unable to compile statement of type %s in for loop init condition"), init_stmt.type)
+        return
     }
 
     io.fprintf(ctx.ir, "br label %%.for.start.%d\0A", for_id)
