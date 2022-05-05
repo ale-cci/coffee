@@ -38,6 +38,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/18-multi-parameters"))
     testing.run(t, testfile(t, "./compile/__test__/19-ignores-head-comment"))
     testing.run(t, testfile(t, "./compile/__test__/1A-parses-vararg"))
+    testing.run(t, testfile(t, "./compile/__test__/1B-parses-for-loop"))
 #
     testing.cleanup(t)
     return 0

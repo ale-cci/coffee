@@ -1,0 +1,14 @@
+define void @fn.v() {
+%i = alloca i32
+store i32 0, i32* %i
+br label %.for.start.0
+.for.start.0:
+br i1 1, label %.for.continue.0, label %.for.end.0
+.for.continue.0:
+%.tmp1 = load i32, i32* %i
+%.tmp2 = add i32 %.tmp1, 1
+store i32 %.tmp2, i32* %i
+br label %.for.start.0
+.for.end.0:
+ret void
+}

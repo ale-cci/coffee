@@ -597,56 +597,11 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
         }
 
     } elif string.strcmp(expr_type, "NL") == 0 {
+        -- skip empty newlines
     } elif string.strcmp(expr_type, "fn_call") == 0 {
-        -- get function name from destination
         compile_fn_call(ctx, stmt.children)
-        -- get function arguments
     } elif string.strcmp(expr_type, "declaration") == 0 {
-
-        Type* decl_type = (Type*) null
-        if string.strcmp(stmt.children.type, "type") == 0 {
-            decl_type = node_to_type(ctx, stmt.children.children)
-        }
-
-        assignable = skip_to_type(stmt.children, "assignable")
-        if assignable != null {
-            a_info = compile_assignable(ctx, assignable)
-        }
-
-        info = new_assignable_info(stmt)
-        info.name_type = "variable"
-        var_name := skip_to_type(stmt.children, "WORD")
-
-        sys.assert(var_name != null, ":coffee-error: unalbe to get declaration name")
-        set_assignable_id(info, SCOPE_LOCAL, var_name.value)
-
-        if decl_type != null {
-            info.type = decl_type
-        } elif a_info != null {
-            info.type = a_info.type
-        }
-        var_type_repr := type_repr(info.type)
-        if a_info != null {
-            a_type_repr := type_repr(a_info.type)
-            type_error := false
-            if string.strlen(a_type_repr) != string.strlen(var_type_repr) {
-                type_error = true
-            } elif string.strcmp(a_type_repr, var_type_repr) != 0 {
-                type_error = true
-            }
-
-            if type_error {
-                io.asprintf(&err_msg, "cannot assign type '%s' to variable of type '%s'", a_type_repr, var_type_repr)
-                new_error(ctx, stmt, err_msg)
-            }
-        }
-        define_assignable(ctx, var_name.value, info)
-
-        io.fprintf(ctx.ir, "%s = alloca %s\0A", repr_assignable_id(info), var_type_repr)
-        if a_info != null {
-            io.fprintf(ctx.ir, "store %s %s, %s* %s\0A", type_repr(a_info.type), repr_assignable_id(a_info), var_type_repr, repr_assignable_id(info))
-        }
-
+        compile_declaration(ctx, stmt)
     } elif string.strcmp(expr_type, "assignment") == 0 {
         assignable = skip_to_type(stmt.children, "assignable")
         dest := compile_addr(ctx, stmt.children)
@@ -660,11 +615,90 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
         io.fprintf(ctx.ir, "store %s %s, %s* %s\0A", type_repr(a_info.type), repr_assignable_id(a_info), type_repr(dest.type), repr_assignable_id(dest))
     } elif string.strcmp(expr_type, "if_block") == 0 {
         compile_if_block(ctx, stmt)
+    } elif string.strcmp(expr_type, "for_loop") == 0 {
+        compile_for_loop(ctx, stmt)
     } else {
-        io.printf(":coffee-error: unable to compile expression '%s'\0A", expr_type)
+        io.printf(err_tmpl(ctx, stmt, "unable to compile expression '%s'"), expr_type)
     }
 }
 
+void compile_for_loop(CompilerCtx* ctx, parser.Node* stmt) {
+    for_id := new_uid(ctx)
+    init_stmt := stmt.children.next
+
+    if string.strcmp(init_stmt.type, "declaration") == 0 {
+        compile_declaration(ctx, init_stmt)
+    }
+    io.fprintf(ctx.ir, "br label %%.for.start.%d\0A", for_id)
+    io.fprintf(ctx.ir, ".for.start.%d:\0A", for_id)
+
+    -- check for 'for' condition
+    fst_colon := skip_to_type(stmt.children, "OPERATOR")
+    condition := fst_colon.next
+    condition_info := compile_assignable(ctx, condition)
+    io.fprintf(ctx.ir, "br %s %s, label %%.for.continue.%d, label %%.for.end.%d\0A", type_repr(condition_info.type), repr_assignable_id(condition_info), for_id, for_id)
+
+    io.fprintf(ctx.ir, ".for.continue.%d:\0A", for_id)
+
+    -- compile body
+
+    snd_colon := skip_to_type(fst_colon.next, "OPERATOR")
+    increment := snd_colon.next
+
+    compile_expression(ctx, increment)
+    -- execute for increment before next loop
+    io.fprintf(ctx.ir, "br label %%.for.start.%d\0A", for_id)
+    io.fprintf(ctx.ir, ".for.end.%d:\0A", for_id)
+}
+
+AssignableInfo* compile_declaration(CompilerCtx* ctx, parser.Node* stmt) {
+    Type* decl_type = (Type*) null
+    AssignableInfo* a_info = (AssignableInfo*) null
+    if string.strcmp(stmt.children.type, "type") == 0 {
+        decl_type = node_to_type(ctx, stmt.children.children)
+    }
+
+    assignable := skip_to_type(stmt.children, "assignable")
+    if assignable != null {
+        a_info = compile_assignable(ctx, assignable)
+    }
+
+    info := new_assignable_info(stmt)
+    info.name_type = "variable"
+    var_name := skip_to_type(stmt.children, "WORD")
+
+    sys.assert(var_name != null, ":coffee-error: unalbe to get declaration name")
+    set_assignable_id(info, SCOPE_LOCAL, var_name.value)
+
+    if decl_type != null {
+        info.type = decl_type
+    } elif a_info != null {
+        info.type = a_info.type
+    }
+    var_type_repr := type_repr(info.type)
+    if a_info != null {
+        a_type_repr := type_repr(a_info.type)
+        type_error := false
+        if string.strlen(a_type_repr) != string.strlen(var_type_repr) {
+            type_error = true
+        } elif string.strcmp(a_type_repr, var_type_repr) != 0 {
+            type_error = true
+        }
+
+        if type_error {
+            chr* err_msg = (chr*) null
+            io.asprintf(&err_msg, "cannot assign type '%s' to variable of type '%s'", a_type_repr, var_type_repr)
+            new_error(ctx, stmt, err_msg)
+        }
+    }
+    define_assignable(ctx, var_name.value, info)
+
+    io.fprintf(ctx.ir, "%s = alloca %s\0A", repr_assignable_id(info), var_type_repr)
+    if a_info != null {
+        io.fprintf(ctx.ir, "store %s %s, %s* %s\0A", type_repr(a_info.type), repr_assignable_id(a_info), var_type_repr, repr_assignable_id(info))
+    }
+    return info
+}
 
 void compile_if_block(CompilerCtx* ctx, parser.Node* stmt) {
 
