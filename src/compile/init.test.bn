@@ -44,6 +44,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/1E-parses-for-loop-with-assignment-as-increment"))
     testing.run(t, testfile(t, "./compile/__test__/1F-compiles-char-values"))
     testing.run(t, testfile(t, "./compile/__test__/20-compiles-arguments-after-implicit-declaration"))
+    testing.run(t, testfile(t, "./compile/__test__/21-compiles-more-expressions"))
 
     testing.cleanup(t)
     return 0

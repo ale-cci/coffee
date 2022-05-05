@@ -90,6 +90,12 @@ int op_precedence(parser.Node* n) {
         return 3
     } elif string.strcmp(op.value, "==") == 0 {
         return 7
+    } elif string.strcmp(op.value, ">") == 0 | string.strcmp(op.value, "<") == 0 {
+        return 6
+    } elif string.strcmp(op.value, "&") == 0 {
+        return 11
+    } elif string.strcmp(op.value, "|") == 0 {
+        return 12
     }
     io.printf(":coffee-error: priority not defined for operator with value: %s\0A", op.value)
     return 4
