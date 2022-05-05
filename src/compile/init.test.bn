@@ -39,6 +39,8 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/19-ignores-head-comment"))
     testing.run(t, testfile(t, "./compile/__test__/1A-parses-vararg"))
     testing.run(t, testfile(t, "./compile/__test__/1B-parses-for-loop"))
+    testing.run(t, testfile(t, "./compile/__test__/1C-parses-for-loop-without-init"))
+    testing.run(t, testfile(t, "./compile/__test__/1D-parses-for-loop-without-increment"))
 #
     testing.cleanup(t)
     return 0

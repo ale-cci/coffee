@@ -1,0 +1,5 @@
+void fn() {
+    i := 0
+    for ; true ; i = i + 1 {
+    }
+}
