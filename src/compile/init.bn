@@ -1333,6 +1333,9 @@ Type* syn_function_type(CompilerCtx* ctx, parser.Node* stmt) {
 
             if param_ptr.next != null {
                 param_ptr = param_ptr.next
+            }
+            if param_ptr.next != null {
+                param_ptr = param_ptr.next
             } else {
                 param_ptr = null
             }
