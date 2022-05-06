@@ -870,12 +870,16 @@ AssignableInfo* get_dotted_name(CompilerCtx* c, parser.Node* dot_name_ptr, Assig
 }
 
 -- returns address for node
-AssignableInfo* compile_addr(CompilerCtx* ctx, parser.Node* curr_node) {
+AssignableInfo* compile_addr(CompilerCtx* ctx, parser.Node* stmt) {
     chr* err_msg
+
+    curr_node := stmt
     if string.strcmp(curr_node.type, "destination") != 0 {
         io.printf(":coffee-error: 'compile_addr' could only be called on destinations for now. (called on %s)\0A", curr_node.type)
-        return (AssignableInfo*) null
+        -- return (AssignableInfo*) null
+        curr_node = stmt.children
     }
+    -- extract the destination
 
     -- type + id of addr
     assignable_name := curr_node.children
@@ -919,8 +923,9 @@ AssignableInfo* compile_addr(CompilerCtx* ctx, parser.Node* curr_node) {
         base_type_2 := type_repr(base.type)
 
         io.fprintf(ctx.ir, "%s = getelementptr %s, %s* %%.tmp%d, %s %s\0A", repr_assignable_id(base), base_type_2, base_type_2, tmp_id, index_type, repr_assignable_id(index_info))
-
     }
+
+    -- extract address if it's a destination
     return base
 }
 
@@ -994,7 +999,7 @@ str operator_op(CompilerCtx* ctx, parser.Node* op) {
     } elif string.strcmp(op.value, "==") == 0 {
         return "icmp eq"
     } elif string.strcmp(op.value, "!=") == 0 {
-        return "icmp neq"
+        return "icmp ne"
     } elif string.strcmp(op.value, ">") == 0 {
         return "icmp sgt"
     } elif string.strcmp(op.value, "<") == 0 {
@@ -1053,13 +1058,14 @@ AssignableInfo* compile_mono_assignable(CompilerCtx* ctx, parser.Node* curr_node
     } elif string.strcmp(mono.children.type, "addr_destination") == 0 {
         assignable_info = new_assignable_info(curr_node)
         dest := skip_to_type(mono.children.children, "destination")
+        var_info := compile_addr(ctx, dest)
 
-        var_info := find_defined(ctx, dest.children)
         if var_info == null {
             io.asprintf(&err_buf, "Name %s is not defined in this scope", dest.children.children.value)
             new_error(ctx, curr_node, err_buf)
             return assignable_info
         }
+
         var_type_repr := type_repr(var_info.type)
         set_assignable_tmp_id(ctx, assignable_info)
 

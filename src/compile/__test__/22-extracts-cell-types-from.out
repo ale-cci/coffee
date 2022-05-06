@@ -1,0 +1,9 @@
+define i1 @fn.b.cp(i8* %.string.arg) {
+%string = alloca i8*
+store i8* %.string.arg, i8** %string
+%.tmp0 = load i8*, i8** %string
+%.tmp1 = getelementptr i8, i8* %.tmp0, i32 0
+%.tmp2 = load i8, i8* %.tmp1
+%.tmp3 = icmp eq i8 %.tmp2, 0
+ret i1 %.tmp3
+}

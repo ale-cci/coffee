@@ -1,0 +1,3 @@
+bool fn(chr* string) {
+    return string[0] == '\00'
+}
