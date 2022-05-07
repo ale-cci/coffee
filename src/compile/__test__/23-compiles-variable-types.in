@@ -1,0 +1,5 @@
+void is_lower(chr* string) {
+    for ; string[0] != '\00' ; {
+        c := string[0]
+    }
+}

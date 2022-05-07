@@ -46,6 +46,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/20-compiles-arguments-after-implicit-declaration"))
     testing.run(t, testfile(t, "./compile/__test__/21-compiles-more-expressions"))
     testing.run(t, testfile(t, "./compile/__test__/22-extracts-cell-types-from"))
+    testing.run(t, testfile(t, "./compile/__test__/23-compiles-variable-types"))
 
     testing.cleanup(t)
     return 0

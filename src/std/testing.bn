@@ -9,7 +9,7 @@ alias T = struct {
     chr* test_name,
     int test_no,
     int* fds,
-    File* out,
+    io.File* out,
 }
 int T_ptr_size = 48
 
@@ -129,7 +129,7 @@ void assert_not_null(T* t, chr* ptr) {
     }
 }
 
-File* tempfile(chr* content) {
+io.File* tempfile(chr* content) {
     fd := io.tmpfile()
     io.fprintf(fd, content)
     io.rewind(fd)

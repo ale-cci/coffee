@@ -675,6 +675,7 @@ AssignableInfo* compile_declaration(CompilerCtx* ctx, parser.Node* stmt) {
     }
 
     assignable := skip_to_type(stmt.children, "assignable")
+
     if assignable != null {
         a_info = compile_assignable(ctx, assignable)
     }
@@ -820,7 +821,7 @@ AssignableInfo* get_dotted_name(CompilerCtx* c, parser.Node* dot_name_ptr, Assig
             new_error(c, dot_name_ptr, err_msg)
         }
         return info
-    } elif string.strcmp(info.name_type, "variable") == 0 & dot_name_ptr.next != null{
+    } elif string.strcmp(info.name_type, "variable") == 0 & dot_name_ptr.next != null {
         if string.strcmp(info.type.container, "struct") != 0 {
             io.asprintf(&err_msg, "cannot get attribute %s from non struct type %s", dot_name_ptr.next.next.value, dot_name_ptr.value)
             new_error(c, dot_name_ptr, err_msg)
@@ -907,6 +908,7 @@ AssignableInfo* compile_addr(CompilerCtx* ctx, parser.Node* stmt) {
     base := get_dotted_name(ctx, assignable_name, info)
 
     -- node has a following square bracket, do something
+
     for addr := curr_node.children.next; addr != null; addr = addr.next.next.next {
         index := addr.next
         index_info := compile_assignable(ctx, index)
@@ -917,12 +919,21 @@ AssignableInfo* compile_addr(CompilerCtx* ctx, parser.Node* stmt) {
         tmp_id := new_uid(ctx)
         io.fprintf(ctx.ir, "%%.tmp%d = load %s, %s* %s\0A", tmp_id, base_type, base_type, repr_assignable_id(base))
 
-        set_assignable_tmp_id(ctx, base)
+        new_base := new_assignable_info(curr_node)
+        set_assignable_tmp_id(ctx, new_base)
 
-        base.type = base.type.of
-        base_type_2 := type_repr(base.type)
+        if base.type.of == null {
+            io.asprintf(&err_msg, "Unable to get address for type: %s", base_type)
+            new_error(ctx, addr, err_msg)
+            return base
+        }
 
-        io.fprintf(ctx.ir, "%s = getelementptr %s, %s* %%.tmp%d, %s %s\0A", repr_assignable_id(base), base_type_2, base_type_2, tmp_id, index_type, repr_assignable_id(index_info))
+        new_base.type = base.type.of
+        base_type_2 := type_repr(new_base.type)
+
+        io.fprintf(ctx.ir, "%s = getelementptr %s, %s* %%.tmp%d, %s %s\0A", repr_assignable_id(new_base), base_type_2, base_type_2, tmp_id, index_type, repr_assignable_id(index_info))
+
+        base = new_base
     }
 
     -- extract address if it's a destination
@@ -985,7 +996,7 @@ AssignableInfo* compile_assignable_stack(CompilerCtx* ctx, StackHead* stack) {
 
 str operator_op(CompilerCtx* ctx, parser.Node* op) {
     if op == null {
-        io.printf(":cofee-error: called 'operator_op' with null\0A")
+        io.printf(err_tmpl(ctx, op, "called 'operator_op' with null"))
     }
 
     if string.strcmp(op.value, "+") == 0 {
@@ -1044,7 +1055,7 @@ AssignableInfo* compile_mono_assignable(CompilerCtx* ctx, parser.Node* curr_node
 
     } elif string.strcmp(mono.children.type, "WORD") == 0 {
         if string.strcmp(mono.children.value, "null") != 0 {
-            io.printf(":coffee-error: unable to interpret %s as mono_assignable\0A")
+            io.printf(err_tmpl(ctx, curr_node, "unable to interpret %s as mono_assignable"), mono.children.value)
             return (AssignableInfo*) null
         }
         assignable_info = new_assignable_info(curr_node)
@@ -1146,7 +1157,7 @@ AssignableInfo* compile_mono_assignable(CompilerCtx* ctx, parser.Node* curr_node
         assignable_info.type.info = null
         assignable_info.type.next = null
     } else {
-        io.printf(":coffee-error: unable to compile assignable of type %s\0A", mono.children.type)
+        io.printf(err_tmpl(ctx, mono, "unable to compile assignable of type %s"), mono.children.type)
         return (AssignableInfo*) null
     }
 
