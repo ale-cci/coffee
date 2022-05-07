@@ -50,6 +50,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/24-reads-type-from-extern-function"))
     testing.run(t, testfile(t, "./compile/__test__/25-correctly-calls-extern-function"))
     testing.run(t, testfile(t, "./compile/__test__/26-can-import-directires-with-relative-imports"))
+    testing.run(t, testfile(t, "./compile/__test__/27-does-not-include-module-twice"))
 
 
     testing.cleanup(t)

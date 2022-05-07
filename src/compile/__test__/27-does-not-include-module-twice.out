@@ -1,0 +1,3 @@
+define void @m1$fn.v() {
+ret void
+}

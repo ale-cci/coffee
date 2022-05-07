@@ -462,28 +462,34 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
         }
 
         -- define module lookup if not found
-        -- found := false
-        -- for m := ctx.modules; m.next != null & found == false; m = m.next {
-        --     found = string.strcmp()
-        -- }
 
-        mod := (ModuleLookup*) sys.malloc(ModuleLookup_size)
-        mod.abspath = mod_abspath
-        mod.next = null
-        mod.scopes = null
-        io.asprintf(&mod.prefix, "m%d$", new_uid(ctx))
-
-        for m := ctx.modules; m.next != null; m = m.next {
+        already_imported := false
+        ModuleLookup* m
+        for m = ctx.modules; m != null & already_imported == false; m = m.next {
+            if string.strcmp(mod_abspath, m.abspath) == 0 {
+                already_imported = true
+            }
         }
-        m.next = mod
-        asname := stmt.children.next.next.next.value
 
-        define_module(ctx, stmt, asname, mod.abspath)
+        if already_imported == false {
+            mod := (ModuleLookup*) sys.malloc(ModuleLookup_size)
+            mod.abspath = mod_abspath
+            mod.next = null
+            mod.scopes = null
+            io.asprintf(&mod.prefix, "m%d$", new_uid(ctx))
 
-        curr_mod := ctx.current_module
-        ctx.current_module = mod.abspath
-        compile_file(ctx, mod.abspath)
-        ctx.current_module = curr_mod
+            for m = ctx.modules; m.next != null; m = m.next {
+            }
+            m.next = mod
+            asname := stmt.children.next.next.next.value
+
+            define_module(ctx, stmt, asname, mod.abspath)
+
+            curr_mod := ctx.current_module
+            ctx.current_module = mod.abspath
+            compile_file(ctx, mod.abspath)
+            ctx.current_module = curr_mod
+        }
 
     } else {
         io.printf(err_tmpl(ctx, stmt, "statement of type %s is not implemented"), stmt.type)
