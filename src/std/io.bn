@@ -81,6 +81,8 @@ extern int fscanf(File* stream, chr* format, ...args)
 extern File* tmpfile()
 extern int fseek(File* stream, int offset, int whence)
 
+extern int sendfile(int fdout, int fdin, int* offset, int count)
+
 
 extern void sync()
 

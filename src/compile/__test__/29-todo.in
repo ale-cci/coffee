@@ -1,0 +1,7 @@
+alias PeekerInfo = struct {
+    bool eof,
+}
+
+bool read(PeekerInfo* p) {
+    return p.eof
+}

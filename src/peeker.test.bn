@@ -29,7 +29,6 @@ int main() {
 }
 
 
-
 int peeker_reads_chars(testing.T* t) {
     -- write to input pipe, read from output pipe
     fd := testing.tempfile("abc")

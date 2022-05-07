@@ -45,7 +45,31 @@ extern int pipe(int* fds)
 extern io.File* popen(str command, str type)
 extern int pclose(io.File* stream)
 
-extern str dirname(str path)
+-- returns directory name of path, libc `dirname` seems not to have a consistent behaviour
+-- between different architectures.
+str dirname(chr* path) {
+    if path == null {
+        return (chr*) null
+    }
+
+    int end_idx
+    stop := false
+    for end_idx = string.strlen(path) -1; end_idx > 0 & stop == false; {
+        if path[end_idx] == '/' {
+            stop = true
+        } else {
+            end_idx = end_idx - 1
+        }
+    }
+
+    path_dirname := (chr*) malloc(end_idx + 1)
+    for i := 0; i < end_idx; i = i + 1 {
+        path_dirname[i] = path[i]
+    }
+    path_dirname[end_idx] = '\00'
+    return path_dirname
+}
+-- extern str dirname(str path)
 
 extern str basename(str path)
 

@@ -1,0 +1,6 @@
+import "./test-dir/import-extern" as ie
+import "./test-dir/import-extern" as ie2
+
+void fn() {
+    ie2.extern_fn(3)
+}

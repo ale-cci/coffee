@@ -38,18 +38,30 @@ int main(int argc, str* argv) {
         return 0
     }
 
+    stderr := io.fdopen(io.STDERR, "w")
 
+    llvm_code := io.tmpfile()
+
+    -- write IR on llc popen
+    compiler_ctx := compile.new_context(llvm_code, argv[1])
+    if compile.compile(compiler_ctx, res.node) {
+        io.fprintf(stderr, "Compilation to llvm interrupted.\0A")
+        return 1
+    }
+
+    -- check for compiler error
+
+    io.fflush(llvm_code)
+    llvm_code_size := io.ftell(llvm_code)
+    io.rewind(llvm_code)
     proc := sys.popen("tee debug.ll | llc - > out.s", "w")
 
-    stderr := io.fdopen(io.STDERR, "w")
+    io.sendfile(io.fileno(proc), io.fileno(llvm_code), (int*) null, llvm_code_size)
+
     if proc == null {
         io.fprintf(stderr, "unable to spawn subprocess\0A")
         return 0
     }
-
-    -- write IR on llc popen
-    compiler_ctx := compile.new_context(proc, argv[1])
-    compile.compile(compiler_ctx, res.node)
 
     if sys.pclose(proc) != 0 {
         io.fprintf(stderr, "error on llc execution")

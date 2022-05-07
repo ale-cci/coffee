@@ -1,0 +1,2 @@
+
+extern int extern_fn(int j)

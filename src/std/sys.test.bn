@@ -1,0 +1,21 @@
+import "./io" as io
+import "./sys" as sys
+import "./testing" as testing
+
+
+int main() {
+    t := testing.init("std/sys.test.bn")
+
+    testing.setup(t, "extracts dirname from file path")
+    testing.run(t, test_extracts_dirname_from_file_path(t))
+
+    testing.cleanup(t)
+    return 0
+}
+
+
+int test_extracts_dirname_from_file_path(testing.T* t) {
+    got := sys.dirname("a/b/c/d")
+    testing.assert_equal_str(t, "a/b/c", got)
+    return 0
+}

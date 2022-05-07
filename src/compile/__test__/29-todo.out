@@ -1,0 +1,8 @@
+%.PeekerInfo.type = type {i1}
+define i1 @read.b..PeekerInfo.typep(%.PeekerInfo.type* %.p.arg) {
+%p = alloca %.PeekerInfo.type*
+store %.PeekerInfo.type* %.p.arg, %.PeekerInfo.type** %p
+%.tmp0 = getelementptr {i1}, {i1}* %p, i32 0, i32 0
+%.tmp1 = load i1, i1* %.tmp0
+ret i1 %.tmp1
+}
