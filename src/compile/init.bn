@@ -334,9 +334,12 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
             return
         }
 
-        info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
-        set_assignable_id(info, SCOPE_GLOBAL, stmt.children.next.value)
+        info = new_assignable_info(stmt)
+        global_name := stmt.children.next.value
+        set_assignable_id(info, SCOPE_GLOBAL, global_name)
         info.type = a_info.type
+        info.name_type = "variable"
+        define_assignable(ctx, global_name, info)
 
         io.fprintf(ctx.ir, "%s = constant %s %s\0A", repr_assignable_id(info), type_repr(ctx, info.type), repr_assignable_id(a_info))
 
@@ -798,10 +801,10 @@ void compile_if_block(CompilerCtx* ctx, parser.Node* stmt) {
 }
 
 
-void new_error(CompilerCtx* c, parser.Node* curr_node, str msg) {
+void new_error(CompilerCtx* ctx, parser.Node* curr_node, str msg) {
     if curr_node != null {
-        err := errors.new(curr_node.filename, curr_node.line, curr_node.char_of_line, msg)
-        append_error(c, err)
+        err := errors.new(ctx.current_module, curr_node.line, curr_node.char_of_line, msg)
+        append_error(ctx, err)
     } else {
         sys.assert(false, "Programming error, unable to create new error from null node")
     }
@@ -1064,7 +1067,7 @@ AssignableInfo* compile_assignable(CompilerCtx* ctx, parser.Node* curr_node) {
         type := node_to_type(ctx, cast_type.children)
         -- chr* new_id
         -- io.asprintf(&new_id, "%%.tmp%d", new_uid(ctx))
-        prev_id := info.id
+        prev_id := repr_assignable_id(info)
         set_assignable_tmp_id(ctx, info)
 
         io.fprintf(ctx.ir, "%s = bitcast %s %s to %s\0A", repr_assignable_id(info), type_repr(ctx, info.type), prev_id, type_repr(ctx, type))

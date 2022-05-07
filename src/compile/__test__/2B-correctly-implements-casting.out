@@ -1,0 +1,7 @@
+define i32* @fn.ip.cp(i8* %.a.arg) {
+%a = alloca i8*
+store i8* %.a.arg, i8** %a
+%.tmp0 = load i8*, i8** %a
+%.tmp1 = bitcast i8* %.tmp0 to i32*
+ret i32* %.tmp1
+}

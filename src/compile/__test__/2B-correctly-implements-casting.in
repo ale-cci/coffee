@@ -1,0 +1,3 @@
+int* fn(chr* a) {
+    return (int*) a
+}

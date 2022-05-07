@@ -52,7 +52,9 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/26-can-import-directires-with-relative-imports"))
     testing.run(t, testfile(t, "./compile/__test__/27-does-not-include-module-twice"))
     testing.run(t, testfile(t, "./compile/__test__/28-can-call-imported-externs"))
-    testing.run(t, testfile(t, "./compile/__test__/29-todo"))
+    testing.run(t, testfile(t, "./compile/__test__/29-auto-resolves-pointers"))
+    testing.run(t, testfile(t, "./compile/__test__/2A-imports-global-variables"))
+    testing.run(t, testfile(t, "./compile/__test__/2B-correctly-implements-casting"))
 
 
     testing.cleanup(t)

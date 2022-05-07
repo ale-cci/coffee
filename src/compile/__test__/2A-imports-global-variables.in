@@ -1,0 +1,5 @@
+import "./test-dir/test-import-globals" as g
+
+int fn() {
+    return g.X
+}
