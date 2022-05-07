@@ -896,14 +896,20 @@ AssignableInfo* get_dotted_name(CompilerCtx* ctx, parser.Node* dot_name_ptr, Ass
         }
         return info
     } elif string.strcmp(info.name_type, "variable") == 0 & dot_name_ptr.next != null {
-        var_type := type_clone(info.type)
+        base_var := info
+        -- var_type := type_clone(info.type)
 
         aliased := true
         for ; aliased ; {
-            if string.strcmp(var_type.container, "ptr") == 0  {
-                var_type = var_type.of
-            } elif string.strcmp(var_type.container, "typealias") == 0 {
-                scope := find_defined_str(ctx, ctx.current_module, var_type.of.info)
+            if string.strcmp(base_var.type.container, "ptr") == 0  {
+                new_base := new_assignable_info(dot_name_ptr)
+                set_assignable_tmp_id(ctx, new_base)
+                new_base.type = base_var.type.of
+
+                io.fprintf(ctx.ir, "%s = load %s*, %s* %s\0A", repr_assignable_id(new_base), type_repr(ctx, new_base.type), type_repr(ctx, base_var.type), repr_assignable_id(base_var))
+                base_var = new_base
+            } elif string.strcmp(base_var.type.container, "typealias") == 0 {
+                scope := find_defined_str(ctx, ctx.current_module, base_var.type.of.info)
                 aliased_type := scope.info
                 if aliased_type == null {
                     io.printf(err_tmpl(ctx, dot_name_ptr, "unable to resolve definition of typealias\0A"))
@@ -913,14 +919,14 @@ AssignableInfo* get_dotted_name(CompilerCtx* ctx, parser.Node* dot_name_ptr, Ass
                     io.printf(err_tmpl(ctx, dot_name_ptr, "error resolving trypealias\0A"))
                     return (AssignableInfo*) null
                 }
-                var_type = aliased_type.type
+                base_var.type = aliased_type.type
             } else {
                 aliased = false
             }
         }
 
 
-        if string.strcmp(var_type.container, "struct") != 0 {
+        if string.strcmp(base_var.type.container, "struct") != 0 {
             io.asprintf(&err_msg, "cannot get attribute %s from non struct type %s", dot_name_ptr.next.next.value, dot_name_ptr.value)
             new_error(ctx, dot_name_ptr, err_msg)
             return (AssignableInfo*) null
@@ -933,9 +939,8 @@ AssignableInfo* get_dotted_name(CompilerCtx* ctx, parser.Node* dot_name_ptr, Ass
         field_id := 0
         found_field := (Type*) null
 
-        -- here field.info could be null...
         -- here, from a struct i'm extracting the value of the field.
-        for field := var_type.of; quit == false; field = field.next {
+        for field := base_var.type.of; quit == false; field = field.next {
             if field == null {
                 quit = true
             } elif string.strcmp(field.info, field_name) == 0 {
@@ -958,8 +963,8 @@ AssignableInfo* get_dotted_name(CompilerCtx* ctx, parser.Node* dot_name_ptr, Ass
         set_assignable_tmp_id(ctx, new_info)
         new_info.name_type = "variable"
 
-        info_tr := type_repr(ctx, var_type)
-        io.fprintf(ctx.ir, "%s = getelementptr %s, %s* %s, i32 0, i32 %d\0A", repr_assignable_id(new_info), info_tr, info_tr, repr_assignable_id(info), field_id)
+        info_tr := type_repr(ctx, base_var.type)
+        io.fprintf(ctx.ir, "%s = getelementptr %s, %s* %s, i32 0, i32 %d\0A", repr_assignable_id(new_info), info_tr, info_tr, repr_assignable_id(base_var), field_id)
 
         return get_dotted_name(ctx, dot_name_ptr.next.next, new_info)
 
