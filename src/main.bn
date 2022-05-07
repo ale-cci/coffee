@@ -39,7 +39,7 @@ int main(int argc, str* argv) {
     }
 
 
-    proc := sys.popen("llc - > out.s", "w")
+    proc := sys.popen("llc - | tee debug.ll > out.s", "w")
 
     stderr := io.fdopen(io.STDERR, "w")
     if proc == null {

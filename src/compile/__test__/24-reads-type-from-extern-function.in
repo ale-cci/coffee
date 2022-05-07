@@ -1,0 +1,6 @@
+extern chr* malloc()
+
+void alloc() {
+    test := malloc()
+}
+
