@@ -339,7 +339,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
         io.fprintf(ctx.ir, "%s = type %s\0A", repr_assignable_id(info), type_repr(type_struct))
 
     } elif string.strcmp(stmt.type, "extern") == 0 {
-        info = (AssignableInfo*) sys.malloc(AssignableInfo_size)
+        info = new_assignable_info(stmt)
         info.type = syn_function_type(ctx, stmt.children.next)
         info.name_type = "extern"
 
@@ -442,30 +442,22 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt) {
         -- 1. get file cwd
         -- check if module is already imported in module lookup
         mod_name := stmt.children.next.value
-        -- mod_abspath := sys.malloc(4096)
-        mod_abspath := stmt.filename
-
-        cwd := sys.malloc(4096)
-        cwd = sys.getcwd(cwd, 4096)
+        mod_abspath := ctx.current_module
 
         dirname := sys.dirname(mod_abspath)
-        io.asprintf(&mod_abspath, "%s/%s/", cwd, dirname)
-        mod_abspath = sys.realloc(mod_abspath, 4096)
 
-        offset := string.strlen(mod_abspath)
-
-        for i := 1; mod_name[i] != '\22'; i = i + 1 {
-            mod_abspath[offset + i-1] = mod_name[i]
+        mod_name_len := string.strlen(mod_name)
+        trimmed_name := sys.malloc(mod_name_len -1)
+        for i := 1 ; i < mod_name_len - 1; i = i + 1 {
+            trimmed_name[i - 1] = mod_name[i]
         }
-        last_idx := offset + string.strlen(mod_name) - 2
-        mod_abspath[last_idx + 0] = '.'
-        mod_abspath[last_idx + 1] = 'b'
-        mod_abspath[last_idx + 2] = 'n'
-        mod_abspath[last_idx + 3] = '\00'
-
+        trimmed_name[mod_name_len -2] = '\00'
+        io.asprintf(&mod_abspath, "%s/%s.bn", dirname, trimmed_name)
         mod_abspath = sys.realpath(mod_abspath, sys.malloc(4096))
+
         if mod_abspath == null {
-            io.asprintf(&err_buf, "'%s' file not found.", mod_name)
+            io.asprintf(&err_buf, "Unable to import '%s' no such file or directory.", mod_name)
+            new_error(ctx, stmt, err_buf)
             return
         }
 
@@ -577,7 +569,7 @@ AssignableInfo* compile_fn_call(CompilerCtx* ctx, parser.Node* stmt) {
 
     call_info := new_assignable_info(stmt)
     set_assignable_tmp_id(ctx, call_info)
-    call_info.type = info.type.of
+    call_info.type = type_clone(info.type.of)
     call_info.type.next = null
 
     io.fprintf(ctx.ir, "%s = call %s %s(%s)\0A", repr_assignable_id(call_info), type_repr(info.type), repr_assignable_id(info), params_buff)
@@ -898,8 +890,8 @@ AssignableInfo* compile_addr(CompilerCtx* ctx, parser.Node* stmt) {
     info := find_defined(ctx, assignable_name)
     if info == null {
         -- error! name is not defined
-        io.asprintf(&err_msg, "name '%s' is not defined\0A", assignable_name.children.value)
-        new_error(ctx, curr_node, err_msg)
+        io.asprintf(&err_msg, "name '%s' is not defined", assignable_name.children.value)
+        new_error(ctx, assignable_name, err_msg)
         return (AssignableInfo*) null
     }
 
@@ -1320,6 +1312,8 @@ str type_repr(Type* type) {
         return "i8*"
     } elif string.strcmp(type.container, "vararg") == 0 {
         return "..."
+    } elif string.strcmp(type.container, "error") == 0 {
+        -- syntax error occurred before, not returning anything as type container
     } else {
         io.printf(":coffee-error: 'type_repr' not implemented for type '%s'\0A", type.container)
     }

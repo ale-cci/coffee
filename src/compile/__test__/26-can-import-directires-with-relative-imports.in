@@ -1,0 +1,1 @@
+import "./test-dir/test-import" as imp_dir

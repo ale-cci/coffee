@@ -1,0 +1,5 @@
+extern int strlen(chr* string)
+
+int fn() {
+    return strlen("the quick brown fox")
+}

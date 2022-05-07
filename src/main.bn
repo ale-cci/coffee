@@ -39,7 +39,7 @@ int main(int argc, str* argv) {
     }
 
 
-    proc := sys.popen("llc - | tee debug.ll > out.s", "w")
+    proc := sys.popen("tee debug.ll | llc - > out.s", "w")
 
     stderr := io.fdopen(io.STDERR, "w")
     if proc == null {
@@ -48,7 +48,7 @@ int main(int argc, str* argv) {
     }
 
     -- write IR on llc popen
-    compiler_ctx := compile.new_context(proc, argv[0])
+    compiler_ctx := compile.new_context(proc, argv[1])
     compile.compile(compiler_ctx, res.node)
 
     if sys.pclose(proc) != 0 {
