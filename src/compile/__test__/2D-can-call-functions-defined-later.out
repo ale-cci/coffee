@@ -1,0 +1,7 @@
+define void @fn1.v() {
+call void() @fn2.v()
+ret void
+}
+define void @fn2.v() {
+ret void
+}

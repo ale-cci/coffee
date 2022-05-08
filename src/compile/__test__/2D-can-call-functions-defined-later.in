@@ -1,0 +1,6 @@
+void fn1() {
+    fn2()
+}
+
+void fn2() {
+}
