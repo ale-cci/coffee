@@ -1,0 +1,5 @@
+import "./test-dir/import-struct" as is
+
+int fn(is.T* obj) {
+    return obj.a
+}

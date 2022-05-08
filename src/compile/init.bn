@@ -897,36 +897,24 @@ AssignableInfo* get_dotted_name(CompilerCtx* ctx, parser.Node* dot_name_ptr, Ass
         return info
     } elif string.strcmp(info.name_type, "variable") == 0 & dot_name_ptr.next != null {
         base_var := info
-        -- var_type := type_clone(info.type)
 
-        aliased := true
-        for ; aliased ; {
-            if string.strcmp(base_var.type.container, "ptr") == 0  {
-                new_base := new_assignable_info(dot_name_ptr)
-                set_assignable_tmp_id(ctx, new_base)
-                new_base.type = base_var.type.of
+        -- auto-dereference variable
+        for ; string.strcmp(base_var.type.container, "ptr") == 0 ; {
+            new_base := new_assignable_info(dot_name_ptr)
+            set_assignable_tmp_id(ctx, new_base)
+            new_base.type = base_var.type.of
 
-                io.fprintf(ctx.ir, "%s = load %s*, %s* %s\0A", repr_assignable_id(new_base), type_repr(ctx, new_base.type), type_repr(ctx, base_var.type), repr_assignable_id(base_var))
-                base_var = new_base
-            } elif string.strcmp(base_var.type.container, "typealias") == 0 {
-                scope := find_defined_str(ctx, ctx.current_module, base_var.type.of.info)
-                aliased_type := scope.info
-                if aliased_type == null {
-                    io.printf(err_tmpl(ctx, dot_name_ptr, "unable to resolve definition of typealias\0A"))
-                    return (AssignableInfo*) null
-                }
-                if string.strcmp(aliased_type.name_type, "typealias") != 0 {
-                    io.printf(err_tmpl(ctx, dot_name_ptr, "error resolving trypealias\0A"))
-                    return (AssignableInfo*) null
-                }
-                base_var.type = aliased_type.type
-            } else {
-                aliased = false
-            }
+
+            io.fprintf(ctx.ir, "%s = load %s*, %s* %s\0A", repr_assignable_id(new_base), type_repr(ctx, new_base.type), type_repr(ctx, base_var.type), repr_assignable_id(base_var))
+            base_var = new_base
         }
 
+        struct_info := base_var.type
+        if string.strcmp(struct_info.container, "typealias") == 0 {
+            struct_info = struct_info.of
+        }
 
-        if string.strcmp(base_var.type.container, "struct") != 0 {
+        if string.strcmp(struct_info.container, "struct") != 0 {
             io.asprintf(&err_msg, "cannot get attribute %s from non struct type %s", dot_name_ptr.next.next.value, dot_name_ptr.value)
             new_error(ctx, dot_name_ptr, err_msg)
             return (AssignableInfo*) null
@@ -940,7 +928,7 @@ AssignableInfo* get_dotted_name(CompilerCtx* ctx, parser.Node* dot_name_ptr, Ass
         found_field := (Type*) null
 
         -- here, from a struct i'm extracting the value of the field.
-        for field := base_var.type.of; quit == false; field = field.next {
+        for field := struct_info.of; quit == false; field = field.next {
             if field == null {
                 quit = true
             } elif string.strcmp(field.info, field_name) == 0 {
@@ -1281,7 +1269,7 @@ str type_abbr(Type* type) {
         io.asprintf(&buf, "%sp", type_abbr(type.of))
         return buf
     } elif string.strcmp(type.container, "typealias") == 0 {
-        return type.of.repr
+        return type.repr
     } else {
         io.printf(":coffee-error: unable to abbreviate type %s", type.container)
     }
@@ -1376,7 +1364,7 @@ str type_repr(CompilerCtx* ctx, Type* type) {
         io.asprintf(&buf, "[%s x %s]", type.of.next.container, type_repr(ctx, type.of))
         return buf
     } elif string.strcmp(type.container, "typealias") == 0 {
-        io.asprintf(&buf, "%%%s", type.of.repr)
+        io.asprintf(&buf, "%%%s", type.repr)
         return buf
     } elif string.strcmp(type.container, "str") == 0 {
         return "i8*"
@@ -1505,10 +1493,17 @@ Type* node_to_type(CompilerCtx* ctx, parser.Node* stmt) {
         }
 
         t.container = "typealias"
-        t.of = new_type()
-        t.of.container = "alias"
-        t.of.info = base.name
-        t.of.repr = base.info.id
+
+        t.info = base.name
+        t.repr = base.info.id
+        t.of = base.info.type
+
+        -- t.of = new_type()
+        -- t.of.container = "alias"
+        -- t.of.info = base.name
+        -- t.of.repr = base.info.id
+
+
     } elif string.strcmp(stmt.value, "...") == 0 {
         t.container = "vararg"
     } else {

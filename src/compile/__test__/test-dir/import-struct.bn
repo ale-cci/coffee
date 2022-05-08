@@ -1,0 +1,5 @@
+alias T = struct {
+    int a,
+    chr b,
+    str c,
+}

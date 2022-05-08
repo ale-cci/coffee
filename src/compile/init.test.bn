@@ -55,6 +55,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/29-auto-resolves-pointers"))
     testing.run(t, testfile(t, "./compile/__test__/2A-imports-global-variables"))
     testing.run(t, testfile(t, "./compile/__test__/2B-correctly-implements-casting"))
+    testing.run(t, testfile(t, "./compile/__test__/2C-correctly-resolves-struct-fields"))
 
 
     testing.cleanup(t)

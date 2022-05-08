@@ -1,0 +1,9 @@
+%m0$.T.type = type {i32,i8,i8*}
+define i32 @fn.i.m0$.T.typep(%m0$.T.type* %.obj.arg) {
+%obj = alloca %m0$.T.type*
+store %m0$.T.type* %.obj.arg, %m0$.T.type** %obj
+%.tmp1 = load %m0$.T.type*, %m0$.T.type** %obj
+%.tmp2 = getelementptr %m0$.T.type, %m0$.T.type* %.tmp1, i32 0, i32 0
+%.tmp3 = load i32, i32* %.tmp2
+ret i32 %.tmp3
+}

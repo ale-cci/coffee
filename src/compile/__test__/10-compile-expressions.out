@@ -6,8 +6,9 @@ define void @f.v() {
 %.tmp4 = icmp eq i32 %.tmp3, 6
 %t = alloca i1
 store i1 %.tmp4, i1* %t
-%.tmp5 = icmp ne i32 1, 2
+%.tmp5 = add i32 2, 3
+%.tmp6 = icmp ne i32 1, %.tmp5
 %j = alloca i1
-store i1 %.tmp5, i1* %j
+store i1 %.tmp6, i1* %j
 ret void
 }

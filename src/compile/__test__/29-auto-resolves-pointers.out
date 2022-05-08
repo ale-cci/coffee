@@ -3,7 +3,7 @@ define i1 @read.b..PeekerInfo.typep(%.PeekerInfo.type* %.p.arg) {
 %p = alloca %.PeekerInfo.type*
 store %.PeekerInfo.type* %.p.arg, %.PeekerInfo.type** %p
 %.tmp0 = load %.PeekerInfo.type*, %.PeekerInfo.type** %p
-%.tmp1 = getelementptr {i1}, {i1}* %.tmp0, i32 0, i32 0
+%.tmp1 = getelementptr %.PeekerInfo.type, %.PeekerInfo.type* %.tmp0, i32 0, i32 0
 %.tmp2 = load i1, i1* %.tmp1
 ret i1 %.tmp2
 }
