@@ -1,0 +1,8 @@
+alias T = struct {
+    T* next,
+    bool val,
+}
+
+bool fn(T* t) {
+    return t.next.next.val
+}

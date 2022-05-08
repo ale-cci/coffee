@@ -351,30 +351,27 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
 
     } elif string.strcmp(stmt.type, "typealias") == 0 {
 
-        type_decl := skip_to_type(stmt.children, "type")
         type_name := stmt.children.next.value
 
-        info = new_assignable_info(stmt)
-
-        mod_from := get_current_module(ctx)
-        io.asprintf(&tmp_buff, "%s.%s.type", mod_from.prefix, type_name)
-        set_assignable_id(info, SCOPE_LOCAL, tmp_buff)
-
-        info.name_type = "typealias"
-        info.line = stmt.line
-        info.char_of_line = stmt.char_of_line
-
         if shallow == true {
+            info = new_assignable_info(stmt)
+            mod_from := get_current_module(ctx)
+            io.asprintf(&tmp_buff, "%s.%s.type", mod_from.prefix, type_name)
+            set_assignable_id(info, SCOPE_LOCAL, tmp_buff)
+
+            info.name_type = "typealias"
+            info.line = stmt.line
+            info.char_of_line = stmt.char_of_line
+
             define_assignable(ctx, type_name, info)
-        }
-        type_struct := node_to_type(ctx, type_decl.children)
-        info.type = type_struct
 
-        -- g := define_typealias(ctx, info, type_name)
-        -- g.info.type = type_struct
-
-        if shallow == false {
-            io.fprintf(ctx.ir, "%s = type %s\0A", repr_assignable_id(info), type_repr(ctx, type_struct))
+            type_decl := skip_to_type(stmt.children, "type")
+            type_struct := node_to_type(ctx, type_decl.children)
+            info.type = type_struct
+        } else {
+            scope := find_defined_str(ctx, ctx.current_module, type_name)
+            info = scope.info
+            io.fprintf(ctx.ir, "%s = type %s\0A", repr_assignable_id(info), type_repr(ctx, info.type))
         }
 
     } elif string.strcmp(stmt.type, "extern") == 0 {
@@ -864,14 +861,13 @@ ScopeItem* find_defined_in(CompilerCtx* ctx, str module, parser.Node* dotted_nam
 
     found := find_defined_str(ctx, module, dotted_name.value)
     if found == null {
-        io.asprintf(&err_buf, "Module %s has no attribute named: %s", module, dotted_name.next.next.value)
-        new_error(ctx, dotted_name, "Module %s has no attribute named: %s")
+        io.asprintf(&err_buf, "Name %s not found in module %s", dotted_name.value, module)
+        new_error(ctx, dotted_name, err_buf)
         return (ScopeItem*) null
     }
 
     for ; dotted_name.next != null & string.strcmp(found.info.name_type, "module") == 0 ; {
         found = find_defined_in(ctx, found.info.id, dotted_name.next.next)
-        dotted_name = dotted_name.next.next
 
         if found == null {
             return (ScopeItem*) null
@@ -916,6 +912,7 @@ AssignableInfo* get_dotted_name(CompilerCtx* ctx, parser.Node* dot_name_ptr, Ass
         if dot_name_ptr.next != null {
             io.asprintf(&err_msg, "cannot get attribute %s from function type %s", dot_name_ptr.next.next.value, dot_name_ptr.value)
             new_error(ctx, dot_name_ptr, err_msg)
+            return (AssignableInfo*) null
         }
         return info
     } elif string.strcmp(info.name_type, "variable") == 0 & dot_name_ptr.next != null {
@@ -1293,6 +1290,8 @@ str type_abbr(Type* type) {
         return buf
     } elif string.strcmp(type.container, "typealias") == 0 {
         return type.repr
+    } elif string.strcmp(type.container, "error") == 0 {
+        return "?"
     } else {
         io.printf(":coffee-error: unable to abbreviate type %s", type.container)
     }
@@ -1343,7 +1342,7 @@ void append_global(CompilerCtx* ctx, GlobalName* g) {
 
 str type_repr(CompilerCtx* ctx, Type* type) {
     if type == null {
-        io.printf(":panic: called 'type_repr' on null type\0A")
+        io.printf(":panic: %s called 'type_repr' on null type\0A", ctx.current_module)
         return "?"
     }
     sys.assert(type.container != null, "called 'type_repr' with malformed type, container is null.")
@@ -1519,13 +1518,8 @@ Type* node_to_type(CompilerCtx* ctx, parser.Node* stmt) {
 
         t.info = base.name
         t.repr = base.info.id
+
         t.of = base.info.type
-
-        -- t.of = new_type()
-        -- t.of.container = "alias"
-        -- t.of.info = base.name
-        -- t.of.repr = base.info.id
-
 
     } elif string.strcmp(stmt.value, "...") == 0 {
         t.container = "vararg"

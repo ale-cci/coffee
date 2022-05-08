@@ -30,5 +30,5 @@ void report(Error* e) {
 }
 
 void freport(io.File* fd, Error* e) {
-    io.fprintf(fd, "[%s %d:%d] error: %s\0A", e.line, e.char_of_line, e.message)
+    io.fprintf(fd, "[%s %d:%d] error: %s\0A", e.filename, e.line, e.char_of_line, e.message)
 }
