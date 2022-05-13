@@ -1,0 +1,13 @@
+%.T.type = type {%.T.type*,i1}
+define i1 @fn.b..T.typep(%.T.type* %.t.arg) {
+%t = alloca %.T.type*
+store %.T.type* %.t.arg, %.T.type** %t
+%.tmp0 = load %.T.type*, %.T.type** %t
+%.tmp1 = getelementptr %.T.type, %.T.type* %.tmp0, i32 0, i32 0
+%.tmp2 = load %.T.type*, %.T.type** %.tmp1
+%.tmp3 = getelementptr %.T.type, %.T.type* %.tmp2, i32 0, i32 0
+%.tmp4 = load %.T.type*, %.T.type** %.tmp3
+%.tmp5 = getelementptr %.T.type, %.T.type* %.tmp4, i32 0, i32 1
+%.tmp6 = load i1, i1* %.tmp5
+ret i1 %.tmp6
+}

@@ -56,6 +56,48 @@ Type* new_type() {
     return type
 }
 
+void copy_type(Type* dest, Type* src) {
+    dest.container = src.container
+    dest.info = src.info
+    dest.repr = src.repr
+
+    if dest.of != src.of {
+        dest.of = src.of
+        copy_type(dest.of, src.of)
+    }
+
+    if dest.next != src.next {
+        dest.next = src.next
+        copy_type(dest.next, src.next)
+    }
+}
+
+void debug_type(Type* t, int level) {
+    chr* indent = (chr*) sys.malloc(level + 1)
+    for i := 0 ; i < level; i = i + 1 {
+        indent[i] = ' '
+    }
+    indent[level] = '\00'
+
+    io.printf("%s{\0A", indent)
+    io.printf("%s  container: \22%s\22\0A", indent, t.container)
+    io.printf("%s  info: \22%s\22\0A", indent, t.info)
+    io.printf("%s  repr: \22%s\22\0A", indent, t.repr)
+    if t.of == null {
+        io.printf("%s  of: (null)\0A", indent)
+    } else {
+        io.printf("%s  of: \0A", indent)
+        debug_type(t.of, level + 1)
+    }
+    if t.next == null {
+        io.printf("%s  next: (null)\0A", indent)
+    } else {
+        io.printf("%s  next: \0A", indent)
+        debug_type(t.next, level + 1)
+    }
+    io.printf("%s}\0A", indent)
+}
+
 alias AssignableInfo = struct {
     -- uniquely identifies assignable
     chr* id,
@@ -362,12 +404,17 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
             info.name_type = "typealias"
             info.line = stmt.line
             info.char_of_line = stmt.char_of_line
+            info.type = new_type()
 
             define_assignable(ctx, type_name, info)
 
             type_decl := skip_to_type(stmt.children, "type")
             type_struct := node_to_type(ctx, type_decl.children)
+
+            copy_type(info.type, type_struct)
             info.type = type_struct
+
+            -- debug_type(info.type, 0)
         } else {
             scope := find_defined_str(ctx, ctx.current_module, type_name)
             info = scope.info
@@ -918,18 +965,20 @@ AssignableInfo* get_dotted_name(CompilerCtx* ctx, parser.Node* dot_name_ptr, Ass
     } elif string.strcmp(info.name_type, "variable") == 0 & dot_name_ptr.next != null {
         base_var := info
 
+        struct_info := base_var.type
+
         -- auto-dereference variable
         for ; string.strcmp(base_var.type.container, "ptr") == 0 ; {
             new_base := new_assignable_info(dot_name_ptr)
             set_assignable_tmp_id(ctx, new_base)
             new_base.type = base_var.type.of
 
-
             io.fprintf(ctx.ir, "%s = load %s*, %s* %s\0A", repr_assignable_id(new_base), type_repr(ctx, new_base.type), type_repr(ctx, base_var.type), repr_assignable_id(base_var))
             base_var = new_base
+
+            struct_info = struct_info.of
         }
 
-        struct_info := base_var.type
         if string.strcmp(struct_info.container, "typealias") == 0 {
             struct_info = struct_info.of
         }
@@ -1536,3 +1585,4 @@ Type* node_to_type(CompilerCtx* ctx, parser.Node* stmt) {
 
     return t
 }
+
