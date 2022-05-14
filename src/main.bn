@@ -1,5 +1,6 @@
 #!/usr/bin/env coffee
 import "./std/io" as io
+import "./std/ioutil" as ioutil
 import "./std/sys" as sys
 import "./std/string" as string
 
@@ -14,6 +15,11 @@ int main(int argc, str* argv) {
     check_args(argc, argv)
 
     grammar_file := io.fopen("./syntax.txt", "r")
+    if grammar_file == null {
+        io.printf("Unable to find ./syntax.txt file\0A")
+        return 1
+    }
+
     ctx := parser.new_context(grammar_file)
     grammar := parser.parse_grammar(ctx)
     sys.free((chr*) ctx)
@@ -56,7 +62,7 @@ int main(int argc, str* argv) {
     io.rewind(llvm_code)
     proc := sys.popen("tee debug.ll | llc - > out.s", "w")
 
-    io.sendfile(io.fileno(proc), io.fileno(llvm_code), (int*) null, llvm_code_size)
+    ioutil.copy(io.fileno(proc), io.fileno(llvm_code))
 
     if proc == null {
         io.fprintf(stderr, "unable to spawn subprocess\0A")

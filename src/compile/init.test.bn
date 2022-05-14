@@ -61,6 +61,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/2F-test-recursive-calls"))
     testing.run(t, testfile(t, "./compile/__test__/30-correctly-casts-null"))
     testing.run(t, testfile(t, "./compile/__test__/31-prevent-compile-globals-multiple-times"))
+    testing.run(t, testfile(t, "./compile/__test__/32-correctly-counts-string-size"))
 
 
     testing.cleanup(t)

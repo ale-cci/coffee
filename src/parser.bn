@@ -223,6 +223,7 @@ Rule* parse_rule(ParsingContext* ctx) {
     ctx.current_token = ctx.current_token.next
 
     if string.strcmp(ctx.current_token.value, ":") != 0 {
+        io.printf(ctx.current_token.value)
         parser_error(ctx, "expected : after rule name")
     }
     ctx.current_token = ctx.current_token.next

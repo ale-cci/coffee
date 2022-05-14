@@ -23,5 +23,6 @@ case $1 in
 
     *)
         coffee -in main.bn -out run
+        ./run main.bn && mv out run
         ;;
 esac

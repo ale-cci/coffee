@@ -24,3 +24,15 @@ chr* readall(int fd) {
     return content
 }
 
+void copy(int dest, src) {
+    int buf_size = 4096
+    chr* buf = sys.malloc(4096)
+
+    to_write := 1
+
+    for ; to_write > 0 ; {
+        to_write = io.read(src, buf, buf_size)
+        io.write(dest, buf, to_write)
+    }
+}
+

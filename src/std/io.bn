@@ -83,7 +83,6 @@ extern int fseek(File* stream, int offset, int whence)
 
 extern int sendfile(int fdout, int fdin, int* offset, int count)
 
-
 extern void sync()
 
 extern int fflush(File* f)
