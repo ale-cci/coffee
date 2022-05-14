@@ -90,6 +90,8 @@ int op_precedence(parser.Node* n) {
         return 3
     } elif string.strcmp(op.value, "==") == 0 | string.strcmp(op.value, "!=") == 0 {
         return 7
+    } elif string.strcmp(op.value, ">=") == 0 | string.strcmp(op.value, "<=") == 0 {
+        return 6
     } elif string.strcmp(op.value, ">") == 0 | string.strcmp(op.value, "<") == 0 {
         return 6
     } elif string.strcmp(op.value, "&") == 0 {

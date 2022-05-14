@@ -1203,6 +1203,10 @@ str operator_op(CompilerCtx* ctx, parser.Node* op) {
         return "and"
     } elif string.strcmp(op.value, "|") == 0 {
         return "or"
+    } elif string.strcmp(op.value, ">=") == 0 {
+        return "icmp sge"
+    } elif string.strcmp(op.value, "<=") == 0 {
+        return "icmp sle"
     } else {
         io.printf(err_tmpl(ctx, op, "operator '%s' not implemented"), op.value)
     }
@@ -1211,7 +1215,7 @@ str operator_op(CompilerCtx* ctx, parser.Node* op) {
 
 Type* operator_type(parser.Node* op) {
     type := new_type()
-    if string.strcmp(op.value, "==") == 0 | string.strcmp(op.value, "!=") == 0 | string.strcmp(op.value, "|") == 0 | string.strcmp(op.value, "&") == 0 | string.strcmp(op.value, ">") == 0 | string.strcmp(op.value, "<") == 0 {
+    if string.strcmp(op.value, "==") == 0 | string.strcmp(op.value, "!=") == 0 | string.strcmp(op.value, "|") == 0 | string.strcmp(op.value, "&") == 0 | string.strcmp(op.value, ">") == 0 | string.strcmp(op.value, "<") == 0 | string.strcmp(op.value, ">=") == 0 | string.strcmp(op.value, "<=") == 0 {
         type.container = "bool"
     } else {
         type.container = "int"

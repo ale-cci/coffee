@@ -6,5 +6,10 @@ define void @f.v() {
 %.tmp4 = or i1 %.tmp0, %.tmp3
 %t = alloca i1
 store i1 %.tmp4, i1* %t
+%.tmp5 = icmp sge i32 4, 2
+%.tmp6 = icmp sle i32 2, 4
+%.tmp7 = or i1 %.tmp5, %.tmp6
+%j = alloca i1
+store i1 %.tmp7, i1* %j
 ret void
 }

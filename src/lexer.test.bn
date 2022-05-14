@@ -51,6 +51,12 @@ int main() {
     testing.setup(t, "test_parse_not_equal_as_single_token")
     testing.run(t, test_parse_not_equal_as_single_token(t))
 
+    testing.setup(t, "test_great_equal_is_single_token")
+    testing.run(t, test_great_equal_is_single_token(t))
+
+    testing.setup(t, "test_less_equal_is_single_token")
+    testing.run(t, test_less_equal_is_single_token(t))
+
     testing.cleanup(t)
     return 0
 }
@@ -232,6 +238,26 @@ int test_parse_not_equal_as_single_token(testing.T* t) {
 
     testing.assert_equal_str(t, "OPERATOR", token_list.type)
     testing.assert_equal_str(t, "!=", token_list.value)
+
+    return 0
+}
+
+int test_great_equal_is_single_token(testing.T* t) {
+    p := new_peeker(">=")
+    token_list := lexer.tokenize(p, true)
+
+    testing.assert_equal_str(t, "OPERATOR", token_list.type)
+    testing.assert_equal_str(t, ">=", token_list.value)
+
+    return 0
+}
+
+int test_less_equal_is_single_token(testing.T* t) {
+    p := new_peeker("<=")
+    token_list := lexer.tokenize(p, true)
+
+    testing.assert_equal_str(t, "OPERATOR", token_list.type)
+    testing.assert_equal_str(t, "<=", token_list.value)
 
     return 0
 }
