@@ -58,6 +58,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/2C-correctly-resolves-struct-fields"))
     testing.run(t, testfile(t, "./compile/__test__/2D-can-call-functions-defined-later"))
     testing.run(t, testfile(t, "./compile/__test__/2E-can-compile-nested-attribute-access"))
+    testing.run(t, testfile(t, "./compile/__test__/2F-test-recursive-calls"))
 
 
     testing.cleanup(t)

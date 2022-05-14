@@ -39,7 +39,7 @@ Type* type_clone(Type* t) {
     }
 
     Type* clone = (Type*) sys.malloc(Type_size)
-    clone.of = type_clone(t.of)
+    clone.of = t.of
     clone.next = type_clone(t.next)
     clone.repr = t.repr
     clone.container = t.container

@@ -1,0 +1,7 @@
+alias Token = struct {
+    Token* rec,
+}
+
+Token* new_token() {
+    return (Token*) new_token()
+}

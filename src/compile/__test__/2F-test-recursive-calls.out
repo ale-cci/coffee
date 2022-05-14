@@ -1,0 +1,6 @@
+%.Token.type = type {%.Token.type*}
+define %.Token.type* @new_token..Token.typep() {
+%.tmp0 = call %.Token.type*() @new_token..Token.typep()
+%.tmp1 = bitcast %.Token.type* %.tmp0 to %.Token.type*
+ret %.Token.type* %.tmp1
+}
