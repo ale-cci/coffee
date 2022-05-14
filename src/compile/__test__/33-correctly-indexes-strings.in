@@ -1,0 +1,4 @@
+chr fn() {
+    s := "test"
+    return s[3]
+}

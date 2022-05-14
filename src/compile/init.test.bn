@@ -62,6 +62,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/30-correctly-casts-null"))
     testing.run(t, testfile(t, "./compile/__test__/31-prevent-compile-globals-multiple-times"))
     testing.run(t, testfile(t, "./compile/__test__/32-correctly-counts-string-size"))
+    testing.run(t, testfile(t, "./compile/__test__/33-correctly-indexes-strings"))
 
 
     testing.cleanup(t)
