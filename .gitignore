@@ -9,6 +9,7 @@ llvm/*
 src/*
 src/**/*
 !src/*/
+!src/coffee.ll
 !src/**/*/
 !src/compile/__test__/*
 !src/**/*.bn

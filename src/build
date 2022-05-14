@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+COFFEE_BIN=${COFEE_BIN:-$HOME/.coffee}
+
 case $1 in
     clean)
         rm -rf *.ll *.s run *.out *.dSYM
@@ -19,9 +21,24 @@ case $1 in
 
     install)
         # 1. compile the project
-        $0 build
+        llc coffee.ll > coffee.s
+        gcc coffee.s -o coffee
+
         # 2. move in $PATH output (see install command)
-        echo "feature not implemented yet"
+        mkdir -p "$COFFEE_BIN/bin"
+        cp coffee syntax.txt "$COFFEE_BIN/bin"
+        echo "'coffee' successfully installed!"
+        ;;
+
+    build)
+        ./run main.bn
+        mv out run
+        mv debug.ll coffee.ll
+        ;;
+
+    prepare)
+        ./run main.bn
+        mv debug.ll coffee.ll
         ;;
 
     update)
