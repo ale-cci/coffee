@@ -5,15 +5,18 @@ case $1 in
         ;;
 
     test)
-        find . -name '*.test.bn' -exec sh -c "echo && coffee -in {} -out {}.out && ./{}.out " \;
-        rm -rf a.out
+        ./run main.bn && mv out run
+        find . -name '*.test.bn' -exec sh -c "echo && ./run {} && ./out " \;
+        rm -rf ./out
         ;;
+
 
     test:watch)
         echo "Watchig for file changes..."
         fswatch --include='.bn$' --exclude='.*' . | xargs -I{} bash -c "clear && $0 test && echo 'Test suite completed'"
 
         ;;
+
     install)
         # 1. compile the project
         $0 build
@@ -21,8 +24,8 @@ case $1 in
         echo "feature not implemented yet"
         ;;
 
-    *)
-        coffee -in main.bn -out run
+    update)
+        # coffee -in main.bn -out run
         ./run main.bn && mv out run
         ;;
 esac

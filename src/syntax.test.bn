@@ -70,7 +70,7 @@ parser.ParseResult* match_rule(chr* rule_name, chr* program) {
 
 
 parser.Node* new_node(chr* type, value, int line, char_of_line, parser.Node* next, children) {
-    parser.Node* n = (parser.Node*) sys.malloc(Node_size)
+    parser.Node* n = (parser.Node*) sys.malloc(parser.Node_size)
     n.type = type
     n.value = value
     n.next = next
@@ -105,8 +105,8 @@ int test_grammar_parses_empty_function(testing.T* t) {
         return 0
     }
 
-    void_type := new_node("WORD", "void", 1, 1, (Node*) null, (Node*) null)
-    n := new_node("type", (chr*) null, 1, 1, (Node*) null, void_type)
+    void_type := new_node("WORD", "void", 1, 1, (parser.Node*) null, (parser.Node*) null)
+    n := new_node("type", (chr*) null, 1, 1, (parser.Node*) null, void_type)
 
     assert_node_eq(t, res.node, n)
     sys.free((chr*) res)
