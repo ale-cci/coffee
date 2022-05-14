@@ -109,8 +109,9 @@ alias AssignableInfo = struct {
     -- where was the assignable defined
     int line,
     int char_of_line,
+    chr* filename,
 }
-int AssignableInfo_size = 40
+int AssignableInfo_size = 48
 
 chr SCOPE_GLOBAL = '@'
 chr SCOPE_LOCAL = '%'
@@ -128,9 +129,11 @@ AssignableInfo* new_assignable_info(parser.Node* node) {
     if node != null {
         ptr.line = node.line
         ptr.char_of_line = node.char_of_line
+        ptr.filename = node.filename
     } else {
         ptr.line = 0
         ptr.char_of_line = 0
+        ptr.filename = null
     }
     return ptr
 }
@@ -161,10 +164,11 @@ alias GlobalName = struct {
     chr* identifier,
 
     chr* global_type, -- string, typealias, module
+    bool compiled,
     AssignableInfo* info,
     GlobalName* next,
 }
-int GlobalName_size = 32
+int GlobalName_size = 40
 
 -- types defined in a scope
 alias ScopeType = struct {
@@ -326,9 +330,10 @@ str string_to_llvm(chr* text) {
 }
 
 void compile_global(CompilerCtx* ctx, GlobalName* g) {
-    if string.strcmp(g.global_type, "string") == 0 {
+    if g.compiled == false & string.strcmp(g.global_type, "string") == 0 {
         repr := string_to_llvm(g.identifier)
         io.fprintf(ctx.ir, "%s = constant %s %s\0A", repr_assignable_id(g.info), type_repr(ctx, g.info.type), repr)
+        g.compiled = true
     }
 }
 
@@ -725,7 +730,12 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
             return
         }
 
-        io.fprintf(ctx.ir, "store %s %s, %s* %s\0A", type_repr(ctx, a_info.type), repr_assignable_id(a_info), type_repr(ctx, dest.type), repr_assignable_id(dest))
+        dest_tr := type_repr(ctx, dest.type)
+        chr* src_tr = type_repr(ctx, a_info.type)
+        if string.strcmp(src_tr, "ptr") == 0 {
+            src_tr = dest_tr
+        }
+        io.fprintf(ctx.ir, "store %s %s, %s* %s\0A", src_tr, repr_assignable_id(a_info), dest_tr, repr_assignable_id(dest))
     } elif string.strcmp(expr_type, "if_block") == 0 {
         compile_if_block(ctx, stmt)
     } elif string.strcmp(expr_type, "for_loop") == 0 {
@@ -1365,6 +1375,7 @@ AssignableInfo* define_string(CompilerCtx* ctx, str text) {
     global.global_type = "string"
     global.next = null
     global.info = info
+    global.compiled = false
     append_global(ctx, global)
     return info
 }

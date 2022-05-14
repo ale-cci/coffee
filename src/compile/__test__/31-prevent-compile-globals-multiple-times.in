@@ -1,0 +1,2 @@
+import "./test-dir/imp-globals"  as i2
+import "./test-dir/imp-imp-globals"  as i1

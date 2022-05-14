@@ -276,7 +276,7 @@ alias Node = struct {
 }
 int Node_size = 56
 
-Node* new_node(Token* t, chr* type, chr* value) {
+Node* new_node(lexer.Token* t, chr* type, chr* value) {
     node := (Node*) sys.malloc(Node_size)
     node.type = type
     node.value = value
@@ -511,7 +511,7 @@ ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
 -- :param grammar: list of null terminated grammar rules
 -- :param start: starting rule to use for token parsing
 -- :param tokens: list of tokens of the language
-ParseResult* ast(Rule** grammar, str start, Token* tokens) {
+ParseResult* ast(Rule** grammar, str start, lexer.Token* tokens) {
     -- find starting rule
     Rule* start_matcher = _find_rule(grammar, start)
     sys.assert(start_matcher != null, "Unable to find starting rule in the grammar")

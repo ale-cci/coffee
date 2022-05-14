@@ -1,0 +1,4 @@
+void t() {
+    int* j
+    j = null
+}

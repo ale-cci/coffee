@@ -10,7 +10,7 @@ chr* node_to_string(parser.Node* n) {
     str_len := io.ftell(tmp)
 
     tmp_fd := io.fileno(tmp)
-    io.lseek(tmp_fd, 0, SEEK_SET)
+    io.lseek(tmp_fd, 0, io.SEEK_SET)
 
 
     chr* buf = sys.malloc(str_len)
@@ -30,7 +30,7 @@ void _print_indent(io.File* stdout, int indent){
     }
 }
 
-void _node_to_string(parse.Node* node, io.File* stdout, int indent) {
+void _node_to_string(parser.Node* node, io.File* stdout, int indent) {
     if node == null {
         io.fprintf(stdout, "(null)")
         return

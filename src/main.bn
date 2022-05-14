@@ -64,7 +64,8 @@ int main(int argc, str* argv) {
     }
 
     if sys.pclose(proc) != 0 {
-        io.fprintf(stderr, "error on llc execution")
+        io.fprintf(stderr, "error on llc execution\0A")
+        return 0
     }
 
     gcc_proc := sys.popen("gcc out.s -o out", "w")

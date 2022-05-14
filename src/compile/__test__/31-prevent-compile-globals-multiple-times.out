@@ -1,0 +1,7 @@
+define void @m0$fn.v() {
+%.tmp2 = getelementptr [45 x i8], [45 x i8]*@.str1, i32 0, i32 0
+%stmt = alloca i8*
+store i8* %.tmp2, i8** %stmt
+ret void
+}
+@.str1 = constant [45 x i8] c"the quick brown fox jumped over the lazy dog\00"
