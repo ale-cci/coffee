@@ -15,7 +15,6 @@ alias ErrorList = struct {
     errors.Error* err,
     ErrorList* next,
 }
-int ErrorList_size = 16
 
 alias Type = struct {
     chr* container,
@@ -32,14 +31,13 @@ alias Type = struct {
     -- Type* of,
     -- chr* container,
 }
-int Type_size = 40
 
 Type* type_clone(Type* t) {
     if t == null {
         return (Type*) null
     }
 
-    Type* clone = (Type*) sys.malloc(Type_size)
+    Type* clone = (Type*) sys.malloc(sizeof(Type))
     clone.of = t.of
     clone.next = type_clone(t.next)
     clone.repr = t.repr
@@ -48,7 +46,7 @@ Type* type_clone(Type* t) {
     return clone
 }
 Type* new_type() {
-    type := (Type*) sys.malloc(Type_size)
+    type := (Type*) sys.malloc(sizeof(Type))
     type.info = null
     type.repr = null
     type.container = null
@@ -112,7 +110,6 @@ alias AssignableInfo = struct {
     int char_of_line,
     chr* filename,
 }
-int AssignableInfo_size = 48
 
 chr SCOPE_GLOBAL = '@'
 chr SCOPE_LOCAL = '%'
@@ -120,7 +117,7 @@ chr SCOPE_CONST = ' '
 
 
 AssignableInfo* new_assignable_info(parser.Node* node) {
-    ptr := (AssignableInfo*) sys.malloc(AssignableInfo_size)
+    ptr := (AssignableInfo*) sys.malloc(sizeof(AssignableInfo))
     ptr.scope = SCOPE_CONST
     ptr.id = null
     ptr.name_type = null
@@ -159,7 +156,6 @@ alias ScopeItem = struct {
     AssignableInfo* info,
     ScopeItem* next,
 }
-int ScopeItem_size = 24
 
 alias GlobalName = struct {
     chr* identifier,
@@ -169,23 +165,12 @@ alias GlobalName = struct {
     AssignableInfo* info,
     GlobalName* next,
 }
-int GlobalName_size = 40
-
--- types defined in a scope
-alias ScopeType = struct {
-    chr* name,
-    AssignableInfo* info,
-    ScopeType* next,
-}
-int ScopeType_size = 24
 
 alias Scope = struct {
     chr* filename,
     ScopeItem* item,
-    ScopeType* types,
     Scope* prev,
 }
-int Scope_size = 32
 
 alias ModuleLookup = struct {
     chr* abspath,
@@ -205,7 +190,6 @@ alias CompilerCtx = struct {
     ModuleLookup* modules,
     chr* current_module,
 }
-int CompilerCtx_size = 60
 
 void set_assignable_tmp_id(CompilerCtx* ctx, AssignableInfo* info) {
     chr* tmp_buff
@@ -232,7 +216,7 @@ int new_uid(CompilerCtx* ctx) {
 }
 
 CompilerCtx* new_context(io.File* fd, str filename) {
-    CompilerCtx* ctx = (CompilerCtx*) sys.malloc(CompilerCtx_size)
+    CompilerCtx* ctx = (CompilerCtx*) sys.malloc(sizeof(CompilerCtx))
     ctx.ir = fd
     ctx.root = (parser.Node*) null
     ctx.errors = null
@@ -250,7 +234,7 @@ CompilerCtx* new_context(io.File* fd, str filename) {
 }
 
 void push_scope(CompilerCtx* ctx) {
-    s := (Scope*) sys.malloc(Scope_size)
+    s := (Scope*) sys.malloc(sizeof(Scope))
 
     m := get_current_module(ctx)
     s.prev = m.scopes
@@ -459,7 +443,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
         info.char_of_line = stmt.char_of_line
 
         -- copy defined function return type
-        return_type = (Type*) sys.malloc(Type_size)
+        return_type = (Type*) sys.malloc(sizeof(Type))
         return_type.next = null
         return_type.info = null
         return_type.container = info.type.of.container
@@ -495,7 +479,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
         } else {
 
             -- copy defined function return type
-            return_type = (Type*) sys.malloc(Type_size)
+            return_type = (Type*) sys.malloc(sizeof(Type))
             return_type.info = null
             return_type.next = null
             return_type.container = info.type.of.container
@@ -956,7 +940,7 @@ void define_assignable(CompilerCtx* ctx, str name, AssignableInfo* info) {
     -- for item := current_scope.item; item != null; item = item.next {
     -- }
 
-    newitem := (ScopeItem*) sys.malloc(ScopeItem_size)
+    newitem := (ScopeItem*) sys.malloc(sizeof(ScopeItem))
     newitem.name = name
     newitem.info = info
     newitem.next = null
@@ -1178,13 +1162,12 @@ AssignableInfo* compile_addr(CompilerCtx* ctx, parser.Node* stmt) {
 alias StackHead = struct {
     sy.SYStack* h,
 }
-int StackHead_size = 8
 
 AssignableInfo* compile_assignable(CompilerCtx* ctx, parser.Node* curr_node) {
     assignable_start := skip_to_type(curr_node.children, "mono_assignable")
     operator_stack := sy.sy_algorithm(assignable_start)
 
-    stack := (StackHead*) sys.malloc(StackHead_size)
+    stack := (StackHead*) sys.malloc(sizeof(StackHead))
     stack.h = operator_stack
 
     info := compile_assignable_stack(ctx, stack)
@@ -1447,7 +1430,7 @@ AssignableInfo* define_string(CompilerCtx* ctx, str text) {
 
     io.asprintf(&info.type.of.next.container, "%d", calc_llvm_str_len(text))
 
-    global := (GlobalName*) sys.malloc(GlobalName_size)
+    global := (GlobalName*) sys.malloc(sizeof(GlobalName))
     global.identifier = text
     global.global_type = "string"
     global.next = null
@@ -1541,7 +1524,7 @@ str type_repr(CompilerCtx* ctx, Type* type) {
 }
 
 void append_error(CompilerCtx* ctx, errors.Error* e) {
-    new_err := (ErrorList*) sys.malloc(ErrorList_size)
+    new_err := (ErrorList*) sys.malloc(sizeof(ErrorList))
     new_err.err = e
     new_err.next = null
 
