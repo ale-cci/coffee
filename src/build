@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+COFFEE_EXE="./coffee"
 COFFEE_BIN=${COFEE_BIN:-$HOME/.coffee}
 
 case $1 in
@@ -7,9 +8,10 @@ case $1 in
         ;;
 
     test)
-        ./run main.bn && mv out run
-        find . -name '*.test.bn' -exec sh -c "echo && ./run {} && ./out " \;
-        rm -rf ./out
+        TEST_EXE="${COFFEE_EXE}_test"
+        "$COFFEE_EXE" main.bn && mv out "${TEST_EXE}"
+        find . -name '*.test.bn' -exec sh -c "echo && ${TEST_EXE} {} && ./out " \;
+        rm -rf ./out "${TEST_EXE}"
         ;;
 
 
@@ -37,12 +39,12 @@ case $1 in
         ;;
 
     prepare)
-        ./run main.bn
+        "$COFFEE_EXE" main.bn
         mv debug.ll coffee.ll
         ;;
 
     update)
         # coffee -in main.bn -out run
-        ./run main.bn && mv out run
+        "$COFFEE_EXE" main.bn && mv out "$COFFEE_EXE"
         ;;
 esac

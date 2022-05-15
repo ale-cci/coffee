@@ -28,13 +28,11 @@ int main() {
 $ bash install.sh
 $ coffee samples/hello.bn
 File hello compiled successfully!
-$ ./hello
+$ ./out
 Hello from coffee!
 Hello from coffee!
 Hello from coffee!
 ```
-
-NOTE: if you do `go install`, you probably need to add `$HOME/go/bin` to your `"$PATH"`
 
 
 #### Documentation
