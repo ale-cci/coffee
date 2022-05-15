@@ -1,0 +1,18 @@
+FROM debian:bookworm
+
+RUN set -ex \
+    ; apt update \
+    ; apt install --no-install-recommends -y llvm gcc libc6-dev \
+    ; rm -rf /var/apt/lists
+
+
+ENV COFFEE_ROOT=/coffee
+COPY src/coffee.ll src/syntax.txt /coffee/bin/
+
+RUN set -ex \
+    ; llc --version \
+    ; llc /coffee/bin/coffee.ll -o /coffee/bin/coffee.s \
+    ; gcc /coffee/bin/coffee.s -o /coffee/bin/coffee \
+    ; rm /coffee/bin/coffee.ll /coffee/bin/coffee.s
+
+ENV PATH="$PATH:/coffee/bin"
