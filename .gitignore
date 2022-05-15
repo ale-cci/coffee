@@ -18,3 +18,4 @@ src/**/*
 !src/*.bn
 !src/build
 *.dSYM
+coffee.s
