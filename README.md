@@ -21,13 +21,12 @@ int main() {
 
 #### Getting started
 ###### Dependencies:
- - go (for now)
  - llvm (requires llc executable to be in "$PATH")
  - gcc
 
 ```shell
-$ go build ./cli/coffee.go # or go install ./cli/coffee.go
-$ coffee -in samples/hello.bn -out hello
+$ bash install.sh
+$ coffee samples/hello.bn
 File hello compiled successfully!
 $ ./hello
 Hello from coffee!
