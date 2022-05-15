@@ -1,5 +1,0 @@
-import "./sample-fns" as fns
-
-void fn_two() {
-    fns.empty_fn()
-}

@@ -1,3 +1,0 @@
-alias T = struct {
-    int t,
-}

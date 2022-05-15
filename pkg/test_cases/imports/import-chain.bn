@@ -1,7 +1,0 @@
-import "./sample-fns" as io
-import "./sample-fns2" as pkg
-
-void main() {
-    io.empty_fn()
-    pkg.fn_two()
-}
