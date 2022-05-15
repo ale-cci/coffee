@@ -263,8 +263,29 @@ void pop_scope(CompilerCtx* ctx) {
     m.scopes = m.scopes.prev
 }
 
+io.File* get_grammar_file(CompilerCtx* ctx) {
+    coffee_root := sys.getenv("COFFEE_ROOT")
+    if coffee_root == null {
+        io.asprintf(&coffee_root, "%s/.coffee", sys.getenv("HOME"))
+    }
+
+    chr* syntax_file_path
+    io.asprintf(&syntax_file_path, "%s/bin/syntax.txt", coffee_root)
+    grammar_file := io.fopen(syntax_file_path, "r")
+
+    if grammar_file == null {
+        io.printf(":panic: Unable to open grammar file '%s'\0A", grammar_file)
+        return (io.File*) null
+    }
+
+    return grammar_file
+}
+
 bool compile_file(CompilerCtx* ctx, str filepath) {
-    grammar_file := io.fopen("./syntax.txt", "r")
+    grammar_file := get_grammar_file(ctx)
+    if grammar_file == null {
+        return false
+    }
     grammar_ctx := parser.new_context(grammar_file)
     grammar := parser.parse_grammar(grammar_ctx)
     sys.free((chr*) grammar_ctx)

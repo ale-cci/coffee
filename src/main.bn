@@ -14,43 +14,13 @@ import "./compile/init" as compile
 int main(int argc, str* argv) {
     check_args(argc, argv)
 
-    grammar_file := io.fopen("./syntax.txt", "r")
-    if grammar_file == null {
-        io.printf("Unable to find ./syntax.txt file\0A")
-        return 1
-    }
-
-    ctx := parser.new_context(grammar_file)
-    grammar := parser.parse_grammar(ctx)
-    sys.free((chr*) ctx)
-
-    int fd = io.open(argv[1], io.O_RDONLY)
-    sys.assert(fd > 0, "Unable to open input file\0A")
-    p := peeker.new(fd)
-    tokens := lexer.tokenize(p, false)
-    sys.free((chr*) p)
-
-    res := parser.ast(grammar, "start", tokens)
-    sys.free((chr*) tokens)
-
-    if res.err != null {
-        -- file contains syntaxerrors, the ast
-        -- was not created successfully,
-        -- aborting
-
-        errors.report(res.err)
-        sys.free((chr*) res.err)
-        io.close(fd)
-        return 0
-    }
-
     stderr := io.fdopen(io.STDERR, "w")
 
-    llvm_code := io.tmpfile()
+    filename := argv[1]
 
-    -- write IR on llc popen
-    compiler_ctx := compile.new_context(llvm_code, argv[1])
-    if compile.compile(compiler_ctx, res.node) {
+    llvm_code := io.tmpfile()
+    compiler_ctx := compile.new_context(llvm_code, filename)
+    if compile.compile_file(compiler_ctx, filename) {
         io.fprintf(stderr, "Compilation to llvm interrupted.\0A")
         return 1
     }
@@ -82,10 +52,9 @@ int main(int argc, str* argv) {
     if sys.pclose(proc) != 0 {
         io.fprintf(stderr, "error on gcc execution")
     } else {
-        io.printf("File %s compiled successfully!\0A", argv[1])
+        io.printf("File %s compiled successfully!\0A", filename)
     }
 
-    io.close(fd)
     return 0
 }
 

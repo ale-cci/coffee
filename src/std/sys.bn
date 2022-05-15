@@ -76,3 +76,5 @@ extern str basename(str path)
 extern chr* getcwd(chr* buf, int size)
 
 extern chr* realpath(chr* filename, chr* resolved_name)
+
+extern chr* getenv(chr* name)
