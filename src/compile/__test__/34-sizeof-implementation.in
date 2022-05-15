@@ -1,0 +1,7 @@
+alias T = struct {
+    bool j,
+}
+
+void fn() {
+    j := sizeof(T)
+}

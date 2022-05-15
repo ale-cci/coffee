@@ -63,7 +63,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/31-prevent-compile-globals-multiple-times"))
     testing.run(t, testfile(t, "./compile/__test__/32-correctly-counts-string-size"))
     testing.run(t, testfile(t, "./compile/__test__/33-correctly-indexes-strings"))
-
+    testing.run(t, testfile(t, "./compile/__test__/34-sizeof-implementation"))
 
     testing.cleanup(t)
     return 0
@@ -105,6 +105,7 @@ int testfile(testing.T* t, str filename) {
 
     if input_fd <= 0 {
         testing.fail(t)
+        io.fprintf(t.out, "Unable to open file: '%s'", input_filename)
         return 0
     }
     p := peeker.new(input_fd)
@@ -121,7 +122,11 @@ int testfile(testing.T* t, str filename) {
     }
 
     compiler_ctx := compile.new_context(io.tmpfile(), input_filename)
-    compile.compile(compiler_ctx, ast.node)
+    if compile.compile(compiler_ctx, ast.node) == true {
+        testing.fail(t)
+        io.fprintf(t.out, "Compilation error\0A")
+        return 0
+    }
 
     expect := read_testfile(filename, "out")
     if expect == null {
