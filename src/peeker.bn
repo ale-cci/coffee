@@ -13,7 +13,6 @@ alias PeekerInfo = struct {
     chr* filename,
 }
 
-int PeekerInfo_size = 32
 chr EOF = 0
 
 
@@ -47,7 +46,7 @@ void seek(PeekerInfo* p, int pos) {
 }
 
 PeekerInfo* new(int fd) {
-    PeekerInfo* p = (PeekerInfo*) sys.malloc(PeekerInfo_size)
+    PeekerInfo* p = (PeekerInfo*) sys.malloc(sizeof(PeekerInfo))
     p.pos = 0
     p.line = 1
     p.char_of_line = 0

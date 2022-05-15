@@ -18,8 +18,6 @@ alias Token = struct {
     Token* next,
     Token* prev,
 }
--- int Token_size = 192-- 4 * ptr_size + 64
-int Token_size = 48
 
 
 alias ParseCtx = struct {
@@ -30,11 +28,10 @@ alias ParseCtx = struct {
     Token* root,
     Token* curr_token,
 }
-int ParseCtx_size = 160
 
 
 Token* push_token(ParseCtx* c, str type, value) {
-    Token* root = (Token*) sys.malloc(Token_size)
+    Token* root = (Token*) sys.malloc(sizeof(Token))
     root.type = type
     root.value = value
     root.filename = c.filename
@@ -67,7 +64,7 @@ Token* push_token(ParseCtx* c, str type, value) {
 --    ['] -> CHR
 --    [+-/*=[({])}|] -> OPERATOR or COMMENT
 Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
-    ParseCtx* ctx = (ParseCtx*) sys.malloc(ParseCtx_size)
+    ParseCtx* ctx = (ParseCtx*) sys.malloc(sizeof(ParseCtx))
     ctx.filename = p.filename
     ctx.root = null
     ctx.curr_token = null
