@@ -202,7 +202,7 @@ int should_parse_multiple_rules(testing.T* t) {
 }
 
 
-Rule** gen_grammar(chr* grammar_content) {
+parser.Rule** gen_grammar(chr* grammar_content) {
     f := testing.tempfile(grammar_content)
     ctx := parser.new_context(f)
     grammar := parser.parse_grammar(ctx)
@@ -210,7 +210,7 @@ Rule** gen_grammar(chr* grammar_content) {
     return grammar
 }
 
-Node* parse_file(Rule** grammar, chr* file_content) {
+parser.Node* parse_file(parser.Rule** grammar, chr* file_content) {
     source := testing.tempfile(file_content)
     fd := io.fileno(source)
     p := peeker.new(fd)
