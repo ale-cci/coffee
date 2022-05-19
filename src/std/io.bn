@@ -95,3 +95,4 @@ extern int fclose(File* f)
 extern int ftell(File* f)
 
 extern void rewind(File* f)
+

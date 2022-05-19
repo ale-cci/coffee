@@ -1,5 +1,6 @@
 import "./io" as io
 import "./sys" as sys
+import "./string" as string
 
 -- fully read file content, remember to free the return value
 -- once you have used it
@@ -36,3 +37,11 @@ void copy(int dest, src) {
     }
 }
 
+io.File* str_as_file(str file_content) {
+    pp := (int*) sys.malloc(16)
+    sys.pipe(pp)
+    io.write(pp[io.STDOUT], file_content, string.strlen(file_content))
+    io.close(pp[io.STDOUT])
+
+    return io.fdopen(pp[io.STDIN], "r")
+}

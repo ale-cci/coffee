@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-COFFEE_EXE="./coffee"
-COFFEE_BIN=${COFEE_BIN:-$HOME/.coffee}
+COFFEE_EXE="coffee"
+COFFEE_ROOT=${COFEE_BIN:-$HOME/.coffee}
 
 case $1 in
     clean)
@@ -8,7 +8,8 @@ case $1 in
         ;;
 
     test)
-        TEST_EXE="${COFFEE_EXE}_test"
+        set -e
+        TEST_EXE="coffee_test"
         "$COFFEE_EXE" main.bn && mv out "${TEST_EXE}"
         find . -name '*.test.bn' -exec sh -c "echo && ${TEST_EXE} {} && ./out " \;
         rm -rf ./out "${TEST_EXE}"
@@ -22,13 +23,14 @@ case $1 in
         ;;
 
     install)
+        set -e
         # 1. compile the project
         llc coffee.ll > coffee.s
         gcc coffee.s -o coffee
 
         # 2. move in $PATH output (see install command)
-        mkdir -p "$COFFEE_BIN/bin"
-        cp coffee syntax.txt "$COFFEE_BIN/bin"
+        mkdir -p "$COFFEE_ROOT/bin"
+        cp coffee "$COFFEE_ROOT/bin"
         echo "'coffee' successfully installed!"
         ;;
 
@@ -38,13 +40,15 @@ case $1 in
         mv debug.ll coffee.ll
         ;;
 
-    prepare)
+    release)
+        set -e
+        rm coffee.ll
         "$COFFEE_EXE" main.bn
         mv debug.ll coffee.ll
         ;;
 
     update)
-        # coffee -in main.bn -out run
-        "$COFFEE_EXE" main.bn && mv out "$COFFEE_EXE"
+        "$0" release
+        "$0" install
         ;;
 esac

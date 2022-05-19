@@ -2,12 +2,14 @@ import "./std/testing" as testing
 import "./std/string" as string
 import "./std/sys" as sys
 import "./std/io" as io
+import "./std/ioutil" as ioutil
 
 import "./errors" as errors
 import "./parser" as parser
 import "./parser.debug" as parser_debug
 import "./peeker" as peeker
 import "./lexer" as lexer
+import "./syntax" as syntax
 
 
 int main() {
@@ -48,7 +50,7 @@ int main() {
 }
 
 parser.ParseResult* match_rule(chr* rule_name, chr* program) {
-    grammar_file := io.fopen("syntax.txt", "r")
+    grammar_file := ioutil.str_as_file(syntax.grammar())
     ctx := parser.new_context(grammar_file)
     grammar := parser.parse_grammar(ctx)
 

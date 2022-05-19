@@ -8,6 +8,7 @@ import "../parser" as parser
 import "../peeker" as peeker
 import "../lexer" as lexer
 import "../errors" as errors
+import "../syntax" as syntax
 
 int main() {
     t := testing.init("compile/init.test.bn")
@@ -96,7 +97,7 @@ int testfile(testing.T* t, str filename) {
     testing.setup(t, filename)
 
     -- prepare grammar file
-    grammar_file := io.fopen("./syntax.txt", "r")
+    grammar_file := ioutil.str_as_file(syntax.grammar())
     ctx := parser.new_context(grammar_file)
     grammar := parser.parse_grammar(ctx)
     sys.free((chr*) ctx)

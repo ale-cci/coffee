@@ -80,6 +80,8 @@ Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
         ctx.line = p.line
         ctx.char_of_line = p.char_of_line
 
+        -- io.printf("tok: %d '%c'\0A", p.pos, c)
+
         if c == '\00' {
             -- eof
             c = peeker.read(p)
@@ -114,7 +116,7 @@ Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
         } elif c == '\22' | c == '`' {
             -- buf = sys.malloc(max_token_size)
             -- buf[0] = c
-            buf = read_string(p, c, max_token_size)
+            buf = read_string(p, c)
 
             -- read string content
             -- c = peeker.read(p)
@@ -229,8 +231,9 @@ Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
 }
 
 
-str read_string(peeker.PeekerInfo* p, chr delimeter, int max_token_size) {
-    buf := sys.malloc(max_token_size)
+str read_string(peeker.PeekerInfo* p, chr delimeter) {
+    int str_size = 64
+    buf := sys.malloc(str_size)
     buf[0] = delimeter
 
     -- read string content
@@ -238,8 +241,12 @@ str read_string(peeker.PeekerInfo* p, chr delimeter, int max_token_size) {
     int idx
     for idx = 1; c != delimeter; c = peeker.read(p) {
         sys.assert(c != '\00', "lexer: reached end of file while scanning for 'STRING' token")
+        -- resize
+        if idx == str_size -2 {
+            str_size = str_size * 2
+            buf = sys.realloc(buf, str_size)
+        }
 
-        sys.assert(idx < max_token_size - 2, "string exceeded max token size")
         buf[idx] = c
         idx = idx + 1
     }

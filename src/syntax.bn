@@ -1,3 +1,10 @@
+import "./std/io" as io
+import "./std/sys" as sys
+import "./std/string" as string
+
+
+str grammar() {
+    return `
 start: (head_comment)? (statement)*
 
 head_comment: "#" (OPERATOR | WORD)* NL
@@ -57,3 +64,5 @@ expression: ( if_block | return | for_loop | assignment | fn_call | declaration 
 block: "{" NL (expression)* ("}")
 
 for_loop: "for" (declaration | assignment)? (";") (assignable)? (";") (assignment)? block
+`
+}
