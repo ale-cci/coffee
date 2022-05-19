@@ -324,11 +324,30 @@ bool compile(CompilerCtx* ctx, parser.Node* ast) {
 str string_to_llvm(chr* text) {
     chr* buf
     str_len := string.strlen(text)
-    chr* substr = sys.malloc(str_len)
-    for i := 0; i < str_len -2; i = i + 1 {
-        substr[i] = text[i + 1]
+    int i
+
+    int nof_quotes = 0
+    for i = 0; i < str_len -2; i = i + 1 {
+        if text[i + 1] == '\22' {
+            nof_quotes = nof_quotes + 1
+        }
     }
-    substr[str_len -2] = '\00'
+
+    chr* substr = sys.malloc(str_len -2 + 1 + nof_quotes * 3)
+
+    int substr_idx = 0
+    for i = 0; i < str_len -2; i = i + 1 {
+        if text[i + 1] == '"' {
+            substr[substr_idx] = '\'
+            substr[substr_idx + 1] = '2'
+            substr[substr_idx + 2] = '2'
+            substr_idx = substr_idx + 3
+        } else {
+            substr[substr_idx] = text[i + 1]
+            substr_idx = substr_idx + 1
+        }
+    }
+    substr[substr_idx] = '\00'
     io.asprintf(&buf, "c\22%s\5C00\22", substr)
     sys.free(substr)
 
