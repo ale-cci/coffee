@@ -483,11 +483,9 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
         } else {
 
             -- copy defined function return type
-            return_type = (Type*) sys.malloc(sizeof(Type))
-            return_type.info = null
-            return_type.next = null
-            return_type.container = info.type.of.container
-            return_type.of = info.type.of.of
+            return_type = new_type()
+            copy_type(return_type, info.type.of)
+
 
             io.fprintf(ctx.ir, "define %s %s(", type_repr(ctx, return_type), repr_assignable_id(info))
             params := syn_function_params(stmt.children)
