@@ -41,7 +41,7 @@ function: type WORD "(" (fn_params)? ( ")" block )
 
 structdef: ( "struct" "{" NL ) ( ( type WORD "," NL ) | ( NL ) )* ( "}" )
 
-type: ( "void" | "int" | "bool" | "chr" | "str" | structdef | dotted_name | "..." ) ("*")*
+type: ( "void" | "int" | "bool" | "chr" | "str" | structdef | dotted_name | "..." ) ("[" "]")* ("*")*
 
 if_block: "if" assignable block (elif_block)? (NL)
 

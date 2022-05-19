@@ -1,0 +1,4 @@
+%.T.type = type i32
+define %.T.type @fn..T.type() {
+ret i32 3
+}

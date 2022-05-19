@@ -1,0 +1,5 @@
+alias T = int
+
+T fn() {
+    return 3
+}

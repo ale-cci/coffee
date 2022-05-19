@@ -35,10 +35,13 @@ You can find more examples [here](../samples).
 `+ - = < > == | & * / != >= <=`
 
 ## In progress
-- [ ] standard library
+- [ ] standard library import
 - [ ] Create a documentation page: `https://docs.readthedocs.io/en/stable/tutorial/`
+- [ ] zero value initialization (`https://go.dev/ref/spec#The_zero_value`)
+- [ ] slices
 
 ## TODOs:
+- [ ] lexer better error reporting
 - [ ] first class functions
 - [ ] keyword argument: `int fd = io.open(file: "something", mode: 0)`
 - [ ] Unions
@@ -46,4 +49,5 @@ You can find more examples [here](../samples).
 - [ ] something like va\_args
 - [ ] lazy operands `&& ||`, negation operator `!`
 - [ ] enums
-- [ ] multiline strings (https://jameshfisher.com/2016/11/30/c-multiline-literal/)
+- [ ] interfaces
+- [ ] tracebacks
