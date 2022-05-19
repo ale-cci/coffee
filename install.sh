@@ -12,7 +12,6 @@ llc "$SRC_DIR/coffee.ll" -o coffee.s
 gcc coffee.s -o coffee
 rm coffee.s
 
-cp "$SRC_DIR/syntax.txt" "$COFFEE_ROOT/bin"
 mv coffee "$COFFEE_ROOT/bin"
 
 echo " ☕ coffee is ready!"

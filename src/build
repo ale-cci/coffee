@@ -23,7 +23,6 @@ case $1 in
         ;;
 
     install)
-        set -e
         # 1. compile the project
         llc coffee.ll > coffee.s
         gcc coffee.s -o coffee
@@ -41,13 +40,12 @@ case $1 in
         ;;
 
     release)
-        set -e
-        rm coffee.ll
-        "$COFFEE_EXE" main.bn
+        "$COFFEE_EXE" main.bn && rm out
         mv debug.ll coffee.ll
         ;;
 
     update)
+        "$0" test
         "$0" release
         "$0" install
         ;;
