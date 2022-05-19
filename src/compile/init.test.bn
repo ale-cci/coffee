@@ -65,6 +65,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/33-correctly-indexes-strings"))
     testing.run(t, testfile(t, "./compile/__test__/34-sizeof-implementation"))
     testing.run(t, testfile(t, "./compile/__test__/35-compiles-multiline-strings"))
+    testing.run(t, testfile(t, "./compile/__test__/36-allows-double-quoted-strings"))
 
     testing.cleanup(t)
     return 0

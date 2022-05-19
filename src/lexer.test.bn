@@ -57,6 +57,8 @@ int main() {
     testing.setup(t, "test_less_equal_is_single_token")
     testing.run(t, test_less_equal_is_single_token(t))
 
+    testing.setup(t, "test_parses_string_with_double_quotes")
+    testing.run(t, test_parses_string_with_double_quotes(t))
     testing.cleanup(t)
     return 0
 }
@@ -259,5 +261,14 @@ int test_less_equal_is_single_token(testing.T* t) {
     testing.assert_equal_str(t, "OPERATOR", token_list.type)
     testing.assert_equal_str(t, "<=", token_list.value)
 
+    return 0
+}
+
+int test_parses_string_with_double_quotes(testing.T* t) {
+    p := new_peeker("`the quick brown fox`")
+    token_list := lexer.tokenize(p, true)
+
+    testing.assert_equal_str(t, "STRING", token_list.type)
+    testing.assert_equal_str(t, "`the quick brown fox`", token_list.value)
     return 0
 }

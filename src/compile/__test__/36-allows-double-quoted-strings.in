@@ -1,0 +1,3 @@
+void fn() {
+    str t = `test`
+}
