@@ -1168,6 +1168,8 @@ AssignableInfo* compile_assignable(CompilerCtx* ctx, parser.Node* curr_node) {
 
                 if from_size < to_size {
                     cast_fn = "sext"
+                } else {
+                    cast_fn = "trunc"
                 }
             }
         }

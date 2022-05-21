@@ -1,0 +1,4 @@
+define i8 @fn.c() {
+%.tmp0 = trunc i32 97 to i8
+ret i8 %.tmp0
+}
