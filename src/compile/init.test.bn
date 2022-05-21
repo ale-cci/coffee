@@ -68,6 +68,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/35-compiles-multiline-strings"))
     testing.run(t, testfile(t, "./compile/__test__/36-allows-double-quoted-strings"))
     testing.run(t, testfile(t, "./compile/__test__/37-compiles-simple-type-alias"))
+    testing.run(t, testfile(t, "./compile/__test__/38-casts-chr-to-int"))
 
     testing.cleanup(t)
     return 0

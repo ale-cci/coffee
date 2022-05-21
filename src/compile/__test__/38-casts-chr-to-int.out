@@ -1,0 +1,4 @@
+define i32 @fn.i() {
+%.tmp0 = sext i8 97 to i32
+ret i32 %.tmp0
+}

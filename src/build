@@ -30,6 +30,7 @@ case $1 in
 
         # 2. move in $PATH output (see install command)
         mkdir -p "$COFFEE_ROOT/bin"
+        rm -f "$COFFEE_ROOT/bin/coffee"
         cp coffee "$COFFEE_ROOT/bin"
         echo "'coffee' successfully installed!"
         ;;

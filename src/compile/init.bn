@@ -1154,7 +1154,25 @@ AssignableInfo* compile_assignable(CompilerCtx* ctx, parser.Node* curr_node) {
         prev_id := repr_assignable_id(info)
         set_assignable_tmp_id(ctx, info)
 
-        io.fprintf(ctx.ir, "%s = bitcast %s %s to %s\n", repr_assignable_id(info), type_repr(ctx, info.type), prev_id, type_repr(ctx, type))
+        from_type := type_repr(ctx, info.type)
+        to_type := type_repr(ctx, type)
+
+        cast_fn := "bitcast"
+
+        if string.strcmp(info.type.container, "ptr") != 0 & string.strcmp(type.container, "ptr") != 0 {
+            if from_type[0] == 'i' & to_type[0] == 'i' {
+                int from_size
+                int to_size
+                io.sscanf(from_type, "i%d", &from_size)
+                io.sscanf(to_type, "i%d", &to_size)
+
+                if from_size < to_size {
+                    cast_fn = "sext"
+                }
+            }
+        }
+
+        io.fprintf(ctx.ir, "%s = %s %s %s to %s\n", repr_assignable_id(info), cast_fn, from_type, prev_id, to_type)
 
         info.type = type
     }
@@ -1346,8 +1364,6 @@ str type_abbr(Type* type) {
         return "v"
     } elif string.strcmp(type.container, "chr") == 0 {
         return "c"
-    } elif string.strcmp(type.container, "str") == 0 {
-        return "cp"
     } elif string.strcmp(type.container, "ptr") == 0 {
         chr* buf
         io.asprintf(&buf, "%sp", type_abbr(type.of))
@@ -1457,8 +1473,6 @@ str type_repr(CompilerCtx* ctx, Type* type) {
     } elif string.strcmp(type.container, "typealias") == 0 {
         io.asprintf(&buf, "%%%s", type.repr)
         return buf
-    } elif string.strcmp(type.container, "str") == 0 {
-        return "i8*"
     } elif string.strcmp(type.container, "vararg") == 0 {
         return "..."
     } elif string.strcmp(type.container, "error") == 0 {
@@ -1569,8 +1583,6 @@ Type* node_to_type(CompilerCtx* ctx, parser.Node* stmt) {
             }
         }
         -- parse struct fields
-    } elif string.strcmp(stmt.type, "WORD") == 0 {
-        t.container = stmt.value
     } elif string.strcmp(stmt.type, "dotted_name") == 0 {
         -- 1st resolve dotted name
         -- 2nd create type
@@ -1589,6 +1601,12 @@ Type* node_to_type(CompilerCtx* ctx, parser.Node* stmt) {
         t.repr = base.info.id
 
         t.of = base.info.type
+    } elif string.strcmp(stmt.value, "str") == 0 {
+        t.container = "ptr"
+        t.of = new_type()
+        t.of.container = "chr"
+    } elif string.strcmp(stmt.type, "WORD") == 0 {
+        t.container = stmt.value
 
     } elif string.strcmp(stmt.value, "...") == 0 {
         t.container = "vararg"
