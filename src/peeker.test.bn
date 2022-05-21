@@ -39,8 +39,8 @@ int peeker_reads_chars(testing.T* t) {
     testing.assert_equal_chr(t, 'a',   peeker.read(p))
     testing.assert_equal_chr(t, 'b',   peeker.read(p))
     testing.assert_equal_chr(t, 'c',   peeker.read(p))
-    testing.assert_equal_chr(t,'\00', peeker.read(p))
-    testing.assert_equal_chr(t, '\00', peeker.read(p))
+    testing.assert_equal_chr(t, '\x00', peeker.read(p))
+    testing.assert_equal_chr(t, '\x00', peeker.read(p))
     testing.assert_true(t, "reach EOF", p.eof)
 
     sys.free((chr*) p)

@@ -30,12 +30,12 @@ bool is_digit(chr c) {
 }
 
 bool is_whitespace(chr c) {
-    return c == ' ' | c == '\09'
+    return c == ' ' | c == '\x09'
 }
 
 
 bool is_lower(chr* string) {
-    for idx := 0; string[idx] != '\00'; idx = idx + 1 {
+    for idx := 0; string[idx] != '\x00'; idx = idx + 1 {
         c := string[idx]
         if c == '_' {
         } elif c < 'a' | c > 'z' {
@@ -46,7 +46,7 @@ bool is_lower(chr* string) {
 }
 
 bool is_upper(chr* string) {
-    for idx := 0; string[idx] != '\00'; idx = idx + 1 {
+    for idx := 0; string[idx] != '\x00'; idx = idx + 1 {
         c := string[idx]
         if c == '_' {
         } elif c < 'A' | c > 'Z' {

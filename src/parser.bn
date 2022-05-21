@@ -102,7 +102,7 @@ Matcher* parse_matcher(ParsingContext* ctx) {
                 last_matcher = last_matcher.alternative
 
                 if string.strcmp(ctx.current_token.value, "|") != 0 & string.strcmp(ctx.current_token.value, ")") != 0 {
-                    io.printf("[%d:%d] malformed grammar, expected | got '%s'\0A", ctx.current_token.line, ctx.current_token.char_of_line, ctx.current_token.value)
+                    io.printf("[%d:%d] malformed grammar, expected | got '%s'\n", ctx.current_token.line, ctx.current_token.char_of_line, ctx.current_token.value)
                     sys.exit(1)
                 }
 
@@ -179,7 +179,7 @@ Matcher* parse_simple_matcher(ParsingContext* ctx) {
         } elif string.is_upper(ctx.current_token.value) {
             q.type = 't'
         } else {
-            io.printf("rule name: '%s'\0A", ctx.current_token.value)
+            io.printf("rule name: '%s'\n", ctx.current_token.value)
             parser_error(ctx, "Some characters are not allowed in this rule name")
         }
         q.value = ctx.current_token.value

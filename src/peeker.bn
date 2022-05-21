@@ -21,17 +21,17 @@ chr EOF = 0
 chr read(PeekerInfo* p) {
     -- don't return extra character if end of file is reached
     if p.eof {
-        return '\00'
+        return '\x00'
     }
 
-    if p.last_chr == '\0A' {
+    if p.last_chr == '\n' {
         p.line = p.line + 1
         p.char_of_line = 0
     }
 
     if io.read(p.fd, &p.last_chr, 1) == 0 {
         -- no bytes are read: end of file is reached
-        p.last_chr = '\00'
+        p.last_chr = '\x00'
         p.eof = true
         return p.last_chr
     }
@@ -51,7 +51,7 @@ PeekerInfo* new(int fd) {
     p.line = 1
     p.char_of_line = 0
     p.fd = fd
-    p.last_chr = '\00'
+    p.last_chr = '\x00'
     p.eof = false
     p.filename = ""
     return p

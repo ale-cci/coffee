@@ -82,7 +82,7 @@ Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
 
         -- io.printf("tok: %d '%c'\0A", p.pos, c)
 
-        if c == '\00' {
+        if c == '\x00' {
             -- eof
             c = peeker.read(p)
 
@@ -94,7 +94,7 @@ Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
                 idx = idx + 1
                 sys.assert(idx < max_token_size, "digit too large")
             }
-            buf[idx] = '\00'
+            buf[idx] = '\x00'
 
             push_token(ctx, "NUMBER", buf)
 
@@ -106,14 +106,14 @@ Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
                 idx = idx + 1
                 sys.assert(idx < max_token_size, "digit too large")
             }
-            buf[idx] = '\00'
+            buf[idx] = '\x00'
             push_token(ctx, "WORD", buf)
 
         } elif string.is_whitespace(c) {
             -- ignore whitespaces and tabs for now
             c = peeker.read(p)
 
-        } elif c == '\22' | c == '`' {
+        } elif c == '"' | c == '`' {
             -- buf = sys.malloc(max_token_size)
             -- buf[0] = c
             buf = read_string(p, c)
@@ -134,22 +134,22 @@ Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
             c = peeker.read(p)
 
             push_token(ctx, "STRING", buf)
-        } elif c == '\27' {
+        } elif c == '\x27' {
             buf = sys.malloc(max_token_size)
             buf[0] = c
             c = peeker.read(p)
-            for idx = 1; c != '\27'; c = peeker.read(p) {
+            for idx = 1; c != '\x27'; c = peeker.read(p) {
                 sys.assert(idx < max_token_size - 2, "char too large")
                 buf[idx] = c
                 idx = idx + 1
             }
             buf[idx] = c
-            buf[idx + 1] = '\00'
+            buf[idx + 1] = '\x00'
             c = peeker.read(p)
 
             push_token(ctx, "CHR", buf)
 
-        } elif c == '\0A' {
+        } elif c == '\n' {
             push_token(ctx, "NL", "\n")
             c = peeker.read(p)
         } elif c == '-' {
@@ -159,11 +159,11 @@ Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
                 -- start parsing a comment block
                 buf = sys.malloc(max_token_size)
                 buf[0] = '-'
-                for idx = 1; c != '\0A' & c != '\00' ; c = peeker.read(p) {
+                for idx = 1; c != '\n' & c != '\x00' ; c = peeker.read(p) {
                     buf[idx] = c
                     idx = idx + 1
                 }
-                buf[idx] = '\00'
+                buf[idx] = '\x00'
 
                 if keep_comments {
                     push_token(ctx, "COMMENT", buf)
@@ -176,7 +176,7 @@ Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
             }
         } else {
             -- check for operator
-            if c > '\7E' {
+            if c > '\x7E' {
                 io.printf("%d:%d error: found non ascii token: '%c' (%d)\n", ctx.line, ctx.char_of_line, c, c)
                 sys.exit(1)
             }
@@ -216,7 +216,7 @@ Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
             } else {
                 buf = sys.malloc(2)
                 buf[0] = prev_c
-                buf[1] = '\00'
+                buf[1] = '\x00'
             }
             push_token(ctx, type, buf)
         }
@@ -240,7 +240,7 @@ str read_string(peeker.PeekerInfo* p, chr delimeter) {
     c := peeker.read(p)
     int idx
     for idx = 1; c != delimeter; c = peeker.read(p) {
-        sys.assert(c != '\00', "lexer: reached end of file while scanning for 'STRING' token")
+        sys.assert(c != '\x00', "lexer: reached end of file while scanning for 'STRING' token")
         -- resize
         if idx == str_size -2 {
             str_size = str_size * 2
@@ -253,6 +253,6 @@ str read_string(peeker.PeekerInfo* p, chr delimeter) {
 
     -- read terminator character
     buf[idx] = c
-    buf[idx + 1] = '\00'
+    buf[idx + 1] = '\x00'
     return buf
 }
