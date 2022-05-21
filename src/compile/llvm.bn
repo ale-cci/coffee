@@ -40,6 +40,10 @@ chr* string_to_llvm(chr* text) {
                 i = i + 1
             } elif text[i + 1] == '\5C' {
                 dest_string.buf[dest_string.idx] = '\5C'
+                dest_string.idx = dest_string.idx + 1
+                dest_string.buf[dest_string.idx] = '5'
+                dest_string.idx = dest_string.idx + 1
+                dest_string.buf[dest_string.idx] = 'C'
                 i = i + 1
             } elif text[i + 1] == 'x' {
                 -- hex character
@@ -80,3 +84,34 @@ int llvm_str_len(chr* text) {
     return len -1
 }
 
+
+chr* chr_to_llvm(chr* chr_repr) {
+    int intval
+    chr* buf
+    chr chrval
+
+    chr_len := string.strlen(chr_repr)
+    if chr_len == 6 {
+        io.sscanf(chr_repr, "'\x5Cx%x'", &intval)
+        io.asprintf(&buf, "%d", intval)
+    } elif chr_len == 5 {
+        -- CHR in the form of "\XX" (hex numbers)
+        io.sscanf(chr_repr, "'\x5C%x'", &intval)
+        io.asprintf(&buf, "%d", intval)
+
+    } elif chr_len == 4 {
+        io.sscanf(chr_repr, "'\x5C%c'", &chrval)
+        if chrval == 'n' {
+            buf = "10"
+        } else {
+            return (chr*) null
+        }
+    } elif chr_len == 3 {
+        -- CHR in the form of "X" (single character)
+        io.sscanf(chr_repr, "'%c'", &intval)
+        io.asprintf(&buf, "%d", intval)
+    } else {
+        return (chr*) null
+    }
+    return buf
+}

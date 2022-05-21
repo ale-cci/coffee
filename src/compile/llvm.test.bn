@@ -19,6 +19,11 @@ int main() {
     testing.setup(t, "test_escapes_slash")
     testing.run(t, test_escapes_slash(t))
 
+    testing.setup(t, "test_escapes_char_values")
+    testing.run(t, test_escapes_char_values(t))
+
+    testing.setup(t, "test_allows_hex_in_chars")
+    testing.run(t, test_allows_hex_in_chars(t))
 
     testing.cleanup(t)
     return 0
@@ -50,6 +55,18 @@ int test_converts_hex_characters_in_string(testing.T* t) {
 
 int test_escapes_slash(testing.T* t) {
     got := llvm.string_to_llvm(`"\5C\5C"`)
-    testing.assert_equal_str(t, `c"\5C\5C00"`, got)
+    testing.assert_equal_str(t, `c"\5C5C\5C00"`, got)
+    return 0
+}
+
+int test_escapes_char_values(testing.T* t) {
+    got := llvm.chr_to_llvm("'\5Cn'")
+    testing.assert_equal_str(t, "10", got)
+    return 0
+}
+
+int test_allows_hex_in_chars(testing.T* t) {
+    got := llvm.chr_to_llvm("'\5Cx0a'")
+    testing.assert_equal_str(t, "10", got)
     return 0
 }
