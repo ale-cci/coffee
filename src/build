@@ -9,7 +9,7 @@ case $1 in
 
     test)
         set -e
-        TEST_EXE="coffee_test"
+        TEST_EXE="./coffee_test"
         "$COFFEE_EXE" main.bn && mv out "${TEST_EXE}"
         find . -name '*.test.bn' -exec sh -c "echo && ${TEST_EXE} {} && ./out " \;
         rm -rf ./out "${TEST_EXE}"
