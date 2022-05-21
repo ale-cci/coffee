@@ -42,29 +42,6 @@ alias Matcher = struct {
 }
 int Matcher_size = 32
 
--- visually represent matcher, used only for debug purposes
-void debug_matcher(Matcher* m) {
-    -- print querys
-    io.printf("{\0A\22querys\22: [")
-    for q := m.querys; q != null; q = q.next {
-        if q.type == 'v' {
-            io.printf("\0A{\22type\22: \22%c\22, \22value\22: %s},", q.type, q.value)
-        } else {
-            io.printf("\0A{\22type\22: \22%c\22, \22value\22: \22%s\22},", q.type, q.value)
-        }
-    }
-    io.printf("],\0A\22next\22: [\0A")
-    if m.next != null {
-        debug_matcher(m.next)
-    }
-    io.printf("],\0A\22alt\22: [\0A")
-
-    if m.alternative != null {
-        debug_matcher(m.alternative)
-    }
-    io.printf("]\0A}\0A")
-}
-
 alias Rule = struct {
     chr*      name,
     Matcher*  matcher,

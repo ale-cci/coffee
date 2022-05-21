@@ -128,13 +128,13 @@ int test_parses_atom(testing.T* t) {
     }
 
     -- repr := node_to_string(res.node)
-    -- io.printf("Value of node: %s\0A", repr)
+    -- io.printf("Value of node: %s\n", repr)
     -- sys.free((chr*) res)
     return 0
 }
 
 int test_parses_struct(testing.T* t) {
-    res := match_rule("structdef", "struct {\0Aint t,\0A}")
+    res := match_rule("structdef", "struct {\nint t,\n}")
     testing.assert_null(t, (chr*) res.err)
 
     if res.err != null {
@@ -155,7 +155,7 @@ int test_parses_function_arguments(testing.T* t) {
 }
 
 int test_parses_type_alias(testing.T* t) {
-    res := match_rule("statement", "alias t = struct{ \0A int t, \0A \0A int j,\0A}")
+    res := match_rule("statement", "alias t = struct{ \n int t, \n \n int j,\n}")
     testing.assert_null(t, (chr*) res.err)
     return 0
 }
@@ -166,7 +166,7 @@ int test_parses_global_variable(testing.T* t) {
     -- grammar := parser.parse_grammar(ctx)
     -- r := parser._find_rule(grammar, "structdef")
     -- parser.debug_matcher(r.matcher)
-    -- io.printf("\0A")
+    -- io.printf("\n")
 
     res := match_rule("statement", "int something = 3")
     testing.assert_null(t, (chr*) res.err)

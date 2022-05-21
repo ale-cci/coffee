@@ -24,7 +24,7 @@ chr* node_to_string(parser.Node* n) {
 }
 
 void _print_indent(io.File* stdout, int indent){
-    io.fprintf(stdout, "\0A")
+    io.fprintf(stdout, "\n")
     for i := 0; i < indent; i = i + 1 {
         io.fprintf(stdout, "  ")
     }
@@ -37,13 +37,13 @@ void _node_to_string(parser.Node* node, io.File* stdout, int indent) {
     }
     io.fprintf(stdout, "{")
     _print_indent(stdout, indent)
-    io.fprintf(stdout, "\22type\22: \22%s\22", node.type)
+    io.fprintf(stdout, `"type": "%s"`, node.type)
     _print_indent(stdout, indent)
-    io.fprintf(stdout, "\22value\22: %s", node.value)
+    io.fprintf(stdout, `"value": %s`, node.value)
     _print_indent(stdout, indent)
-    io.fprintf(stdout, "\22line\22: %d", node.line)
+    io.fprintf(stdout, `"line": %d`, node.line)
     _print_indent(stdout, indent)
-    io.fprintf(stdout, "\22char_of_line\22: %d", node.char_of_line)
+    io.fprintf(stdout, `"char_of_line": %d`, node.char_of_line)
 
     -- for now avoid recursive call loop
     -- _print_indent(stdout, indent)
@@ -51,11 +51,11 @@ void _node_to_string(parser.Node* node, io.File* stdout, int indent) {
     -- _node_to_string(node.parent, stdout, indent + 1)
 
     _print_indent(stdout, indent)
-    io.fprintf(stdout, "\22next\22: ")
+    io.fprintf(stdout, `"next": `)
     _node_to_string(node.next, stdout, indent + 1)
 
     _print_indent(stdout, indent)
-    io.fprintf(stdout, "\22children\22: ")
+    io.fprintf(stdout, `"children": `)
     _node_to_string(node.children, stdout, indent + 1)
 
     _print_indent(stdout, indent - 1)

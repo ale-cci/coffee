@@ -35,7 +35,7 @@ int main(int argc, str* argv) {
     ioutil.copy(io.fileno(proc), io.fileno(llvm_code))
 
     if proc == null {
-        io.fprintf(stderr, "unable to spawn subprocess\0A")
+        io.fprintf(stderr, "unable to spawn subprocess\n")
         return 0
     }
 
@@ -46,7 +46,7 @@ int main(int argc, str* argv) {
 
     gcc_proc := sys.popen("gcc out.s -o out", "w")
     if gcc_proc == null {
-        io.fprintf(stderr, "unable to spawn subprocess\0A")
+        io.fprintf(stderr, "unable to spawn subprocess\n")
         return 0
     }
     if sys.pclose(proc) != 0 {

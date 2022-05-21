@@ -114,7 +114,7 @@ int should_parse_lowercase_words_as_rule_alias(testing.T* t) {
 }
 
 int should_parse_string_as_value_matcher(testing.T* t) {
-    matcher := build_matcher("\22NUMBER\22")
+    matcher := build_matcher(`"NUMBER"`)
 
     testing.assert_equal_chr(t, 'v', matcher.querys.type)
     return 0
@@ -186,7 +186,7 @@ int should_parse_matching_rule(testing.T* t) {
 }
 
 int should_parse_multiple_rules(testing.T* t) {
-    f := testing.tempfile("rule_name: first a\0Asecond: b")
+    f := testing.tempfile("rule_name: first a\nsecond: b")
     ctx := parser.new_context(f)
     grammar := parser.parse_grammar(ctx)
 
@@ -224,7 +224,7 @@ parser.Node* parse_file(parser.Rule** grammar, chr* file_content) {
 }
 
 int should_parse_node_using_rule(testing.T* t) {
-    grammar := gen_grammar("start: \22a\22 \22b\22")
+    grammar := gen_grammar(`start: "a" "b"`)
     node := parse_file(grammar, "a b")
 
     -- asserts the following
@@ -251,12 +251,12 @@ int should_parse_node_using_rule(testing.T* t) {
 
 int should_parse_node_using_rules_with_words(testing.T* t) {
     grammar := gen_grammar("start: STRING WORD")
-    node := parse_file(grammar, "\22a\22 b")
+    node := parse_file(grammar, `"a" b`)
 
     testing.assert_not_null(t, (chr*) node)
 
-    testing.assert_equal_str(t, "STRING", node.children.type)
-    testing.assert_equal_str(t, "\22a\22", node.children.value)
+    testing.assert_equal_str(t, `STRING`, node.children.type)
+    testing.assert_equal_str(t, `"a"`, node.children.value)
 
     testing.assert_equal_str(t, "WORD", node.children.next.type)
     testing.assert_equal_str(t, "b", node.children.next.value)
@@ -264,7 +264,7 @@ int should_parse_node_using_rules_with_words(testing.T* t) {
 }
 
 int should_parse_node_using_alias_rules(testing.T* t) {
-    grammar := gen_grammar("start: a a\0Aa: WORD")
+    grammar := gen_grammar("start: a a\na: WORD")
     node := parse_file(grammar, "a b")
 
     testing.assert_not_null(t, (chr*) node.children)
@@ -279,7 +279,7 @@ int should_parse_node_using_alias_rules(testing.T* t) {
 
 int should_parse_alternative_rules(testing.T* t) {
     grammar := gen_grammar("start: ( WORD | STRING )")
-    node := parse_file(grammar, "\22sample\22")
+    node := parse_file(grammar, `"sample"`)
 
     testing.assert_not_null(t, (chr*) node)
     testing.assert_not_null(t, (chr*) node.children)
@@ -292,7 +292,7 @@ int should_parse_alternative_rules(testing.T* t) {
 }
 
 int should_rollback_if_rule_does_not_match(testing.T* t) {
-    grammar := gen_grammar("start: ( conda | condb )\0Aconda: WORD STRING\0Acondb: WORD WORD")
+    grammar := gen_grammar("start: ( conda | condb )\nconda: WORD STRING\ncondb: WORD WORD")
     node := parse_file(grammar, "a b")
 
     testing.assert_not_null(t, (chr*) node)
@@ -353,7 +353,7 @@ int test_optional_operator_matches_records(testing.T* t) {
 }
 
 int test_optionals_dont_interrupt_matching_chain(testing.T* t) {
-    grammar := gen_grammar("start: WORD (\22.\22 start)?")
+    grammar := gen_grammar(`start: WORD ("." start)?`)
     source := testing.tempfile("a.b")
     fd := io.fileno(source)
     p := peeker.new(fd)
@@ -385,7 +385,7 @@ int should_report_error_if_element_is_not_matched(testing.T* t) {
 
 
 int should_fail_if_source_is_not_fully_parsed(testing.T* t) {
-    grammar := gen_grammar("start: \22a\22")
+    grammar := gen_grammar(`start: "a"`)
     source := testing.tempfile("a b")
     fd := io.fileno(source)
     p := peeker.new(fd)
@@ -402,7 +402,7 @@ int should_fail_if_source_is_not_fully_parsed(testing.T* t) {
 }
 
 int test_fully_compares_words_by_value(testing.T* t) {
-    grammar := gen_grammar("start: \22a\22")
+    grammar := gen_grammar(`start: "a"`)
     source := testing.tempfile("alt")
     fd := io.fileno(source)
     p := peeker.new(fd)

@@ -26,9 +26,9 @@ Error* new(chr* filename, int line, char_of_line, chr* message) {
 }
 
 void report(Error* e) {
-    io.printf("[%s %d:%d] error: %s\0A", e.filename, e.line, e.char_of_line, e.message)
+    io.printf("[%s %d:%d] error: %s\n", e.filename, e.line, e.char_of_line, e.message)
 }
 
 void freport(io.File* fd, Error* e) {
-    io.fprintf(fd, "[%s %d:%d] error: %s\0A", e.filename, e.line, e.char_of_line, e.message)
+    io.fprintf(fd, "[%s %d:%d] error: %s\n", e.filename, e.line, e.char_of_line, e.message)
 }

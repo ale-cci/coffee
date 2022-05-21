@@ -21,7 +21,7 @@ T* init(chr* filename) {
     t.fds = (int*) sys.malloc(2 * 32)
 
     stderr := io.fdopen(io.STDERR, "w")
-    io.fprintf(stderr, "Running tests in %s\0A", filename)
+    io.fprintf(stderr, "Running tests in %s\n", filename)
     return t
 }
 
@@ -49,16 +49,16 @@ void run(T* t, int _unused) {
 
     stderr := io.fdopen(io.STDERR, "w")
     if t.failure {
-        io.fprintf(stderr, "[ \1B[31mERROR\1B[0m ] %s: \0A", t.test_name)
+        io.fprintf(stderr, "[ \x1B[31mERROR\x1B[0m ] %s: \n", t.test_name)
 
         out := ioutil.readall(fds[io.STDIN])
         io.write(io.STDERR, out, string.strlen(out))
-        io.write(io.STDERR, "\0A", 1)
+        io.write(io.STDERR, "\n", 1)
     } elif t.test_no == 0 {
-        io.fprintf(stderr, "[ \1B[33mWARN\1B[0m  ] %s: no asserts found\0A", t.test_name)
+        io.fprintf(stderr, "[ \x1b[33mWARN\x1b[0m  ] %s: no asserts found\n", t.test_name)
 
     } else {
-        io.fprintf(stderr, "[ \1B[32mOK\1B[0m    ] %s\0A", t.test_name)
+        io.fprintf(stderr, "[ \x1b[32mOK\x1b[0m    ] %s\n", t.test_name)
     }
     io.close(fds[io.STDIN])
 }
@@ -82,7 +82,7 @@ void assert_equal_int(T* t, int expect, got) {
     t.test_no = t.test_no + 1
     if expect != got {
         fail(t)
-        io.fprintf(t.out, "expected '%d', got '%d'\0A", expect, got)
+        io.fprintf(t.out, "expected '%d', got '%d'\n", expect, got)
     }
 }
 
@@ -90,7 +90,7 @@ void assert_equal_chr(T* t, chr expect, got) {
     t.test_no = t.test_no + 1
     if expect != got {
         fail(t)
-        io.fprintf(t.out, "expected '%c' (%d), got '%c' (%d)\0A", expect, expect, got, got)
+        io.fprintf(t.out, "expected '%c' (%d), got '%c' (%d)\n", expect, expect, got, got)
     }
 }
 
@@ -98,7 +98,7 @@ void assert_true(T* t, chr* label, bool val) {
     t.test_no = t.test_no + 1
     if val == false {
         fail(t)
-        io.fprintf(t.out, "value %s is not truthy\0A", label)
+        io.fprintf(t.out, "value %s is not truthy\n", label)
     }
 }
 
@@ -106,10 +106,10 @@ void assert_equal_str(T* t, chr* expect, got) {
     t.test_no = t.test_no + 1
     if got == null {
         fail(t)
-        io.fprintf(t.out, "expected '%s', got (null)\0A", expect, got)
+        io.fprintf(t.out, "expected '%s', got (null)\n", expect, got)
     } elif string.strcmp(expect, got) != 0 {
         fail(t)
-        io.fprintf(t.out, "expected '%s', got '%s'\0A", expect, got)
+        io.fprintf(t.out, "expected '%s', got '%s'\n", expect, got)
     }
 }
 
@@ -117,7 +117,7 @@ void assert_null(T* t, chr* ptr) {
     t.test_no = t.test_no + 1
     if ptr != null {
         fail(t)
-        io.fprintf(t.out, "expected null pointer, got: %p\0A", ptr)
+        io.fprintf(t.out, "expected null pointer, got: %p\n", ptr)
     }
 }
 

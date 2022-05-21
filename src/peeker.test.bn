@@ -80,7 +80,7 @@ int peeker_keeps_track_of_current_cursor_position(testing.T* t) {
 }
 
 int peeker_counts_lines(testing.T* t) {
-    fd := testing.tempfile("1\0A3")
+    fd := testing.tempfile("1\n3")
     f_no := io.fileno(fd)
 
     p := peeker.new(f_no)
@@ -96,7 +96,7 @@ int peeker_counts_lines(testing.T* t) {
 }
 
 int peeker_counts_character_position_of_line(testing.T* t) {
-    fd := testing.tempfile("1\0A3")
+    fd := testing.tempfile("1\n3")
     f_no := io.fileno(fd)
 
     p := peeker.new(f_no)

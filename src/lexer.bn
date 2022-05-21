@@ -150,7 +150,7 @@ Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
             push_token(ctx, "CHR", buf)
 
         } elif c == '\0A' {
-            push_token(ctx, "NL", "\0A")
+            push_token(ctx, "NL", "\n")
             c = peeker.read(p)
         } elif c == '-' {
             c = peeker.read(p)
@@ -177,7 +177,7 @@ Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
         } else {
             -- check for operator
             if c > '\7E' {
-                io.printf("%d:%d error: found non ascii token: '%c' (%d)\0A", ctx.line, ctx.char_of_line, c, c)
+                io.printf("%d:%d error: found non ascii token: '%c' (%d)\n", ctx.line, ctx.char_of_line, c, c)
                 sys.exit(1)
             }
 
@@ -205,7 +205,7 @@ Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
                 -- ensure next token is . otherwise tokenerror raised
                 c = peeker.read(p)
                 if c != '.' {
-                    io.printf("error on ..\0A")
+                    io.printf("error on ..\n")
                     -- err := new_error("unrecognized operand ..")
                     sys.exit(1)
                 } else {

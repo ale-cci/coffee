@@ -19,7 +19,7 @@ int main() {
     testing.run(t, should_parse_consecutive_numbers(t))
 
     testing.setup(t, "ignores whitespace tokens")
-    testing.run(t, should_ignore_whitespaces(t))
+    testing.run(t, test_ignores_whitespace_tokens(t))
 
     testing.setup(t, "parses words token")
     testing.run(t, should_parse_words_token(t))
@@ -113,8 +113,8 @@ int should_parse_consecutive_numbers(testing.T* t) {
     return 0
 }
 
-int should_ignore_whitespaces(testing.T* t) {
-    p := new_peeker(" \09")
+int test_ignores_whitespace_tokens(testing.T* t) {
+    p := new_peeker(" \x09")
     token_list := lexer.tokenize(p, true)
 
     testing.assert_equal_str(t, "EOF", token_list.type)
@@ -174,11 +174,11 @@ int should_parse_list_of_tokens(testing.T* t) {
 }
 
 int should_parse_string_token(testing.T* t) {
-    p := new_peeker("\22b\22")
+    p := new_peeker(`"b"`)
     token_list := lexer.tokenize(p, true)
 
     testing.assert_equal_str(t, "STRING", token_list.type)
-    testing.assert_equal_str(t, "\22b\22", token_list.value)
+    testing.assert_equal_str(t, `"b"`, token_list.value)
 
     sys.free((chr*) p)
     sys.free((chr*) token_list)
@@ -186,11 +186,11 @@ int should_parse_string_token(testing.T* t) {
 }
 
 int should_parse_nl_token(testing.T* t) {
-    p := new_peeker("\0A")
+    p := new_peeker("\n")
     token_list := lexer.tokenize(p, true)
 
     testing.assert_equal_str(t, "NL", token_list.type)
-    testing.assert_equal_str(t, "\0A", token_list.value)
+    testing.assert_equal_str(t, "\n", token_list.value)
     return 0
 }
 
