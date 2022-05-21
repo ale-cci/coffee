@@ -16,6 +16,7 @@ case $1 in
         ;;
 
 
+
     test:watch)
         echo "Watchig for file changes..."
         fswatch --include='.bn$' --exclude='.*' . | xargs -I{} bash -c "clear && $0 test && echo 'Test suite completed'"
@@ -24,7 +25,7 @@ case $1 in
 
     install)
         # 1. compile the project
-        llc coffee.ll > coffee.s
+        llc coffee.ll -o coffee.s
         gcc coffee.s -o coffee
 
         # 2. move in $PATH output (see install command)
