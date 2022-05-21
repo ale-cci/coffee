@@ -410,13 +410,9 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
 
         fn_name := stmt.children.next.next.value
         set_assignable_id(info, SCOPE_GLOBAL, fn_name)
-        info.line = stmt.line
-        info.char_of_line = stmt.char_of_line
 
         -- copy defined function return type
-        return_type = (Type*) sys.malloc(sizeof(Type))
-        return_type.next = null
-        return_type.info = null
+        return_type = new_type()
         return_type.container = info.type.of.container
         return_type.of = info.type.of.of
 
