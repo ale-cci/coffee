@@ -1,0 +1,55 @@
+import "../std/testing" as testing
+import "./llvm" as llvm
+
+int main() {
+    t := testing.init("compile/llvm.test.bn")
+
+    testing.setup(t, "test_ascii_strings_stay_normal")
+    testing.run(t, test_ascii_strings_stay_normal(t))
+
+    testing.setup(t, "test_converts_slash_n")
+    testing.run(t, test_converts_slash_n(t))
+
+    testing.setup(t, "test_converts_slash_N")
+    testing.run(t, test_converts_slash_N(t))
+
+    testing.setup(t, "test_converts_hex_characters_in_string")
+    testing.run(t, test_converts_hex_characters_in_string(t))
+
+    testing.setup(t, "test_escapes_slash")
+    testing.run(t, test_escapes_slash(t))
+
+
+    testing.cleanup(t)
+    return 0
+}
+
+int test_ascii_strings_stay_normal(testing.T* t) {
+    got := llvm.string_to_llvm(`"hello"`)
+    testing.assert_equal_str(t, `c"hello\5C00"`, got)
+    return 0
+}
+
+int test_converts_slash_N(testing.T* t) {
+    got := llvm.string_to_llvm(`"\5CN"`)
+    testing.assert_equal_str(t, `c"\5C0A\5C00"`, got)
+    return 0
+}
+
+int test_converts_slash_n(testing.T* t) {
+    got := llvm.string_to_llvm(`"\5Cn"`)
+    testing.assert_equal_str(t, `c"\5C0A\5C00"`, got)
+    return 0
+}
+
+int test_converts_hex_characters_in_string(testing.T* t) {
+    got := llvm.string_to_llvm(`"\5Cx0a"`)
+    testing.assert_equal_str(t, `c"\5C0A\5C00"`, got)
+    return 0
+}
+
+int test_escapes_slash(testing.T* t) {
+    got := llvm.string_to_llvm(`"\5C\5C"`)
+    testing.assert_equal_str(t, `c"\5C\5C00"`, got)
+    return 0
+}

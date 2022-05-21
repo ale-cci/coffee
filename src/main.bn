@@ -30,7 +30,7 @@ int main(int argc, str* argv) {
     io.fflush(llvm_code)
     llvm_code_size := io.ftell(llvm_code)
     io.rewind(llvm_code)
-    proc := sys.popen("tee debug.ll | llc - > out.s", "w")
+    proc := sys.popen("tee debug.ll | llc - -o out.s", "w")
 
     ioutil.copy(io.fileno(proc), io.fileno(llvm_code))
 
