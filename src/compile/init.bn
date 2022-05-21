@@ -79,7 +79,7 @@ void debug_type(Type* t, int level) {
     for i := 0 ; i < level; i = i + 1 {
         indent[i] = ' '
     }
-    indent[level] = '\00'
+    indent[level] = '\x00'
 
     io.printf("%s{\n", indent)
     io.printf(`%s  container: "%s"\n`, indent, t.container)
@@ -523,7 +523,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
             for i := 1 ; i < mod_name_len - 1; i = i + 1 {
                 trimmed_name[i - 1] = mod_name[i]
             }
-            trimmed_name[mod_name_len -2] = '\00'
+            trimmed_name[mod_name_len -2] = '\x00'
             if string.strcmp(dirname, "") == 0 {
                 io.asprintf(&mod_abspath, "%s.bn", trimmed_name)
             } else {

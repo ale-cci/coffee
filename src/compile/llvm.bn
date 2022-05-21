@@ -92,15 +92,15 @@ chr* chr_to_llvm(chr* chr_repr) {
 
     chr_len := string.strlen(chr_repr)
     if chr_len == 6 {
-        io.sscanf(chr_repr, "'\x5Cx%x'", &intval)
+        io.sscanf(chr_repr, "'\\x%x'", &intval)
         io.asprintf(&buf, "%d", intval)
     } elif chr_len == 5 {
         -- CHR in the form of "\XX" (hex numbers)
-        io.sscanf(chr_repr, "'\x5C%x'", &intval)
+        io.sscanf(chr_repr, "'\\%x'", &intval)
         io.asprintf(&buf, "%d", intval)
 
     } elif chr_len == 4 {
-        io.sscanf(chr_repr, "'\x5C%c'", &chrval)
+        io.sscanf(chr_repr, "'\\%c'", &chrval)
         if chrval == 'n' {
             buf = "10"
         } else {

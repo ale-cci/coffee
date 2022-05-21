@@ -31,42 +31,42 @@ int main() {
 
 int test_ascii_strings_stay_normal(testing.T* t) {
     got := llvm.string_to_llvm(`"hello"`)
-    testing.assert_equal_str(t, `c"hello\5C00"`, got)
+    testing.assert_equal_str(t, `c"hello\\00"`, got)
     return 0
 }
 
 int test_converts_slash_N(testing.T* t) {
-    got := llvm.string_to_llvm(`"\5CN"`)
-    testing.assert_equal_str(t, `c"\5C0A\5C00"`, got)
+    got := llvm.string_to_llvm(`"\\N"`)
+    testing.assert_equal_str(t, `c"\\0A\\00"`, got)
     return 0
 }
 
 int test_converts_slash_n(testing.T* t) {
-    got := llvm.string_to_llvm(`"\5Cn"`)
-    testing.assert_equal_str(t, `c"\5C0A\5C00"`, got)
+    got := llvm.string_to_llvm(`"\\n"`)
+    testing.assert_equal_str(t, `c"\\0A\\00"`, got)
     return 0
 }
 
 int test_converts_hex_characters_in_string(testing.T* t) {
-    got := llvm.string_to_llvm(`"\5Cx0a"`)
-    testing.assert_equal_str(t, `c"\5C0A\5C00"`, got)
+    got := llvm.string_to_llvm(`"\\x0a"`)
+    testing.assert_equal_str(t, `c"\\0A\\00"`, got)
     return 0
 }
 
 int test_escapes_slash(testing.T* t) {
-    got := llvm.string_to_llvm(`"\5C\5C"`)
-    testing.assert_equal_str(t, `c"\5C5C\5C00"`, got)
+    got := llvm.string_to_llvm(`"\\\\"`)
+    testing.assert_equal_str(t, `c"\\5C\\00"`, got)
     return 0
 }
 
 int test_escapes_char_values(testing.T* t) {
-    got := llvm.chr_to_llvm("'\5Cn'")
+    got := llvm.chr_to_llvm("'\\n'")
     testing.assert_equal_str(t, "10", got)
     return 0
 }
 
 int test_allows_hex_in_chars(testing.T* t) {
-    got := llvm.chr_to_llvm("'\5Cx0a'")
+    got := llvm.chr_to_llvm("'\\x0a'")
     testing.assert_equal_str(t, "10", got)
     return 0
 }
