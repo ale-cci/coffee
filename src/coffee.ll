@@ -3983,162 +3983,205 @@ ret i8* %.tmp2530
 @.str2513 = constant [3 x i8] c"10\00"
 @.str2520 = constant [5 x i8] c"'%c'\00"
 @.str2525 = constant [3 x i8] c"%d\00"
+define i8* @m2531$append_tmpl.cp() {
+%.tmp2533 = getelementptr [1883 x i8], [1883 x i8]*@.str2532, i32 0, i32 0
+ret i8* %.tmp2533
+}
+@.str2532 = constant [1883 x i8] c"%%%1$s.tmp0 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 1
+%%%1$s.tmp1 = load i32, i32* %%%1$s.tmp0
+%%%1$s.tmp2 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 2
+%%%1$s.tmp3 = load i32, i32* %%%1$s.tmp2
+%%%1$s.tmp4 = icmp sge i32 %%%1$s.tmp1, %%%1$s.tmp3
+br i1 %%%1$s.tmp4, label %%%1$s.if.true.9, label %%%1$s.if.end.9
+%1$s.if.true.9:
+%%%1$s.tmp6 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 2
+%%%1$s.tmp7 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 2
+%%%1$s.tmp8 = load i32, i32* %%%1$s.tmp7
+%%%1$s.tmp9 = mul i32 %%%1$s.tmp8, 2
+%%%1$s.tmp10 = add i32 %%%1$s.tmp9, 1
+store i32 %%%1$s.tmp10, i32* %%%1$s.tmp6
+%%%1$s.tmp11 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 0
+%%%1$s.tmp12 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 0
+%%%1$s.tmp13 = load %4$s*, %4$s** %%%1$s.tmp12
+%%%1$s.tmp14 = bitcast %4$s* %%%1$s.tmp13 to i8*
+%%%1$s.tmp15 = getelementptr %4$s, %4$s* null, i32 1
+%%%1$s.tmp16 = ptrtoint %4$s* %%%1$s.tmp15 to i32
+%%%1$s.tmp17 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 2
+%%%1$s.tmp18 = load i32, i32* %%%1$s.tmp17
+%%%1$s.tmp19 = mul i32 %%%1$s.tmp16, %%%1$s.tmp18
+%%%1$s.tmp20 = call i8*(i8*,i32) @realloc(i8* %%%1$s.tmp14, i32 %%%1$s.tmp19)
+%%%1$s.tmp21 = bitcast i8* %%%1$s.tmp20 to %4$s*
+store %4$s* %%%1$s.tmp21, %4$s** %%%1$s.tmp11
+br label %%%1$s.if.end.9
+%1$s.if.end.9:
+%%%1$s.tmp22 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 0
+%%%1$s.tmp23 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 1
+%%%1$s.tmp24 = load i32, i32* %%%1$s.tmp23
+%%%1$s.tmp25 = load %4$s*, %4$s** %%%1$s.tmp22
+%%%1$s.tmp26 = getelementptr %4$s, %4$s* %%%1$s.tmp25, i32 %%%1$s.tmp24
+store i8 %5$s, %4$s* %%%1$s.tmp26
+%%%1$s.tmp27 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 1
+%%%1$s.tmp28 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 1
+%%%1$s.tmp29 = load i32, i32* %%%1$s.tmp28
+%%%1$s.tmp30 = add i32 %%%1$s.tmp29, 1
+store i32 %%%1$s.tmp30, i32* %%%1$s.tmp27
+%6$s = load %2$s, %2$s* %3$s\0A\00"
 @DEBUG_INTERNALS = constant i1 0
 %m1861$.ErrorList.type = type {%m751$.Error.type*,%m1861$.ErrorList.type*,i1}
 %m1861$.Type.type = type {i8*,i8*,i8*,%m1861$.Type.type*,%m1861$.Type.type*}
 define %m1861$.Type.type* @m1861$type_clone.m1861$.Type.typep.m1861$.Type.typep(%m1861$.Type.type* %.t.arg) {
 %t = alloca %m1861$.Type.type*
 store %m1861$.Type.type* %.t.arg, %m1861$.Type.type** %t
-%.tmp2531 = load %m1861$.Type.type*, %m1861$.Type.type** %t
-%.tmp2532 = icmp eq %m1861$.Type.type* %.tmp2531, null
-br i1 %.tmp2532, label %.if.true.2533, label %.if.false.2533
-.if.true.2533:
-%.tmp2534 = bitcast ptr null to %m1861$.Type.type*
-ret %m1861$.Type.type* %.tmp2534
-br label %.if.end.2533
-.if.false.2533:
-br label %.if.end.2533
-.if.end.2533:
-%.tmp2535 = getelementptr %m1861$.Type.type, %m1861$.Type.type* null, i32 1
-%.tmp2536 = ptrtoint %m1861$.Type.type* %.tmp2535 to i32
-%.tmp2537 = call i8*(i32) @malloc(i32 %.tmp2536)
-%.tmp2538 = bitcast i8* %.tmp2537 to %m1861$.Type.type*
-%clone.2539 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp2538, %m1861$.Type.type** %clone.2539
-%.tmp2540 = load %m1861$.Type.type*, %m1861$.Type.type** %clone.2539
-%.tmp2541 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2540, i32 0, i32 3
-%.tmp2542 = load %m1861$.Type.type*, %m1861$.Type.type** %t
-%.tmp2543 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2542, i32 0, i32 3
-%.tmp2544 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2543
-store %m1861$.Type.type* %.tmp2544, %m1861$.Type.type** %.tmp2541
-%.tmp2545 = load %m1861$.Type.type*, %m1861$.Type.type** %clone.2539
-%.tmp2546 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2545, i32 0, i32 4
-%.tmp2547 = load %m1861$.Type.type*, %m1861$.Type.type** %t
-%.tmp2548 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2547, i32 0, i32 4
-%.tmp2549 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2548
-%.tmp2550 = call %m1861$.Type.type*(%m1861$.Type.type*) @m1861$type_clone.m1861$.Type.typep.m1861$.Type.typep(%m1861$.Type.type* %.tmp2549)
-store %m1861$.Type.type* %.tmp2550, %m1861$.Type.type** %.tmp2546
-%.tmp2551 = load %m1861$.Type.type*, %m1861$.Type.type** %clone.2539
-%.tmp2552 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2551, i32 0, i32 2
-%.tmp2553 = load %m1861$.Type.type*, %m1861$.Type.type** %t
-%.tmp2554 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2553, i32 0, i32 2
-%.tmp2555 = load i8*, i8** %.tmp2554
-store i8* %.tmp2555, i8** %.tmp2552
-%.tmp2556 = load %m1861$.Type.type*, %m1861$.Type.type** %clone.2539
-%.tmp2557 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2556, i32 0, i32 0
-%.tmp2558 = load %m1861$.Type.type*, %m1861$.Type.type** %t
-%.tmp2559 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2558, i32 0, i32 0
-%.tmp2560 = load i8*, i8** %.tmp2559
-store i8* %.tmp2560, i8** %.tmp2557
-%.tmp2561 = load %m1861$.Type.type*, %m1861$.Type.type** %clone.2539
-%.tmp2562 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2561, i32 0, i32 1
-%.tmp2563 = load %m1861$.Type.type*, %m1861$.Type.type** %t
-%.tmp2564 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2563, i32 0, i32 1
-%.tmp2565 = load i8*, i8** %.tmp2564
-store i8* %.tmp2565, i8** %.tmp2562
-%.tmp2566 = load %m1861$.Type.type*, %m1861$.Type.type** %clone.2539
-ret %m1861$.Type.type* %.tmp2566
+%.tmp2534 = load %m1861$.Type.type*, %m1861$.Type.type** %t
+%.tmp2535 = icmp eq %m1861$.Type.type* %.tmp2534, null
+br i1 %.tmp2535, label %.if.true.2536, label %.if.false.2536
+.if.true.2536:
+%.tmp2537 = bitcast ptr null to %m1861$.Type.type*
+ret %m1861$.Type.type* %.tmp2537
+br label %.if.end.2536
+.if.false.2536:
+br label %.if.end.2536
+.if.end.2536:
+%.tmp2538 = getelementptr %m1861$.Type.type, %m1861$.Type.type* null, i32 1
+%.tmp2539 = ptrtoint %m1861$.Type.type* %.tmp2538 to i32
+%.tmp2540 = call i8*(i32) @malloc(i32 %.tmp2539)
+%.tmp2541 = bitcast i8* %.tmp2540 to %m1861$.Type.type*
+%clone.2542 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp2541, %m1861$.Type.type** %clone.2542
+%.tmp2543 = load %m1861$.Type.type*, %m1861$.Type.type** %clone.2542
+%.tmp2544 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2543, i32 0, i32 3
+%.tmp2545 = load %m1861$.Type.type*, %m1861$.Type.type** %t
+%.tmp2546 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2545, i32 0, i32 3
+%.tmp2547 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2546
+store %m1861$.Type.type* %.tmp2547, %m1861$.Type.type** %.tmp2544
+%.tmp2548 = load %m1861$.Type.type*, %m1861$.Type.type** %clone.2542
+%.tmp2549 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2548, i32 0, i32 4
+%.tmp2550 = load %m1861$.Type.type*, %m1861$.Type.type** %t
+%.tmp2551 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2550, i32 0, i32 4
+%.tmp2552 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2551
+%.tmp2553 = call %m1861$.Type.type*(%m1861$.Type.type*) @m1861$type_clone.m1861$.Type.typep.m1861$.Type.typep(%m1861$.Type.type* %.tmp2552)
+store %m1861$.Type.type* %.tmp2553, %m1861$.Type.type** %.tmp2549
+%.tmp2554 = load %m1861$.Type.type*, %m1861$.Type.type** %clone.2542
+%.tmp2555 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2554, i32 0, i32 2
+%.tmp2556 = load %m1861$.Type.type*, %m1861$.Type.type** %t
+%.tmp2557 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2556, i32 0, i32 2
+%.tmp2558 = load i8*, i8** %.tmp2557
+store i8* %.tmp2558, i8** %.tmp2555
+%.tmp2559 = load %m1861$.Type.type*, %m1861$.Type.type** %clone.2542
+%.tmp2560 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2559, i32 0, i32 0
+%.tmp2561 = load %m1861$.Type.type*, %m1861$.Type.type** %t
+%.tmp2562 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2561, i32 0, i32 0
+%.tmp2563 = load i8*, i8** %.tmp2562
+store i8* %.tmp2563, i8** %.tmp2560
+%.tmp2564 = load %m1861$.Type.type*, %m1861$.Type.type** %clone.2542
+%.tmp2565 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2564, i32 0, i32 1
+%.tmp2566 = load %m1861$.Type.type*, %m1861$.Type.type** %t
+%.tmp2567 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2566, i32 0, i32 1
+%.tmp2568 = load i8*, i8** %.tmp2567
+store i8* %.tmp2568, i8** %.tmp2565
+%.tmp2569 = load %m1861$.Type.type*, %m1861$.Type.type** %clone.2542
+ret %m1861$.Type.type* %.tmp2569
 }
 define %m1861$.Type.type* @m1861$new_type.m1861$.Type.typep() {
-%.tmp2567 = getelementptr %m1861$.Type.type, %m1861$.Type.type* null, i32 1
-%.tmp2568 = ptrtoint %m1861$.Type.type* %.tmp2567 to i32
-%.tmp2569 = call i8*(i32) @malloc(i32 %.tmp2568)
-%.tmp2570 = bitcast i8* %.tmp2569 to %m1861$.Type.type*
-%type.2571 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp2570, %m1861$.Type.type** %type.2571
-%.tmp2572 = load %m1861$.Type.type*, %m1861$.Type.type** %type.2571
-%.tmp2573 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2572, i32 0, i32 1
-store i8* null, i8** %.tmp2573
-%.tmp2574 = load %m1861$.Type.type*, %m1861$.Type.type** %type.2571
-%.tmp2575 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2574, i32 0, i32 2
-store i8* null, i8** %.tmp2575
-%.tmp2576 = load %m1861$.Type.type*, %m1861$.Type.type** %type.2571
-%.tmp2577 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2576, i32 0, i32 0
-store i8* null, i8** %.tmp2577
-%.tmp2578 = load %m1861$.Type.type*, %m1861$.Type.type** %type.2571
-%.tmp2579 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2578, i32 0, i32 3
-store %m1861$.Type.type* null, %m1861$.Type.type** %.tmp2579
-%.tmp2580 = load %m1861$.Type.type*, %m1861$.Type.type** %type.2571
-%.tmp2581 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2580, i32 0, i32 4
-store %m1861$.Type.type* null, %m1861$.Type.type** %.tmp2581
-%.tmp2582 = load %m1861$.Type.type*, %m1861$.Type.type** %type.2571
-ret %m1861$.Type.type* %.tmp2582
+%.tmp2570 = getelementptr %m1861$.Type.type, %m1861$.Type.type* null, i32 1
+%.tmp2571 = ptrtoint %m1861$.Type.type* %.tmp2570 to i32
+%.tmp2572 = call i8*(i32) @malloc(i32 %.tmp2571)
+%.tmp2573 = bitcast i8* %.tmp2572 to %m1861$.Type.type*
+%type.2574 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp2573, %m1861$.Type.type** %type.2574
+%.tmp2575 = load %m1861$.Type.type*, %m1861$.Type.type** %type.2574
+%.tmp2576 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2575, i32 0, i32 1
+store i8* null, i8** %.tmp2576
+%.tmp2577 = load %m1861$.Type.type*, %m1861$.Type.type** %type.2574
+%.tmp2578 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2577, i32 0, i32 2
+store i8* null, i8** %.tmp2578
+%.tmp2579 = load %m1861$.Type.type*, %m1861$.Type.type** %type.2574
+%.tmp2580 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2579, i32 0, i32 0
+store i8* null, i8** %.tmp2580
+%.tmp2581 = load %m1861$.Type.type*, %m1861$.Type.type** %type.2574
+%.tmp2582 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2581, i32 0, i32 3
+store %m1861$.Type.type* null, %m1861$.Type.type** %.tmp2582
+%.tmp2583 = load %m1861$.Type.type*, %m1861$.Type.type** %type.2574
+%.tmp2584 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2583, i32 0, i32 4
+store %m1861$.Type.type* null, %m1861$.Type.type** %.tmp2584
+%.tmp2585 = load %m1861$.Type.type*, %m1861$.Type.type** %type.2574
+ret %m1861$.Type.type* %.tmp2585
 }
 define void @m1861$copy_type.v.m1861$.Type.typep.m1861$.Type.typep(%m1861$.Type.type* %.dest.arg, %m1861$.Type.type* %.src.arg) {
 %dest = alloca %m1861$.Type.type*
 store %m1861$.Type.type* %.dest.arg, %m1861$.Type.type** %dest
 %src = alloca %m1861$.Type.type*
 store %m1861$.Type.type* %.src.arg, %m1861$.Type.type** %src
-%.tmp2583 = load %m1861$.Type.type*, %m1861$.Type.type** %dest
-%.tmp2584 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2583, i32 0, i32 0
-%.tmp2585 = load %m1861$.Type.type*, %m1861$.Type.type** %src
-%.tmp2586 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2585, i32 0, i32 0
-%.tmp2587 = load i8*, i8** %.tmp2586
-store i8* %.tmp2587, i8** %.tmp2584
-%.tmp2588 = load %m1861$.Type.type*, %m1861$.Type.type** %dest
-%.tmp2589 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2588, i32 0, i32 1
-%.tmp2590 = load %m1861$.Type.type*, %m1861$.Type.type** %src
-%.tmp2591 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2590, i32 0, i32 1
-%.tmp2592 = load i8*, i8** %.tmp2591
-store i8* %.tmp2592, i8** %.tmp2589
-%.tmp2593 = load %m1861$.Type.type*, %m1861$.Type.type** %dest
-%.tmp2594 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2593, i32 0, i32 2
-%.tmp2595 = load %m1861$.Type.type*, %m1861$.Type.type** %src
-%.tmp2596 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2595, i32 0, i32 2
-%.tmp2597 = load i8*, i8** %.tmp2596
-store i8* %.tmp2597, i8** %.tmp2594
-%.tmp2598 = load %m1861$.Type.type*, %m1861$.Type.type** %dest
-%.tmp2599 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2598, i32 0, i32 3
-%.tmp2600 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2599
-%.tmp2601 = load %m1861$.Type.type*, %m1861$.Type.type** %src
+%.tmp2586 = load %m1861$.Type.type*, %m1861$.Type.type** %dest
+%.tmp2587 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2586, i32 0, i32 0
+%.tmp2588 = load %m1861$.Type.type*, %m1861$.Type.type** %src
+%.tmp2589 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2588, i32 0, i32 0
+%.tmp2590 = load i8*, i8** %.tmp2589
+store i8* %.tmp2590, i8** %.tmp2587
+%.tmp2591 = load %m1861$.Type.type*, %m1861$.Type.type** %dest
+%.tmp2592 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2591, i32 0, i32 1
+%.tmp2593 = load %m1861$.Type.type*, %m1861$.Type.type** %src
+%.tmp2594 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2593, i32 0, i32 1
+%.tmp2595 = load i8*, i8** %.tmp2594
+store i8* %.tmp2595, i8** %.tmp2592
+%.tmp2596 = load %m1861$.Type.type*, %m1861$.Type.type** %dest
+%.tmp2597 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2596, i32 0, i32 2
+%.tmp2598 = load %m1861$.Type.type*, %m1861$.Type.type** %src
+%.tmp2599 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2598, i32 0, i32 2
+%.tmp2600 = load i8*, i8** %.tmp2599
+store i8* %.tmp2600, i8** %.tmp2597
+%.tmp2601 = load %m1861$.Type.type*, %m1861$.Type.type** %dest
 %.tmp2602 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2601, i32 0, i32 3
 %.tmp2603 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2602
-%.tmp2604 = icmp ne %m1861$.Type.type* %.tmp2600, %.tmp2603
-br i1 %.tmp2604, label %.if.true.2605, label %.if.false.2605
-.if.true.2605:
-%.tmp2606 = load %m1861$.Type.type*, %m1861$.Type.type** %dest
-%.tmp2607 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2606, i32 0, i32 3
-%.tmp2608 = load %m1861$.Type.type*, %m1861$.Type.type** %src
-%.tmp2609 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2608, i32 0, i32 3
-%.tmp2610 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2609
-store %m1861$.Type.type* %.tmp2610, %m1861$.Type.type** %.tmp2607
-%.tmp2611 = load %m1861$.Type.type*, %m1861$.Type.type** %dest
+%.tmp2604 = load %m1861$.Type.type*, %m1861$.Type.type** %src
+%.tmp2605 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2604, i32 0, i32 3
+%.tmp2606 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2605
+%.tmp2607 = icmp ne %m1861$.Type.type* %.tmp2603, %.tmp2606
+br i1 %.tmp2607, label %.if.true.2608, label %.if.false.2608
+.if.true.2608:
+%.tmp2609 = load %m1861$.Type.type*, %m1861$.Type.type** %dest
+%.tmp2610 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2609, i32 0, i32 3
+%.tmp2611 = load %m1861$.Type.type*, %m1861$.Type.type** %src
 %.tmp2612 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2611, i32 0, i32 3
 %.tmp2613 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2612
-%.tmp2614 = load %m1861$.Type.type*, %m1861$.Type.type** %src
+store %m1861$.Type.type* %.tmp2613, %m1861$.Type.type** %.tmp2610
+%.tmp2614 = load %m1861$.Type.type*, %m1861$.Type.type** %dest
 %.tmp2615 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2614, i32 0, i32 3
 %.tmp2616 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2615
-call void(%m1861$.Type.type*,%m1861$.Type.type*) @m1861$copy_type.v.m1861$.Type.typep.m1861$.Type.typep(%m1861$.Type.type* %.tmp2613, %m1861$.Type.type* %.tmp2616)
-br label %.if.end.2605
-.if.false.2605:
-br label %.if.end.2605
-.if.end.2605:
-%.tmp2617 = load %m1861$.Type.type*, %m1861$.Type.type** %dest
-%.tmp2618 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2617, i32 0, i32 4
+%.tmp2617 = load %m1861$.Type.type*, %m1861$.Type.type** %src
+%.tmp2618 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2617, i32 0, i32 3
 %.tmp2619 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2618
-%.tmp2620 = load %m1861$.Type.type*, %m1861$.Type.type** %src
+call void(%m1861$.Type.type*,%m1861$.Type.type*) @m1861$copy_type.v.m1861$.Type.typep.m1861$.Type.typep(%m1861$.Type.type* %.tmp2616, %m1861$.Type.type* %.tmp2619)
+br label %.if.end.2608
+.if.false.2608:
+br label %.if.end.2608
+.if.end.2608:
+%.tmp2620 = load %m1861$.Type.type*, %m1861$.Type.type** %dest
 %.tmp2621 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2620, i32 0, i32 4
 %.tmp2622 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2621
-%.tmp2623 = icmp ne %m1861$.Type.type* %.tmp2619, %.tmp2622
-br i1 %.tmp2623, label %.if.true.2624, label %.if.false.2624
-.if.true.2624:
-%.tmp2625 = load %m1861$.Type.type*, %m1861$.Type.type** %dest
-%.tmp2626 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2625, i32 0, i32 4
-%.tmp2627 = load %m1861$.Type.type*, %m1861$.Type.type** %src
-%.tmp2628 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2627, i32 0, i32 4
-%.tmp2629 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2628
-store %m1861$.Type.type* %.tmp2629, %m1861$.Type.type** %.tmp2626
-%.tmp2630 = load %m1861$.Type.type*, %m1861$.Type.type** %dest
+%.tmp2623 = load %m1861$.Type.type*, %m1861$.Type.type** %src
+%.tmp2624 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2623, i32 0, i32 4
+%.tmp2625 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2624
+%.tmp2626 = icmp ne %m1861$.Type.type* %.tmp2622, %.tmp2625
+br i1 %.tmp2626, label %.if.true.2627, label %.if.false.2627
+.if.true.2627:
+%.tmp2628 = load %m1861$.Type.type*, %m1861$.Type.type** %dest
+%.tmp2629 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2628, i32 0, i32 4
+%.tmp2630 = load %m1861$.Type.type*, %m1861$.Type.type** %src
 %.tmp2631 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2630, i32 0, i32 4
 %.tmp2632 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2631
-%.tmp2633 = load %m1861$.Type.type*, %m1861$.Type.type** %src
+store %m1861$.Type.type* %.tmp2632, %m1861$.Type.type** %.tmp2629
+%.tmp2633 = load %m1861$.Type.type*, %m1861$.Type.type** %dest
 %.tmp2634 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2633, i32 0, i32 4
 %.tmp2635 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2634
-call void(%m1861$.Type.type*,%m1861$.Type.type*) @m1861$copy_type.v.m1861$.Type.typep.m1861$.Type.typep(%m1861$.Type.type* %.tmp2632, %m1861$.Type.type* %.tmp2635)
-br label %.if.end.2624
-.if.false.2624:
-br label %.if.end.2624
-.if.end.2624:
+%.tmp2636 = load %m1861$.Type.type*, %m1861$.Type.type** %src
+%.tmp2637 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2636, i32 0, i32 4
+%.tmp2638 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2637
+call void(%m1861$.Type.type*,%m1861$.Type.type*) @m1861$copy_type.v.m1861$.Type.typep.m1861$.Type.typep(%m1861$.Type.type* %.tmp2635, %m1861$.Type.type* %.tmp2638)
+br label %.if.end.2627
+.if.false.2627:
+br label %.if.end.2627
+.if.end.2627:
 ret void
 }
 define void @m1861$debug_type.v.m1861$.Type.typep.i(%m1861$.Type.type* %.t.arg, i32 %.level.arg) {
@@ -4146,102 +4189,102 @@ define void @m1861$debug_type.v.m1861$.Type.typep.i(%m1861$.Type.type* %.t.arg, 
 store %m1861$.Type.type* %.t.arg, %m1861$.Type.type** %t
 %level = alloca i32
 store i32 %.level.arg, i32* %level
-%.tmp2636 = load i32, i32* %level
-%.tmp2637 = add i32 %.tmp2636, 1
-%.tmp2638 = call i8*(i32) @malloc(i32 %.tmp2637)
-%.tmp2639 = bitcast i8* %.tmp2638 to i8*
-%indent.2640 = alloca i8*
-store i8* %.tmp2639, i8** %indent.2640
-%i.2642 = alloca i32
-store i32 0, i32* %i.2642
-br label %.for.start.2641
-.for.start.2641:
-%.tmp2643 = load i32, i32* %i.2642
-%.tmp2644 = load i32, i32* %level
-%.tmp2645 = icmp slt i32 %.tmp2643, %.tmp2644
-br i1 %.tmp2645, label %.for.continue.2641, label %.for.end.2641
-.for.continue.2641:
-%.tmp2646 = load i32, i32* %i.2642
-%.tmp2647 = load i8*, i8** %indent.2640
-%.tmp2648 = getelementptr i8, i8* %.tmp2647, i32 %.tmp2646
-store i8 32, i8* %.tmp2648
-%.tmp2649 = load i32, i32* %i.2642
-%.tmp2650 = add i32 %.tmp2649, 1
-store i32 %.tmp2650, i32* %i.2642
-br label %.for.start.2641
-.for.end.2641:
-%.tmp2651 = load i32, i32* %level
-%.tmp2652 = load i8*, i8** %indent.2640
-%.tmp2653 = getelementptr i8, i8* %.tmp2652, i32 %.tmp2651
-store i8 0, i8* %.tmp2653
-%.tmp2655 = getelementptr [5 x i8], [5 x i8]*@.str2654, i32 0, i32 0
-%.tmp2656 = load i8*, i8** %indent.2640
-%.tmp2657 = call i32(i8*,...) @printf(i8* %.tmp2655, i8* %.tmp2656)
-%.tmp2659 = getelementptr [21 x i8], [21 x i8]*@.str2658, i32 0, i32 0
-%.tmp2660 = load i8*, i8** %indent.2640
-%.tmp2661 = load %m1861$.Type.type*, %m1861$.Type.type** %t
-%.tmp2662 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2661, i32 0, i32 0
-%.tmp2663 = load i8*, i8** %.tmp2662
-%.tmp2664 = call i32(i8*,...) @printf(i8* %.tmp2659, i8* %.tmp2660, i8* %.tmp2663)
-%.tmp2666 = getelementptr [16 x i8], [16 x i8]*@.str2665, i32 0, i32 0
-%.tmp2667 = load i8*, i8** %indent.2640
-%.tmp2668 = load %m1861$.Type.type*, %m1861$.Type.type** %t
-%.tmp2669 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2668, i32 0, i32 1
-%.tmp2670 = load i8*, i8** %.tmp2669
-%.tmp2671 = call i32(i8*,...) @printf(i8* %.tmp2666, i8* %.tmp2667, i8* %.tmp2670)
-%.tmp2673 = getelementptr [16 x i8], [16 x i8]*@.str2672, i32 0, i32 0
-%.tmp2674 = load i8*, i8** %indent.2640
-%.tmp2675 = load %m1861$.Type.type*, %m1861$.Type.type** %t
-%.tmp2676 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2675, i32 0, i32 2
-%.tmp2677 = load i8*, i8** %.tmp2676
-%.tmp2678 = call i32(i8*,...) @printf(i8* %.tmp2673, i8* %.tmp2674, i8* %.tmp2677)
-%.tmp2679 = load %m1861$.Type.type*, %m1861$.Type.type** %t
-%.tmp2680 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2679, i32 0, i32 3
-%.tmp2681 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2680
-%.tmp2682 = icmp eq %m1861$.Type.type* %.tmp2681, null
-br i1 %.tmp2682, label %.if.true.2683, label %.if.false.2683
-.if.true.2683:
-%.tmp2685 = getelementptr [16 x i8], [16 x i8]*@.str2684, i32 0, i32 0
-%.tmp2686 = load i8*, i8** %indent.2640
-%.tmp2687 = call i32(i8*,...) @printf(i8* %.tmp2685, i8* %.tmp2686)
-br label %.if.end.2683
-.if.false.2683:
-%.tmp2689 = getelementptr [10 x i8], [10 x i8]*@.str2688, i32 0, i32 0
-%.tmp2690 = load i8*, i8** %indent.2640
-%.tmp2691 = call i32(i8*,...) @printf(i8* %.tmp2689, i8* %.tmp2690)
-%.tmp2692 = load %m1861$.Type.type*, %m1861$.Type.type** %t
-%.tmp2693 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2692, i32 0, i32 3
-%.tmp2694 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2693
-%.tmp2695 = load i32, i32* %level
-%.tmp2696 = add i32 %.tmp2695, 1
-call void(%m1861$.Type.type*,i32) @m1861$debug_type.v.m1861$.Type.typep.i(%m1861$.Type.type* %.tmp2694, i32 %.tmp2696)
-br label %.if.end.2683
-.if.end.2683:
-%.tmp2697 = load %m1861$.Type.type*, %m1861$.Type.type** %t
-%.tmp2698 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2697, i32 0, i32 4
-%.tmp2699 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2698
-%.tmp2700 = icmp eq %m1861$.Type.type* %.tmp2699, null
-br i1 %.tmp2700, label %.if.true.2701, label %.if.false.2701
-.if.true.2701:
-%.tmp2703 = getelementptr [18 x i8], [18 x i8]*@.str2702, i32 0, i32 0
-%.tmp2704 = load i8*, i8** %indent.2640
-%.tmp2705 = call i32(i8*,...) @printf(i8* %.tmp2703, i8* %.tmp2704)
-br label %.if.end.2701
-.if.false.2701:
-%.tmp2707 = getelementptr [12 x i8], [12 x i8]*@.str2706, i32 0, i32 0
-%.tmp2708 = load i8*, i8** %indent.2640
-%.tmp2709 = call i32(i8*,...) @printf(i8* %.tmp2707, i8* %.tmp2708)
-%.tmp2710 = load %m1861$.Type.type*, %m1861$.Type.type** %t
-%.tmp2711 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2710, i32 0, i32 4
-%.tmp2712 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2711
-%.tmp2713 = load i32, i32* %level
-%.tmp2714 = add i32 %.tmp2713, 1
-call void(%m1861$.Type.type*,i32) @m1861$debug_type.v.m1861$.Type.typep.i(%m1861$.Type.type* %.tmp2712, i32 %.tmp2714)
-br label %.if.end.2701
-.if.end.2701:
-%.tmp2716 = getelementptr [5 x i8], [5 x i8]*@.str2715, i32 0, i32 0
-%.tmp2717 = load i8*, i8** %indent.2640
-%.tmp2718 = call i32(i8*,...) @printf(i8* %.tmp2716, i8* %.tmp2717)
+%.tmp2639 = load i32, i32* %level
+%.tmp2640 = add i32 %.tmp2639, 1
+%.tmp2641 = call i8*(i32) @malloc(i32 %.tmp2640)
+%.tmp2642 = bitcast i8* %.tmp2641 to i8*
+%indent.2643 = alloca i8*
+store i8* %.tmp2642, i8** %indent.2643
+%i.2645 = alloca i32
+store i32 0, i32* %i.2645
+br label %.for.start.2644
+.for.start.2644:
+%.tmp2646 = load i32, i32* %i.2645
+%.tmp2647 = load i32, i32* %level
+%.tmp2648 = icmp slt i32 %.tmp2646, %.tmp2647
+br i1 %.tmp2648, label %.for.continue.2644, label %.for.end.2644
+.for.continue.2644:
+%.tmp2649 = load i32, i32* %i.2645
+%.tmp2650 = load i8*, i8** %indent.2643
+%.tmp2651 = getelementptr i8, i8* %.tmp2650, i32 %.tmp2649
+store i8 32, i8* %.tmp2651
+%.tmp2652 = load i32, i32* %i.2645
+%.tmp2653 = add i32 %.tmp2652, 1
+store i32 %.tmp2653, i32* %i.2645
+br label %.for.start.2644
+.for.end.2644:
+%.tmp2654 = load i32, i32* %level
+%.tmp2655 = load i8*, i8** %indent.2643
+%.tmp2656 = getelementptr i8, i8* %.tmp2655, i32 %.tmp2654
+store i8 0, i8* %.tmp2656
+%.tmp2658 = getelementptr [5 x i8], [5 x i8]*@.str2657, i32 0, i32 0
+%.tmp2659 = load i8*, i8** %indent.2643
+%.tmp2660 = call i32(i8*,...) @printf(i8* %.tmp2658, i8* %.tmp2659)
+%.tmp2662 = getelementptr [21 x i8], [21 x i8]*@.str2661, i32 0, i32 0
+%.tmp2663 = load i8*, i8** %indent.2643
+%.tmp2664 = load %m1861$.Type.type*, %m1861$.Type.type** %t
+%.tmp2665 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2664, i32 0, i32 0
+%.tmp2666 = load i8*, i8** %.tmp2665
+%.tmp2667 = call i32(i8*,...) @printf(i8* %.tmp2662, i8* %.tmp2663, i8* %.tmp2666)
+%.tmp2669 = getelementptr [16 x i8], [16 x i8]*@.str2668, i32 0, i32 0
+%.tmp2670 = load i8*, i8** %indent.2643
+%.tmp2671 = load %m1861$.Type.type*, %m1861$.Type.type** %t
+%.tmp2672 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2671, i32 0, i32 1
+%.tmp2673 = load i8*, i8** %.tmp2672
+%.tmp2674 = call i32(i8*,...) @printf(i8* %.tmp2669, i8* %.tmp2670, i8* %.tmp2673)
+%.tmp2676 = getelementptr [16 x i8], [16 x i8]*@.str2675, i32 0, i32 0
+%.tmp2677 = load i8*, i8** %indent.2643
+%.tmp2678 = load %m1861$.Type.type*, %m1861$.Type.type** %t
+%.tmp2679 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2678, i32 0, i32 2
+%.tmp2680 = load i8*, i8** %.tmp2679
+%.tmp2681 = call i32(i8*,...) @printf(i8* %.tmp2676, i8* %.tmp2677, i8* %.tmp2680)
+%.tmp2682 = load %m1861$.Type.type*, %m1861$.Type.type** %t
+%.tmp2683 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2682, i32 0, i32 3
+%.tmp2684 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2683
+%.tmp2685 = icmp eq %m1861$.Type.type* %.tmp2684, null
+br i1 %.tmp2685, label %.if.true.2686, label %.if.false.2686
+.if.true.2686:
+%.tmp2688 = getelementptr [16 x i8], [16 x i8]*@.str2687, i32 0, i32 0
+%.tmp2689 = load i8*, i8** %indent.2643
+%.tmp2690 = call i32(i8*,...) @printf(i8* %.tmp2688, i8* %.tmp2689)
+br label %.if.end.2686
+.if.false.2686:
+%.tmp2692 = getelementptr [10 x i8], [10 x i8]*@.str2691, i32 0, i32 0
+%.tmp2693 = load i8*, i8** %indent.2643
+%.tmp2694 = call i32(i8*,...) @printf(i8* %.tmp2692, i8* %.tmp2693)
+%.tmp2695 = load %m1861$.Type.type*, %m1861$.Type.type** %t
+%.tmp2696 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2695, i32 0, i32 3
+%.tmp2697 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2696
+%.tmp2698 = load i32, i32* %level
+%.tmp2699 = add i32 %.tmp2698, 1
+call void(%m1861$.Type.type*,i32) @m1861$debug_type.v.m1861$.Type.typep.i(%m1861$.Type.type* %.tmp2697, i32 %.tmp2699)
+br label %.if.end.2686
+.if.end.2686:
+%.tmp2700 = load %m1861$.Type.type*, %m1861$.Type.type** %t
+%.tmp2701 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2700, i32 0, i32 4
+%.tmp2702 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2701
+%.tmp2703 = icmp eq %m1861$.Type.type* %.tmp2702, null
+br i1 %.tmp2703, label %.if.true.2704, label %.if.false.2704
+.if.true.2704:
+%.tmp2706 = getelementptr [18 x i8], [18 x i8]*@.str2705, i32 0, i32 0
+%.tmp2707 = load i8*, i8** %indent.2643
+%.tmp2708 = call i32(i8*,...) @printf(i8* %.tmp2706, i8* %.tmp2707)
+br label %.if.end.2704
+.if.false.2704:
+%.tmp2710 = getelementptr [12 x i8], [12 x i8]*@.str2709, i32 0, i32 0
+%.tmp2711 = load i8*, i8** %indent.2643
+%.tmp2712 = call i32(i8*,...) @printf(i8* %.tmp2710, i8* %.tmp2711)
+%.tmp2713 = load %m1861$.Type.type*, %m1861$.Type.type** %t
+%.tmp2714 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp2713, i32 0, i32 4
+%.tmp2715 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp2714
+%.tmp2716 = load i32, i32* %level
+%.tmp2717 = add i32 %.tmp2716, 1
+call void(%m1861$.Type.type*,i32) @m1861$debug_type.v.m1861$.Type.typep.i(%m1861$.Type.type* %.tmp2715, i32 %.tmp2717)
+br label %.if.end.2704
+.if.end.2704:
+%.tmp2719 = getelementptr [5 x i8], [5 x i8]*@.str2718, i32 0, i32 0
+%.tmp2720 = load i8*, i8** %indent.2643
+%.tmp2721 = call i32(i8*,...) @printf(i8* %.tmp2719, i8* %.tmp2720)
 ret void
 }
 %m1861$.AssignableInfo.type = type {i8*,i8,i8*,%m1861$.Type.type*,i32,i32,i8*}
@@ -4251,62 +4294,62 @@ ret void
 define %m1861$.AssignableInfo.type* @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.node.arg) {
 %node = alloca %m307$.Node.type*
 store %m307$.Node.type* %.node.arg, %m307$.Node.type** %node
-%.tmp2719 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* null, i32 1
-%.tmp2720 = ptrtoint %m1861$.AssignableInfo.type* %.tmp2719 to i32
-%.tmp2721 = call i8*(i32) @malloc(i32 %.tmp2720)
-%.tmp2722 = bitcast i8* %.tmp2721 to %m1861$.AssignableInfo.type*
-%ptr.2723 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp2722, %m1861$.AssignableInfo.type** %ptr.2723
-%.tmp2724 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2723
-%.tmp2725 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2724, i32 0, i32 1
-%.tmp2726 = load i8, i8* @SCOPE_CONST
-store i8 %.tmp2726, i8* %.tmp2725
-%.tmp2727 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2723
-%.tmp2728 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2727, i32 0, i32 0
-store i8* null, i8** %.tmp2728
-%.tmp2729 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2723
-%.tmp2730 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2729, i32 0, i32 2
-store i8* null, i8** %.tmp2730
-%.tmp2731 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2723
-%.tmp2732 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2731, i32 0, i32 3
-store %m1861$.Type.type* null, %m1861$.Type.type** %.tmp2732
-%.tmp2733 = load %m307$.Node.type*, %m307$.Node.type** %node
-%.tmp2734 = icmp ne %m307$.Node.type* %.tmp2733, null
-br i1 %.tmp2734, label %.if.true.2735, label %.if.false.2735
-.if.true.2735:
-%.tmp2736 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2723
-%.tmp2737 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2736, i32 0, i32 4
-%.tmp2738 = load %m307$.Node.type*, %m307$.Node.type** %node
-%.tmp2739 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp2738, i32 0, i32 3
-%.tmp2740 = load i32, i32* %.tmp2739
-store i32 %.tmp2740, i32* %.tmp2737
-%.tmp2741 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2723
-%.tmp2742 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2741, i32 0, i32 5
-%.tmp2743 = load %m307$.Node.type*, %m307$.Node.type** %node
-%.tmp2744 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp2743, i32 0, i32 4
-%.tmp2745 = load i32, i32* %.tmp2744
-store i32 %.tmp2745, i32* %.tmp2742
-%.tmp2746 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2723
-%.tmp2747 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2746, i32 0, i32 6
-%.tmp2748 = load %m307$.Node.type*, %m307$.Node.type** %node
-%.tmp2749 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp2748, i32 0, i32 2
-%.tmp2750 = load i8*, i8** %.tmp2749
-store i8* %.tmp2750, i8** %.tmp2747
-br label %.if.end.2735
-.if.false.2735:
-%.tmp2751 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2723
-%.tmp2752 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2751, i32 0, i32 4
-store i32 0, i32* %.tmp2752
-%.tmp2753 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2723
-%.tmp2754 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2753, i32 0, i32 5
-store i32 0, i32* %.tmp2754
-%.tmp2755 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2723
-%.tmp2756 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2755, i32 0, i32 6
-store i8* null, i8** %.tmp2756
-br label %.if.end.2735
-.if.end.2735:
-%.tmp2757 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2723
-ret %m1861$.AssignableInfo.type* %.tmp2757
+%.tmp2722 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* null, i32 1
+%.tmp2723 = ptrtoint %m1861$.AssignableInfo.type* %.tmp2722 to i32
+%.tmp2724 = call i8*(i32) @malloc(i32 %.tmp2723)
+%.tmp2725 = bitcast i8* %.tmp2724 to %m1861$.AssignableInfo.type*
+%ptr.2726 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp2725, %m1861$.AssignableInfo.type** %ptr.2726
+%.tmp2727 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2726
+%.tmp2728 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2727, i32 0, i32 1
+%.tmp2729 = load i8, i8* @SCOPE_CONST
+store i8 %.tmp2729, i8* %.tmp2728
+%.tmp2730 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2726
+%.tmp2731 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2730, i32 0, i32 0
+store i8* null, i8** %.tmp2731
+%.tmp2732 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2726
+%.tmp2733 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2732, i32 0, i32 2
+store i8* null, i8** %.tmp2733
+%.tmp2734 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2726
+%.tmp2735 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2734, i32 0, i32 3
+store %m1861$.Type.type* null, %m1861$.Type.type** %.tmp2735
+%.tmp2736 = load %m307$.Node.type*, %m307$.Node.type** %node
+%.tmp2737 = icmp ne %m307$.Node.type* %.tmp2736, null
+br i1 %.tmp2737, label %.if.true.2738, label %.if.false.2738
+.if.true.2738:
+%.tmp2739 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2726
+%.tmp2740 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2739, i32 0, i32 4
+%.tmp2741 = load %m307$.Node.type*, %m307$.Node.type** %node
+%.tmp2742 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp2741, i32 0, i32 3
+%.tmp2743 = load i32, i32* %.tmp2742
+store i32 %.tmp2743, i32* %.tmp2740
+%.tmp2744 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2726
+%.tmp2745 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2744, i32 0, i32 5
+%.tmp2746 = load %m307$.Node.type*, %m307$.Node.type** %node
+%.tmp2747 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp2746, i32 0, i32 4
+%.tmp2748 = load i32, i32* %.tmp2747
+store i32 %.tmp2748, i32* %.tmp2745
+%.tmp2749 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2726
+%.tmp2750 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2749, i32 0, i32 6
+%.tmp2751 = load %m307$.Node.type*, %m307$.Node.type** %node
+%.tmp2752 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp2751, i32 0, i32 2
+%.tmp2753 = load i8*, i8** %.tmp2752
+store i8* %.tmp2753, i8** %.tmp2750
+br label %.if.end.2738
+.if.false.2738:
+%.tmp2754 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2726
+%.tmp2755 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2754, i32 0, i32 4
+store i32 0, i32* %.tmp2755
+%.tmp2756 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2726
+%.tmp2757 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2756, i32 0, i32 5
+store i32 0, i32* %.tmp2757
+%.tmp2758 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2726
+%.tmp2759 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2758, i32 0, i32 6
+store i8* null, i8** %.tmp2759
+br label %.if.end.2738
+.if.end.2738:
+%.tmp2760 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %ptr.2726
+ret %m1861$.AssignableInfo.type* %.tmp2760
 }
 define void @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.info.arg, i8 %.scope.arg, i8* %.id.arg) {
 %info = alloca %m1861$.AssignableInfo.type*
@@ -4315,47 +4358,47 @@ store %m1861$.AssignableInfo.type* %.info.arg, %m1861$.AssignableInfo.type** %in
 store i8 %.scope.arg, i8* %scope
 %id = alloca i8*
 store i8* %.id.arg, i8** %id
-%.tmp2758 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-%.tmp2759 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2758, i32 0, i32 0
-%.tmp2760 = load i8*, i8** %id
-store i8* %.tmp2760, i8** %.tmp2759
 %.tmp2761 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-%.tmp2762 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2761, i32 0, i32 1
-%.tmp2763 = load i8, i8* %scope
-store i8 %.tmp2763, i8* %.tmp2762
+%.tmp2762 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2761, i32 0, i32 0
+%.tmp2763 = load i8*, i8** %id
+store i8* %.tmp2763, i8** %.tmp2762
+%.tmp2764 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
+%.tmp2765 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2764, i32 0, i32 1
+%.tmp2766 = load i8, i8* %scope
+store i8 %.tmp2766, i8* %.tmp2765
 ret void
 }
 define i8* @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.info.arg) {
 %info = alloca %m1861$.AssignableInfo.type*
 store %m1861$.AssignableInfo.type* %.info.arg, %m1861$.AssignableInfo.type** %info
-%.tmp2764 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-%.tmp2765 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2764, i32 0, i32 1
-%.tmp2766 = load i8, i8* %.tmp2765
-%.tmp2767 = load i8, i8* @SCOPE_CONST
-%.tmp2768 = icmp eq i8 %.tmp2766, %.tmp2767
-br i1 %.tmp2768, label %.if.true.2769, label %.if.false.2769
-.if.true.2769:
-%.tmp2770 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-%.tmp2771 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2770, i32 0, i32 0
-%.tmp2772 = load i8*, i8** %.tmp2771
-ret i8* %.tmp2772
-br label %.if.end.2769
-.if.false.2769:
-br label %.if.end.2769
-.if.end.2769:
-%buf.2773 = alloca i8*
-store i8* null, i8** %buf.2773
-%.tmp2774 = getelementptr i8*, i8** %buf.2773, i32 0
-%.tmp2776 = getelementptr [5 x i8], [5 x i8]*@.str2775, i32 0, i32 0
-%.tmp2777 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-%.tmp2778 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2777, i32 0, i32 1
-%.tmp2779 = load i8, i8* %.tmp2778
+%.tmp2767 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
+%.tmp2768 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2767, i32 0, i32 1
+%.tmp2769 = load i8, i8* %.tmp2768
+%.tmp2770 = load i8, i8* @SCOPE_CONST
+%.tmp2771 = icmp eq i8 %.tmp2769, %.tmp2770
+br i1 %.tmp2771, label %.if.true.2772, label %.if.false.2772
+.if.true.2772:
+%.tmp2773 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
+%.tmp2774 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2773, i32 0, i32 0
+%.tmp2775 = load i8*, i8** %.tmp2774
+ret i8* %.tmp2775
+br label %.if.end.2772
+.if.false.2772:
+br label %.if.end.2772
+.if.end.2772:
+%buf.2776 = alloca i8*
+store i8* null, i8** %buf.2776
+%.tmp2777 = getelementptr i8*, i8** %buf.2776, i32 0
+%.tmp2779 = getelementptr [5 x i8], [5 x i8]*@.str2778, i32 0, i32 0
 %.tmp2780 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-%.tmp2781 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2780, i32 0, i32 0
-%.tmp2782 = load i8*, i8** %.tmp2781
-%.tmp2783 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp2774, i8* %.tmp2776, i8 %.tmp2779, i8* %.tmp2782)
-%.tmp2784 = load i8*, i8** %buf.2773
-ret i8* %.tmp2784
+%.tmp2781 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2780, i32 0, i32 1
+%.tmp2782 = load i8, i8* %.tmp2781
+%.tmp2783 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
+%.tmp2784 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp2783, i32 0, i32 0
+%.tmp2785 = load i8*, i8** %.tmp2784
+%.tmp2786 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp2777, i8* %.tmp2779, i8 %.tmp2782, i8* %.tmp2785)
+%.tmp2787 = load i8*, i8** %buf.2776
+ret i8* %.tmp2787
 }
 %m1861$.ScopeItem.type = type {i8*,%m1861$.AssignableInfo.type*,%m1861$.ScopeItem.type*}
 %m1861$.GlobalName.type = type {i8*,i8*,i1,%m1861$.AssignableInfo.type*,%m1861$.GlobalName.type*}
@@ -4368,17 +4411,17 @@ define void @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.Assig
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %info = alloca %m1861$.AssignableInfo.type*
 store %m1861$.AssignableInfo.type* %.info.arg, %m1861$.AssignableInfo.type** %info
-%tmp_buff.2785 = alloca i8*
-store i8* null, i8** %tmp_buff.2785
-%.tmp2786 = getelementptr i8*, i8** %tmp_buff.2785, i32 0
-%.tmp2788 = getelementptr [7 x i8], [7 x i8]*@.str2787, i32 0, i32 0
-%.tmp2789 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp2790 = call i32(%m1861$.CompilerCtx.type*) @m1861$new_uid.i.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp2789)
-%.tmp2791 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp2786, i8* %.tmp2788, i32 %.tmp2790)
-%.tmp2792 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-%.tmp2793 = load i8, i8* @SCOPE_LOCAL
-%.tmp2794 = load i8*, i8** %tmp_buff.2785
-call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp2792, i8 %.tmp2793, i8* %.tmp2794)
+%tmp_buff.2788 = alloca i8*
+store i8* null, i8** %tmp_buff.2788
+%.tmp2789 = getelementptr i8*, i8** %tmp_buff.2788, i32 0
+%.tmp2791 = getelementptr [7 x i8], [7 x i8]*@.str2790, i32 0, i32 0
+%.tmp2792 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp2793 = call i32(%m1861$.CompilerCtx.type*) @m1861$new_uid.i.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp2792)
+%.tmp2794 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp2789, i8* %.tmp2791, i32 %.tmp2793)
+%.tmp2795 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
+%.tmp2796 = load i8, i8* @SCOPE_LOCAL
+%.tmp2797 = load i8*, i8** %tmp_buff.2788
+call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp2795, i8 %.tmp2796, i8* %.tmp2797)
 ret void
 }
 define %m1861$.ModuleLookup.type* @m1861$get_module.m1861$.ModuleLookup.typep.m1861$.CompilerCtx.typep.cp(%m1861$.CompilerCtx.type* %.ctx.arg, i8* %.filename.arg) {
@@ -4386,131 +4429,131 @@ define %m1861$.ModuleLookup.type* @m1861$get_module.m1861$.ModuleLookup.typep.m1
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %filename = alloca i8*
 store i8* %.filename.arg, i8** %filename
-%.tmp2796 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp2797 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2796, i32 0, i32 5
-%.tmp2798 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %.tmp2797
-%m.2799 = alloca %m1861$.ModuleLookup.type*
-store %m1861$.ModuleLookup.type* %.tmp2798, %m1861$.ModuleLookup.type** %m.2799
-br label %.for.start.2795
-.for.start.2795:
-%.tmp2800 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.2799
-%.tmp2801 = icmp ne %m1861$.ModuleLookup.type* %.tmp2800, null
-br i1 %.tmp2801, label %.for.continue.2795, label %.for.end.2795
-.for.continue.2795:
-%.tmp2802 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.2799
-%.tmp2803 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2802, i32 0, i32 0
-%.tmp2804 = load i8*, i8** %.tmp2803
-%.tmp2805 = load i8*, i8** %filename
-%.tmp2806 = call i32(i8*,i8*) @strcmp(i8* %.tmp2804, i8* %.tmp2805)
-%.tmp2807 = icmp eq i32 %.tmp2806, 0
-br i1 %.tmp2807, label %.if.true.2808, label %.if.false.2808
-.if.true.2808:
-%.tmp2809 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.2799
-ret %m1861$.ModuleLookup.type* %.tmp2809
-br label %.if.end.2808
-.if.false.2808:
-br label %.if.end.2808
-.if.end.2808:
-%.tmp2810 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.2799
-%.tmp2811 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2810, i32 0, i32 2
-%.tmp2812 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %.tmp2811
-store %m1861$.ModuleLookup.type* %.tmp2812, %m1861$.ModuleLookup.type** %m.2799
-br label %.for.start.2795
-.for.end.2795:
-%.tmp2813 = bitcast ptr null to %m1861$.ModuleLookup.type*
-ret %m1861$.ModuleLookup.type* %.tmp2813
+%.tmp2799 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp2800 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2799, i32 0, i32 5
+%.tmp2801 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %.tmp2800
+%m.2802 = alloca %m1861$.ModuleLookup.type*
+store %m1861$.ModuleLookup.type* %.tmp2801, %m1861$.ModuleLookup.type** %m.2802
+br label %.for.start.2798
+.for.start.2798:
+%.tmp2803 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.2802
+%.tmp2804 = icmp ne %m1861$.ModuleLookup.type* %.tmp2803, null
+br i1 %.tmp2804, label %.for.continue.2798, label %.for.end.2798
+.for.continue.2798:
+%.tmp2805 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.2802
+%.tmp2806 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2805, i32 0, i32 0
+%.tmp2807 = load i8*, i8** %.tmp2806
+%.tmp2808 = load i8*, i8** %filename
+%.tmp2809 = call i32(i8*,i8*) @strcmp(i8* %.tmp2807, i8* %.tmp2808)
+%.tmp2810 = icmp eq i32 %.tmp2809, 0
+br i1 %.tmp2810, label %.if.true.2811, label %.if.false.2811
+.if.true.2811:
+%.tmp2812 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.2802
+ret %m1861$.ModuleLookup.type* %.tmp2812
+br label %.if.end.2811
+.if.false.2811:
+br label %.if.end.2811
+.if.end.2811:
+%.tmp2813 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.2802
+%.tmp2814 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2813, i32 0, i32 2
+%.tmp2815 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %.tmp2814
+store %m1861$.ModuleLookup.type* %.tmp2815, %m1861$.ModuleLookup.type** %m.2802
+br label %.for.start.2798
+.for.end.2798:
+%.tmp2816 = bitcast ptr null to %m1861$.ModuleLookup.type*
+ret %m1861$.ModuleLookup.type* %.tmp2816
 }
 define %m1861$.ModuleLookup.type* @m1861$get_current_module.m1861$.ModuleLookup.typep.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.ctx.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
-%.tmp2814 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp2815 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp2816 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2815, i32 0, i32 6
-%.tmp2817 = load i8*, i8** %.tmp2816
-%.tmp2818 = call %m1861$.ModuleLookup.type*(%m1861$.CompilerCtx.type*,i8*) @m1861$get_module.m1861$.ModuleLookup.typep.m1861$.CompilerCtx.typep.cp(%m1861$.CompilerCtx.type* %.tmp2814, i8* %.tmp2817)
-ret %m1861$.ModuleLookup.type* %.tmp2818
+%.tmp2817 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp2818 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp2819 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2818, i32 0, i32 6
+%.tmp2820 = load i8*, i8** %.tmp2819
+%.tmp2821 = call %m1861$.ModuleLookup.type*(%m1861$.CompilerCtx.type*,i8*) @m1861$get_module.m1861$.ModuleLookup.typep.m1861$.CompilerCtx.typep.cp(%m1861$.CompilerCtx.type* %.tmp2817, i8* %.tmp2820)
+ret %m1861$.ModuleLookup.type* %.tmp2821
 }
 define i32 @m1861$new_uid.i.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.ctx.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
-%.tmp2819 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp2820 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2819, i32 0, i32 4
-%.tmp2821 = load i32, i32* %.tmp2820
-%uid.2822 = alloca i32
-store i32 %.tmp2821, i32* %uid.2822
-%.tmp2823 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp2824 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2823, i32 0, i32 4
-%.tmp2825 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp2826 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2825, i32 0, i32 4
-%.tmp2827 = load i32, i32* %.tmp2826
-%.tmp2828 = add i32 %.tmp2827, 1
-store i32 %.tmp2828, i32* %.tmp2824
-%.tmp2829 = load i32, i32* %uid.2822
-ret i32 %.tmp2829
+%.tmp2822 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp2823 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2822, i32 0, i32 4
+%.tmp2824 = load i32, i32* %.tmp2823
+%uid.2825 = alloca i32
+store i32 %.tmp2824, i32* %uid.2825
+%.tmp2826 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp2827 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2826, i32 0, i32 4
+%.tmp2828 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp2829 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2828, i32 0, i32 4
+%.tmp2830 = load i32, i32* %.tmp2829
+%.tmp2831 = add i32 %.tmp2830, 1
+store i32 %.tmp2831, i32* %.tmp2827
+%.tmp2832 = load i32, i32* %uid.2825
+ret i32 %.tmp2832
 }
 define %m1861$.CompilerCtx.type* @m1861$new_context.m1861$.CompilerCtx.typep.m0$.File.typep.cp(%m0$.File.type* %.fd.arg, i8* %.filename.arg) {
 %fd = alloca %m0$.File.type*
 store %m0$.File.type* %.fd.arg, %m0$.File.type** %fd
 %filename = alloca i8*
 store i8* %.filename.arg, i8** %filename
-%.tmp2830 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* null, i32 1
-%.tmp2831 = ptrtoint %m1861$.CompilerCtx.type* %.tmp2830 to i32
-%.tmp2832 = call i8*(i32) @malloc(i32 %.tmp2831)
-%.tmp2833 = bitcast i8* %.tmp2832 to %m1861$.CompilerCtx.type*
-%ctx.2834 = alloca %m1861$.CompilerCtx.type*
-store %m1861$.CompilerCtx.type* %.tmp2833, %m1861$.CompilerCtx.type** %ctx.2834
-%.tmp2835 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2834
-%.tmp2836 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2835, i32 0, i32 1
-%.tmp2837 = load %m0$.File.type*, %m0$.File.type** %fd
-store %m0$.File.type* %.tmp2837, %m0$.File.type** %.tmp2836
-%.tmp2838 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2834
-%.tmp2839 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2838, i32 0, i32 0
-%.tmp2840 = bitcast ptr null to %m307$.Node.type*
-store %m307$.Node.type* %.tmp2840, %m307$.Node.type** %.tmp2839
-%.tmp2841 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2834
-%.tmp2842 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2841, i32 0, i32 2
-store %m1861$.ErrorList.type* null, %m1861$.ErrorList.type** %.tmp2842
-%.tmp2843 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2834
-%.tmp2844 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2843, i32 0, i32 4
-store i32 0, i32* %.tmp2844
-%.tmp2845 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2834
-%.tmp2846 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2845, i32 0, i32 3
-store %m1861$.GlobalName.type* null, %m1861$.GlobalName.type** %.tmp2846
-%.tmp2847 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2834
-%.tmp2848 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2847, i32 0, i32 6
-%.tmp2849 = load i8*, i8** %filename
-store i8* %.tmp2849, i8** %.tmp2848
-%.tmp2850 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2834
-%.tmp2851 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2850, i32 0, i32 5
-%.tmp2852 = load i32, i32* @ModuleLookup_size
-%.tmp2853 = call i8*(i32) @malloc(i32 %.tmp2852)
-%.tmp2854 = bitcast i8* %.tmp2853 to %m1861$.ModuleLookup.type*
-store %m1861$.ModuleLookup.type* %.tmp2854, %m1861$.ModuleLookup.type** %.tmp2851
-%.tmp2855 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2834
-%.tmp2856 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2855, i32 0, i32 5
-%.tmp2857 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %.tmp2856
-%.tmp2858 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2857, i32 0, i32 0
-%.tmp2859 = load i8*, i8** %filename
-store i8* %.tmp2859, i8** %.tmp2858
-%.tmp2860 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2834
-%.tmp2861 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2860, i32 0, i32 5
-%.tmp2862 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %.tmp2861
-%.tmp2863 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2862, i32 0, i32 3
-store %m1861$.Scope.type* null, %m1861$.Scope.type** %.tmp2863
-%.tmp2864 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2834
-%.tmp2865 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2864, i32 0, i32 5
-%.tmp2866 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %.tmp2865
-%.tmp2867 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2866, i32 0, i32 1
-%.tmp2869 = getelementptr [1 x i8], [1 x i8]*@.str2868, i32 0, i32 0
-store i8* %.tmp2869, i8** %.tmp2867
-%.tmp2870 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2834
-%.tmp2871 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2870, i32 0, i32 5
-%.tmp2872 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %.tmp2871
-%.tmp2873 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2872, i32 0, i32 2
-store %m1861$.ModuleLookup.type* null, %m1861$.ModuleLookup.type** %.tmp2873
-%.tmp2874 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2834
-%.tmp2875 = bitcast %m1861$.CompilerCtx.type* %.tmp2874 to %m1861$.CompilerCtx.type*
-ret %m1861$.CompilerCtx.type* %.tmp2875
+%.tmp2833 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* null, i32 1
+%.tmp2834 = ptrtoint %m1861$.CompilerCtx.type* %.tmp2833 to i32
+%.tmp2835 = call i8*(i32) @malloc(i32 %.tmp2834)
+%.tmp2836 = bitcast i8* %.tmp2835 to %m1861$.CompilerCtx.type*
+%ctx.2837 = alloca %m1861$.CompilerCtx.type*
+store %m1861$.CompilerCtx.type* %.tmp2836, %m1861$.CompilerCtx.type** %ctx.2837
+%.tmp2838 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2837
+%.tmp2839 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2838, i32 0, i32 1
+%.tmp2840 = load %m0$.File.type*, %m0$.File.type** %fd
+store %m0$.File.type* %.tmp2840, %m0$.File.type** %.tmp2839
+%.tmp2841 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2837
+%.tmp2842 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2841, i32 0, i32 0
+%.tmp2843 = bitcast ptr null to %m307$.Node.type*
+store %m307$.Node.type* %.tmp2843, %m307$.Node.type** %.tmp2842
+%.tmp2844 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2837
+%.tmp2845 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2844, i32 0, i32 2
+store %m1861$.ErrorList.type* null, %m1861$.ErrorList.type** %.tmp2845
+%.tmp2846 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2837
+%.tmp2847 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2846, i32 0, i32 4
+store i32 0, i32* %.tmp2847
+%.tmp2848 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2837
+%.tmp2849 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2848, i32 0, i32 3
+store %m1861$.GlobalName.type* null, %m1861$.GlobalName.type** %.tmp2849
+%.tmp2850 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2837
+%.tmp2851 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2850, i32 0, i32 6
+%.tmp2852 = load i8*, i8** %filename
+store i8* %.tmp2852, i8** %.tmp2851
+%.tmp2853 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2837
+%.tmp2854 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2853, i32 0, i32 5
+%.tmp2855 = load i32, i32* @ModuleLookup_size
+%.tmp2856 = call i8*(i32) @malloc(i32 %.tmp2855)
+%.tmp2857 = bitcast i8* %.tmp2856 to %m1861$.ModuleLookup.type*
+store %m1861$.ModuleLookup.type* %.tmp2857, %m1861$.ModuleLookup.type** %.tmp2854
+%.tmp2858 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2837
+%.tmp2859 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2858, i32 0, i32 5
+%.tmp2860 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %.tmp2859
+%.tmp2861 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2860, i32 0, i32 0
+%.tmp2862 = load i8*, i8** %filename
+store i8* %.tmp2862, i8** %.tmp2861
+%.tmp2863 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2837
+%.tmp2864 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2863, i32 0, i32 5
+%.tmp2865 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %.tmp2864
+%.tmp2866 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2865, i32 0, i32 3
+store %m1861$.Scope.type* null, %m1861$.Scope.type** %.tmp2866
+%.tmp2867 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2837
+%.tmp2868 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2867, i32 0, i32 5
+%.tmp2869 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %.tmp2868
+%.tmp2870 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2869, i32 0, i32 1
+%.tmp2872 = getelementptr [1 x i8], [1 x i8]*@.str2871, i32 0, i32 0
+store i8* %.tmp2872, i8** %.tmp2870
+%.tmp2873 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2837
+%.tmp2874 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2873, i32 0, i32 5
+%.tmp2875 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %.tmp2874
+%.tmp2876 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2875, i32 0, i32 2
+store %m1861$.ModuleLookup.type* null, %m1861$.ModuleLookup.type** %.tmp2876
+%.tmp2877 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx.2837
+%.tmp2878 = bitcast %m1861$.CompilerCtx.type* %.tmp2877 to %m1861$.CompilerCtx.type*
+ret %m1861$.CompilerCtx.type* %.tmp2878
 }
 define void @m1861$push_scope.v.m1861$.CompilerCtx.typep.cp.cp.cp(%m1861$.CompilerCtx.type* %.ctx.arg, i8* %.type.arg, i8* %.begin_id.arg, i8* %.end_id.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
@@ -4521,64 +4564,64 @@ store i8* %.type.arg, i8** %type
 store i8* %.begin_id.arg, i8** %begin_id
 %end_id = alloca i8*
 store i8* %.end_id.arg, i8** %end_id
-%.tmp2876 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* null, i32 1
-%.tmp2877 = ptrtoint %m1861$.Scope.type* %.tmp2876 to i32
-%.tmp2878 = call i8*(i32) @malloc(i32 %.tmp2877)
-%.tmp2879 = bitcast i8* %.tmp2878 to %m1861$.Scope.type*
-%s.2880 = alloca %m1861$.Scope.type*
-store %m1861$.Scope.type* %.tmp2879, %m1861$.Scope.type** %s.2880
-%.tmp2881 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp2882 = call %m1861$.ModuleLookup.type*(%m1861$.CompilerCtx.type*) @m1861$get_current_module.m1861$.ModuleLookup.typep.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp2881)
-%m.2883 = alloca %m1861$.ModuleLookup.type*
-store %m1861$.ModuleLookup.type* %.tmp2882, %m1861$.ModuleLookup.type** %m.2883
-%.tmp2884 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.2880
-%.tmp2885 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp2884, i32 0, i32 5
-%.tmp2886 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.2883
-%.tmp2887 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2886, i32 0, i32 3
-%.tmp2888 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp2887
-store %m1861$.Scope.type* %.tmp2888, %m1861$.Scope.type** %.tmp2885
-%.tmp2889 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.2880
-%.tmp2890 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp2889, i32 0, i32 1
-store %m1861$.ScopeItem.type* null, %m1861$.ScopeItem.type** %.tmp2890
-%.tmp2891 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.2880
-%.tmp2892 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp2891, i32 0, i32 2
-%.tmp2893 = load i8*, i8** %type
-store i8* %.tmp2893, i8** %.tmp2892
-%.tmp2894 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.2880
-%.tmp2895 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp2894, i32 0, i32 3
-%.tmp2896 = load i8*, i8** %begin_id
+%.tmp2879 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* null, i32 1
+%.tmp2880 = ptrtoint %m1861$.Scope.type* %.tmp2879 to i32
+%.tmp2881 = call i8*(i32) @malloc(i32 %.tmp2880)
+%.tmp2882 = bitcast i8* %.tmp2881 to %m1861$.Scope.type*
+%s.2883 = alloca %m1861$.Scope.type*
+store %m1861$.Scope.type* %.tmp2882, %m1861$.Scope.type** %s.2883
+%.tmp2884 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp2885 = call %m1861$.ModuleLookup.type*(%m1861$.CompilerCtx.type*) @m1861$get_current_module.m1861$.ModuleLookup.typep.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp2884)
+%m.2886 = alloca %m1861$.ModuleLookup.type*
+store %m1861$.ModuleLookup.type* %.tmp2885, %m1861$.ModuleLookup.type** %m.2886
+%.tmp2887 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.2883
+%.tmp2888 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp2887, i32 0, i32 5
+%.tmp2889 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.2886
+%.tmp2890 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2889, i32 0, i32 3
+%.tmp2891 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp2890
+store %m1861$.Scope.type* %.tmp2891, %m1861$.Scope.type** %.tmp2888
+%.tmp2892 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.2883
+%.tmp2893 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp2892, i32 0, i32 1
+store %m1861$.ScopeItem.type* null, %m1861$.ScopeItem.type** %.tmp2893
+%.tmp2894 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.2883
+%.tmp2895 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp2894, i32 0, i32 2
+%.tmp2896 = load i8*, i8** %type
 store i8* %.tmp2896, i8** %.tmp2895
-%.tmp2897 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.2880
-%.tmp2898 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp2897, i32 0, i32 4
-%.tmp2899 = load i8*, i8** %end_id
+%.tmp2897 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.2883
+%.tmp2898 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp2897, i32 0, i32 3
+%.tmp2899 = load i8*, i8** %begin_id
 store i8* %.tmp2899, i8** %.tmp2898
-%.tmp2900 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.2883
-%.tmp2901 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2900, i32 0, i32 3
-%.tmp2902 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.2880
-store %m1861$.Scope.type* %.tmp2902, %m1861$.Scope.type** %.tmp2901
+%.tmp2900 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.2883
+%.tmp2901 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp2900, i32 0, i32 4
+%.tmp2902 = load i8*, i8** %end_id
+store i8* %.tmp2902, i8** %.tmp2901
+%.tmp2903 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.2886
+%.tmp2904 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2903, i32 0, i32 3
+%.tmp2905 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.2883
+store %m1861$.Scope.type* %.tmp2905, %m1861$.Scope.type** %.tmp2904
 ret void
 }
 define void @m1861$pop_scope.v.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.ctx.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
-%.tmp2903 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp2904 = call %m1861$.ModuleLookup.type*(%m1861$.CompilerCtx.type*) @m1861$get_current_module.m1861$.ModuleLookup.typep.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp2903)
-%m.2905 = alloca %m1861$.ModuleLookup.type*
-store %m1861$.ModuleLookup.type* %.tmp2904, %m1861$.ModuleLookup.type** %m.2905
-%.tmp2906 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.2905
-%.tmp2907 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2906, i32 0, i32 3
-%.tmp2908 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp2907
-%.tmp2909 = icmp ne %m1861$.Scope.type* %.tmp2908, null
-%.tmp2911 = getelementptr [61 x i8], [61 x i8]*@.str2910, i32 0, i32 0
-call void(i1,i8*) @m2$assert.v.b.cp(i1 %.tmp2909, i8* %.tmp2911)
-%.tmp2912 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.2905
-%.tmp2913 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2912, i32 0, i32 3
-%.tmp2914 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.2905
-%.tmp2915 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2914, i32 0, i32 3
-%.tmp2916 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp2915
-%.tmp2917 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp2916, i32 0, i32 5
-%.tmp2918 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp2917
-store %m1861$.Scope.type* %.tmp2918, %m1861$.Scope.type** %.tmp2913
+%.tmp2906 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp2907 = call %m1861$.ModuleLookup.type*(%m1861$.CompilerCtx.type*) @m1861$get_current_module.m1861$.ModuleLookup.typep.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp2906)
+%m.2908 = alloca %m1861$.ModuleLookup.type*
+store %m1861$.ModuleLookup.type* %.tmp2907, %m1861$.ModuleLookup.type** %m.2908
+%.tmp2909 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.2908
+%.tmp2910 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2909, i32 0, i32 3
+%.tmp2911 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp2910
+%.tmp2912 = icmp ne %m1861$.Scope.type* %.tmp2911, null
+%.tmp2914 = getelementptr [61 x i8], [61 x i8]*@.str2913, i32 0, i32 0
+call void(i1,i8*) @m2$assert.v.b.cp(i1 %.tmp2912, i8* %.tmp2914)
+%.tmp2915 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.2908
+%.tmp2916 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2915, i32 0, i32 3
+%.tmp2917 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.2908
+%.tmp2918 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp2917, i32 0, i32 3
+%.tmp2919 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp2918
+%.tmp2920 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp2919, i32 0, i32 5
+%.tmp2921 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp2920
+store %m1861$.Scope.type* %.tmp2921, %m1861$.Scope.type** %.tmp2916
 ret void
 }
 define i1 @m1861$compile_file.b.m1861$.CompilerCtx.typep.cp(%m1861$.CompilerCtx.type* %.ctx.arg, i8* %.filepath.arg) {
@@ -4586,215 +4629,215 @@ define i1 @m1861$compile_file.b.m1861$.CompilerCtx.typep.cp(%m1861$.CompilerCtx.
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %filepath = alloca i8*
 store i8* %.filepath.arg, i8** %filepath
-%.tmp2919 = call i8*() @m1862$grammar.cp()
-%.tmp2920 = call %m0$.File.type*(i8*) @m1$str_as_file.m0$.File.typep.cp(i8* %.tmp2919)
-%grammar_file.2921 = alloca %m0$.File.type*
-store %m0$.File.type* %.tmp2920, %m0$.File.type** %grammar_file.2921
-%.tmp2922 = load %m0$.File.type*, %m0$.File.type** %grammar_file.2921
-%.tmp2923 = icmp eq %m0$.File.type* %.tmp2922, null
-br i1 %.tmp2923, label %.if.true.2924, label %.if.false.2924
-.if.true.2924:
+%.tmp2922 = call i8*() @m1862$grammar.cp()
+%.tmp2923 = call %m0$.File.type*(i8*) @m1$str_as_file.m0$.File.typep.cp(i8* %.tmp2922)
+%grammar_file.2924 = alloca %m0$.File.type*
+store %m0$.File.type* %.tmp2923, %m0$.File.type** %grammar_file.2924
+%.tmp2925 = load %m0$.File.type*, %m0$.File.type** %grammar_file.2924
+%.tmp2926 = icmp eq %m0$.File.type* %.tmp2925, null
+br i1 %.tmp2926, label %.if.true.2927, label %.if.false.2927
+.if.true.2927:
 ret i1 0
-br label %.if.end.2924
-.if.false.2924:
-br label %.if.end.2924
-.if.end.2924:
-%.tmp2925 = load %m0$.File.type*, %m0$.File.type** %grammar_file.2921
-%.tmp2926 = call %m307$.ParsingContext.type*(%m0$.File.type*) @m307$new_context.m307$.ParsingContext.typep.m0$.File.typep(%m0$.File.type* %.tmp2925)
-%grammar_ctx.2927 = alloca %m307$.ParsingContext.type*
-store %m307$.ParsingContext.type* %.tmp2926, %m307$.ParsingContext.type** %grammar_ctx.2927
-%.tmp2928 = load %m307$.ParsingContext.type*, %m307$.ParsingContext.type** %grammar_ctx.2927
-%.tmp2929 = call %m307$.Rule.type**(%m307$.ParsingContext.type*) @m307$parse_grammar.m307$.Rule.typepp.m307$.ParsingContext.typep(%m307$.ParsingContext.type* %.tmp2928)
-%grammar.2930 = alloca %m307$.Rule.type**
-store %m307$.Rule.type** %.tmp2929, %m307$.Rule.type*** %grammar.2930
-%.tmp2931 = load %m307$.ParsingContext.type*, %m307$.ParsingContext.type** %grammar_ctx.2927
-%.tmp2932 = bitcast %m307$.ParsingContext.type* %.tmp2931 to i8*
-call void(i8*) @free(i8* %.tmp2932)
-%.tmp2933 = load i8*, i8** %filepath
-%.tmp2934 = load i32, i32* @O_RDONLY
-%.tmp2935 = call i32(i8*,i32) @open(i8* %.tmp2933, i32 %.tmp2934)
-%input_fd.2936 = alloca i32
-store i32 %.tmp2935, i32* %input_fd.2936
-%.tmp2937 = load i32, i32* %input_fd.2936
-%.tmp2938 = call %m229$.PeekerInfo.type*(i32) @m229$new.m229$.PeekerInfo.typep.i(i32 %.tmp2937)
-%p.2939 = alloca %m229$.PeekerInfo.type*
-store %m229$.PeekerInfo.type* %.tmp2938, %m229$.PeekerInfo.type** %p.2939
-%.tmp2940 = load %m229$.PeekerInfo.type*, %m229$.PeekerInfo.type** %p.2939
-%.tmp2941 = getelementptr %m229$.PeekerInfo.type, %m229$.PeekerInfo.type* %.tmp2940, i32 0, i32 6
-%.tmp2942 = load i8*, i8** %filepath
-store i8* %.tmp2942, i8** %.tmp2941
-%.tmp2943 = load %m229$.PeekerInfo.type*, %m229$.PeekerInfo.type** %p.2939
-%.tmp2944 = call %m308$.Token.type*(%m229$.PeekerInfo.type*,i1) @m308$tokenize.m308$.Token.typep.m229$.PeekerInfo.typep.b(%m229$.PeekerInfo.type* %.tmp2943, i1 0)
-%tokens.2945 = alloca %m308$.Token.type*
-store %m308$.Token.type* %.tmp2944, %m308$.Token.type** %tokens.2945
-%.tmp2946 = load %m307$.Rule.type**, %m307$.Rule.type*** %grammar.2930
-%.tmp2948 = getelementptr [6 x i8], [6 x i8]*@.str2947, i32 0, i32 0
-%.tmp2949 = load %m308$.Token.type*, %m308$.Token.type** %tokens.2945
-%.tmp2950 = call %m307$.ParseResult.type*(%m307$.Rule.type**,i8*,%m308$.Token.type*) @m307$ast.m307$.ParseResult.typep.m307$.Rule.typepp.cp.m308$.Token.typep(%m307$.Rule.type** %.tmp2946, i8* %.tmp2948, %m308$.Token.type* %.tmp2949)
-%ast.2951 = alloca %m307$.ParseResult.type*
-store %m307$.ParseResult.type* %.tmp2950, %m307$.ParseResult.type** %ast.2951
-%.tmp2952 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp2953 = load %m307$.ParseResult.type*, %m307$.ParseResult.type** %ast.2951
-%.tmp2954 = getelementptr %m307$.ParseResult.type, %m307$.ParseResult.type* %.tmp2953, i32 0, i32 1
-%.tmp2955 = load %m307$.Node.type*, %m307$.Node.type** %.tmp2954
-%.tmp2956 = call i1(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile.b.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp2952, %m307$.Node.type* %.tmp2955)
-ret i1 %.tmp2956
+br label %.if.end.2927
+.if.false.2927:
+br label %.if.end.2927
+.if.end.2927:
+%.tmp2928 = load %m0$.File.type*, %m0$.File.type** %grammar_file.2924
+%.tmp2929 = call %m307$.ParsingContext.type*(%m0$.File.type*) @m307$new_context.m307$.ParsingContext.typep.m0$.File.typep(%m0$.File.type* %.tmp2928)
+%grammar_ctx.2930 = alloca %m307$.ParsingContext.type*
+store %m307$.ParsingContext.type* %.tmp2929, %m307$.ParsingContext.type** %grammar_ctx.2930
+%.tmp2931 = load %m307$.ParsingContext.type*, %m307$.ParsingContext.type** %grammar_ctx.2930
+%.tmp2932 = call %m307$.Rule.type**(%m307$.ParsingContext.type*) @m307$parse_grammar.m307$.Rule.typepp.m307$.ParsingContext.typep(%m307$.ParsingContext.type* %.tmp2931)
+%grammar.2933 = alloca %m307$.Rule.type**
+store %m307$.Rule.type** %.tmp2932, %m307$.Rule.type*** %grammar.2933
+%.tmp2934 = load %m307$.ParsingContext.type*, %m307$.ParsingContext.type** %grammar_ctx.2930
+%.tmp2935 = bitcast %m307$.ParsingContext.type* %.tmp2934 to i8*
+call void(i8*) @free(i8* %.tmp2935)
+%.tmp2936 = load i8*, i8** %filepath
+%.tmp2937 = load i32, i32* @O_RDONLY
+%.tmp2938 = call i32(i8*,i32) @open(i8* %.tmp2936, i32 %.tmp2937)
+%input_fd.2939 = alloca i32
+store i32 %.tmp2938, i32* %input_fd.2939
+%.tmp2940 = load i32, i32* %input_fd.2939
+%.tmp2941 = call %m229$.PeekerInfo.type*(i32) @m229$new.m229$.PeekerInfo.typep.i(i32 %.tmp2940)
+%p.2942 = alloca %m229$.PeekerInfo.type*
+store %m229$.PeekerInfo.type* %.tmp2941, %m229$.PeekerInfo.type** %p.2942
+%.tmp2943 = load %m229$.PeekerInfo.type*, %m229$.PeekerInfo.type** %p.2942
+%.tmp2944 = getelementptr %m229$.PeekerInfo.type, %m229$.PeekerInfo.type* %.tmp2943, i32 0, i32 6
+%.tmp2945 = load i8*, i8** %filepath
+store i8* %.tmp2945, i8** %.tmp2944
+%.tmp2946 = load %m229$.PeekerInfo.type*, %m229$.PeekerInfo.type** %p.2942
+%.tmp2947 = call %m308$.Token.type*(%m229$.PeekerInfo.type*,i1) @m308$tokenize.m308$.Token.typep.m229$.PeekerInfo.typep.b(%m229$.PeekerInfo.type* %.tmp2946, i1 0)
+%tokens.2948 = alloca %m308$.Token.type*
+store %m308$.Token.type* %.tmp2947, %m308$.Token.type** %tokens.2948
+%.tmp2949 = load %m307$.Rule.type**, %m307$.Rule.type*** %grammar.2933
+%.tmp2951 = getelementptr [6 x i8], [6 x i8]*@.str2950, i32 0, i32 0
+%.tmp2952 = load %m308$.Token.type*, %m308$.Token.type** %tokens.2948
+%.tmp2953 = call %m307$.ParseResult.type*(%m307$.Rule.type**,i8*,%m308$.Token.type*) @m307$ast.m307$.ParseResult.typep.m307$.Rule.typepp.cp.m308$.Token.typep(%m307$.Rule.type** %.tmp2949, i8* %.tmp2951, %m308$.Token.type* %.tmp2952)
+%ast.2954 = alloca %m307$.ParseResult.type*
+store %m307$.ParseResult.type* %.tmp2953, %m307$.ParseResult.type** %ast.2954
+%.tmp2955 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp2956 = load %m307$.ParseResult.type*, %m307$.ParseResult.type** %ast.2954
+%.tmp2957 = getelementptr %m307$.ParseResult.type, %m307$.ParseResult.type* %.tmp2956, i32 0, i32 1
+%.tmp2958 = load %m307$.Node.type*, %m307$.Node.type** %.tmp2957
+%.tmp2959 = call i1(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile.b.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp2955, %m307$.Node.type* %.tmp2958)
+ret i1 %.tmp2959
 }
 define i1 @m1861$compile.b.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.ast.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %ast = alloca %m307$.Node.type*
 store %m307$.Node.type* %.ast.arg, %m307$.Node.type** %ast
-%.tmp2957 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp2958 = load %m307$.Node.type*, %m307$.Node.type** %ast
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_ast.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp2957, %m307$.Node.type* %.tmp2958)
-%.tmp2959 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp2960 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2959, i32 0, i32 2
-%.tmp2961 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %.tmp2960
-%.tmp2962 = icmp ne %m1861$.ErrorList.type* %.tmp2961, null
-%has_errors.2963 = alloca i1
-store i1 %.tmp2962, i1* %has_errors.2963
-%.tmp2965 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp2966 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2965, i32 0, i32 2
-%.tmp2967 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %.tmp2966
-%err.2968 = alloca %m1861$.ErrorList.type*
-store %m1861$.ErrorList.type* %.tmp2967, %m1861$.ErrorList.type** %err.2968
-br label %.for.start.2964
-.for.start.2964:
-%.tmp2969 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %err.2968
-%.tmp2970 = icmp ne %m1861$.ErrorList.type* %.tmp2969, null
-br i1 %.tmp2970, label %.for.continue.2964, label %.for.end.2964
-.for.continue.2964:
-%.tmp2971 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %err.2968
-%.tmp2972 = getelementptr %m1861$.ErrorList.type, %m1861$.ErrorList.type* %.tmp2971, i32 0, i32 2
-%.tmp2973 = load i1, i1* %.tmp2972
-%.tmp2974 = icmp eq i1 %.tmp2973, 0
-br i1 %.tmp2974, label %.if.true.2975, label %.if.false.2975
-.if.true.2975:
-%.tmp2976 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %err.2968
-%.tmp2977 = getelementptr %m1861$.ErrorList.type, %m1861$.ErrorList.type* %.tmp2976, i32 0, i32 0
-%.tmp2978 = load %m751$.Error.type*, %m751$.Error.type** %.tmp2977
-call void(%m751$.Error.type*) @m751$report.v.m751$.Error.typep(%m751$.Error.type* %.tmp2978)
-%.tmp2979 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %err.2968
-%.tmp2980 = getelementptr %m1861$.ErrorList.type, %m1861$.ErrorList.type* %.tmp2979, i32 0, i32 2
-store i1 1, i1* %.tmp2980
-br label %.if.end.2975
-.if.false.2975:
-br label %.if.end.2975
-.if.end.2975:
-%.tmp2981 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %err.2968
-%.tmp2982 = getelementptr %m1861$.ErrorList.type, %m1861$.ErrorList.type* %.tmp2981, i32 0, i32 1
-%.tmp2983 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %.tmp2982
-store %m1861$.ErrorList.type* %.tmp2983, %m1861$.ErrorList.type** %err.2968
-br label %.for.start.2964
-.for.end.2964:
-%.tmp2985 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp2986 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2985, i32 0, i32 3
-%.tmp2987 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %.tmp2986
-%g.2988 = alloca %m1861$.GlobalName.type*
-store %m1861$.GlobalName.type* %.tmp2987, %m1861$.GlobalName.type** %g.2988
-br label %.for.start.2984
-.for.start.2984:
-%.tmp2989 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g.2988
-%.tmp2990 = icmp ne %m1861$.GlobalName.type* %.tmp2989, null
-br i1 %.tmp2990, label %.for.continue.2984, label %.for.end.2984
-.for.continue.2984:
-%.tmp2991 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp2992 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g.2988
-call void(%m1861$.CompilerCtx.type*,%m1861$.GlobalName.type*) @m1861$compile_global.v.m1861$.CompilerCtx.typep.m1861$.GlobalName.typep(%m1861$.CompilerCtx.type* %.tmp2991, %m1861$.GlobalName.type* %.tmp2992)
-%.tmp2993 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g.2988
-%.tmp2994 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp2993, i32 0, i32 4
-%.tmp2995 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %.tmp2994
-store %m1861$.GlobalName.type* %.tmp2995, %m1861$.GlobalName.type** %g.2988
-br label %.for.start.2984
-.for.end.2984:
-%.tmp2996 = load i1, i1* %has_errors.2963
-ret i1 %.tmp2996
+%.tmp2960 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp2961 = load %m307$.Node.type*, %m307$.Node.type** %ast
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_ast.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp2960, %m307$.Node.type* %.tmp2961)
+%.tmp2962 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp2963 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2962, i32 0, i32 2
+%.tmp2964 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %.tmp2963
+%.tmp2965 = icmp ne %m1861$.ErrorList.type* %.tmp2964, null
+%has_errors.2966 = alloca i1
+store i1 %.tmp2965, i1* %has_errors.2966
+%.tmp2968 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp2969 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2968, i32 0, i32 2
+%.tmp2970 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %.tmp2969
+%err.2971 = alloca %m1861$.ErrorList.type*
+store %m1861$.ErrorList.type* %.tmp2970, %m1861$.ErrorList.type** %err.2971
+br label %.for.start.2967
+.for.start.2967:
+%.tmp2972 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %err.2971
+%.tmp2973 = icmp ne %m1861$.ErrorList.type* %.tmp2972, null
+br i1 %.tmp2973, label %.for.continue.2967, label %.for.end.2967
+.for.continue.2967:
+%.tmp2974 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %err.2971
+%.tmp2975 = getelementptr %m1861$.ErrorList.type, %m1861$.ErrorList.type* %.tmp2974, i32 0, i32 2
+%.tmp2976 = load i1, i1* %.tmp2975
+%.tmp2977 = icmp eq i1 %.tmp2976, 0
+br i1 %.tmp2977, label %.if.true.2978, label %.if.false.2978
+.if.true.2978:
+%.tmp2979 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %err.2971
+%.tmp2980 = getelementptr %m1861$.ErrorList.type, %m1861$.ErrorList.type* %.tmp2979, i32 0, i32 0
+%.tmp2981 = load %m751$.Error.type*, %m751$.Error.type** %.tmp2980
+call void(%m751$.Error.type*) @m751$report.v.m751$.Error.typep(%m751$.Error.type* %.tmp2981)
+%.tmp2982 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %err.2971
+%.tmp2983 = getelementptr %m1861$.ErrorList.type, %m1861$.ErrorList.type* %.tmp2982, i32 0, i32 2
+store i1 1, i1* %.tmp2983
+br label %.if.end.2978
+.if.false.2978:
+br label %.if.end.2978
+.if.end.2978:
+%.tmp2984 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %err.2971
+%.tmp2985 = getelementptr %m1861$.ErrorList.type, %m1861$.ErrorList.type* %.tmp2984, i32 0, i32 1
+%.tmp2986 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %.tmp2985
+store %m1861$.ErrorList.type* %.tmp2986, %m1861$.ErrorList.type** %err.2971
+br label %.for.start.2967
+.for.end.2967:
+%.tmp2988 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp2989 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp2988, i32 0, i32 3
+%.tmp2990 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %.tmp2989
+%g.2991 = alloca %m1861$.GlobalName.type*
+store %m1861$.GlobalName.type* %.tmp2990, %m1861$.GlobalName.type** %g.2991
+br label %.for.start.2987
+.for.start.2987:
+%.tmp2992 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g.2991
+%.tmp2993 = icmp ne %m1861$.GlobalName.type* %.tmp2992, null
+br i1 %.tmp2993, label %.for.continue.2987, label %.for.end.2987
+.for.continue.2987:
+%.tmp2994 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp2995 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g.2991
+call void(%m1861$.CompilerCtx.type*,%m1861$.GlobalName.type*) @m1861$compile_global.v.m1861$.CompilerCtx.typep.m1861$.GlobalName.typep(%m1861$.CompilerCtx.type* %.tmp2994, %m1861$.GlobalName.type* %.tmp2995)
+%.tmp2996 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g.2991
+%.tmp2997 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp2996, i32 0, i32 4
+%.tmp2998 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %.tmp2997
+store %m1861$.GlobalName.type* %.tmp2998, %m1861$.GlobalName.type** %g.2991
+br label %.for.start.2987
+.for.end.2987:
+%.tmp2999 = load i1, i1* %has_errors.2966
+ret i1 %.tmp2999
 }
 define void @m1861$compile_ast.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.ast.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %ast = alloca %m307$.Node.type*
 store %m307$.Node.type* %.ast.arg, %m307$.Node.type** %ast
-%.tmp2997 = load %m307$.Node.type*, %m307$.Node.type** %ast
-%.tmp2998 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp2997, i32 0, i32 0
-%.tmp2999 = load i8*, i8** %.tmp2998
-%.tmp3001 = getelementptr [6 x i8], [6 x i8]*@.str3000, i32 0, i32 0
-%.tmp3002 = call i32(i8*,i8*) @strcmp(i8* %.tmp2999, i8* %.tmp3001)
-%.tmp3003 = icmp ne i32 %.tmp3002, 0
-br i1 %.tmp3003, label %.if.true.3004, label %.if.false.3004
-.if.true.3004:
+%.tmp3000 = load %m307$.Node.type*, %m307$.Node.type** %ast
+%.tmp3001 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3000, i32 0, i32 0
+%.tmp3002 = load i8*, i8** %.tmp3001
+%.tmp3004 = getelementptr [6 x i8], [6 x i8]*@.str3003, i32 0, i32 0
+%.tmp3005 = call i32(i8*,i8*) @strcmp(i8* %.tmp3002, i8* %.tmp3004)
+%.tmp3006 = icmp ne i32 %.tmp3005, 0
+br i1 %.tmp3006, label %.if.true.3007, label %.if.false.3007
+.if.true.3007:
 ret void
-br label %.if.end.3004
-.if.false.3004:
-br label %.if.end.3004
-.if.end.3004:
-%.tmp3005 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3007 = getelementptr [7 x i8], [7 x i8]*@.str3006, i32 0, i32 0
-%.tmp3008 = bitcast ptr null to i8*
-%.tmp3009 = bitcast ptr null to i8*
-call void(%m1861$.CompilerCtx.type*,i8*,i8*,i8*) @m1861$push_scope.v.m1861$.CompilerCtx.typep.cp.cp.cp(%m1861$.CompilerCtx.type* %.tmp3005, i8* %.tmp3007, i8* %.tmp3008, i8* %.tmp3009)
-%.tmp3010 = load %m307$.Node.type*, %m307$.Node.type** %ast
-%.tmp3011 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3010, i32 0, i32 6
-%.tmp3012 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3011
-%start.3013 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp3012, %m307$.Node.type** %start.3013
-%.tmp3014 = load %m307$.Node.type*, %m307$.Node.type** %start.3013
-%.tmp3015 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3014, i32 0, i32 0
-%.tmp3016 = load i8*, i8** %.tmp3015
-%.tmp3018 = getelementptr [13 x i8], [13 x i8]*@.str3017, i32 0, i32 0
-%.tmp3019 = call i32(i8*,i8*) @strcmp(i8* %.tmp3016, i8* %.tmp3018)
-%.tmp3020 = icmp eq i32 %.tmp3019, 0
-br i1 %.tmp3020, label %.if.true.3021, label %.if.false.3021
-.if.true.3021:
-%.tmp3022 = load %m307$.Node.type*, %m307$.Node.type** %start.3013
-%.tmp3023 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3022, i32 0, i32 7
-%.tmp3024 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3023
-store %m307$.Node.type* %.tmp3024, %m307$.Node.type** %start.3013
-br label %.if.end.3021
-.if.false.3021:
-br label %.if.end.3021
-.if.end.3021:
-%.tmp3026 = load %m307$.Node.type*, %m307$.Node.type** %start.3013
-%stmt.3027 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp3026, %m307$.Node.type** %stmt.3027
-br label %.for.start.3025
-.for.start.3025:
-%.tmp3028 = load %m307$.Node.type*, %m307$.Node.type** %stmt.3027
-%.tmp3029 = icmp ne %m307$.Node.type* %.tmp3028, null
-br i1 %.tmp3029, label %.for.continue.3025, label %.for.end.3025
-.for.continue.3025:
-%.tmp3030 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3031 = load %m307$.Node.type*, %m307$.Node.type** %stmt.3027
-%.tmp3032 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3031, i32 0, i32 6
-%.tmp3033 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3032
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i1) @m1861$compile_statement.v.m1861$.CompilerCtx.typep.m307$.Node.typep.b(%m1861$.CompilerCtx.type* %.tmp3030, %m307$.Node.type* %.tmp3033, i1 1)
-%.tmp3034 = load %m307$.Node.type*, %m307$.Node.type** %stmt.3027
-%.tmp3035 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3034, i32 0, i32 7
+br label %.if.end.3007
+.if.false.3007:
+br label %.if.end.3007
+.if.end.3007:
+%.tmp3008 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3010 = getelementptr [7 x i8], [7 x i8]*@.str3009, i32 0, i32 0
+%.tmp3011 = bitcast ptr null to i8*
+%.tmp3012 = bitcast ptr null to i8*
+call void(%m1861$.CompilerCtx.type*,i8*,i8*,i8*) @m1861$push_scope.v.m1861$.CompilerCtx.typep.cp.cp.cp(%m1861$.CompilerCtx.type* %.tmp3008, i8* %.tmp3010, i8* %.tmp3011, i8* %.tmp3012)
+%.tmp3013 = load %m307$.Node.type*, %m307$.Node.type** %ast
+%.tmp3014 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3013, i32 0, i32 6
+%.tmp3015 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3014
+%start.3016 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp3015, %m307$.Node.type** %start.3016
+%.tmp3017 = load %m307$.Node.type*, %m307$.Node.type** %start.3016
+%.tmp3018 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3017, i32 0, i32 0
+%.tmp3019 = load i8*, i8** %.tmp3018
+%.tmp3021 = getelementptr [13 x i8], [13 x i8]*@.str3020, i32 0, i32 0
+%.tmp3022 = call i32(i8*,i8*) @strcmp(i8* %.tmp3019, i8* %.tmp3021)
+%.tmp3023 = icmp eq i32 %.tmp3022, 0
+br i1 %.tmp3023, label %.if.true.3024, label %.if.false.3024
+.if.true.3024:
+%.tmp3025 = load %m307$.Node.type*, %m307$.Node.type** %start.3016
+%.tmp3026 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3025, i32 0, i32 7
+%.tmp3027 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3026
+store %m307$.Node.type* %.tmp3027, %m307$.Node.type** %start.3016
+br label %.if.end.3024
+.if.false.3024:
+br label %.if.end.3024
+.if.end.3024:
+%.tmp3029 = load %m307$.Node.type*, %m307$.Node.type** %start.3016
+%stmt.3030 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp3029, %m307$.Node.type** %stmt.3030
+br label %.for.start.3028
+.for.start.3028:
+%.tmp3031 = load %m307$.Node.type*, %m307$.Node.type** %stmt.3030
+%.tmp3032 = icmp ne %m307$.Node.type* %.tmp3031, null
+br i1 %.tmp3032, label %.for.continue.3028, label %.for.end.3028
+.for.continue.3028:
+%.tmp3033 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3034 = load %m307$.Node.type*, %m307$.Node.type** %stmt.3030
+%.tmp3035 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3034, i32 0, i32 6
 %.tmp3036 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3035
-store %m307$.Node.type* %.tmp3036, %m307$.Node.type** %stmt.3027
-br label %.for.start.3025
-.for.end.3025:
-%.tmp3038 = load %m307$.Node.type*, %m307$.Node.type** %start.3013
-%s.3039 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp3038, %m307$.Node.type** %s.3039
-br label %.for.start.3037
-.for.start.3037:
-%.tmp3040 = load %m307$.Node.type*, %m307$.Node.type** %s.3039
-%.tmp3041 = icmp ne %m307$.Node.type* %.tmp3040, null
-br i1 %.tmp3041, label %.for.continue.3037, label %.for.end.3037
-.for.continue.3037:
-%.tmp3042 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3043 = load %m307$.Node.type*, %m307$.Node.type** %s.3039
-%.tmp3044 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3043, i32 0, i32 6
-%.tmp3045 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3044
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i1) @m1861$compile_statement.v.m1861$.CompilerCtx.typep.m307$.Node.typep.b(%m1861$.CompilerCtx.type* %.tmp3042, %m307$.Node.type* %.tmp3045, i1 0)
-%.tmp3046 = load %m307$.Node.type*, %m307$.Node.type** %s.3039
-%.tmp3047 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3046, i32 0, i32 7
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i1) @m1861$compile_statement.v.m1861$.CompilerCtx.typep.m307$.Node.typep.b(%m1861$.CompilerCtx.type* %.tmp3033, %m307$.Node.type* %.tmp3036, i1 1)
+%.tmp3037 = load %m307$.Node.type*, %m307$.Node.type** %stmt.3030
+%.tmp3038 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3037, i32 0, i32 7
+%.tmp3039 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3038
+store %m307$.Node.type* %.tmp3039, %m307$.Node.type** %stmt.3030
+br label %.for.start.3028
+.for.end.3028:
+%.tmp3041 = load %m307$.Node.type*, %m307$.Node.type** %start.3016
+%s.3042 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp3041, %m307$.Node.type** %s.3042
+br label %.for.start.3040
+.for.start.3040:
+%.tmp3043 = load %m307$.Node.type*, %m307$.Node.type** %s.3042
+%.tmp3044 = icmp ne %m307$.Node.type* %.tmp3043, null
+br i1 %.tmp3044, label %.for.continue.3040, label %.for.end.3040
+.for.continue.3040:
+%.tmp3045 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3046 = load %m307$.Node.type*, %m307$.Node.type** %s.3042
+%.tmp3047 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3046, i32 0, i32 6
 %.tmp3048 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3047
-store %m307$.Node.type* %.tmp3048, %m307$.Node.type** %s.3039
-br label %.for.start.3037
-.for.end.3037:
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i1) @m1861$compile_statement.v.m1861$.CompilerCtx.typep.m307$.Node.typep.b(%m1861$.CompilerCtx.type* %.tmp3045, %m307$.Node.type* %.tmp3048, i1 0)
+%.tmp3049 = load %m307$.Node.type*, %m307$.Node.type** %s.3042
+%.tmp3050 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3049, i32 0, i32 7
+%.tmp3051 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3050
+store %m307$.Node.type* %.tmp3051, %m307$.Node.type** %s.3042
+br label %.for.start.3040
+.for.end.3040:
 ret void
 }
 define void @m1861$compile_global.v.m1861$.CompilerCtx.typep.m1861$.GlobalName.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.GlobalName.type* %.g.arg) {
@@ -4802,45 +4845,45 @@ define void @m1861$compile_global.v.m1861$.CompilerCtx.typep.m1861$.GlobalName.t
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %g = alloca %m1861$.GlobalName.type*
 store %m1861$.GlobalName.type* %.g.arg, %m1861$.GlobalName.type** %g
-%.tmp3049 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g
-%.tmp3050 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp3049, i32 0, i32 2
-%.tmp3051 = load i1, i1* %.tmp3050
-%.tmp3052 = icmp eq i1 %.tmp3051, 0
-%.tmp3053 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g
-%.tmp3054 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp3053, i32 0, i32 1
-%.tmp3055 = load i8*, i8** %.tmp3054
-%.tmp3057 = getelementptr [7 x i8], [7 x i8]*@.str3056, i32 0, i32 0
-%.tmp3058 = call i32(i8*,i8*) @strcmp(i8* %.tmp3055, i8* %.tmp3057)
-%.tmp3059 = icmp eq i32 %.tmp3058, 0
-%.tmp3060 = and i1 %.tmp3052, %.tmp3059
-br i1 %.tmp3060, label %.if.true.3061, label %.if.false.3061
-.if.true.3061:
-%.tmp3062 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3063 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3062, i32 0, i32 1
-%.tmp3064 = load %m0$.File.type*, %m0$.File.type** %.tmp3063
-%.tmp3066 = getelementptr [21 x i8], [21 x i8]*@.str3065, i32 0, i32 0
-%.tmp3067 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g
-%.tmp3068 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp3067, i32 0, i32 3
-%.tmp3069 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %.tmp3068
-%.tmp3070 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp3069)
-%.tmp3071 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3072 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g
-%.tmp3073 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp3072, i32 0, i32 3
-%.tmp3074 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %.tmp3073
-%.tmp3075 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3074, i32 0, i32 3
-%.tmp3076 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3075
-%.tmp3077 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp3071, %m1861$.Type.type* %.tmp3076)
-%.tmp3078 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g
-%.tmp3079 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp3078, i32 0, i32 0
-%.tmp3080 = load i8*, i8** %.tmp3079
-%.tmp3081 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3064, i8* %.tmp3066, i8* %.tmp3070, i8* %.tmp3077, i8* %.tmp3080)
-%.tmp3082 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g
-%.tmp3083 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp3082, i32 0, i32 2
-store i1 1, i1* %.tmp3083
-br label %.if.end.3061
-.if.false.3061:
-br label %.if.end.3061
-.if.end.3061:
+%.tmp3052 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g
+%.tmp3053 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp3052, i32 0, i32 2
+%.tmp3054 = load i1, i1* %.tmp3053
+%.tmp3055 = icmp eq i1 %.tmp3054, 0
+%.tmp3056 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g
+%.tmp3057 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp3056, i32 0, i32 1
+%.tmp3058 = load i8*, i8** %.tmp3057
+%.tmp3060 = getelementptr [7 x i8], [7 x i8]*@.str3059, i32 0, i32 0
+%.tmp3061 = call i32(i8*,i8*) @strcmp(i8* %.tmp3058, i8* %.tmp3060)
+%.tmp3062 = icmp eq i32 %.tmp3061, 0
+%.tmp3063 = and i1 %.tmp3055, %.tmp3062
+br i1 %.tmp3063, label %.if.true.3064, label %.if.false.3064
+.if.true.3064:
+%.tmp3065 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3066 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3065, i32 0, i32 1
+%.tmp3067 = load %m0$.File.type*, %m0$.File.type** %.tmp3066
+%.tmp3069 = getelementptr [21 x i8], [21 x i8]*@.str3068, i32 0, i32 0
+%.tmp3070 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g
+%.tmp3071 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp3070, i32 0, i32 3
+%.tmp3072 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %.tmp3071
+%.tmp3073 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp3072)
+%.tmp3074 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3075 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g
+%.tmp3076 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp3075, i32 0, i32 3
+%.tmp3077 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %.tmp3076
+%.tmp3078 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3077, i32 0, i32 3
+%.tmp3079 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3078
+%.tmp3080 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp3074, %m1861$.Type.type* %.tmp3079)
+%.tmp3081 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g
+%.tmp3082 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp3081, i32 0, i32 0
+%.tmp3083 = load i8*, i8** %.tmp3082
+%.tmp3084 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3067, i8* %.tmp3069, i8* %.tmp3073, i8* %.tmp3080, i8* %.tmp3083)
+%.tmp3085 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g
+%.tmp3086 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp3085, i32 0, i32 2
+store i1 1, i1* %.tmp3086
+br label %.if.end.3064
+.if.false.3064:
+br label %.if.end.3064
+.if.end.3064:
 ret void
 }
 define i8* @m1861$get_mod_prefix.cp.m1861$.CompilerCtx.typep.cp(%m1861$.CompilerCtx.type* %.ctx.arg, i8* %.module_abspath.arg) {
@@ -4848,14 +4891,14 @@ define i8* @m1861$get_mod_prefix.cp.m1861$.CompilerCtx.typep.cp(%m1861$.Compiler
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %module_abspath = alloca i8*
 store i8* %.module_abspath.arg, i8** %module_abspath
-%.tmp3084 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3085 = call %m1861$.ModuleLookup.type*(%m1861$.CompilerCtx.type*) @m1861$get_current_module.m1861$.ModuleLookup.typep.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp3084)
-%m.3086 = alloca %m1861$.ModuleLookup.type*
-store %m1861$.ModuleLookup.type* %.tmp3085, %m1861$.ModuleLookup.type** %m.3086
-%.tmp3087 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.3086
-%.tmp3088 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3087, i32 0, i32 1
-%.tmp3089 = load i8*, i8** %.tmp3088
-ret i8* %.tmp3089
+%.tmp3087 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3088 = call %m1861$.ModuleLookup.type*(%m1861$.CompilerCtx.type*) @m1861$get_current_module.m1861$.ModuleLookup.typep.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp3087)
+%m.3089 = alloca %m1861$.ModuleLookup.type*
+store %m1861$.ModuleLookup.type* %.tmp3088, %m1861$.ModuleLookup.type** %m.3089
+%.tmp3090 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.3089
+%.tmp3091 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3090, i32 0, i32 1
+%.tmp3092 = load i8*, i8** %.tmp3091
+ret i8* %.tmp3092
 }
 define i8* @m1861$name_mangle.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.fn.arg, i8* %.original_name.arg, %m1861$.Type.type* %.type.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
@@ -4866,79 +4909,79 @@ store %m307$.Node.type* %.fn.arg, %m307$.Node.type** %fn
 store i8* %.original_name.arg, i8** %original_name
 %type = alloca %m1861$.Type.type*
 store %m1861$.Type.type* %.type.arg, %m1861$.Type.type** %type
-%mangled_name.3090 = alloca i8*
-store i8* null, i8** %mangled_name.3090
-%.tmp3091 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3092 = load %m307$.Node.type*, %m307$.Node.type** %fn
-%.tmp3093 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3092, i32 0, i32 2
-%.tmp3094 = load i8*, i8** %.tmp3093
-%.tmp3095 = call i8*(%m1861$.CompilerCtx.type*,i8*) @m1861$get_mod_prefix.cp.m1861$.CompilerCtx.typep.cp(%m1861$.CompilerCtx.type* %.tmp3091, i8* %.tmp3094)
-%prefix.3096 = alloca i8*
-store i8* %.tmp3095, i8** %prefix.3096
-%.tmp3097 = getelementptr i8*, i8** %mangled_name.3090, i32 0
-%.tmp3099 = getelementptr [5 x i8], [5 x i8]*@.str3098, i32 0, i32 0
-%.tmp3100 = load i8*, i8** %prefix.3096
-%.tmp3101 = load i8*, i8** %original_name
-%.tmp3102 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp3097, i8* %.tmp3099, i8* %.tmp3100, i8* %.tmp3101)
-%.tmp3103 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp3104 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3103, i32 0, i32 0
-%.tmp3105 = load i8*, i8** %.tmp3104
-%.tmp3107 = getelementptr [9 x i8], [9 x i8]*@.str3106, i32 0, i32 0
-%.tmp3108 = call i32(i8*,i8*) @strcmp(i8* %.tmp3105, i8* %.tmp3107)
-%.tmp3109 = icmp eq i32 %.tmp3108, 0
-br i1 %.tmp3109, label %.if.true.3110, label %.if.false.3110
-.if.true.3110:
-%.tmp3111 = load i8*, i8** %mangled_name.3090
-%.tmp3113 = getelementptr [5 x i8], [5 x i8]*@.str3112, i32 0, i32 0
-%.tmp3114 = call i32(i8*,i8*) @strcmp(i8* %.tmp3111, i8* %.tmp3113)
-%.tmp3115 = icmp ne i32 %.tmp3114, 0
-br i1 %.tmp3115, label %.if.true.3116, label %.if.false.3116
-.if.true.3116:
-%tmp_buff.3117 = alloca i8*
-store i8* null, i8** %tmp_buff.3117
-%swap_var.3118 = alloca i8*
-store i8* null, i8** %swap_var.3118
-%.tmp3120 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp3121 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3120, i32 0, i32 3
-%.tmp3122 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3121
-%tp.3123 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp3122, %m1861$.Type.type** %tp.3123
-br label %.for.start.3119
-.for.start.3119:
-%.tmp3124 = load %m1861$.Type.type*, %m1861$.Type.type** %tp.3123
-%.tmp3125 = icmp ne %m1861$.Type.type* %.tmp3124, null
-br i1 %.tmp3125, label %.for.continue.3119, label %.for.end.3119
-.for.continue.3119:
-%.tmp3126 = getelementptr i8*, i8** %tmp_buff.3117, i32 0
-%.tmp3128 = getelementptr [6 x i8], [6 x i8]*@.str3127, i32 0, i32 0
-%.tmp3129 = load i8*, i8** %mangled_name.3090
-%.tmp3130 = load %m1861$.Type.type*, %m1861$.Type.type** %tp.3123
-%.tmp3131 = call i8*(%m1861$.Type.type*) @m1861$type_abbr.cp.m1861$.Type.typep(%m1861$.Type.type* %.tmp3130)
-%.tmp3132 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp3126, i8* %.tmp3128, i8* %.tmp3129, i8* %.tmp3131)
-%.tmp3133 = load i8*, i8** %tmp_buff.3117
-store i8* %.tmp3133, i8** %swap_var.3118
-%.tmp3134 = load i8*, i8** %mangled_name.3090
-store i8* %.tmp3134, i8** %tmp_buff.3117
-%.tmp3135 = load i8*, i8** %swap_var.3118
-store i8* %.tmp3135, i8** %mangled_name.3090
-%.tmp3136 = load i8*, i8** %tmp_buff.3117
-call void(i8*) @free(i8* %.tmp3136)
-%.tmp3137 = load %m1861$.Type.type*, %m1861$.Type.type** %tp.3123
-%.tmp3138 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3137, i32 0, i32 4
-%.tmp3139 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3138
-store %m1861$.Type.type* %.tmp3139, %m1861$.Type.type** %tp.3123
-br label %.for.start.3119
-.for.end.3119:
-br label %.if.end.3116
-.if.false.3116:
-br label %.if.end.3116
-.if.end.3116:
-br label %.if.end.3110
-.if.false.3110:
-br label %.if.end.3110
-.if.end.3110:
-%.tmp3140 = load i8*, i8** %mangled_name.3090
-ret i8* %.tmp3140
+%mangled_name.3093 = alloca i8*
+store i8* null, i8** %mangled_name.3093
+%.tmp3094 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3095 = load %m307$.Node.type*, %m307$.Node.type** %fn
+%.tmp3096 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3095, i32 0, i32 2
+%.tmp3097 = load i8*, i8** %.tmp3096
+%.tmp3098 = call i8*(%m1861$.CompilerCtx.type*,i8*) @m1861$get_mod_prefix.cp.m1861$.CompilerCtx.typep.cp(%m1861$.CompilerCtx.type* %.tmp3094, i8* %.tmp3097)
+%prefix.3099 = alloca i8*
+store i8* %.tmp3098, i8** %prefix.3099
+%.tmp3100 = getelementptr i8*, i8** %mangled_name.3093, i32 0
+%.tmp3102 = getelementptr [5 x i8], [5 x i8]*@.str3101, i32 0, i32 0
+%.tmp3103 = load i8*, i8** %prefix.3099
+%.tmp3104 = load i8*, i8** %original_name
+%.tmp3105 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp3100, i8* %.tmp3102, i8* %.tmp3103, i8* %.tmp3104)
+%.tmp3106 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp3107 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3106, i32 0, i32 0
+%.tmp3108 = load i8*, i8** %.tmp3107
+%.tmp3110 = getelementptr [9 x i8], [9 x i8]*@.str3109, i32 0, i32 0
+%.tmp3111 = call i32(i8*,i8*) @strcmp(i8* %.tmp3108, i8* %.tmp3110)
+%.tmp3112 = icmp eq i32 %.tmp3111, 0
+br i1 %.tmp3112, label %.if.true.3113, label %.if.false.3113
+.if.true.3113:
+%.tmp3114 = load i8*, i8** %mangled_name.3093
+%.tmp3116 = getelementptr [5 x i8], [5 x i8]*@.str3115, i32 0, i32 0
+%.tmp3117 = call i32(i8*,i8*) @strcmp(i8* %.tmp3114, i8* %.tmp3116)
+%.tmp3118 = icmp ne i32 %.tmp3117, 0
+br i1 %.tmp3118, label %.if.true.3119, label %.if.false.3119
+.if.true.3119:
+%tmp_buff.3120 = alloca i8*
+store i8* null, i8** %tmp_buff.3120
+%swap_var.3121 = alloca i8*
+store i8* null, i8** %swap_var.3121
+%.tmp3123 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp3124 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3123, i32 0, i32 3
+%.tmp3125 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3124
+%tp.3126 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp3125, %m1861$.Type.type** %tp.3126
+br label %.for.start.3122
+.for.start.3122:
+%.tmp3127 = load %m1861$.Type.type*, %m1861$.Type.type** %tp.3126
+%.tmp3128 = icmp ne %m1861$.Type.type* %.tmp3127, null
+br i1 %.tmp3128, label %.for.continue.3122, label %.for.end.3122
+.for.continue.3122:
+%.tmp3129 = getelementptr i8*, i8** %tmp_buff.3120, i32 0
+%.tmp3131 = getelementptr [6 x i8], [6 x i8]*@.str3130, i32 0, i32 0
+%.tmp3132 = load i8*, i8** %mangled_name.3093
+%.tmp3133 = load %m1861$.Type.type*, %m1861$.Type.type** %tp.3126
+%.tmp3134 = call i8*(%m1861$.Type.type*) @m1861$type_abbr.cp.m1861$.Type.typep(%m1861$.Type.type* %.tmp3133)
+%.tmp3135 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp3129, i8* %.tmp3131, i8* %.tmp3132, i8* %.tmp3134)
+%.tmp3136 = load i8*, i8** %tmp_buff.3120
+store i8* %.tmp3136, i8** %swap_var.3121
+%.tmp3137 = load i8*, i8** %mangled_name.3093
+store i8* %.tmp3137, i8** %tmp_buff.3120
+%.tmp3138 = load i8*, i8** %swap_var.3121
+store i8* %.tmp3138, i8** %mangled_name.3093
+%.tmp3139 = load i8*, i8** %tmp_buff.3120
+call void(i8*) @free(i8* %.tmp3139)
+%.tmp3140 = load %m1861$.Type.type*, %m1861$.Type.type** %tp.3126
+%.tmp3141 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3140, i32 0, i32 4
+%.tmp3142 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3141
+store %m1861$.Type.type* %.tmp3142, %m1861$.Type.type** %tp.3126
+br label %.for.start.3122
+.for.end.3122:
+br label %.if.end.3119
+.if.false.3119:
+br label %.if.end.3119
+.if.end.3119:
+br label %.if.end.3113
+.if.false.3113:
+br label %.if.end.3113
+.if.end.3113:
+%.tmp3143 = load i8*, i8** %mangled_name.3093
+ret i8* %.tmp3143
 }
 define void @m1861$compile_statement.v.m1861$.CompilerCtx.typep.m307$.Node.typep.b(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.stmt.arg, i1 %.shallow.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
@@ -4947,914 +4990,914 @@ store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 store %m307$.Node.type* %.stmt.arg, %m307$.Node.type** %stmt
 %shallow = alloca i1
 store i1 %.shallow.arg, i1* %shallow
-%info.3141 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* null, %m1861$.AssignableInfo.type** %info.3141
-%return_type.3142 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* null, %m1861$.Type.type** %return_type.3142
-%err_buf.3143 = alloca i8*
-store i8* null, i8** %err_buf.3143
-%tmp_buff.3144 = alloca i8*
-store i8* null, i8** %tmp_buff.3144
-%.tmp3145 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3146 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3145, i32 0, i32 0
-%.tmp3147 = load i8*, i8** %.tmp3146
-%.tmp3149 = getelementptr [3 x i8], [3 x i8]*@.str3148, i32 0, i32 0
-%.tmp3150 = call i32(i8*,i8*) @strcmp(i8* %.tmp3147, i8* %.tmp3149)
-%.tmp3151 = icmp eq i32 %.tmp3150, 0
-br i1 %.tmp3151, label %.if.true.3152, label %.if.false.3152
-.if.true.3152:
+%info.3144 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* null, %m1861$.AssignableInfo.type** %info.3144
+%return_type.3145 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* null, %m1861$.Type.type** %return_type.3145
+%err_buf.3146 = alloca i8*
+store i8* null, i8** %err_buf.3146
+%tmp_buff.3147 = alloca i8*
+store i8* null, i8** %tmp_buff.3147
+%.tmp3148 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3149 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3148, i32 0, i32 0
+%.tmp3150 = load i8*, i8** %.tmp3149
+%.tmp3152 = getelementptr [3 x i8], [3 x i8]*@.str3151, i32 0, i32 0
+%.tmp3153 = call i32(i8*,i8*) @strcmp(i8* %.tmp3150, i8* %.tmp3152)
+%.tmp3154 = icmp eq i32 %.tmp3153, 0
+br i1 %.tmp3154, label %.if.true.3155, label %.if.false.3155
+.if.true.3155:
 ret void
-br label %.if.end.3152
-.if.false.3152:
-%.tmp3153 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3154 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3153, i32 0, i32 0
-%.tmp3155 = load i8*, i8** %.tmp3154
-%.tmp3157 = getelementptr [7 x i8], [7 x i8]*@.str3156, i32 0, i32 0
-%.tmp3158 = call i32(i8*,i8*) @strcmp(i8* %.tmp3155, i8* %.tmp3157)
-%.tmp3159 = icmp eq i32 %.tmp3158, 0
-br i1 %.tmp3159, label %.if.true.3160, label %.if.false.3160
-.if.true.3160:
-%.tmp3161 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3162 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3161, i32 0, i32 6
-%.tmp3163 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3162
-%.tmp3165 = getelementptr [11 x i8], [11 x i8]*@.str3164, i32 0, i32 0
-%.tmp3166 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp3163, i8* %.tmp3165)
-%assignable.3167 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp3166, %m307$.Node.type** %assignable.3167
-%.tmp3168 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3169 = load %m307$.Node.type*, %m307$.Node.type** %assignable.3167
-%.tmp3170 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_assignable.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp3168, %m307$.Node.type* %.tmp3169)
-%a_info.3171 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp3170, %m1861$.AssignableInfo.type** %a_info.3171
-%.tmp3172 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.3171
-%.tmp3173 = icmp eq %m1861$.AssignableInfo.type* %.tmp3172, null
-br i1 %.tmp3173, label %.if.true.3174, label %.if.false.3174
-.if.true.3174:
+br label %.if.end.3155
+.if.false.3155:
+%.tmp3156 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3157 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3156, i32 0, i32 0
+%.tmp3158 = load i8*, i8** %.tmp3157
+%.tmp3160 = getelementptr [7 x i8], [7 x i8]*@.str3159, i32 0, i32 0
+%.tmp3161 = call i32(i8*,i8*) @strcmp(i8* %.tmp3158, i8* %.tmp3160)
+%.tmp3162 = icmp eq i32 %.tmp3161, 0
+br i1 %.tmp3162, label %.if.true.3163, label %.if.false.3163
+.if.true.3163:
+%.tmp3164 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3165 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3164, i32 0, i32 6
+%.tmp3166 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3165
+%.tmp3168 = getelementptr [11 x i8], [11 x i8]*@.str3167, i32 0, i32 0
+%.tmp3169 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp3166, i8* %.tmp3168)
+%assignable.3170 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp3169, %m307$.Node.type** %assignable.3170
+%.tmp3171 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3172 = load %m307$.Node.type*, %m307$.Node.type** %assignable.3170
+%.tmp3173 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_assignable.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp3171, %m307$.Node.type* %.tmp3172)
+%a_info.3174 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp3173, %m1861$.AssignableInfo.type** %a_info.3174
+%.tmp3175 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.3174
+%.tmp3176 = icmp eq %m1861$.AssignableInfo.type* %.tmp3175, null
+br i1 %.tmp3176, label %.if.true.3177, label %.if.false.3177
+.if.true.3177:
 ret void
-br label %.if.end.3174
-.if.false.3174:
-br label %.if.end.3174
-.if.end.3174:
-%.tmp3175 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3176 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp3175)
-store %m1861$.AssignableInfo.type* %.tmp3176, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3177 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3178 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3177, i32 0, i32 6
-%.tmp3179 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3178
-%.tmp3180 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3179, i32 0, i32 7
-%.tmp3181 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3180
-%.tmp3182 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3181, i32 0, i32 1
-%.tmp3183 = load i8*, i8** %.tmp3182
-%global_name.3184 = alloca i8*
-store i8* %.tmp3183, i8** %global_name.3184
-%.tmp3185 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3186 = load i8, i8* @SCOPE_GLOBAL
-%.tmp3187 = load i8*, i8** %global_name.3184
-call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp3185, i8 %.tmp3186, i8* %.tmp3187)
-%.tmp3188 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3189 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3188, i32 0, i32 3
-%.tmp3190 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.3171
-%.tmp3191 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3190, i32 0, i32 3
-%.tmp3192 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3191
-store %m1861$.Type.type* %.tmp3192, %m1861$.Type.type** %.tmp3189
-%.tmp3193 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3194 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3193, i32 0, i32 2
-%.tmp3196 = getelementptr [9 x i8], [9 x i8]*@.str3195, i32 0, i32 0
-store i8* %.tmp3196, i8** %.tmp3194
-%.tmp3197 = load i1, i1* %shallow
-%.tmp3198 = icmp eq i1 %.tmp3197, 1
-br i1 %.tmp3198, label %.if.true.3199, label %.if.false.3199
-.if.true.3199:
-%.tmp3200 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3201 = load i8*, i8** %global_name.3184
-%.tmp3202 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-call void(%m1861$.CompilerCtx.type*,i8*,%m1861$.AssignableInfo.type*) @m1861$define_assignable.v.m1861$.CompilerCtx.typep.cp.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp3200, i8* %.tmp3201, %m1861$.AssignableInfo.type* %.tmp3202)
-br label %.if.end.3199
-.if.false.3199:
+br label %.if.end.3177
+.if.false.3177:
+br label %.if.end.3177
+.if.end.3177:
+%.tmp3178 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3179 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp3178)
+store %m1861$.AssignableInfo.type* %.tmp3179, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3180 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3181 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3180, i32 0, i32 6
+%.tmp3182 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3181
+%.tmp3183 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3182, i32 0, i32 7
+%.tmp3184 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3183
+%.tmp3185 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3184, i32 0, i32 1
+%.tmp3186 = load i8*, i8** %.tmp3185
+%global_name.3187 = alloca i8*
+store i8* %.tmp3186, i8** %global_name.3187
+%.tmp3188 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3189 = load i8, i8* @SCOPE_GLOBAL
+%.tmp3190 = load i8*, i8** %global_name.3187
+call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp3188, i8 %.tmp3189, i8* %.tmp3190)
+%.tmp3191 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3192 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3191, i32 0, i32 3
+%.tmp3193 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.3174
+%.tmp3194 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3193, i32 0, i32 3
+%.tmp3195 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3194
+store %m1861$.Type.type* %.tmp3195, %m1861$.Type.type** %.tmp3192
+%.tmp3196 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3197 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3196, i32 0, i32 2
+%.tmp3199 = getelementptr [9 x i8], [9 x i8]*@.str3198, i32 0, i32 0
+store i8* %.tmp3199, i8** %.tmp3197
+%.tmp3200 = load i1, i1* %shallow
+%.tmp3201 = icmp eq i1 %.tmp3200, 1
+br i1 %.tmp3201, label %.if.true.3202, label %.if.false.3202
+.if.true.3202:
 %.tmp3203 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3204 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3203, i32 0, i32 1
-%.tmp3205 = load %m0$.File.type*, %m0$.File.type** %.tmp3204
-%.tmp3207 = getelementptr [21 x i8], [21 x i8]*@.str3206, i32 0, i32 0
-%.tmp3208 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3209 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp3208)
-%.tmp3210 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3211 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3212 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3211, i32 0, i32 3
-%.tmp3213 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3212
-%.tmp3214 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp3210, %m1861$.Type.type* %.tmp3213)
-%.tmp3215 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.3171
-%.tmp3216 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp3215)
-%.tmp3217 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3205, i8* %.tmp3207, i8* %.tmp3209, i8* %.tmp3214, i8* %.tmp3216)
-br label %.if.end.3199
-.if.end.3199:
-br label %.if.end.3160
-.if.false.3160:
-%.tmp3218 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3219 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3218, i32 0, i32 0
-%.tmp3220 = load i8*, i8** %.tmp3219
-%.tmp3222 = getelementptr [10 x i8], [10 x i8]*@.str3221, i32 0, i32 0
-%.tmp3223 = call i32(i8*,i8*) @strcmp(i8* %.tmp3220, i8* %.tmp3222)
-%.tmp3224 = icmp eq i32 %.tmp3223, 0
-br i1 %.tmp3224, label %.if.true.3225, label %.if.false.3225
-.if.true.3225:
-%.tmp3226 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3227 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3226, i32 0, i32 6
-%.tmp3228 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3227
-%.tmp3229 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3228, i32 0, i32 7
-%.tmp3230 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3229
-%.tmp3231 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3230, i32 0, i32 1
-%.tmp3232 = load i8*, i8** %.tmp3231
-%type_name.3233 = alloca i8*
-store i8* %.tmp3232, i8** %type_name.3233
-%.tmp3234 = load i1, i1* %shallow
-%.tmp3235 = icmp eq i1 %.tmp3234, 1
-br i1 %.tmp3235, label %.if.true.3236, label %.if.false.3236
-.if.true.3236:
-%.tmp3237 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3238 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp3237)
-store %m1861$.AssignableInfo.type* %.tmp3238, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3239 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3240 = call %m1861$.ModuleLookup.type*(%m1861$.CompilerCtx.type*) @m1861$get_current_module.m1861$.ModuleLookup.typep.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp3239)
-%mod_from.3241 = alloca %m1861$.ModuleLookup.type*
-store %m1861$.ModuleLookup.type* %.tmp3240, %m1861$.ModuleLookup.type** %mod_from.3241
-%.tmp3242 = getelementptr i8*, i8** %tmp_buff.3144, i32 0
-%.tmp3244 = getelementptr [11 x i8], [11 x i8]*@.str3243, i32 0, i32 0
-%.tmp3245 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod_from.3241
-%.tmp3246 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3245, i32 0, i32 1
-%.tmp3247 = load i8*, i8** %.tmp3246
-%.tmp3248 = load i8*, i8** %type_name.3233
-%.tmp3249 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp3242, i8* %.tmp3244, i8* %.tmp3247, i8* %.tmp3248)
-%.tmp3250 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3251 = load i8, i8* @SCOPE_LOCAL
-%.tmp3252 = load i8*, i8** %tmp_buff.3144
-call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp3250, i8 %.tmp3251, i8* %.tmp3252)
-%.tmp3253 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3254 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3253, i32 0, i32 2
-%.tmp3256 = getelementptr [10 x i8], [10 x i8]*@.str3255, i32 0, i32 0
-store i8* %.tmp3256, i8** %.tmp3254
-%.tmp3257 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3258 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3257, i32 0, i32 4
-%.tmp3259 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3260 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3259, i32 0, i32 3
-%.tmp3261 = load i32, i32* %.tmp3260
-store i32 %.tmp3261, i32* %.tmp3258
-%.tmp3262 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3263 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3262, i32 0, i32 5
-%.tmp3264 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3265 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3264, i32 0, i32 4
-%.tmp3266 = load i32, i32* %.tmp3265
-store i32 %.tmp3266, i32* %.tmp3263
-%.tmp3267 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3268 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3267, i32 0, i32 3
-%.tmp3269 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-store %m1861$.Type.type* %.tmp3269, %m1861$.Type.type** %.tmp3268
-%.tmp3270 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3271 = load i8*, i8** %type_name.3233
-%.tmp3272 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-call void(%m1861$.CompilerCtx.type*,i8*,%m1861$.AssignableInfo.type*) @m1861$define_assignable.v.m1861$.CompilerCtx.typep.cp.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp3270, i8* %.tmp3271, %m1861$.AssignableInfo.type* %.tmp3272)
-%.tmp3273 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3274 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3273, i32 0, i32 6
-%.tmp3275 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3274
-%.tmp3277 = getelementptr [5 x i8], [5 x i8]*@.str3276, i32 0, i32 0
-%.tmp3278 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp3275, i8* %.tmp3277)
-%type_decl.3279 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp3278, %m307$.Node.type** %type_decl.3279
-%.tmp3280 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3281 = load %m307$.Node.type*, %m307$.Node.type** %type_decl.3279
-%.tmp3282 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3281, i32 0, i32 6
-%.tmp3283 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3282
-%.tmp3284 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$node_to_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp3280, %m307$.Node.type* %.tmp3283)
-%type_struct.3285 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp3284, %m1861$.Type.type** %type_struct.3285
-%.tmp3286 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3287 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3286, i32 0, i32 3
-%.tmp3288 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3287
-%.tmp3289 = load %m1861$.Type.type*, %m1861$.Type.type** %type_struct.3285
-call void(%m1861$.Type.type*,%m1861$.Type.type*) @m1861$copy_type.v.m1861$.Type.typep.m1861$.Type.typep(%m1861$.Type.type* %.tmp3288, %m1861$.Type.type* %.tmp3289)
-%.tmp3290 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3291 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3290, i32 0, i32 3
-%.tmp3292 = load %m1861$.Type.type*, %m1861$.Type.type** %type_struct.3285
-store %m1861$.Type.type* %.tmp3292, %m1861$.Type.type** %.tmp3291
-br label %.if.end.3236
-.if.false.3236:
-%.tmp3293 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3294 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3295 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3294, i32 0, i32 6
-%.tmp3296 = load i8*, i8** %.tmp3295
-%.tmp3297 = load i8*, i8** %type_name.3233
-%.tmp3298 = call %m1861$.ScopeItem.type*(%m1861$.CompilerCtx.type*,i8*,i8*) @m1861$find_defined_str.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.cp.cp(%m1861$.CompilerCtx.type* %.tmp3293, i8* %.tmp3296, i8* %.tmp3297)
-%scope.3299 = alloca %m1861$.ScopeItem.type*
-store %m1861$.ScopeItem.type* %.tmp3298, %m1861$.ScopeItem.type** %scope.3299
-%.tmp3300 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %scope.3299
-%.tmp3301 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp3300, i32 0, i32 1
-%.tmp3302 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %.tmp3301
-store %m1861$.AssignableInfo.type* %.tmp3302, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3303 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3304 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3303, i32 0, i32 1
-%.tmp3305 = load %m0$.File.type*, %m0$.File.type** %.tmp3304
-%.tmp3307 = getelementptr [14 x i8], [14 x i8]*@.str3306, i32 0, i32 0
-%.tmp3308 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3309 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp3308)
-%.tmp3310 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3311 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3312 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3311, i32 0, i32 3
-%.tmp3313 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3312
-%.tmp3314 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp3310, %m1861$.Type.type* %.tmp3313)
-%.tmp3315 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3305, i8* %.tmp3307, i8* %.tmp3309, i8* %.tmp3314)
-br label %.if.end.3236
-.if.end.3236:
-br label %.if.end.3225
-.if.false.3225:
-%.tmp3316 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3317 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3316, i32 0, i32 0
-%.tmp3318 = load i8*, i8** %.tmp3317
-%.tmp3320 = getelementptr [7 x i8], [7 x i8]*@.str3319, i32 0, i32 0
-%.tmp3321 = call i32(i8*,i8*) @strcmp(i8* %.tmp3318, i8* %.tmp3320)
-%.tmp3322 = icmp eq i32 %.tmp3321, 0
-br i1 %.tmp3322, label %.if.true.3323, label %.if.false.3323
-.if.true.3323:
-%.tmp3324 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3325 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp3324)
-store %m1861$.AssignableInfo.type* %.tmp3325, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3326 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3327 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3326, i32 0, i32 3
-%.tmp3328 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3329 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3330 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3329, i32 0, i32 6
-%.tmp3331 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3330
-%.tmp3332 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3331, i32 0, i32 7
-%.tmp3333 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3332
-%.tmp3334 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$syn_function_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp3328, %m307$.Node.type* %.tmp3333)
-store %m1861$.Type.type* %.tmp3334, %m1861$.Type.type** %.tmp3327
-%.tmp3335 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3336 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3335, i32 0, i32 2
-%.tmp3338 = getelementptr [7 x i8], [7 x i8]*@.str3337, i32 0, i32 0
-store i8* %.tmp3338, i8** %.tmp3336
-%.tmp3339 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3340 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3339, i32 0, i32 6
-%.tmp3341 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3340
-%.tmp3342 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3341, i32 0, i32 7
-%.tmp3343 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3342
-%.tmp3344 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3343, i32 0, i32 7
-%.tmp3345 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3344
-%.tmp3346 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3345, i32 0, i32 1
-%.tmp3347 = load i8*, i8** %.tmp3346
-%fn_name.3348 = alloca i8*
-store i8* %.tmp3347, i8** %fn_name.3348
-%.tmp3349 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3350 = load i8, i8* @SCOPE_GLOBAL
-%.tmp3351 = load i8*, i8** %fn_name.3348
-call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp3349, i8 %.tmp3350, i8* %.tmp3351)
-%.tmp3352 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-store %m1861$.Type.type* %.tmp3352, %m1861$.Type.type** %return_type.3142
-%.tmp3353 = load %m1861$.Type.type*, %m1861$.Type.type** %return_type.3142
-%.tmp3354 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3353, i32 0, i32 0
-%.tmp3355 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3356 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3355, i32 0, i32 3
-%.tmp3357 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3356
-%.tmp3358 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3357, i32 0, i32 3
-%.tmp3359 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3358
-%.tmp3360 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3359, i32 0, i32 0
-%.tmp3361 = load i8*, i8** %.tmp3360
-store i8* %.tmp3361, i8** %.tmp3354
-%.tmp3362 = load %m1861$.Type.type*, %m1861$.Type.type** %return_type.3142
-%.tmp3363 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3362, i32 0, i32 3
-%.tmp3364 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3365 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3364, i32 0, i32 3
-%.tmp3366 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3365
-%.tmp3367 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3366, i32 0, i32 3
-%.tmp3368 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3367
-%.tmp3369 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3368, i32 0, i32 3
-%.tmp3370 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3369
-store %m1861$.Type.type* %.tmp3370, %m1861$.Type.type** %.tmp3363
-%.tmp3371 = load i1, i1* %shallow
-%.tmp3372 = icmp eq i1 %.tmp3371, 0
-br i1 %.tmp3372, label %.if.true.3373, label %.if.false.3373
-.if.true.3373:
-%.tmp3374 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3375 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3374, i32 0, i32 1
-%.tmp3376 = load %m0$.File.type*, %m0$.File.type** %.tmp3375
-%.tmp3378 = getelementptr [15 x i8], [15 x i8]*@.str3377, i32 0, i32 0
-%.tmp3379 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3380 = load %m1861$.Type.type*, %m1861$.Type.type** %return_type.3142
-%.tmp3381 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp3379, %m1861$.Type.type* %.tmp3380)
-%.tmp3382 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3383 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp3382)
-%.tmp3384 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3376, i8* %.tmp3378, i8* %.tmp3381, i8* %.tmp3383)
-%.tmp3386 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3387 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3386, i32 0, i32 3
-%.tmp3388 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3387
-%.tmp3389 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3388, i32 0, i32 3
-%.tmp3390 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3389
-%.tmp3391 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3390, i32 0, i32 4
-%.tmp3392 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3391
-%pt.3393 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp3392, %m1861$.Type.type** %pt.3393
-br label %.for.start.3385
-.for.start.3385:
-%.tmp3394 = load %m1861$.Type.type*, %m1861$.Type.type** %pt.3393
-%.tmp3395 = icmp ne %m1861$.Type.type* %.tmp3394, null
-br i1 %.tmp3395, label %.for.continue.3385, label %.for.end.3385
-.for.continue.3385:
-%.tmp3396 = load %m1861$.Type.type*, %m1861$.Type.type** %pt.3393
-%.tmp3397 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3398 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3397, i32 0, i32 3
-%.tmp3399 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3398
-%.tmp3400 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3399, i32 0, i32 3
-%.tmp3401 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3400
-%.tmp3402 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3401, i32 0, i32 4
-%.tmp3403 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3402
-%.tmp3404 = icmp ne %m1861$.Type.type* %.tmp3396, %.tmp3403
-br i1 %.tmp3404, label %.if.true.3405, label %.if.false.3405
-.if.true.3405:
-%.tmp3406 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3407 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3406, i32 0, i32 1
-%.tmp3408 = load %m0$.File.type*, %m0$.File.type** %.tmp3407
-%.tmp3410 = getelementptr [3 x i8], [3 x i8]*@.str3409, i32 0, i32 0
-%.tmp3411 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3408, i8* %.tmp3410)
-br label %.if.end.3405
-.if.false.3405:
-br label %.if.end.3405
-.if.end.3405:
-%.tmp3412 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3413 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3412, i32 0, i32 1
-%.tmp3414 = load %m0$.File.type*, %m0$.File.type** %.tmp3413
-%.tmp3416 = getelementptr [3 x i8], [3 x i8]*@.str3415, i32 0, i32 0
-%.tmp3417 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3418 = load %m1861$.Type.type*, %m1861$.Type.type** %pt.3393
-%.tmp3419 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp3417, %m1861$.Type.type* %.tmp3418)
-%.tmp3420 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3414, i8* %.tmp3416, i8* %.tmp3419)
-%.tmp3421 = load %m1861$.Type.type*, %m1861$.Type.type** %pt.3393
-%.tmp3422 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3421, i32 0, i32 4
-%.tmp3423 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3422
-store %m1861$.Type.type* %.tmp3423, %m1861$.Type.type** %pt.3393
-br label %.for.start.3385
-.for.end.3385:
-%.tmp3424 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3425 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3424, i32 0, i32 1
-%.tmp3426 = load %m0$.File.type*, %m0$.File.type** %.tmp3425
-%.tmp3428 = getelementptr [3 x i8], [3 x i8]*@.str3427, i32 0, i32 0
-%.tmp3429 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3426, i8* %.tmp3428)
-%.tmp3430 = load %m1861$.Type.type*, %m1861$.Type.type** %return_type.3142
-%.tmp3431 = bitcast %m1861$.Type.type* %.tmp3430 to i8*
-call void(i8*) @free(i8* %.tmp3431)
-br label %.if.end.3373
-.if.false.3373:
-%.tmp3432 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3433 = load i8*, i8** %fn_name.3348
-%.tmp3434 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-call void(%m1861$.CompilerCtx.type*,i8*,%m1861$.AssignableInfo.type*) @m1861$define_assignable.v.m1861$.CompilerCtx.typep.cp.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp3432, i8* %.tmp3433, %m1861$.AssignableInfo.type* %.tmp3434)
-br label %.if.end.3373
-.if.end.3373:
-br label %.if.end.3323
-.if.false.3323:
-%.tmp3435 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3436 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3435, i32 0, i32 0
-%.tmp3437 = load i8*, i8** %.tmp3436
-%.tmp3439 = getelementptr [9 x i8], [9 x i8]*@.str3438, i32 0, i32 0
-%.tmp3440 = call i32(i8*,i8*) @strcmp(i8* %.tmp3437, i8* %.tmp3439)
-%.tmp3441 = icmp eq i32 %.tmp3440, 0
-br i1 %.tmp3441, label %.if.true.3442, label %.if.false.3442
-.if.true.3442:
-%.tmp3443 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3444 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp3443)
-store %m1861$.AssignableInfo.type* %.tmp3444, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3445 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3446 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3445, i32 0, i32 2
-%.tmp3448 = getelementptr [9 x i8], [9 x i8]*@.str3447, i32 0, i32 0
-store i8* %.tmp3448, i8** %.tmp3446
-%.tmp3449 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3450 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3449, i32 0, i32 3
-%.tmp3451 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3452 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3453 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3452, i32 0, i32 6
-%.tmp3454 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3453
-%.tmp3455 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$syn_function_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp3451, %m307$.Node.type* %.tmp3454)
-store %m1861$.Type.type* %.tmp3455, %m1861$.Type.type** %.tmp3450
-%.tmp3456 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3457 = call i8*(%m307$.Node.type*) @m1861$syn_function_name.cp.m307$.Node.typep(%m307$.Node.type* %.tmp3456)
-%name.3458 = alloca i8*
-store i8* %.tmp3457, i8** %name.3458
-%.tmp3459 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3460 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3461 = load i8*, i8** %name.3458
-%.tmp3462 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3463 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3462, i32 0, i32 3
-%.tmp3464 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3463
-%.tmp3465 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*,%m1861$.Type.type*) @m1861$name_mangle.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp3459, %m307$.Node.type* %.tmp3460, i8* %.tmp3461, %m1861$.Type.type* %.tmp3464)
-store i8* %.tmp3465, i8** %tmp_buff.3144
-%.tmp3466 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3467 = load i8, i8* @SCOPE_GLOBAL
-%.tmp3468 = load i8*, i8** %tmp_buff.3144
-call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp3466, i8 %.tmp3467, i8* %.tmp3468)
-%.tmp3469 = load i1, i1* %shallow
-%.tmp3470 = icmp eq i1 %.tmp3469, 1
-br i1 %.tmp3470, label %.if.true.3471, label %.if.false.3471
-.if.true.3471:
-%.tmp3472 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3473 = load i8*, i8** %name.3458
-%.tmp3474 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-call void(%m1861$.CompilerCtx.type*,i8*,%m1861$.AssignableInfo.type*) @m1861$define_assignable.v.m1861$.CompilerCtx.typep.cp.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp3472, i8* %.tmp3473, %m1861$.AssignableInfo.type* %.tmp3474)
-br label %.if.end.3471
-.if.false.3471:
-%.tmp3475 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-store %m1861$.Type.type* %.tmp3475, %m1861$.Type.type** %return_type.3142
-%.tmp3476 = load %m1861$.Type.type*, %m1861$.Type.type** %return_type.3142
-%.tmp3477 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3478 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3477, i32 0, i32 3
-%.tmp3479 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3478
-%.tmp3480 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3479, i32 0, i32 3
-%.tmp3481 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3480
-call void(%m1861$.Type.type*,%m1861$.Type.type*) @m1861$copy_type.v.m1861$.Type.typep.m1861$.Type.typep(%m1861$.Type.type* %.tmp3476, %m1861$.Type.type* %.tmp3481)
-%.tmp3482 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3483 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3482, i32 0, i32 1
-%.tmp3484 = load %m0$.File.type*, %m0$.File.type** %.tmp3483
-%.tmp3486 = getelementptr [14 x i8], [14 x i8]*@.str3485, i32 0, i32 0
-%.tmp3487 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3488 = load %m1861$.Type.type*, %m1861$.Type.type** %return_type.3142
-%.tmp3489 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp3487, %m1861$.Type.type* %.tmp3488)
-%.tmp3490 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3141
-%.tmp3491 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp3490)
-%.tmp3492 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3484, i8* %.tmp3486, i8* %.tmp3489, i8* %.tmp3491)
-%.tmp3493 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3494 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3493, i32 0, i32 6
-%.tmp3495 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3494
-%.tmp3496 = call %m307$.Node.type*(%m307$.Node.type*) @m1861$syn_function_params.m307$.Node.typep.m307$.Node.typep(%m307$.Node.type* %.tmp3495)
-%params.3497 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp3496, %m307$.Node.type** %params.3497
-%param_type.3498 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* null, %m1861$.Type.type** %param_type.3498
-%.tmp3500 = load %m307$.Node.type*, %m307$.Node.type** %params.3497
-%param_ptr.3501 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp3500, %m307$.Node.type** %param_ptr.3501
-br label %.for.start.3499
-.for.start.3499:
-%.tmp3502 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3501
-%.tmp3503 = icmp ne %m307$.Node.type* %.tmp3502, null
-br i1 %.tmp3503, label %.for.continue.3499, label %.for.end.3499
-.for.continue.3499:
-%.tmp3504 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3501
-%.tmp3505 = load %m307$.Node.type*, %m307$.Node.type** %params.3497
-%.tmp3506 = icmp ne %m307$.Node.type* %.tmp3504, %.tmp3505
-br i1 %.tmp3506, label %.if.true.3507, label %.if.false.3507
-.if.true.3507:
-%.tmp3508 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3501
-%.tmp3509 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3508, i32 0, i32 7
-%.tmp3510 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3509
-store %m307$.Node.type* %.tmp3510, %m307$.Node.type** %param_ptr.3501
-%.tmp3511 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3512 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3511, i32 0, i32 1
-%.tmp3513 = load %m0$.File.type*, %m0$.File.type** %.tmp3512
-%.tmp3515 = getelementptr [3 x i8], [3 x i8]*@.str3514, i32 0, i32 0
-%.tmp3516 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3513, i8* %.tmp3515)
-br label %.if.end.3507
-.if.false.3507:
-br label %.if.end.3507
-.if.end.3507:
-%.tmp3517 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3501
-%.tmp3518 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3517, i32 0, i32 0
-%.tmp3519 = load i8*, i8** %.tmp3518
-%.tmp3521 = getelementptr [5 x i8], [5 x i8]*@.str3520, i32 0, i32 0
-%.tmp3522 = call i32(i8*,i8*) @strcmp(i8* %.tmp3519, i8* %.tmp3521)
-%.tmp3523 = icmp eq i32 %.tmp3522, 0
-br i1 %.tmp3523, label %.if.true.3524, label %.if.false.3524
-.if.true.3524:
-%.tmp3525 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3526 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3501
-%.tmp3527 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3526, i32 0, i32 6
-%.tmp3528 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3527
-%.tmp3529 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$node_to_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp3525, %m307$.Node.type* %.tmp3528)
-store %m1861$.Type.type* %.tmp3529, %m1861$.Type.type** %param_type.3498
-%.tmp3530 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3501
-%.tmp3531 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3530, i32 0, i32 7
-%.tmp3532 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3531
-store %m307$.Node.type* %.tmp3532, %m307$.Node.type** %param_ptr.3501
-br label %.if.end.3524
-.if.false.3524:
-br label %.if.end.3524
-.if.end.3524:
-%.tmp3533 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3534 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3533, i32 0, i32 1
-%.tmp3535 = load %m0$.File.type*, %m0$.File.type** %.tmp3534
-%.tmp3537 = getelementptr [13 x i8], [13 x i8]*@.str3536, i32 0, i32 0
-%.tmp3538 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3539 = load %m1861$.Type.type*, %m1861$.Type.type** %param_type.3498
-%.tmp3540 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp3538, %m1861$.Type.type* %.tmp3539)
-%.tmp3541 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3501
-%.tmp3542 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3541, i32 0, i32 1
-%.tmp3543 = load i8*, i8** %.tmp3542
-%.tmp3544 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3535, i8* %.tmp3537, i8* %.tmp3540, i8* %.tmp3543)
-%.tmp3545 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3501
-%.tmp3546 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3545, i32 0, i32 7
-%.tmp3547 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3546
-store %m307$.Node.type* %.tmp3547, %m307$.Node.type** %param_ptr.3501
-br label %.for.start.3499
-.for.end.3499:
-%.tmp3548 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3549 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3548, i32 0, i32 1
-%.tmp3550 = load %m0$.File.type*, %m0$.File.type** %.tmp3549
-%.tmp3552 = getelementptr [5 x i8], [5 x i8]*@.str3551, i32 0, i32 0
-%.tmp3553 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3550, i8* %.tmp3552)
-%.tmp3554 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3556 = getelementptr [9 x i8], [9 x i8]*@.str3555, i32 0, i32 0
-%.tmp3557 = bitcast ptr null to i8*
-%.tmp3558 = bitcast ptr null to i8*
-call void(%m1861$.CompilerCtx.type*,i8*,i8*,i8*) @m1861$push_scope.v.m1861$.CompilerCtx.typep.cp.cp.cp(%m1861$.CompilerCtx.type* %.tmp3554, i8* %.tmp3556, i8* %.tmp3557, i8* %.tmp3558)
-%.tmp3559 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3560 = load %m307$.Node.type*, %m307$.Node.type** %params.3497
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_fn_params.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp3559, %m307$.Node.type* %.tmp3560)
-%.tmp3561 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3562 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3561, i32 0, i32 6
-%.tmp3563 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3562
-%.tmp3565 = getelementptr [6 x i8], [6 x i8]*@.str3564, i32 0, i32 0
-%.tmp3566 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp3563, i8* %.tmp3565)
-%fn_block.3567 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp3566, %m307$.Node.type** %fn_block.3567
-%.tmp3568 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3569 = load %m307$.Node.type*, %m307$.Node.type** %fn_block.3567
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_block.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp3568, %m307$.Node.type* %.tmp3569)
-%.tmp3570 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-call void(%m1861$.CompilerCtx.type*) @m1861$pop_scope.v.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp3570)
-%.tmp3571 = bitcast ptr null to %m307$.Node.type*
-%last_valid_instruction.3572 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp3571, %m307$.Node.type** %last_valid_instruction.3572
-%.tmp3574 = load %m307$.Node.type*, %m307$.Node.type** %fn_block.3567
-%.tmp3575 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3574, i32 0, i32 6
-%.tmp3576 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3575
-%ci.3577 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp3576, %m307$.Node.type** %ci.3577
-br label %.for.start.3573
-.for.start.3573:
-%.tmp3578 = load %m307$.Node.type*, %m307$.Node.type** %ci.3577
-%.tmp3579 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3578, i32 0, i32 7
-%.tmp3580 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3579
-%.tmp3581 = icmp ne %m307$.Node.type* %.tmp3580, null
-br i1 %.tmp3581, label %.for.continue.3573, label %.for.end.3573
-.for.continue.3573:
-%.tmp3582 = load %m307$.Node.type*, %m307$.Node.type** %ci.3577
-%.tmp3583 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3582, i32 0, i32 0
-%.tmp3584 = load i8*, i8** %.tmp3583
-%.tmp3586 = getelementptr [3 x i8], [3 x i8]*@.str3585, i32 0, i32 0
-%.tmp3587 = call i32(i8*,i8*) @strcmp(i8* %.tmp3584, i8* %.tmp3586)
-%.tmp3588 = icmp ne i32 %.tmp3587, 0
-%.tmp3589 = load %m307$.Node.type*, %m307$.Node.type** %ci.3577
-%.tmp3590 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3589, i32 0, i32 0
-%.tmp3591 = load i8*, i8** %.tmp3590
-%.tmp3593 = getelementptr [9 x i8], [9 x i8]*@.str3592, i32 0, i32 0
-%.tmp3594 = call i32(i8*,i8*) @strcmp(i8* %.tmp3591, i8* %.tmp3593)
-%.tmp3595 = icmp ne i32 %.tmp3594, 0
-%.tmp3596 = and i1 %.tmp3588, %.tmp3595
-br i1 %.tmp3596, label %.if.true.3597, label %.if.false.3597
-.if.true.3597:
-%.tmp3598 = load %m307$.Node.type*, %m307$.Node.type** %ci.3577
-store %m307$.Node.type* %.tmp3598, %m307$.Node.type** %last_valid_instruction.3572
-br label %.if.end.3597
-.if.false.3597:
-br label %.if.end.3597
-.if.end.3597:
-%.tmp3599 = load %m307$.Node.type*, %m307$.Node.type** %ci.3577
-%.tmp3600 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3599, i32 0, i32 7
-%.tmp3601 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3600
-store %m307$.Node.type* %.tmp3601, %m307$.Node.type** %ci.3577
-br label %.for.start.3573
-.for.end.3573:
-%add_implicit_return.3602 = alloca i1
-store i1 0, i1* %add_implicit_return.3602
-%.tmp3603 = load %m307$.Node.type*, %m307$.Node.type** %last_valid_instruction.3572
-%.tmp3604 = icmp eq %m307$.Node.type* %.tmp3603, null
-br i1 %.tmp3604, label %.if.true.3605, label %.if.false.3605
-.if.true.3605:
-store i1 1, i1* %add_implicit_return.3602
-br label %.if.end.3605
-.if.false.3605:
-%.tmp3606 = load %m307$.Node.type*, %m307$.Node.type** %last_valid_instruction.3572
-%.tmp3607 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3606, i32 0, i32 6
-%.tmp3608 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3607
-%.tmp3609 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3608, i32 0, i32 0
-%.tmp3610 = load i8*, i8** %.tmp3609
-%.tmp3612 = getelementptr [7 x i8], [7 x i8]*@.str3611, i32 0, i32 0
-%.tmp3613 = call i32(i8*,i8*) @strcmp(i8* %.tmp3610, i8* %.tmp3612)
-%.tmp3614 = icmp ne i32 %.tmp3613, 0
-br i1 %.tmp3614, label %.if.true.3615, label %.if.false.3615
-.if.true.3615:
-store i1 1, i1* %add_implicit_return.3602
-br label %.if.end.3615
-.if.false.3615:
-br label %.if.end.3615
-.if.end.3615:
-br label %.if.end.3605
-.if.end.3605:
-%.tmp3616 = load i1, i1* %add_implicit_return.3602
-br i1 %.tmp3616, label %.if.true.3617, label %.if.false.3617
-.if.true.3617:
-%.tmp3618 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3619 = load %m1861$.Type.type*, %m1861$.Type.type** %return_type.3142
-%.tmp3620 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp3618, %m1861$.Type.type* %.tmp3619)
-%.tmp3622 = getelementptr [5 x i8], [5 x i8]*@.str3621, i32 0, i32 0
-%.tmp3623 = call i32(i8*,i8*) @strcmp(i8* %.tmp3620, i8* %.tmp3622)
-%.tmp3624 = icmp ne i32 %.tmp3623, 0
-br i1 %.tmp3624, label %.if.true.3625, label %.if.false.3625
-.if.true.3625:
-%.tmp3626 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3627 = load %m307$.Node.type*, %m307$.Node.type** %fn_block.3567
-%.tmp3629 = getelementptr [21 x i8], [21 x i8]*@.str3628, i32 0, i32 0
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp3626, %m307$.Node.type* %.tmp3627, i8* %.tmp3629)
-br label %.if.end.3625
-.if.false.3625:
-%.tmp3630 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3631 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3630, i32 0, i32 1
-%.tmp3632 = load %m0$.File.type*, %m0$.File.type** %.tmp3631
-%.tmp3634 = getelementptr [10 x i8], [10 x i8]*@.str3633, i32 0, i32 0
-%.tmp3635 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3632, i8* %.tmp3634)
-br label %.if.end.3625
-.if.end.3625:
-br label %.if.end.3617
-.if.false.3617:
-br label %.if.end.3617
-.if.end.3617:
-%.tmp3636 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3637 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3636, i32 0, i32 1
-%.tmp3638 = load %m0$.File.type*, %m0$.File.type** %.tmp3637
-%.tmp3640 = getelementptr [3 x i8], [3 x i8]*@.str3639, i32 0, i32 0
-%.tmp3641 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3638, i8* %.tmp3640)
-br label %.if.end.3471
-.if.end.3471:
-br label %.if.end.3442
-.if.false.3442:
-%.tmp3642 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3643 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3642, i32 0, i32 0
-%.tmp3644 = load i8*, i8** %.tmp3643
-%.tmp3646 = getelementptr [7 x i8], [7 x i8]*@.str3645, i32 0, i32 0
-%.tmp3647 = call i32(i8*,i8*) @strcmp(i8* %.tmp3644, i8* %.tmp3646)
-%.tmp3648 = icmp eq i32 %.tmp3647, 0
-br i1 %.tmp3648, label %.if.true.3649, label %.if.false.3649
-.if.true.3649:
-%.tmp3650 = load i1, i1* %shallow
-%.tmp3651 = icmp eq i1 %.tmp3650, 1
+%.tmp3204 = load i8*, i8** %global_name.3187
+%.tmp3205 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+call void(%m1861$.CompilerCtx.type*,i8*,%m1861$.AssignableInfo.type*) @m1861$define_assignable.v.m1861$.CompilerCtx.typep.cp.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp3203, i8* %.tmp3204, %m1861$.AssignableInfo.type* %.tmp3205)
+br label %.if.end.3202
+.if.false.3202:
+%.tmp3206 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3207 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3206, i32 0, i32 1
+%.tmp3208 = load %m0$.File.type*, %m0$.File.type** %.tmp3207
+%.tmp3210 = getelementptr [21 x i8], [21 x i8]*@.str3209, i32 0, i32 0
+%.tmp3211 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3212 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp3211)
+%.tmp3213 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3214 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3215 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3214, i32 0, i32 3
+%.tmp3216 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3215
+%.tmp3217 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp3213, %m1861$.Type.type* %.tmp3216)
+%.tmp3218 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.3174
+%.tmp3219 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp3218)
+%.tmp3220 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3208, i8* %.tmp3210, i8* %.tmp3212, i8* %.tmp3217, i8* %.tmp3219)
+br label %.if.end.3202
+.if.end.3202:
+br label %.if.end.3163
+.if.false.3163:
+%.tmp3221 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3222 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3221, i32 0, i32 0
+%.tmp3223 = load i8*, i8** %.tmp3222
+%.tmp3225 = getelementptr [10 x i8], [10 x i8]*@.str3224, i32 0, i32 0
+%.tmp3226 = call i32(i8*,i8*) @strcmp(i8* %.tmp3223, i8* %.tmp3225)
+%.tmp3227 = icmp eq i32 %.tmp3226, 0
+br i1 %.tmp3227, label %.if.true.3228, label %.if.false.3228
+.if.true.3228:
+%.tmp3229 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3230 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3229, i32 0, i32 6
+%.tmp3231 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3230
+%.tmp3232 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3231, i32 0, i32 7
+%.tmp3233 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3232
+%.tmp3234 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3233, i32 0, i32 1
+%.tmp3235 = load i8*, i8** %.tmp3234
+%type_name.3236 = alloca i8*
+store i8* %.tmp3235, i8** %type_name.3236
+%.tmp3237 = load i1, i1* %shallow
+%.tmp3238 = icmp eq i1 %.tmp3237, 1
+br i1 %.tmp3238, label %.if.true.3239, label %.if.false.3239
+.if.true.3239:
+%.tmp3240 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3241 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp3240)
+store %m1861$.AssignableInfo.type* %.tmp3241, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3242 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3243 = call %m1861$.ModuleLookup.type*(%m1861$.CompilerCtx.type*) @m1861$get_current_module.m1861$.ModuleLookup.typep.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp3242)
+%mod_from.3244 = alloca %m1861$.ModuleLookup.type*
+store %m1861$.ModuleLookup.type* %.tmp3243, %m1861$.ModuleLookup.type** %mod_from.3244
+%.tmp3245 = getelementptr i8*, i8** %tmp_buff.3147, i32 0
+%.tmp3247 = getelementptr [11 x i8], [11 x i8]*@.str3246, i32 0, i32 0
+%.tmp3248 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod_from.3244
+%.tmp3249 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3248, i32 0, i32 1
+%.tmp3250 = load i8*, i8** %.tmp3249
+%.tmp3251 = load i8*, i8** %type_name.3236
+%.tmp3252 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp3245, i8* %.tmp3247, i8* %.tmp3250, i8* %.tmp3251)
+%.tmp3253 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3254 = load i8, i8* @SCOPE_LOCAL
+%.tmp3255 = load i8*, i8** %tmp_buff.3147
+call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp3253, i8 %.tmp3254, i8* %.tmp3255)
+%.tmp3256 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3257 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3256, i32 0, i32 2
+%.tmp3259 = getelementptr [10 x i8], [10 x i8]*@.str3258, i32 0, i32 0
+store i8* %.tmp3259, i8** %.tmp3257
+%.tmp3260 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3261 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3260, i32 0, i32 4
+%.tmp3262 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3263 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3262, i32 0, i32 3
+%.tmp3264 = load i32, i32* %.tmp3263
+store i32 %.tmp3264, i32* %.tmp3261
+%.tmp3265 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3266 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3265, i32 0, i32 5
+%.tmp3267 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3268 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3267, i32 0, i32 4
+%.tmp3269 = load i32, i32* %.tmp3268
+store i32 %.tmp3269, i32* %.tmp3266
+%.tmp3270 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3271 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3270, i32 0, i32 3
+%.tmp3272 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+store %m1861$.Type.type* %.tmp3272, %m1861$.Type.type** %.tmp3271
+%.tmp3273 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3274 = load i8*, i8** %type_name.3236
+%.tmp3275 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+call void(%m1861$.CompilerCtx.type*,i8*,%m1861$.AssignableInfo.type*) @m1861$define_assignable.v.m1861$.CompilerCtx.typep.cp.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp3273, i8* %.tmp3274, %m1861$.AssignableInfo.type* %.tmp3275)
+%.tmp3276 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3277 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3276, i32 0, i32 6
+%.tmp3278 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3277
+%.tmp3280 = getelementptr [5 x i8], [5 x i8]*@.str3279, i32 0, i32 0
+%.tmp3281 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp3278, i8* %.tmp3280)
+%type_decl.3282 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp3281, %m307$.Node.type** %type_decl.3282
+%.tmp3283 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3284 = load %m307$.Node.type*, %m307$.Node.type** %type_decl.3282
+%.tmp3285 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3284, i32 0, i32 6
+%.tmp3286 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3285
+%.tmp3287 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$node_to_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp3283, %m307$.Node.type* %.tmp3286)
+%type_struct.3288 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp3287, %m1861$.Type.type** %type_struct.3288
+%.tmp3289 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3290 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3289, i32 0, i32 3
+%.tmp3291 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3290
+%.tmp3292 = load %m1861$.Type.type*, %m1861$.Type.type** %type_struct.3288
+call void(%m1861$.Type.type*,%m1861$.Type.type*) @m1861$copy_type.v.m1861$.Type.typep.m1861$.Type.typep(%m1861$.Type.type* %.tmp3291, %m1861$.Type.type* %.tmp3292)
+%.tmp3293 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3294 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3293, i32 0, i32 3
+%.tmp3295 = load %m1861$.Type.type*, %m1861$.Type.type** %type_struct.3288
+store %m1861$.Type.type* %.tmp3295, %m1861$.Type.type** %.tmp3294
+br label %.if.end.3239
+.if.false.3239:
+%.tmp3296 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3297 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3298 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3297, i32 0, i32 6
+%.tmp3299 = load i8*, i8** %.tmp3298
+%.tmp3300 = load i8*, i8** %type_name.3236
+%.tmp3301 = call %m1861$.ScopeItem.type*(%m1861$.CompilerCtx.type*,i8*,i8*) @m1861$find_defined_str.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.cp.cp(%m1861$.CompilerCtx.type* %.tmp3296, i8* %.tmp3299, i8* %.tmp3300)
+%scope.3302 = alloca %m1861$.ScopeItem.type*
+store %m1861$.ScopeItem.type* %.tmp3301, %m1861$.ScopeItem.type** %scope.3302
+%.tmp3303 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %scope.3302
+%.tmp3304 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp3303, i32 0, i32 1
+%.tmp3305 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %.tmp3304
+store %m1861$.AssignableInfo.type* %.tmp3305, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3306 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3307 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3306, i32 0, i32 1
+%.tmp3308 = load %m0$.File.type*, %m0$.File.type** %.tmp3307
+%.tmp3310 = getelementptr [14 x i8], [14 x i8]*@.str3309, i32 0, i32 0
+%.tmp3311 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3312 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp3311)
+%.tmp3313 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3314 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3315 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3314, i32 0, i32 3
+%.tmp3316 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3315
+%.tmp3317 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp3313, %m1861$.Type.type* %.tmp3316)
+%.tmp3318 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3308, i8* %.tmp3310, i8* %.tmp3312, i8* %.tmp3317)
+br label %.if.end.3239
+.if.end.3239:
+br label %.if.end.3228
+.if.false.3228:
+%.tmp3319 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3320 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3319, i32 0, i32 0
+%.tmp3321 = load i8*, i8** %.tmp3320
+%.tmp3323 = getelementptr [7 x i8], [7 x i8]*@.str3322, i32 0, i32 0
+%.tmp3324 = call i32(i8*,i8*) @strcmp(i8* %.tmp3321, i8* %.tmp3323)
+%.tmp3325 = icmp eq i32 %.tmp3324, 0
+br i1 %.tmp3325, label %.if.true.3326, label %.if.false.3326
+.if.true.3326:
+%.tmp3327 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3328 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp3327)
+store %m1861$.AssignableInfo.type* %.tmp3328, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3329 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3330 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3329, i32 0, i32 3
+%.tmp3331 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3332 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3333 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3332, i32 0, i32 6
+%.tmp3334 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3333
+%.tmp3335 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3334, i32 0, i32 7
+%.tmp3336 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3335
+%.tmp3337 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$syn_function_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp3331, %m307$.Node.type* %.tmp3336)
+store %m1861$.Type.type* %.tmp3337, %m1861$.Type.type** %.tmp3330
+%.tmp3338 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3339 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3338, i32 0, i32 2
+%.tmp3341 = getelementptr [7 x i8], [7 x i8]*@.str3340, i32 0, i32 0
+store i8* %.tmp3341, i8** %.tmp3339
+%.tmp3342 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3343 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3342, i32 0, i32 6
+%.tmp3344 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3343
+%.tmp3345 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3344, i32 0, i32 7
+%.tmp3346 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3345
+%.tmp3347 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3346, i32 0, i32 7
+%.tmp3348 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3347
+%.tmp3349 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3348, i32 0, i32 1
+%.tmp3350 = load i8*, i8** %.tmp3349
+%fn_name.3351 = alloca i8*
+store i8* %.tmp3350, i8** %fn_name.3351
+%.tmp3352 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3353 = load i8, i8* @SCOPE_GLOBAL
+%.tmp3354 = load i8*, i8** %fn_name.3351
+call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp3352, i8 %.tmp3353, i8* %.tmp3354)
+%.tmp3355 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+store %m1861$.Type.type* %.tmp3355, %m1861$.Type.type** %return_type.3145
+%.tmp3356 = load %m1861$.Type.type*, %m1861$.Type.type** %return_type.3145
+%.tmp3357 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3356, i32 0, i32 0
+%.tmp3358 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3359 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3358, i32 0, i32 3
+%.tmp3360 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3359
+%.tmp3361 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3360, i32 0, i32 3
+%.tmp3362 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3361
+%.tmp3363 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3362, i32 0, i32 0
+%.tmp3364 = load i8*, i8** %.tmp3363
+store i8* %.tmp3364, i8** %.tmp3357
+%.tmp3365 = load %m1861$.Type.type*, %m1861$.Type.type** %return_type.3145
+%.tmp3366 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3365, i32 0, i32 3
+%.tmp3367 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3368 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3367, i32 0, i32 3
+%.tmp3369 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3368
+%.tmp3370 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3369, i32 0, i32 3
+%.tmp3371 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3370
+%.tmp3372 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3371, i32 0, i32 3
+%.tmp3373 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3372
+store %m1861$.Type.type* %.tmp3373, %m1861$.Type.type** %.tmp3366
+%.tmp3374 = load i1, i1* %shallow
+%.tmp3375 = icmp eq i1 %.tmp3374, 0
+br i1 %.tmp3375, label %.if.true.3376, label %.if.false.3376
+.if.true.3376:
+%.tmp3377 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3378 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3377, i32 0, i32 1
+%.tmp3379 = load %m0$.File.type*, %m0$.File.type** %.tmp3378
+%.tmp3381 = getelementptr [15 x i8], [15 x i8]*@.str3380, i32 0, i32 0
+%.tmp3382 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3383 = load %m1861$.Type.type*, %m1861$.Type.type** %return_type.3145
+%.tmp3384 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp3382, %m1861$.Type.type* %.tmp3383)
+%.tmp3385 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3386 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp3385)
+%.tmp3387 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3379, i8* %.tmp3381, i8* %.tmp3384, i8* %.tmp3386)
+%.tmp3389 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3390 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3389, i32 0, i32 3
+%.tmp3391 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3390
+%.tmp3392 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3391, i32 0, i32 3
+%.tmp3393 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3392
+%.tmp3394 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3393, i32 0, i32 4
+%.tmp3395 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3394
+%pt.3396 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp3395, %m1861$.Type.type** %pt.3396
+br label %.for.start.3388
+.for.start.3388:
+%.tmp3397 = load %m1861$.Type.type*, %m1861$.Type.type** %pt.3396
+%.tmp3398 = icmp ne %m1861$.Type.type* %.tmp3397, null
+br i1 %.tmp3398, label %.for.continue.3388, label %.for.end.3388
+.for.continue.3388:
+%.tmp3399 = load %m1861$.Type.type*, %m1861$.Type.type** %pt.3396
+%.tmp3400 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3401 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3400, i32 0, i32 3
+%.tmp3402 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3401
+%.tmp3403 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3402, i32 0, i32 3
+%.tmp3404 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3403
+%.tmp3405 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3404, i32 0, i32 4
+%.tmp3406 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3405
+%.tmp3407 = icmp ne %m1861$.Type.type* %.tmp3399, %.tmp3406
+br i1 %.tmp3407, label %.if.true.3408, label %.if.false.3408
+.if.true.3408:
+%.tmp3409 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3410 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3409, i32 0, i32 1
+%.tmp3411 = load %m0$.File.type*, %m0$.File.type** %.tmp3410
+%.tmp3413 = getelementptr [3 x i8], [3 x i8]*@.str3412, i32 0, i32 0
+%.tmp3414 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3411, i8* %.tmp3413)
+br label %.if.end.3408
+.if.false.3408:
+br label %.if.end.3408
+.if.end.3408:
+%.tmp3415 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3416 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3415, i32 0, i32 1
+%.tmp3417 = load %m0$.File.type*, %m0$.File.type** %.tmp3416
+%.tmp3419 = getelementptr [3 x i8], [3 x i8]*@.str3418, i32 0, i32 0
+%.tmp3420 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3421 = load %m1861$.Type.type*, %m1861$.Type.type** %pt.3396
+%.tmp3422 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp3420, %m1861$.Type.type* %.tmp3421)
+%.tmp3423 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3417, i8* %.tmp3419, i8* %.tmp3422)
+%.tmp3424 = load %m1861$.Type.type*, %m1861$.Type.type** %pt.3396
+%.tmp3425 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3424, i32 0, i32 4
+%.tmp3426 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3425
+store %m1861$.Type.type* %.tmp3426, %m1861$.Type.type** %pt.3396
+br label %.for.start.3388
+.for.end.3388:
+%.tmp3427 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3428 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3427, i32 0, i32 1
+%.tmp3429 = load %m0$.File.type*, %m0$.File.type** %.tmp3428
+%.tmp3431 = getelementptr [3 x i8], [3 x i8]*@.str3430, i32 0, i32 0
+%.tmp3432 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3429, i8* %.tmp3431)
+%.tmp3433 = load %m1861$.Type.type*, %m1861$.Type.type** %return_type.3145
+%.tmp3434 = bitcast %m1861$.Type.type* %.tmp3433 to i8*
+call void(i8*) @free(i8* %.tmp3434)
+br label %.if.end.3376
+.if.false.3376:
+%.tmp3435 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3436 = load i8*, i8** %fn_name.3351
+%.tmp3437 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+call void(%m1861$.CompilerCtx.type*,i8*,%m1861$.AssignableInfo.type*) @m1861$define_assignable.v.m1861$.CompilerCtx.typep.cp.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp3435, i8* %.tmp3436, %m1861$.AssignableInfo.type* %.tmp3437)
+br label %.if.end.3376
+.if.end.3376:
+br label %.if.end.3326
+.if.false.3326:
+%.tmp3438 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3439 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3438, i32 0, i32 0
+%.tmp3440 = load i8*, i8** %.tmp3439
+%.tmp3442 = getelementptr [9 x i8], [9 x i8]*@.str3441, i32 0, i32 0
+%.tmp3443 = call i32(i8*,i8*) @strcmp(i8* %.tmp3440, i8* %.tmp3442)
+%.tmp3444 = icmp eq i32 %.tmp3443, 0
+br i1 %.tmp3444, label %.if.true.3445, label %.if.false.3445
+.if.true.3445:
+%.tmp3446 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3447 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp3446)
+store %m1861$.AssignableInfo.type* %.tmp3447, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3448 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3449 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3448, i32 0, i32 2
+%.tmp3451 = getelementptr [9 x i8], [9 x i8]*@.str3450, i32 0, i32 0
+store i8* %.tmp3451, i8** %.tmp3449
+%.tmp3452 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3453 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3452, i32 0, i32 3
+%.tmp3454 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3455 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3456 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3455, i32 0, i32 6
+%.tmp3457 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3456
+%.tmp3458 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$syn_function_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp3454, %m307$.Node.type* %.tmp3457)
+store %m1861$.Type.type* %.tmp3458, %m1861$.Type.type** %.tmp3453
+%.tmp3459 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3460 = call i8*(%m307$.Node.type*) @m1861$syn_function_name.cp.m307$.Node.typep(%m307$.Node.type* %.tmp3459)
+%name.3461 = alloca i8*
+store i8* %.tmp3460, i8** %name.3461
+%.tmp3462 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3463 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3464 = load i8*, i8** %name.3461
+%.tmp3465 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3466 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3465, i32 0, i32 3
+%.tmp3467 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3466
+%.tmp3468 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*,%m1861$.Type.type*) @m1861$name_mangle.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp3462, %m307$.Node.type* %.tmp3463, i8* %.tmp3464, %m1861$.Type.type* %.tmp3467)
+store i8* %.tmp3468, i8** %tmp_buff.3147
+%.tmp3469 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3470 = load i8, i8* @SCOPE_GLOBAL
+%.tmp3471 = load i8*, i8** %tmp_buff.3147
+call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp3469, i8 %.tmp3470, i8* %.tmp3471)
+%.tmp3472 = load i1, i1* %shallow
+%.tmp3473 = icmp eq i1 %.tmp3472, 1
+br i1 %.tmp3473, label %.if.true.3474, label %.if.false.3474
+.if.true.3474:
+%.tmp3475 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3476 = load i8*, i8** %name.3461
+%.tmp3477 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+call void(%m1861$.CompilerCtx.type*,i8*,%m1861$.AssignableInfo.type*) @m1861$define_assignable.v.m1861$.CompilerCtx.typep.cp.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp3475, i8* %.tmp3476, %m1861$.AssignableInfo.type* %.tmp3477)
+br label %.if.end.3474
+.if.false.3474:
+%.tmp3478 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+store %m1861$.Type.type* %.tmp3478, %m1861$.Type.type** %return_type.3145
+%.tmp3479 = load %m1861$.Type.type*, %m1861$.Type.type** %return_type.3145
+%.tmp3480 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3481 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3480, i32 0, i32 3
+%.tmp3482 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3481
+%.tmp3483 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3482, i32 0, i32 3
+%.tmp3484 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3483
+call void(%m1861$.Type.type*,%m1861$.Type.type*) @m1861$copy_type.v.m1861$.Type.typep.m1861$.Type.typep(%m1861$.Type.type* %.tmp3479, %m1861$.Type.type* %.tmp3484)
+%.tmp3485 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3486 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3485, i32 0, i32 1
+%.tmp3487 = load %m0$.File.type*, %m0$.File.type** %.tmp3486
+%.tmp3489 = getelementptr [14 x i8], [14 x i8]*@.str3488, i32 0, i32 0
+%.tmp3490 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3491 = load %m1861$.Type.type*, %m1861$.Type.type** %return_type.3145
+%.tmp3492 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp3490, %m1861$.Type.type* %.tmp3491)
+%.tmp3493 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3144
+%.tmp3494 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp3493)
+%.tmp3495 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3487, i8* %.tmp3489, i8* %.tmp3492, i8* %.tmp3494)
+%.tmp3496 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3497 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3496, i32 0, i32 6
+%.tmp3498 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3497
+%.tmp3499 = call %m307$.Node.type*(%m307$.Node.type*) @m1861$syn_function_params.m307$.Node.typep.m307$.Node.typep(%m307$.Node.type* %.tmp3498)
+%params.3500 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp3499, %m307$.Node.type** %params.3500
+%param_type.3501 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* null, %m1861$.Type.type** %param_type.3501
+%.tmp3503 = load %m307$.Node.type*, %m307$.Node.type** %params.3500
+%param_ptr.3504 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp3503, %m307$.Node.type** %param_ptr.3504
+br label %.for.start.3502
+.for.start.3502:
+%.tmp3505 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3504
+%.tmp3506 = icmp ne %m307$.Node.type* %.tmp3505, null
+br i1 %.tmp3506, label %.for.continue.3502, label %.for.end.3502
+.for.continue.3502:
+%.tmp3507 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3504
+%.tmp3508 = load %m307$.Node.type*, %m307$.Node.type** %params.3500
+%.tmp3509 = icmp ne %m307$.Node.type* %.tmp3507, %.tmp3508
+br i1 %.tmp3509, label %.if.true.3510, label %.if.false.3510
+.if.true.3510:
+%.tmp3511 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3504
+%.tmp3512 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3511, i32 0, i32 7
+%.tmp3513 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3512
+store %m307$.Node.type* %.tmp3513, %m307$.Node.type** %param_ptr.3504
+%.tmp3514 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3515 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3514, i32 0, i32 1
+%.tmp3516 = load %m0$.File.type*, %m0$.File.type** %.tmp3515
+%.tmp3518 = getelementptr [3 x i8], [3 x i8]*@.str3517, i32 0, i32 0
+%.tmp3519 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3516, i8* %.tmp3518)
+br label %.if.end.3510
+.if.false.3510:
+br label %.if.end.3510
+.if.end.3510:
+%.tmp3520 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3504
+%.tmp3521 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3520, i32 0, i32 0
+%.tmp3522 = load i8*, i8** %.tmp3521
+%.tmp3524 = getelementptr [5 x i8], [5 x i8]*@.str3523, i32 0, i32 0
+%.tmp3525 = call i32(i8*,i8*) @strcmp(i8* %.tmp3522, i8* %.tmp3524)
+%.tmp3526 = icmp eq i32 %.tmp3525, 0
+br i1 %.tmp3526, label %.if.true.3527, label %.if.false.3527
+.if.true.3527:
+%.tmp3528 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3529 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3504
+%.tmp3530 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3529, i32 0, i32 6
+%.tmp3531 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3530
+%.tmp3532 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$node_to_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp3528, %m307$.Node.type* %.tmp3531)
+store %m1861$.Type.type* %.tmp3532, %m1861$.Type.type** %param_type.3501
+%.tmp3533 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3504
+%.tmp3534 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3533, i32 0, i32 7
+%.tmp3535 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3534
+store %m307$.Node.type* %.tmp3535, %m307$.Node.type** %param_ptr.3504
+br label %.if.end.3527
+.if.false.3527:
+br label %.if.end.3527
+.if.end.3527:
+%.tmp3536 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3537 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3536, i32 0, i32 1
+%.tmp3538 = load %m0$.File.type*, %m0$.File.type** %.tmp3537
+%.tmp3540 = getelementptr [13 x i8], [13 x i8]*@.str3539, i32 0, i32 0
+%.tmp3541 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3542 = load %m1861$.Type.type*, %m1861$.Type.type** %param_type.3501
+%.tmp3543 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp3541, %m1861$.Type.type* %.tmp3542)
+%.tmp3544 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3504
+%.tmp3545 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3544, i32 0, i32 1
+%.tmp3546 = load i8*, i8** %.tmp3545
+%.tmp3547 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3538, i8* %.tmp3540, i8* %.tmp3543, i8* %.tmp3546)
+%.tmp3548 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3504
+%.tmp3549 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3548, i32 0, i32 7
+%.tmp3550 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3549
+store %m307$.Node.type* %.tmp3550, %m307$.Node.type** %param_ptr.3504
+br label %.for.start.3502
+.for.end.3502:
+%.tmp3551 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3552 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3551, i32 0, i32 1
+%.tmp3553 = load %m0$.File.type*, %m0$.File.type** %.tmp3552
+%.tmp3555 = getelementptr [5 x i8], [5 x i8]*@.str3554, i32 0, i32 0
+%.tmp3556 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3553, i8* %.tmp3555)
+%.tmp3557 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3559 = getelementptr [9 x i8], [9 x i8]*@.str3558, i32 0, i32 0
+%.tmp3560 = bitcast ptr null to i8*
+%.tmp3561 = bitcast ptr null to i8*
+call void(%m1861$.CompilerCtx.type*,i8*,i8*,i8*) @m1861$push_scope.v.m1861$.CompilerCtx.typep.cp.cp.cp(%m1861$.CompilerCtx.type* %.tmp3557, i8* %.tmp3559, i8* %.tmp3560, i8* %.tmp3561)
+%.tmp3562 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3563 = load %m307$.Node.type*, %m307$.Node.type** %params.3500
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_fn_params.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp3562, %m307$.Node.type* %.tmp3563)
+%.tmp3564 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3565 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3564, i32 0, i32 6
+%.tmp3566 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3565
+%.tmp3568 = getelementptr [6 x i8], [6 x i8]*@.str3567, i32 0, i32 0
+%.tmp3569 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp3566, i8* %.tmp3568)
+%fn_block.3570 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp3569, %m307$.Node.type** %fn_block.3570
+%.tmp3571 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3572 = load %m307$.Node.type*, %m307$.Node.type** %fn_block.3570
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_block.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp3571, %m307$.Node.type* %.tmp3572)
+%.tmp3573 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+call void(%m1861$.CompilerCtx.type*) @m1861$pop_scope.v.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp3573)
+%.tmp3574 = bitcast ptr null to %m307$.Node.type*
+%last_valid_instruction.3575 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp3574, %m307$.Node.type** %last_valid_instruction.3575
+%.tmp3577 = load %m307$.Node.type*, %m307$.Node.type** %fn_block.3570
+%.tmp3578 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3577, i32 0, i32 6
+%.tmp3579 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3578
+%ci.3580 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp3579, %m307$.Node.type** %ci.3580
+br label %.for.start.3576
+.for.start.3576:
+%.tmp3581 = load %m307$.Node.type*, %m307$.Node.type** %ci.3580
+%.tmp3582 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3581, i32 0, i32 7
+%.tmp3583 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3582
+%.tmp3584 = icmp ne %m307$.Node.type* %.tmp3583, null
+br i1 %.tmp3584, label %.for.continue.3576, label %.for.end.3576
+.for.continue.3576:
+%.tmp3585 = load %m307$.Node.type*, %m307$.Node.type** %ci.3580
+%.tmp3586 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3585, i32 0, i32 0
+%.tmp3587 = load i8*, i8** %.tmp3586
+%.tmp3589 = getelementptr [3 x i8], [3 x i8]*@.str3588, i32 0, i32 0
+%.tmp3590 = call i32(i8*,i8*) @strcmp(i8* %.tmp3587, i8* %.tmp3589)
+%.tmp3591 = icmp ne i32 %.tmp3590, 0
+%.tmp3592 = load %m307$.Node.type*, %m307$.Node.type** %ci.3580
+%.tmp3593 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3592, i32 0, i32 0
+%.tmp3594 = load i8*, i8** %.tmp3593
+%.tmp3596 = getelementptr [9 x i8], [9 x i8]*@.str3595, i32 0, i32 0
+%.tmp3597 = call i32(i8*,i8*) @strcmp(i8* %.tmp3594, i8* %.tmp3596)
+%.tmp3598 = icmp ne i32 %.tmp3597, 0
+%.tmp3599 = and i1 %.tmp3591, %.tmp3598
+br i1 %.tmp3599, label %.if.true.3600, label %.if.false.3600
+.if.true.3600:
+%.tmp3601 = load %m307$.Node.type*, %m307$.Node.type** %ci.3580
+store %m307$.Node.type* %.tmp3601, %m307$.Node.type** %last_valid_instruction.3575
+br label %.if.end.3600
+.if.false.3600:
+br label %.if.end.3600
+.if.end.3600:
+%.tmp3602 = load %m307$.Node.type*, %m307$.Node.type** %ci.3580
+%.tmp3603 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3602, i32 0, i32 7
+%.tmp3604 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3603
+store %m307$.Node.type* %.tmp3604, %m307$.Node.type** %ci.3580
+br label %.for.start.3576
+.for.end.3576:
+%add_implicit_return.3605 = alloca i1
+store i1 0, i1* %add_implicit_return.3605
+%.tmp3606 = load %m307$.Node.type*, %m307$.Node.type** %last_valid_instruction.3575
+%.tmp3607 = icmp eq %m307$.Node.type* %.tmp3606, null
+br i1 %.tmp3607, label %.if.true.3608, label %.if.false.3608
+.if.true.3608:
+store i1 1, i1* %add_implicit_return.3605
+br label %.if.end.3608
+.if.false.3608:
+%.tmp3609 = load %m307$.Node.type*, %m307$.Node.type** %last_valid_instruction.3575
+%.tmp3610 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3609, i32 0, i32 6
+%.tmp3611 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3610
+%.tmp3612 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3611, i32 0, i32 0
+%.tmp3613 = load i8*, i8** %.tmp3612
+%.tmp3615 = getelementptr [7 x i8], [7 x i8]*@.str3614, i32 0, i32 0
+%.tmp3616 = call i32(i8*,i8*) @strcmp(i8* %.tmp3613, i8* %.tmp3615)
+%.tmp3617 = icmp ne i32 %.tmp3616, 0
+br i1 %.tmp3617, label %.if.true.3618, label %.if.false.3618
+.if.true.3618:
+store i1 1, i1* %add_implicit_return.3605
+br label %.if.end.3618
+.if.false.3618:
+br label %.if.end.3618
+.if.end.3618:
+br label %.if.end.3608
+.if.end.3608:
+%.tmp3619 = load i1, i1* %add_implicit_return.3605
+br i1 %.tmp3619, label %.if.true.3620, label %.if.false.3620
+.if.true.3620:
+%.tmp3621 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3622 = load %m1861$.Type.type*, %m1861$.Type.type** %return_type.3145
+%.tmp3623 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp3621, %m1861$.Type.type* %.tmp3622)
+%.tmp3625 = getelementptr [5 x i8], [5 x i8]*@.str3624, i32 0, i32 0
+%.tmp3626 = call i32(i8*,i8*) @strcmp(i8* %.tmp3623, i8* %.tmp3625)
+%.tmp3627 = icmp ne i32 %.tmp3626, 0
+br i1 %.tmp3627, label %.if.true.3628, label %.if.false.3628
+.if.true.3628:
+%.tmp3629 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3630 = load %m307$.Node.type*, %m307$.Node.type** %fn_block.3570
+%.tmp3632 = getelementptr [21 x i8], [21 x i8]*@.str3631, i32 0, i32 0
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp3629, %m307$.Node.type* %.tmp3630, i8* %.tmp3632)
+br label %.if.end.3628
+.if.false.3628:
+%.tmp3633 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3634 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3633, i32 0, i32 1
+%.tmp3635 = load %m0$.File.type*, %m0$.File.type** %.tmp3634
+%.tmp3637 = getelementptr [10 x i8], [10 x i8]*@.str3636, i32 0, i32 0
+%.tmp3638 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3635, i8* %.tmp3637)
+br label %.if.end.3628
+.if.end.3628:
+br label %.if.end.3620
+.if.false.3620:
+br label %.if.end.3620
+.if.end.3620:
+%.tmp3639 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3640 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3639, i32 0, i32 1
+%.tmp3641 = load %m0$.File.type*, %m0$.File.type** %.tmp3640
+%.tmp3643 = getelementptr [3 x i8], [3 x i8]*@.str3642, i32 0, i32 0
+%.tmp3644 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3641, i8* %.tmp3643)
+br label %.if.end.3474
+.if.end.3474:
+br label %.if.end.3445
+.if.false.3445:
+%.tmp3645 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3646 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3645, i32 0, i32 0
+%.tmp3647 = load i8*, i8** %.tmp3646
+%.tmp3649 = getelementptr [7 x i8], [7 x i8]*@.str3648, i32 0, i32 0
+%.tmp3650 = call i32(i8*,i8*) @strcmp(i8* %.tmp3647, i8* %.tmp3649)
+%.tmp3651 = icmp eq i32 %.tmp3650, 0
 br i1 %.tmp3651, label %.if.true.3652, label %.if.false.3652
 .if.true.3652:
-%.tmp3653 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3654 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3653, i32 0, i32 6
-%.tmp3655 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3654
-%.tmp3656 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3655, i32 0, i32 7
-%.tmp3657 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3656
-%.tmp3658 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3657, i32 0, i32 1
-%.tmp3659 = load i8*, i8** %.tmp3658
-%mod_name.3660 = alloca i8*
-store i8* %.tmp3659, i8** %mod_name.3660
-%.tmp3661 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3662 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3661, i32 0, i32 6
-%.tmp3663 = load i8*, i8** %.tmp3662
-%mod_abspath.3664 = alloca i8*
-store i8* %.tmp3663, i8** %mod_abspath.3664
-%.tmp3665 = load i8*, i8** %mod_abspath.3664
-%.tmp3666 = call i8*(i8*) @m2$dirname.cp.cp(i8* %.tmp3665)
-%dirname.3667 = alloca i8*
-store i8* %.tmp3666, i8** %dirname.3667
-%.tmp3668 = load i8*, i8** %mod_name.3660
-%.tmp3669 = call i32(i8*) @strlen(i8* %.tmp3668)
-%mod_name_len.3670 = alloca i32
-store i32 %.tmp3669, i32* %mod_name_len.3670
-%.tmp3671 = load i32, i32* %mod_name_len.3670
-%.tmp3672 = sub i32 %.tmp3671, 1
-%.tmp3673 = call i8*(i32) @malloc(i32 %.tmp3672)
-%trimmed_name.3674 = alloca i8*
-store i8* %.tmp3673, i8** %trimmed_name.3674
-%i.3676 = alloca i32
-store i32 1, i32* %i.3676
-br label %.for.start.3675
-.for.start.3675:
-%.tmp3677 = load i32, i32* %i.3676
-%.tmp3678 = load i32, i32* %mod_name_len.3670
-%.tmp3679 = sub i32 %.tmp3678, 1
-%.tmp3680 = icmp slt i32 %.tmp3677, %.tmp3679
-br i1 %.tmp3680, label %.for.continue.3675, label %.for.end.3675
-.for.continue.3675:
-%.tmp3681 = load i32, i32* %i.3676
+%.tmp3653 = load i1, i1* %shallow
+%.tmp3654 = icmp eq i1 %.tmp3653, 1
+br i1 %.tmp3654, label %.if.true.3655, label %.if.false.3655
+.if.true.3655:
+%.tmp3656 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3657 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3656, i32 0, i32 6
+%.tmp3658 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3657
+%.tmp3659 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3658, i32 0, i32 7
+%.tmp3660 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3659
+%.tmp3661 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3660, i32 0, i32 1
+%.tmp3662 = load i8*, i8** %.tmp3661
+%mod_name.3663 = alloca i8*
+store i8* %.tmp3662, i8** %mod_name.3663
+%.tmp3664 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3665 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3664, i32 0, i32 6
+%.tmp3666 = load i8*, i8** %.tmp3665
+%mod_abspath.3667 = alloca i8*
+store i8* %.tmp3666, i8** %mod_abspath.3667
+%.tmp3668 = load i8*, i8** %mod_abspath.3667
+%.tmp3669 = call i8*(i8*) @m2$dirname.cp.cp(i8* %.tmp3668)
+%dirname.3670 = alloca i8*
+store i8* %.tmp3669, i8** %dirname.3670
+%.tmp3671 = load i8*, i8** %mod_name.3663
+%.tmp3672 = call i32(i8*) @strlen(i8* %.tmp3671)
+%mod_name_len.3673 = alloca i32
+store i32 %.tmp3672, i32* %mod_name_len.3673
+%.tmp3674 = load i32, i32* %mod_name_len.3673
+%.tmp3675 = sub i32 %.tmp3674, 1
+%.tmp3676 = call i8*(i32) @malloc(i32 %.tmp3675)
+%trimmed_name.3677 = alloca i8*
+store i8* %.tmp3676, i8** %trimmed_name.3677
+%i.3679 = alloca i32
+store i32 1, i32* %i.3679
+br label %.for.start.3678
+.for.start.3678:
+%.tmp3680 = load i32, i32* %i.3679
+%.tmp3681 = load i32, i32* %mod_name_len.3673
 %.tmp3682 = sub i32 %.tmp3681, 1
-%.tmp3683 = load i8*, i8** %trimmed_name.3674
-%.tmp3684 = getelementptr i8, i8* %.tmp3683, i32 %.tmp3682
-%.tmp3685 = load i32, i32* %i.3676
-%.tmp3686 = load i8*, i8** %mod_name.3660
+%.tmp3683 = icmp slt i32 %.tmp3680, %.tmp3682
+br i1 %.tmp3683, label %.for.continue.3678, label %.for.end.3678
+.for.continue.3678:
+%.tmp3684 = load i32, i32* %i.3679
+%.tmp3685 = sub i32 %.tmp3684, 1
+%.tmp3686 = load i8*, i8** %trimmed_name.3677
 %.tmp3687 = getelementptr i8, i8* %.tmp3686, i32 %.tmp3685
-%.tmp3688 = load i8, i8* %.tmp3687
-store i8 %.tmp3688, i8* %.tmp3684
-%.tmp3689 = load i32, i32* %i.3676
-%.tmp3690 = add i32 %.tmp3689, 1
-store i32 %.tmp3690, i32* %i.3676
-br label %.for.start.3675
-.for.end.3675:
-%.tmp3691 = load i32, i32* %mod_name_len.3670
-%.tmp3692 = sub i32 %.tmp3691, 2
-%.tmp3693 = load i8*, i8** %trimmed_name.3674
-%.tmp3694 = getelementptr i8, i8* %.tmp3693, i32 %.tmp3692
-store i8 0, i8* %.tmp3694
-%.tmp3695 = load i8*, i8** %dirname.3667
-%.tmp3697 = getelementptr [1 x i8], [1 x i8]*@.str3696, i32 0, i32 0
-%.tmp3698 = call i32(i8*,i8*) @strcmp(i8* %.tmp3695, i8* %.tmp3697)
-%.tmp3699 = icmp eq i32 %.tmp3698, 0
-br i1 %.tmp3699, label %.if.true.3700, label %.if.false.3700
-.if.true.3700:
-%.tmp3701 = getelementptr i8*, i8** %mod_abspath.3664, i32 0
-%.tmp3703 = getelementptr [6 x i8], [6 x i8]*@.str3702, i32 0, i32 0
-%.tmp3704 = load i8*, i8** %trimmed_name.3674
-%.tmp3705 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp3701, i8* %.tmp3703, i8* %.tmp3704)
-br label %.if.end.3700
-.if.false.3700:
-%.tmp3706 = getelementptr i8*, i8** %mod_abspath.3664, i32 0
-%.tmp3708 = getelementptr [9 x i8], [9 x i8]*@.str3707, i32 0, i32 0
-%.tmp3709 = load i8*, i8** %dirname.3667
-%.tmp3710 = load i8*, i8** %trimmed_name.3674
-%.tmp3711 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp3706, i8* %.tmp3708, i8* %.tmp3709, i8* %.tmp3710)
-br label %.if.end.3700
-.if.end.3700:
-%.tmp3712 = load i8*, i8** %mod_abspath.3664
-%.tmp3713 = call i8*(i32) @malloc(i32 4096)
-%.tmp3714 = call i8*(i8*,i8*) @realpath(i8* %.tmp3712, i8* %.tmp3713)
-store i8* %.tmp3714, i8** %mod_abspath.3664
-%.tmp3715 = load i8*, i8** %mod_abspath.3664
-%.tmp3716 = icmp eq i8* %.tmp3715, null
-br i1 %.tmp3716, label %.if.true.3717, label %.if.false.3717
-.if.true.3717:
-%.tmp3718 = getelementptr i8*, i8** %err_buf.3143, i32 0
-%.tmp3720 = getelementptr [60 x i8], [60 x i8]*@.str3719, i32 0, i32 0
-%.tmp3721 = load i8*, i8** %mod_name.3660
-%.tmp3722 = load i8*, i8** %dirname.3667
-%.tmp3723 = load i8*, i8** %trimmed_name.3674
-%.tmp3724 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp3718, i8* %.tmp3720, i8* %.tmp3721, i8* %.tmp3722, i8* %.tmp3723)
-%.tmp3725 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3726 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3727 = load i8*, i8** %err_buf.3143
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp3725, %m307$.Node.type* %.tmp3726, i8* %.tmp3727)
+%.tmp3688 = load i32, i32* %i.3679
+%.tmp3689 = load i8*, i8** %mod_name.3663
+%.tmp3690 = getelementptr i8, i8* %.tmp3689, i32 %.tmp3688
+%.tmp3691 = load i8, i8* %.tmp3690
+store i8 %.tmp3691, i8* %.tmp3687
+%.tmp3692 = load i32, i32* %i.3679
+%.tmp3693 = add i32 %.tmp3692, 1
+store i32 %.tmp3693, i32* %i.3679
+br label %.for.start.3678
+.for.end.3678:
+%.tmp3694 = load i32, i32* %mod_name_len.3673
+%.tmp3695 = sub i32 %.tmp3694, 2
+%.tmp3696 = load i8*, i8** %trimmed_name.3677
+%.tmp3697 = getelementptr i8, i8* %.tmp3696, i32 %.tmp3695
+store i8 0, i8* %.tmp3697
+%.tmp3698 = load i8*, i8** %dirname.3670
+%.tmp3700 = getelementptr [1 x i8], [1 x i8]*@.str3699, i32 0, i32 0
+%.tmp3701 = call i32(i8*,i8*) @strcmp(i8* %.tmp3698, i8* %.tmp3700)
+%.tmp3702 = icmp eq i32 %.tmp3701, 0
+br i1 %.tmp3702, label %.if.true.3703, label %.if.false.3703
+.if.true.3703:
+%.tmp3704 = getelementptr i8*, i8** %mod_abspath.3667, i32 0
+%.tmp3706 = getelementptr [6 x i8], [6 x i8]*@.str3705, i32 0, i32 0
+%.tmp3707 = load i8*, i8** %trimmed_name.3677
+%.tmp3708 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp3704, i8* %.tmp3706, i8* %.tmp3707)
+br label %.if.end.3703
+.if.false.3703:
+%.tmp3709 = getelementptr i8*, i8** %mod_abspath.3667, i32 0
+%.tmp3711 = getelementptr [9 x i8], [9 x i8]*@.str3710, i32 0, i32 0
+%.tmp3712 = load i8*, i8** %dirname.3670
+%.tmp3713 = load i8*, i8** %trimmed_name.3677
+%.tmp3714 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp3709, i8* %.tmp3711, i8* %.tmp3712, i8* %.tmp3713)
+br label %.if.end.3703
+.if.end.3703:
+%.tmp3715 = load i8*, i8** %mod_abspath.3667
+%.tmp3716 = call i8*(i32) @malloc(i32 4096)
+%.tmp3717 = call i8*(i8*,i8*) @realpath(i8* %.tmp3715, i8* %.tmp3716)
+store i8* %.tmp3717, i8** %mod_abspath.3667
+%.tmp3718 = load i8*, i8** %mod_abspath.3667
+%.tmp3719 = icmp eq i8* %.tmp3718, null
+br i1 %.tmp3719, label %.if.true.3720, label %.if.false.3720
+.if.true.3720:
+%.tmp3721 = getelementptr i8*, i8** %err_buf.3146, i32 0
+%.tmp3723 = getelementptr [60 x i8], [60 x i8]*@.str3722, i32 0, i32 0
+%.tmp3724 = load i8*, i8** %mod_name.3663
+%.tmp3725 = load i8*, i8** %dirname.3670
+%.tmp3726 = load i8*, i8** %trimmed_name.3677
+%.tmp3727 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp3721, i8* %.tmp3723, i8* %.tmp3724, i8* %.tmp3725, i8* %.tmp3726)
+%.tmp3728 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3729 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3730 = load i8*, i8** %err_buf.3146
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp3728, %m307$.Node.type* %.tmp3729, i8* %.tmp3730)
 ret void
-br label %.if.end.3717
-.if.false.3717:
-br label %.if.end.3717
-.if.end.3717:
-%already_imported.3728 = alloca i1
-store i1 0, i1* %already_imported.3728
-%m.3729 = alloca %m1861$.ModuleLookup.type*
-store %m1861$.ModuleLookup.type* null, %m1861$.ModuleLookup.type** %m.3729
-%.tmp3730 = bitcast ptr null to %m1861$.ModuleLookup.type*
-%mod.3731 = alloca %m1861$.ModuleLookup.type*
-store %m1861$.ModuleLookup.type* %.tmp3730, %m1861$.ModuleLookup.type** %mod.3731
-%.tmp3733 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3734 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3733, i32 0, i32 5
-%.tmp3735 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %.tmp3734
-store %m1861$.ModuleLookup.type* %.tmp3735, %m1861$.ModuleLookup.type** %m.3729
-br label %.for.start.3732
-.for.start.3732:
-%.tmp3736 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.3729
-%.tmp3737 = icmp ne %m1861$.ModuleLookup.type* %.tmp3736, null
-%.tmp3738 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3731
-%.tmp3739 = icmp eq %m1861$.ModuleLookup.type* %.tmp3738, null
-%.tmp3740 = and i1 %.tmp3737, %.tmp3739
-br i1 %.tmp3740, label %.for.continue.3732, label %.for.end.3732
-.for.continue.3732:
-%.tmp3741 = load i8*, i8** %mod_abspath.3664
-%.tmp3742 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.3729
-%.tmp3743 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3742, i32 0, i32 0
-%.tmp3744 = load i8*, i8** %.tmp3743
-%.tmp3745 = call i32(i8*,i8*) @strcmp(i8* %.tmp3741, i8* %.tmp3744)
-%.tmp3746 = icmp eq i32 %.tmp3745, 0
-br i1 %.tmp3746, label %.if.true.3747, label %.if.false.3747
-.if.true.3747:
-%.tmp3748 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.3729
-store %m1861$.ModuleLookup.type* %.tmp3748, %m1861$.ModuleLookup.type** %mod.3731
-br label %.if.end.3747
-.if.false.3747:
-br label %.if.end.3747
-.if.end.3747:
-%.tmp3749 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.3729
-%.tmp3750 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3749, i32 0, i32 2
-%.tmp3751 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %.tmp3750
-store %m1861$.ModuleLookup.type* %.tmp3751, %m1861$.ModuleLookup.type** %m.3729
-br label %.for.start.3732
-.for.end.3732:
-%.tmp3752 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3753 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3752, i32 0, i32 6
-%.tmp3754 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3753
-%.tmp3755 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3754, i32 0, i32 7
-%.tmp3756 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3755
-%.tmp3757 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3756, i32 0, i32 7
-%.tmp3758 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3757
-%.tmp3759 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3758, i32 0, i32 7
-%.tmp3760 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3759
-%.tmp3761 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3760, i32 0, i32 1
-%.tmp3762 = load i8*, i8** %.tmp3761
-%asname.3763 = alloca i8*
-store i8* %.tmp3762, i8** %asname.3763
-%.tmp3764 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3731
-%.tmp3765 = icmp eq %m1861$.ModuleLookup.type* %.tmp3764, null
-br i1 %.tmp3765, label %.if.true.3766, label %.if.false.3766
-.if.true.3766:
-%.tmp3767 = load i32, i32* @ModuleLookup_size
-%.tmp3768 = call i8*(i32) @malloc(i32 %.tmp3767)
-%.tmp3769 = bitcast i8* %.tmp3768 to %m1861$.ModuleLookup.type*
-store %m1861$.ModuleLookup.type* %.tmp3769, %m1861$.ModuleLookup.type** %mod.3731
-%.tmp3770 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3731
-%.tmp3771 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3770, i32 0, i32 0
-%.tmp3772 = load i8*, i8** %mod_abspath.3664
-store i8* %.tmp3772, i8** %.tmp3771
-%.tmp3773 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3731
-%.tmp3774 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3773, i32 0, i32 2
-store %m1861$.ModuleLookup.type* null, %m1861$.ModuleLookup.type** %.tmp3774
-%.tmp3775 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3731
-%.tmp3776 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3775, i32 0, i32 3
-store %m1861$.Scope.type* null, %m1861$.Scope.type** %.tmp3776
-%.tmp3777 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3731
-%.tmp3778 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3777, i32 0, i32 1
-%.tmp3779 = getelementptr i8*, i8** %.tmp3778, i32 0
-%.tmp3781 = getelementptr [5 x i8], [5 x i8]*@.str3780, i32 0, i32 0
-%.tmp3782 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3783 = call i32(%m1861$.CompilerCtx.type*) @m1861$new_uid.i.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp3782)
-%.tmp3784 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp3779, i8* %.tmp3781, i32 %.tmp3783)
-%.tmp3786 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3787 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3786, i32 0, i32 5
-%.tmp3788 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %.tmp3787
-store %m1861$.ModuleLookup.type* %.tmp3788, %m1861$.ModuleLookup.type** %m.3729
-br label %.for.start.3785
-.for.start.3785:
-%.tmp3789 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.3729
-%.tmp3790 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3789, i32 0, i32 2
+br label %.if.end.3720
+.if.false.3720:
+br label %.if.end.3720
+.if.end.3720:
+%already_imported.3731 = alloca i1
+store i1 0, i1* %already_imported.3731
+%m.3732 = alloca %m1861$.ModuleLookup.type*
+store %m1861$.ModuleLookup.type* null, %m1861$.ModuleLookup.type** %m.3732
+%.tmp3733 = bitcast ptr null to %m1861$.ModuleLookup.type*
+%mod.3734 = alloca %m1861$.ModuleLookup.type*
+store %m1861$.ModuleLookup.type* %.tmp3733, %m1861$.ModuleLookup.type** %mod.3734
+%.tmp3736 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3737 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3736, i32 0, i32 5
+%.tmp3738 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %.tmp3737
+store %m1861$.ModuleLookup.type* %.tmp3738, %m1861$.ModuleLookup.type** %m.3732
+br label %.for.start.3735
+.for.start.3735:
+%.tmp3739 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.3732
+%.tmp3740 = icmp ne %m1861$.ModuleLookup.type* %.tmp3739, null
+%.tmp3741 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3734
+%.tmp3742 = icmp eq %m1861$.ModuleLookup.type* %.tmp3741, null
+%.tmp3743 = and i1 %.tmp3740, %.tmp3742
+br i1 %.tmp3743, label %.for.continue.3735, label %.for.end.3735
+.for.continue.3735:
+%.tmp3744 = load i8*, i8** %mod_abspath.3667
+%.tmp3745 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.3732
+%.tmp3746 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3745, i32 0, i32 0
+%.tmp3747 = load i8*, i8** %.tmp3746
+%.tmp3748 = call i32(i8*,i8*) @strcmp(i8* %.tmp3744, i8* %.tmp3747)
+%.tmp3749 = icmp eq i32 %.tmp3748, 0
+br i1 %.tmp3749, label %.if.true.3750, label %.if.false.3750
+.if.true.3750:
+%.tmp3751 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.3732
+store %m1861$.ModuleLookup.type* %.tmp3751, %m1861$.ModuleLookup.type** %mod.3734
+br label %.if.end.3750
+.if.false.3750:
+br label %.if.end.3750
+.if.end.3750:
+%.tmp3752 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.3732
+%.tmp3753 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3752, i32 0, i32 2
+%.tmp3754 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %.tmp3753
+store %m1861$.ModuleLookup.type* %.tmp3754, %m1861$.ModuleLookup.type** %m.3732
+br label %.for.start.3735
+.for.end.3735:
+%.tmp3755 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3756 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3755, i32 0, i32 6
+%.tmp3757 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3756
+%.tmp3758 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3757, i32 0, i32 7
+%.tmp3759 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3758
+%.tmp3760 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3759, i32 0, i32 7
+%.tmp3761 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3760
+%.tmp3762 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3761, i32 0, i32 7
+%.tmp3763 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3762
+%.tmp3764 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3763, i32 0, i32 1
+%.tmp3765 = load i8*, i8** %.tmp3764
+%asname.3766 = alloca i8*
+store i8* %.tmp3765, i8** %asname.3766
+%.tmp3767 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3734
+%.tmp3768 = icmp eq %m1861$.ModuleLookup.type* %.tmp3767, null
+br i1 %.tmp3768, label %.if.true.3769, label %.if.false.3769
+.if.true.3769:
+%.tmp3770 = load i32, i32* @ModuleLookup_size
+%.tmp3771 = call i8*(i32) @malloc(i32 %.tmp3770)
+%.tmp3772 = bitcast i8* %.tmp3771 to %m1861$.ModuleLookup.type*
+store %m1861$.ModuleLookup.type* %.tmp3772, %m1861$.ModuleLookup.type** %mod.3734
+%.tmp3773 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3734
+%.tmp3774 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3773, i32 0, i32 0
+%.tmp3775 = load i8*, i8** %mod_abspath.3667
+store i8* %.tmp3775, i8** %.tmp3774
+%.tmp3776 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3734
+%.tmp3777 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3776, i32 0, i32 2
+store %m1861$.ModuleLookup.type* null, %m1861$.ModuleLookup.type** %.tmp3777
+%.tmp3778 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3734
+%.tmp3779 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3778, i32 0, i32 3
+store %m1861$.Scope.type* null, %m1861$.Scope.type** %.tmp3779
+%.tmp3780 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3734
+%.tmp3781 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3780, i32 0, i32 1
+%.tmp3782 = getelementptr i8*, i8** %.tmp3781, i32 0
+%.tmp3784 = getelementptr [5 x i8], [5 x i8]*@.str3783, i32 0, i32 0
+%.tmp3785 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3786 = call i32(%m1861$.CompilerCtx.type*) @m1861$new_uid.i.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp3785)
+%.tmp3787 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp3782, i8* %.tmp3784, i32 %.tmp3786)
+%.tmp3789 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3790 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3789, i32 0, i32 5
 %.tmp3791 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %.tmp3790
-%.tmp3792 = icmp ne %m1861$.ModuleLookup.type* %.tmp3791, null
-br i1 %.tmp3792, label %.for.continue.3785, label %.for.end.3785
-.for.continue.3785:
-%.tmp3793 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.3729
-%.tmp3794 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3793, i32 0, i32 2
-%.tmp3795 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %.tmp3794
-store %m1861$.ModuleLookup.type* %.tmp3795, %m1861$.ModuleLookup.type** %m.3729
-br label %.for.start.3785
-.for.end.3785:
-%.tmp3796 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.3729
+store %m1861$.ModuleLookup.type* %.tmp3791, %m1861$.ModuleLookup.type** %m.3732
+br label %.for.start.3788
+.for.start.3788:
+%.tmp3792 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.3732
+%.tmp3793 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3792, i32 0, i32 2
+%.tmp3794 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %.tmp3793
+%.tmp3795 = icmp ne %m1861$.ModuleLookup.type* %.tmp3794, null
+br i1 %.tmp3795, label %.for.continue.3788, label %.for.end.3788
+.for.continue.3788:
+%.tmp3796 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.3732
 %.tmp3797 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3796, i32 0, i32 2
-%.tmp3798 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3731
-store %m1861$.ModuleLookup.type* %.tmp3798, %m1861$.ModuleLookup.type** %.tmp3797
-%.tmp3799 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3800 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3801 = load i8*, i8** %asname.3763
-%.tmp3802 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3731
-%.tmp3803 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3802, i32 0, i32 0
-%.tmp3804 = load i8*, i8** %.tmp3803
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*,i8*) @m1861$define_module.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp.cp(%m1861$.CompilerCtx.type* %.tmp3799, %m307$.Node.type* %.tmp3800, i8* %.tmp3801, i8* %.tmp3804)
-%.tmp3805 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3806 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3805, i32 0, i32 6
+%.tmp3798 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %.tmp3797
+store %m1861$.ModuleLookup.type* %.tmp3798, %m1861$.ModuleLookup.type** %m.3732
+br label %.for.start.3788
+.for.end.3788:
+%.tmp3799 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %m.3732
+%.tmp3800 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3799, i32 0, i32 2
+%.tmp3801 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3734
+store %m1861$.ModuleLookup.type* %.tmp3801, %m1861$.ModuleLookup.type** %.tmp3800
+%.tmp3802 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3803 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3804 = load i8*, i8** %asname.3766
+%.tmp3805 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3734
+%.tmp3806 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3805, i32 0, i32 0
 %.tmp3807 = load i8*, i8** %.tmp3806
-%curr_mod.3808 = alloca i8*
-store i8* %.tmp3807, i8** %curr_mod.3808
-%.tmp3809 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3810 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3809, i32 0, i32 6
-%.tmp3811 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3731
-%.tmp3812 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3811, i32 0, i32 0
-%.tmp3813 = load i8*, i8** %.tmp3812
-store i8* %.tmp3813, i8** %.tmp3810
-%.tmp3814 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3815 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3731
-%.tmp3816 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3815, i32 0, i32 0
-%.tmp3817 = load i8*, i8** %.tmp3816
-%.tmp3818 = call i1(%m1861$.CompilerCtx.type*,i8*) @m1861$compile_file.b.m1861$.CompilerCtx.typep.cp(%m1861$.CompilerCtx.type* %.tmp3814, i8* %.tmp3817)
-%.tmp3819 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3820 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3819, i32 0, i32 6
-%.tmp3821 = load i8*, i8** %curr_mod.3808
-store i8* %.tmp3821, i8** %.tmp3820
-br label %.if.end.3766
-.if.false.3766:
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*,i8*) @m1861$define_module.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp.cp(%m1861$.CompilerCtx.type* %.tmp3802, %m307$.Node.type* %.tmp3803, i8* %.tmp3804, i8* %.tmp3807)
+%.tmp3808 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3809 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3808, i32 0, i32 6
+%.tmp3810 = load i8*, i8** %.tmp3809
+%curr_mod.3811 = alloca i8*
+store i8* %.tmp3810, i8** %curr_mod.3811
+%.tmp3812 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3813 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3812, i32 0, i32 6
+%.tmp3814 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3734
+%.tmp3815 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3814, i32 0, i32 0
+%.tmp3816 = load i8*, i8** %.tmp3815
+store i8* %.tmp3816, i8** %.tmp3813
+%.tmp3817 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3818 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3734
+%.tmp3819 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3818, i32 0, i32 0
+%.tmp3820 = load i8*, i8** %.tmp3819
+%.tmp3821 = call i1(%m1861$.CompilerCtx.type*,i8*) @m1861$compile_file.b.m1861$.CompilerCtx.typep.cp(%m1861$.CompilerCtx.type* %.tmp3817, i8* %.tmp3820)
 %.tmp3822 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3823 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3824 = load i8*, i8** %asname.3763
-%.tmp3825 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3731
-%.tmp3826 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3825, i32 0, i32 0
-%.tmp3827 = load i8*, i8** %.tmp3826
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*,i8*) @m1861$define_module.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp.cp(%m1861$.CompilerCtx.type* %.tmp3822, %m307$.Node.type* %.tmp3823, i8* %.tmp3824, i8* %.tmp3827)
-br label %.if.end.3766
-.if.end.3766:
+%.tmp3823 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3822, i32 0, i32 6
+%.tmp3824 = load i8*, i8** %curr_mod.3811
+store i8* %.tmp3824, i8** %.tmp3823
+br label %.if.end.3769
+.if.false.3769:
+%.tmp3825 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3826 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3827 = load i8*, i8** %asname.3766
+%.tmp3828 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.3734
+%.tmp3829 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp3828, i32 0, i32 0
+%.tmp3830 = load i8*, i8** %.tmp3829
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*,i8*) @m1861$define_module.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp.cp(%m1861$.CompilerCtx.type* %.tmp3825, %m307$.Node.type* %.tmp3826, i8* %.tmp3827, i8* %.tmp3830)
+br label %.if.end.3769
+.if.end.3769:
+br label %.if.end.3655
+.if.false.3655:
+br label %.if.end.3655
+.if.end.3655:
 br label %.if.end.3652
 .if.false.3652:
+%.tmp3831 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3832 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3834 = getelementptr [40 x i8], [40 x i8]*@.str3833, i32 0, i32 0
+%.tmp3835 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp3831, %m307$.Node.type* %.tmp3832, i8* %.tmp3834)
+%.tmp3836 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3837 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3836, i32 0, i32 0
+%.tmp3838 = load i8*, i8** %.tmp3837
+%.tmp3839 = call i32(i8*,...) @printf(i8* %.tmp3835, i8* %.tmp3838)
 br label %.if.end.3652
 .if.end.3652:
-br label %.if.end.3649
-.if.false.3649:
-%.tmp3828 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3829 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3831 = getelementptr [40 x i8], [40 x i8]*@.str3830, i32 0, i32 0
-%.tmp3832 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp3828, %m307$.Node.type* %.tmp3829, i8* %.tmp3831)
-%.tmp3833 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3834 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3833, i32 0, i32 0
-%.tmp3835 = load i8*, i8** %.tmp3834
-%.tmp3836 = call i32(i8*,...) @printf(i8* %.tmp3832, i8* %.tmp3835)
-br label %.if.end.3649
-.if.end.3649:
-br label %.if.end.3442
-.if.end.3442:
-br label %.if.end.3323
-.if.end.3323:
-br label %.if.end.3225
-.if.end.3225:
-br label %.if.end.3160
-.if.end.3160:
-br label %.if.end.3152
-.if.end.3152:
+br label %.if.end.3445
+.if.end.3445:
+br label %.if.end.3326
+.if.end.3326:
+br label %.if.end.3228
+.if.end.3228:
+br label %.if.end.3163
+.if.end.3163:
+br label %.if.end.3155
+.if.end.3155:
 ret void
 }
 define i8* @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.stmt.arg, i8* %.msg.arg) {
@@ -5864,131 +5907,131 @@ store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 store %m307$.Node.type* %.stmt.arg, %m307$.Node.type** %stmt
 %msg = alloca i8*
 store i8* %.msg.arg, i8** %msg
-%buf.3837 = alloca i8*
-store i8* null, i8** %buf.3837
-%.tmp3838 = getelementptr i8*, i8** %buf.3837, i32 0
-%.tmp3840 = getelementptr [31 x i8], [31 x i8]*@.str3839, i32 0, i32 0
-%.tmp3841 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3842 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3841, i32 0, i32 6
-%.tmp3843 = load i8*, i8** %.tmp3842
-%.tmp3844 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3845 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3844, i32 0, i32 3
-%.tmp3846 = load i32, i32* %.tmp3845
+%buf.3840 = alloca i8*
+store i8* null, i8** %buf.3840
+%.tmp3841 = getelementptr i8*, i8** %buf.3840, i32 0
+%.tmp3843 = getelementptr [31 x i8], [31 x i8]*@.str3842, i32 0, i32 0
+%.tmp3844 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3845 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3844, i32 0, i32 6
+%.tmp3846 = load i8*, i8** %.tmp3845
 %.tmp3847 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3848 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3847, i32 0, i32 4
+%.tmp3848 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3847, i32 0, i32 3
 %.tmp3849 = load i32, i32* %.tmp3848
-%.tmp3850 = load i8*, i8** %msg
-%.tmp3851 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp3838, i8* %.tmp3840, i8* %.tmp3843, i32 %.tmp3846, i32 %.tmp3849, i8* %.tmp3850)
-%.tmp3852 = load i8*, i8** %buf.3837
-ret i8* %.tmp3852
+%.tmp3850 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3851 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3850, i32 0, i32 4
+%.tmp3852 = load i32, i32* %.tmp3851
+%.tmp3853 = load i8*, i8** %msg
+%.tmp3854 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp3841, i8* %.tmp3843, i8* %.tmp3846, i32 %.tmp3849, i32 %.tmp3852, i8* %.tmp3853)
+%.tmp3855 = load i8*, i8** %buf.3840
+ret i8* %.tmp3855
 }
 define void @m1861$compile_fn_params.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.fn_params.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %fn_params = alloca %m307$.Node.type*
 store %m307$.Node.type* %.fn_params.arg, %m307$.Node.type** %fn_params
-%param_type.3853 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* null, %m1861$.Type.type** %param_type.3853
-%.tmp3855 = load %m307$.Node.type*, %m307$.Node.type** %fn_params
-%param_ptr.3856 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp3855, %m307$.Node.type** %param_ptr.3856
-br label %.for.start.3854
-.for.start.3854:
-%.tmp3857 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3856
-%.tmp3858 = icmp ne %m307$.Node.type* %.tmp3857, null
-br i1 %.tmp3858, label %.for.continue.3854, label %.for.end.3854
-.for.continue.3854:
-%.tmp3859 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3856
-%.tmp3860 = load %m307$.Node.type*, %m307$.Node.type** %fn_params
-%.tmp3861 = icmp ne %m307$.Node.type* %.tmp3859, %.tmp3860
-br i1 %.tmp3861, label %.if.true.3862, label %.if.false.3862
-.if.true.3862:
-%.tmp3863 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3856
-%.tmp3864 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3863, i32 0, i32 7
-%.tmp3865 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3864
-store %m307$.Node.type* %.tmp3865, %m307$.Node.type** %param_ptr.3856
-br label %.if.end.3862
-.if.false.3862:
-br label %.if.end.3862
-.if.end.3862:
-%.tmp3866 = load %m307$.Node.type*, %m307$.Node.type** %fn_params
-%.tmp3867 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp3866)
-%param_info.3868 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp3867, %m1861$.AssignableInfo.type** %param_info.3868
-%.tmp3869 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %param_info.3868
-%.tmp3870 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3869, i32 0, i32 2
-%.tmp3872 = getelementptr [9 x i8], [9 x i8]*@.str3871, i32 0, i32 0
-store i8* %.tmp3872, i8** %.tmp3870
-%.tmp3873 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3856
-%.tmp3874 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3873, i32 0, i32 0
-%.tmp3875 = load i8*, i8** %.tmp3874
-%.tmp3877 = getelementptr [5 x i8], [5 x i8]*@.str3876, i32 0, i32 0
-%.tmp3878 = call i32(i8*,i8*) @strcmp(i8* %.tmp3875, i8* %.tmp3877)
-%.tmp3879 = icmp eq i32 %.tmp3878, 0
-br i1 %.tmp3879, label %.if.true.3880, label %.if.false.3880
-.if.true.3880:
-%.tmp3881 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3882 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3856
-%.tmp3883 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3882, i32 0, i32 6
-%.tmp3884 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3883
-%.tmp3885 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$node_to_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp3881, %m307$.Node.type* %.tmp3884)
-store %m1861$.Type.type* %.tmp3885, %m1861$.Type.type** %param_type.3853
-%.tmp3886 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3856
-%.tmp3887 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3886, i32 0, i32 7
-%.tmp3888 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3887
-store %m307$.Node.type* %.tmp3888, %m307$.Node.type** %param_ptr.3856
-br label %.if.end.3880
-.if.false.3880:
-br label %.if.end.3880
-.if.end.3880:
-%.tmp3889 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %param_info.3868
-%.tmp3890 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3889, i32 0, i32 3
-%.tmp3891 = load %m1861$.Type.type*, %m1861$.Type.type** %param_type.3853
-store %m1861$.Type.type* %.tmp3891, %m1861$.Type.type** %.tmp3890
-%.tmp3892 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3856
-%.tmp3893 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3892, i32 0, i32 1
-%.tmp3894 = load i8*, i8** %.tmp3893
-%var_name.3895 = alloca i8*
-store i8* %.tmp3894, i8** %var_name.3895
-%.tmp3896 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %param_info.3868
-%.tmp3897 = load i8, i8* @SCOPE_LOCAL
-%.tmp3898 = load i8*, i8** %var_name.3895
-call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp3896, i8 %.tmp3897, i8* %.tmp3898)
-%.tmp3899 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3900 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %param_info.3868
-%.tmp3901 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3900, i32 0, i32 3
-%.tmp3902 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3901
-%.tmp3903 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp3899, %m1861$.Type.type* %.tmp3902)
-%param_info_tr.3904 = alloca i8*
-store i8* %.tmp3903, i8** %param_info_tr.3904
-%.tmp3905 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3906 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3905, i32 0, i32 1
-%.tmp3907 = load %m0$.File.type*, %m0$.File.type** %.tmp3906
-%.tmp3909 = getelementptr [16 x i8], [16 x i8]*@.str3908, i32 0, i32 0
-%.tmp3910 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %param_info.3868
-%.tmp3911 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp3910)
-%.tmp3912 = load i8*, i8** %param_info_tr.3904
-%.tmp3913 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3907, i8* %.tmp3909, i8* %.tmp3911, i8* %.tmp3912)
-%.tmp3914 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3915 = load i8*, i8** %var_name.3895
-%.tmp3916 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %param_info.3868
-call void(%m1861$.CompilerCtx.type*,i8*,%m1861$.AssignableInfo.type*) @m1861$define_assignable.v.m1861$.CompilerCtx.typep.cp.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp3914, i8* %.tmp3915, %m1861$.AssignableInfo.type* %.tmp3916)
+%param_type.3856 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* null, %m1861$.Type.type** %param_type.3856
+%.tmp3858 = load %m307$.Node.type*, %m307$.Node.type** %fn_params
+%param_ptr.3859 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp3858, %m307$.Node.type** %param_ptr.3859
+br label %.for.start.3857
+.for.start.3857:
+%.tmp3860 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3859
+%.tmp3861 = icmp ne %m307$.Node.type* %.tmp3860, null
+br i1 %.tmp3861, label %.for.continue.3857, label %.for.end.3857
+.for.continue.3857:
+%.tmp3862 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3859
+%.tmp3863 = load %m307$.Node.type*, %m307$.Node.type** %fn_params
+%.tmp3864 = icmp ne %m307$.Node.type* %.tmp3862, %.tmp3863
+br i1 %.tmp3864, label %.if.true.3865, label %.if.false.3865
+.if.true.3865:
+%.tmp3866 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3859
+%.tmp3867 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3866, i32 0, i32 7
+%.tmp3868 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3867
+store %m307$.Node.type* %.tmp3868, %m307$.Node.type** %param_ptr.3859
+br label %.if.end.3865
+.if.false.3865:
+br label %.if.end.3865
+.if.end.3865:
+%.tmp3869 = load %m307$.Node.type*, %m307$.Node.type** %fn_params
+%.tmp3870 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp3869)
+%param_info.3871 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp3870, %m1861$.AssignableInfo.type** %param_info.3871
+%.tmp3872 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %param_info.3871
+%.tmp3873 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3872, i32 0, i32 2
+%.tmp3875 = getelementptr [9 x i8], [9 x i8]*@.str3874, i32 0, i32 0
+store i8* %.tmp3875, i8** %.tmp3873
+%.tmp3876 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3859
+%.tmp3877 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3876, i32 0, i32 0
+%.tmp3878 = load i8*, i8** %.tmp3877
+%.tmp3880 = getelementptr [5 x i8], [5 x i8]*@.str3879, i32 0, i32 0
+%.tmp3881 = call i32(i8*,i8*) @strcmp(i8* %.tmp3878, i8* %.tmp3880)
+%.tmp3882 = icmp eq i32 %.tmp3881, 0
+br i1 %.tmp3882, label %.if.true.3883, label %.if.false.3883
+.if.true.3883:
+%.tmp3884 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3885 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3859
+%.tmp3886 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3885, i32 0, i32 6
+%.tmp3887 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3886
+%.tmp3888 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$node_to_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp3884, %m307$.Node.type* %.tmp3887)
+store %m1861$.Type.type* %.tmp3888, %m1861$.Type.type** %param_type.3856
+%.tmp3889 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3859
+%.tmp3890 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3889, i32 0, i32 7
+%.tmp3891 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3890
+store %m307$.Node.type* %.tmp3891, %m307$.Node.type** %param_ptr.3859
+br label %.if.end.3883
+.if.false.3883:
+br label %.if.end.3883
+.if.end.3883:
+%.tmp3892 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %param_info.3871
+%.tmp3893 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3892, i32 0, i32 3
+%.tmp3894 = load %m1861$.Type.type*, %m1861$.Type.type** %param_type.3856
+store %m1861$.Type.type* %.tmp3894, %m1861$.Type.type** %.tmp3893
+%.tmp3895 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3859
+%.tmp3896 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3895, i32 0, i32 1
+%.tmp3897 = load i8*, i8** %.tmp3896
+%var_name.3898 = alloca i8*
+store i8* %.tmp3897, i8** %var_name.3898
+%.tmp3899 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %param_info.3871
+%.tmp3900 = load i8, i8* @SCOPE_LOCAL
+%.tmp3901 = load i8*, i8** %var_name.3898
+call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp3899, i8 %.tmp3900, i8* %.tmp3901)
+%.tmp3902 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3903 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %param_info.3871
+%.tmp3904 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3903, i32 0, i32 3
+%.tmp3905 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3904
+%.tmp3906 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp3902, %m1861$.Type.type* %.tmp3905)
+%param_info_tr.3907 = alloca i8*
+store i8* %.tmp3906, i8** %param_info_tr.3907
+%.tmp3908 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3909 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3908, i32 0, i32 1
+%.tmp3910 = load %m0$.File.type*, %m0$.File.type** %.tmp3909
+%.tmp3912 = getelementptr [16 x i8], [16 x i8]*@.str3911, i32 0, i32 0
+%.tmp3913 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %param_info.3871
+%.tmp3914 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp3913)
+%.tmp3915 = load i8*, i8** %param_info_tr.3907
+%.tmp3916 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3910, i8* %.tmp3912, i8* %.tmp3914, i8* %.tmp3915)
 %.tmp3917 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3918 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3917, i32 0, i32 1
-%.tmp3919 = load %m0$.File.type*, %m0$.File.type** %.tmp3918
-%.tmp3921 = getelementptr [28 x i8], [28 x i8]*@.str3920, i32 0, i32 0
-%.tmp3922 = load i8*, i8** %param_info_tr.3904
-%.tmp3923 = load i8*, i8** %var_name.3895
-%.tmp3924 = load i8*, i8** %param_info_tr.3904
-%.tmp3925 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %param_info.3868
-%.tmp3926 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp3925)
-%.tmp3927 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3919, i8* %.tmp3921, i8* %.tmp3922, i8* %.tmp3923, i8* %.tmp3924, i8* %.tmp3926)
-%.tmp3928 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3856
-%.tmp3929 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3928, i32 0, i32 7
-%.tmp3930 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3929
-store %m307$.Node.type* %.tmp3930, %m307$.Node.type** %param_ptr.3856
-br label %.for.start.3854
-.for.end.3854:
+%.tmp3918 = load i8*, i8** %var_name.3898
+%.tmp3919 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %param_info.3871
+call void(%m1861$.CompilerCtx.type*,i8*,%m1861$.AssignableInfo.type*) @m1861$define_assignable.v.m1861$.CompilerCtx.typep.cp.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp3917, i8* %.tmp3918, %m1861$.AssignableInfo.type* %.tmp3919)
+%.tmp3920 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3921 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp3920, i32 0, i32 1
+%.tmp3922 = load %m0$.File.type*, %m0$.File.type** %.tmp3921
+%.tmp3924 = getelementptr [28 x i8], [28 x i8]*@.str3923, i32 0, i32 0
+%.tmp3925 = load i8*, i8** %param_info_tr.3907
+%.tmp3926 = load i8*, i8** %var_name.3898
+%.tmp3927 = load i8*, i8** %param_info_tr.3907
+%.tmp3928 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %param_info.3871
+%.tmp3929 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp3928)
+%.tmp3930 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp3922, i8* %.tmp3924, i8* %.tmp3925, i8* %.tmp3926, i8* %.tmp3927, i8* %.tmp3929)
+%.tmp3931 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.3859
+%.tmp3932 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3931, i32 0, i32 7
+%.tmp3933 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3932
+store %m307$.Node.type* %.tmp3933, %m307$.Node.type** %param_ptr.3859
+br label %.for.start.3857
+.for.end.3857:
 ret void
 }
 define void @m1861$compile_block.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.stmt.arg) {
@@ -5996,47 +6039,248 @@ define void @m1861$compile_block.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %stmt = alloca %m307$.Node.type*
 store %m307$.Node.type* %.stmt.arg, %m307$.Node.type** %stmt
-%.tmp3931 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3933 = getelementptr [6 x i8], [6 x i8]*@.str3932, i32 0, i32 0
-%.tmp3934 = bitcast ptr null to i8*
-%.tmp3935 = bitcast ptr null to i8*
-call void(%m1861$.CompilerCtx.type*,i8*,i8*,i8*) @m1861$push_scope.v.m1861$.CompilerCtx.typep.cp.cp.cp(%m1861$.CompilerCtx.type* %.tmp3931, i8* %.tmp3933, i8* %.tmp3934, i8* %.tmp3935)
-%.tmp3937 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3938 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3937, i32 0, i32 6
-%.tmp3939 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3938
-%b.3940 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp3939, %m307$.Node.type** %b.3940
-br label %.for.start.3936
-.for.start.3936:
-%.tmp3941 = load %m307$.Node.type*, %m307$.Node.type** %b.3940
-%.tmp3942 = icmp ne %m307$.Node.type* %.tmp3941, null
-br i1 %.tmp3942, label %.for.continue.3936, label %.for.end.3936
-.for.continue.3936:
-%.tmp3943 = load %m307$.Node.type*, %m307$.Node.type** %b.3940
-%.tmp3944 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3943, i32 0, i32 0
-%.tmp3945 = load i8*, i8** %.tmp3944
-%.tmp3947 = getelementptr [11 x i8], [11 x i8]*@.str3946, i32 0, i32 0
-%.tmp3948 = call i32(i8*,i8*) @strcmp(i8* %.tmp3945, i8* %.tmp3947)
-%.tmp3949 = icmp eq i32 %.tmp3948, 0
-br i1 %.tmp3949, label %.if.true.3950, label %.if.false.3950
-.if.true.3950:
-%.tmp3951 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp3952 = load %m307$.Node.type*, %m307$.Node.type** %b.3940
-%.tmp3953 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3952, i32 0, i32 6
-%.tmp3954 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3953
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_expression.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp3951, %m307$.Node.type* %.tmp3954)
-br label %.if.end.3950
-.if.false.3950:
-br label %.if.end.3950
-.if.end.3950:
-%.tmp3955 = load %m307$.Node.type*, %m307$.Node.type** %b.3940
-%.tmp3956 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3955, i32 0, i32 7
+%.tmp3934 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3936 = getelementptr [6 x i8], [6 x i8]*@.str3935, i32 0, i32 0
+%.tmp3937 = bitcast ptr null to i8*
+%.tmp3938 = bitcast ptr null to i8*
+call void(%m1861$.CompilerCtx.type*,i8*,i8*,i8*) @m1861$push_scope.v.m1861$.CompilerCtx.typep.cp.cp.cp(%m1861$.CompilerCtx.type* %.tmp3934, i8* %.tmp3936, i8* %.tmp3937, i8* %.tmp3938)
+%.tmp3940 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3941 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3940, i32 0, i32 6
+%.tmp3942 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3941
+%b.3943 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp3942, %m307$.Node.type** %b.3943
+br label %.for.start.3939
+.for.start.3939:
+%.tmp3944 = load %m307$.Node.type*, %m307$.Node.type** %b.3943
+%.tmp3945 = icmp ne %m307$.Node.type* %.tmp3944, null
+br i1 %.tmp3945, label %.for.continue.3939, label %.for.end.3939
+.for.continue.3939:
+%.tmp3946 = load %m307$.Node.type*, %m307$.Node.type** %b.3943
+%.tmp3947 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3946, i32 0, i32 0
+%.tmp3948 = load i8*, i8** %.tmp3947
+%.tmp3950 = getelementptr [11 x i8], [11 x i8]*@.str3949, i32 0, i32 0
+%.tmp3951 = call i32(i8*,i8*) @strcmp(i8* %.tmp3948, i8* %.tmp3950)
+%.tmp3952 = icmp eq i32 %.tmp3951, 0
+br i1 %.tmp3952, label %.if.true.3953, label %.if.false.3953
+.if.true.3953:
+%.tmp3954 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3955 = load %m307$.Node.type*, %m307$.Node.type** %b.3943
+%.tmp3956 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3955, i32 0, i32 6
 %.tmp3957 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3956
-store %m307$.Node.type* %.tmp3957, %m307$.Node.type** %b.3940
-br label %.for.start.3936
-.for.end.3936:
-%.tmp3958 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-call void(%m1861$.CompilerCtx.type*) @m1861$pop_scope.v.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp3958)
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_expression.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp3954, %m307$.Node.type* %.tmp3957)
+br label %.if.end.3953
+.if.false.3953:
+br label %.if.end.3953
+.if.end.3953:
+%.tmp3958 = load %m307$.Node.type*, %m307$.Node.type** %b.3943
+%.tmp3959 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3958, i32 0, i32 7
+%.tmp3960 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3959
+store %m307$.Node.type* %.tmp3960, %m307$.Node.type** %b.3943
+br label %.for.start.3939
+.for.end.3939:
+%.tmp3961 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+call void(%m1861$.CompilerCtx.type*) @m1861$pop_scope.v.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp3961)
+ret void
+}
+define %m1861$.AssignableInfo.type* @m1861$get_struct_attr.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep.i(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.stmt.arg, i32 %.attr_id.arg) {
+%ctx = alloca %m1861$.CompilerCtx.type*
+store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
+%stmt = alloca %m307$.Node.type*
+store %m307$.Node.type* %.stmt.arg, %m307$.Node.type** %stmt
+%attr_id = alloca i32
+store i32 %.attr_id.arg, i32* %attr_id
+%.tmp3962 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp3963 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3964 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_addr.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp3962, %m307$.Node.type* %.tmp3963)
+%val.3965 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp3964, %m1861$.AssignableInfo.type** %val.3965
+%.tmp3966 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %val.3965
+%.tmp3967 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3966, i32 0, i32 3
+%.tmp3968 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3967
+%.tmp3969 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3968, i32 0, i32 0
+%.tmp3970 = load i8*, i8** %.tmp3969
+%.tmp3972 = getelementptr [7 x i8], [7 x i8]*@.str3971, i32 0, i32 0
+%.tmp3973 = call i32(i8*,i8*) @strcmp(i8* %.tmp3970, i8* %.tmp3972)
+%.tmp3974 = icmp ne i32 %.tmp3973, 0
+br i1 %.tmp3974, label %.if.true.3975, label %.if.false.3975
+.if.true.3975:
+%.tmp3977 = getelementptr [7 x i8], [7 x i8]*@.str3976, i32 0, i32 0
+%.tmp3978 = call i32(i8*,...) @printf(i8* %.tmp3977)
+%.tmp3979 = bitcast ptr null to %m1861$.AssignableInfo.type*
+ret %m1861$.AssignableInfo.type* %.tmp3979
+br label %.if.end.3975
+.if.false.3975:
+br label %.if.end.3975
+.if.end.3975:
+%.tmp3980 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %val.3965
+%.tmp3981 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3980, i32 0, i32 3
+%.tmp3982 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3981
+%.tmp3983 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3982, i32 0, i32 3
+%.tmp3984 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3983
+%node_type.3985 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp3984, %m1861$.Type.type** %node_type.3985
+%i.3987 = alloca i32
+store i32 0, i32* %i.3987
+br label %.for.start.3986
+.for.start.3986:
+%.tmp3988 = load i32, i32* %i.3987
+%.tmp3989 = load i32, i32* %attr_id
+%.tmp3990 = icmp slt i32 %.tmp3988, %.tmp3989
+br i1 %.tmp3990, label %.for.continue.3986, label %.for.end.3986
+.for.continue.3986:
+%.tmp3991 = load %m1861$.Type.type*, %m1861$.Type.type** %node_type.3985
+%.tmp3992 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp3991, i32 0, i32 4
+%.tmp3993 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp3992
+store %m1861$.Type.type* %.tmp3993, %m1861$.Type.type** %node_type.3985
+%.tmp3994 = load i32, i32* %i.3987
+%.tmp3995 = add i32 %.tmp3994, 1
+store i32 %.tmp3995, i32* %i.3987
+br label %.for.start.3986
+.for.end.3986:
+%.tmp3996 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp3997 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp3996)
+%info.3998 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp3997, %m1861$.AssignableInfo.type** %info.3998
+%.tmp3999 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3998
+%.tmp4000 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp3999, i32 0, i32 3
+%.tmp4001 = load %m1861$.Type.type*, %m1861$.Type.type** %node_type.3985
+store %m1861$.Type.type* %.tmp4001, %m1861$.Type.type** %.tmp4000
+%.tmp4002 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4003 = call i32(%m1861$.CompilerCtx.type*) @m1861$new_uid.i.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp4002)
+%tmp_id.4004 = alloca i32
+store i32 %.tmp4003, i32* %tmp_id.4004
+%.tmp4005 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4006 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %val.3965
+%.tmp4007 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4006, i32 0, i32 3
+%.tmp4008 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4007
+%.tmp4009 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4005, %m1861$.Type.type* %.tmp4008)
+%type_as_str.4010 = alloca i8*
+store i8* %.tmp4009, i8** %type_as_str.4010
+%.tmp4011 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4012 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3998
+call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp4011, %m1861$.AssignableInfo.type* %.tmp4012)
+%.tmp4013 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4014 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4013, i32 0, i32 1
+%.tmp4015 = load %m0$.File.type*, %m0$.File.type** %.tmp4014
+%.tmp4017 = getelementptr [52 x i8], [52 x i8]*@.str4016, i32 0, i32 0
+%.tmp4018 = load i32, i32* %tmp_id.4004
+%.tmp4019 = load i8*, i8** %type_as_str.4010
+%.tmp4020 = load i8*, i8** %type_as_str.4010
+%.tmp4021 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %val.3965
+%.tmp4022 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4021)
+%.tmp4023 = load i32, i32* %attr_id
+%.tmp4024 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4015, i8* %.tmp4017, i32 %.tmp4018, i8* %.tmp4019, i8* %.tmp4020, i8* %.tmp4022, i32 %.tmp4023)
+%.tmp4025 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4026 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4025, i32 0, i32 1
+%.tmp4027 = load %m0$.File.type*, %m0$.File.type** %.tmp4026
+%.tmp4029 = getelementptr [28 x i8], [28 x i8]*@.str4028, i32 0, i32 0
+%.tmp4030 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3998
+%.tmp4031 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4030)
+%.tmp4032 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4033 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3998
+%.tmp4034 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4033, i32 0, i32 3
+%.tmp4035 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4034
+%.tmp4036 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4032, %m1861$.Type.type* %.tmp4035)
+%.tmp4037 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4038 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3998
+%.tmp4039 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4038, i32 0, i32 3
+%.tmp4040 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4039
+%.tmp4041 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4037, %m1861$.Type.type* %.tmp4040)
+%.tmp4042 = load i32, i32* %tmp_id.4004
+%.tmp4043 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4027, i8* %.tmp4029, i8* %.tmp4031, i8* %.tmp4036, i8* %.tmp4041, i32 %.tmp4042)
+%.tmp4044 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.3998
+ret %m1861$.AssignableInfo.type* %.tmp4044
+}
+define void @m1861$set_struct_attr.v.m1861$.CompilerCtx.typep.m307$.Node.typep.i.cp(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.stmt.arg, i32 %.attr_id.arg, i8* %.attr.arg) {
+%ctx = alloca %m1861$.CompilerCtx.type*
+store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
+%stmt = alloca %m307$.Node.type*
+store %m307$.Node.type* %.stmt.arg, %m307$.Node.type** %stmt
+%attr_id = alloca i32
+store i32 %.attr_id.arg, i32* %attr_id
+%attr = alloca i8*
+store i8* %.attr.arg, i8** %attr
+%.tmp4045 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4046 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4047 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_addr.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4045, %m307$.Node.type* %.tmp4046)
+%val.4048 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp4047, %m1861$.AssignableInfo.type** %val.4048
+%.tmp4049 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %val.4048
+%.tmp4050 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4049, i32 0, i32 3
+%.tmp4051 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4050
+%.tmp4052 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp4051, i32 0, i32 0
+%.tmp4053 = load i8*, i8** %.tmp4052
+%.tmp4055 = getelementptr [7 x i8], [7 x i8]*@.str4054, i32 0, i32 0
+%.tmp4056 = call i32(i8*,i8*) @strcmp(i8* %.tmp4053, i8* %.tmp4055)
+%.tmp4057 = icmp ne i32 %.tmp4056, 0
+br i1 %.tmp4057, label %.if.true.4058, label %.if.false.4058
+.if.true.4058:
+%.tmp4060 = getelementptr [7 x i8], [7 x i8]*@.str4059, i32 0, i32 0
+%.tmp4061 = call i32(i8*,...) @printf(i8* %.tmp4060)
+ret void
+br label %.if.end.4058
+.if.false.4058:
+br label %.if.end.4058
+.if.end.4058:
+%.tmp4062 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %val.4048
+%.tmp4063 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4062, i32 0, i32 3
+%.tmp4064 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4063
+%.tmp4065 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp4064, i32 0, i32 3
+%.tmp4066 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4065
+%node_type.4067 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp4066, %m1861$.Type.type** %node_type.4067
+%i.4069 = alloca i32
+store i32 0, i32* %i.4069
+br label %.for.start.4068
+.for.start.4068:
+%.tmp4070 = load i32, i32* %i.4069
+%.tmp4071 = load i32, i32* %attr_id
+%.tmp4072 = icmp slt i32 %.tmp4070, %.tmp4071
+br i1 %.tmp4072, label %.for.continue.4068, label %.for.end.4068
+.for.continue.4068:
+%.tmp4073 = load %m1861$.Type.type*, %m1861$.Type.type** %node_type.4067
+%.tmp4074 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp4073, i32 0, i32 4
+%.tmp4075 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4074
+store %m1861$.Type.type* %.tmp4075, %m1861$.Type.type** %node_type.4067
+%.tmp4076 = load i32, i32* %i.4069
+%.tmp4077 = add i32 %.tmp4076, 1
+store i32 %.tmp4077, i32* %i.4069
+br label %.for.start.4068
+.for.end.4068:
+%.tmp4078 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4079 = call i32(%m1861$.CompilerCtx.type*) @m1861$new_uid.i.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp4078)
+%tmp_id.4080 = alloca i32
+store i32 %.tmp4079, i32* %tmp_id.4080
+%.tmp4081 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4082 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %val.4048
+%.tmp4083 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4082, i32 0, i32 3
+%.tmp4084 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4083
+%.tmp4085 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4081, %m1861$.Type.type* %.tmp4084)
+%type_as_str.4086 = alloca i8*
+store i8* %.tmp4085, i8** %type_as_str.4086
+%.tmp4087 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4088 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4087, i32 0, i32 1
+%.tmp4089 = load %m0$.File.type*, %m0$.File.type** %.tmp4088
+%.tmp4091 = getelementptr [52 x i8], [52 x i8]*@.str4090, i32 0, i32 0
+%.tmp4092 = load i32, i32* %tmp_id.4080
+%.tmp4093 = load i8*, i8** %type_as_str.4086
+%.tmp4094 = load i8*, i8** %type_as_str.4086
+%.tmp4095 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %val.4048
+%.tmp4096 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4095)
+%.tmp4097 = load i32, i32* %attr_id
+%.tmp4098 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4089, i8* %.tmp4091, i32 %.tmp4092, i8* %.tmp4093, i8* %.tmp4094, i8* %.tmp4096, i32 %.tmp4097)
+%.tmp4099 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4100 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4099, i32 0, i32 1
+%.tmp4101 = load %m0$.File.type*, %m0$.File.type** %.tmp4100
+%.tmp4103 = getelementptr [18 x i8], [18 x i8]*@.str4102, i32 0, i32 0
+%.tmp4104 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4105 = load %m1861$.Type.type*, %m1861$.Type.type** %node_type.4067
+%.tmp4106 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4104, %m1861$.Type.type* %.tmp4105)
+%.tmp4107 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4108 = load %m1861$.Type.type*, %m1861$.Type.type** %node_type.4067
+%.tmp4109 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4107, %m1861$.Type.type* %.tmp4108)
+%.tmp4110 = load i8*, i8** %attr
+%.tmp4111 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4101, i8* %.tmp4103, i8* %.tmp4106, i8* %.tmp4109, i8* %.tmp4110)
 ret void
 }
 define %m1861$.AssignableInfo.type* @m1861$compile_builtin.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.stmt.arg) {
@@ -6044,838 +6288,824 @@ define %m1861$.AssignableInfo.type* @m1861$compile_builtin.m1861$.AssignableInfo
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %stmt = alloca %m307$.Node.type*
 store %m307$.Node.type* %.stmt.arg, %m307$.Node.type** %stmt
-%.tmp3959 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3960 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3959, i32 0, i32 6
-%.tmp3961 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3960
-%.tmp3962 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3961, i32 0, i32 6
-%.tmp3963 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3962
-%dotted.3964 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp3963, %m307$.Node.type** %dotted.3964
-%.tmp3965 = load %m307$.Node.type*, %m307$.Node.type** %dotted.3964
-%.tmp3966 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3965, i32 0, i32 7
-%.tmp3967 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3966
-%.tmp3968 = icmp ne %m307$.Node.type* %.tmp3967, null
-br i1 %.tmp3968, label %.if.true.3969, label %.if.false.3969
-.if.true.3969:
-%.tmp3970 = bitcast ptr null to %m1861$.AssignableInfo.type*
-ret %m1861$.AssignableInfo.type* %.tmp3970
-br label %.if.end.3969
-.if.false.3969:
-br label %.if.end.3969
-.if.end.3969:
-%.tmp3971 = load %m307$.Node.type*, %m307$.Node.type** %dotted.3964
-%.tmp3972 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3971, i32 0, i32 1
-%.tmp3973 = load i8*, i8** %.tmp3972
-%.tmp3975 = getelementptr [7 x i8], [7 x i8]*@.str3974, i32 0, i32 0
-%.tmp3976 = call i32(i8*,i8*) @strcmp(i8* %.tmp3973, i8* %.tmp3975)
-%.tmp3977 = icmp eq i32 %.tmp3976, 0
-br i1 %.tmp3977, label %.if.true.3978, label %.if.false.3978
-.if.true.3978:
-%.tmp3979 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp3981 = getelementptr [8 x i8], [8 x i8]*@.str3980, i32 0, i32 0
-%.tmp3982 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp3979, i8* %.tmp3981)
-%args.3983 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp3982, %m307$.Node.type** %args.3983
-%.tmp3984 = load %m307$.Node.type*, %m307$.Node.type** %args.3983
-%.tmp3985 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3984, i32 0, i32 6
-%.tmp3986 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3985
-%.tmp3988 = getelementptr [11 x i8], [11 x i8]*@.str3987, i32 0, i32 0
-%.tmp3989 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp3986, i8* %.tmp3988)
-%value.3990 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp3989, %m307$.Node.type** %value.3990
-%.tmp3991 = load %m307$.Node.type*, %m307$.Node.type** %value.3990
-%.tmp3992 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3991, i32 0, i32 6
-%.tmp3993 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3992
-%.tmp3994 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3993, i32 0, i32 6
-%.tmp3995 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3994
-%.tmp3996 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3995, i32 0, i32 6
-%.tmp3997 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3996
-%.tmp3998 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp3997, i32 0, i32 6
-%.tmp3999 = load %m307$.Node.type*, %m307$.Node.type** %.tmp3998
-store %m307$.Node.type* %.tmp3999, %m307$.Node.type** %value.3990
-%.tmp4000 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4001 = call i32(%m1861$.CompilerCtx.type*) @m1861$new_uid.i.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp4000)
-%tmp_id.4002 = alloca i32
-store i32 %.tmp4001, i32* %tmp_id.4002
-%.tmp4003 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4004 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp4003)
-%info.4005 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp4004, %m1861$.AssignableInfo.type** %info.4005
-%.tmp4006 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4007 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4005
-call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp4006, %m1861$.AssignableInfo.type* %.tmp4007)
-%.tmp4008 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4005
-%.tmp4009 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4008, i32 0, i32 3
-%.tmp4010 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-store %m1861$.Type.type* %.tmp4010, %m1861$.Type.type** %.tmp4009
-%.tmp4011 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4005
-%.tmp4012 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4011, i32 0, i32 3
-%.tmp4013 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4012
-%.tmp4014 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp4013, i32 0, i32 0
-%.tmp4016 = getelementptr [4 x i8], [4 x i8]*@.str4015, i32 0, i32 0
-store i8* %.tmp4016, i8** %.tmp4014
-%.tmp4017 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4018 = load %m307$.Node.type*, %m307$.Node.type** %value.3990
-%.tmp4019 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$node_to_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4017, %m307$.Node.type* %.tmp4018)
-%inspected_type.4020 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp4019, %m1861$.Type.type** %inspected_type.4020
-%.tmp4021 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4022 = load %m1861$.Type.type*, %m1861$.Type.type** %inspected_type.4020
-%.tmp4023 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4021, %m1861$.Type.type* %.tmp4022)
-%type_as_str.4024 = alloca i8*
-store i8* %.tmp4023, i8** %type_as_str.4024
-%.tmp4025 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4026 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4025, i32 0, i32 1
-%.tmp4027 = load %m0$.File.type*, %m0$.File.type** %.tmp4026
-%.tmp4029 = getelementptr [46 x i8], [46 x i8]*@.str4028, i32 0, i32 0
-%.tmp4030 = load i32, i32* %tmp_id.4002
-%.tmp4031 = load i8*, i8** %type_as_str.4024
-%.tmp4032 = load i8*, i8** %type_as_str.4024
-%.tmp4033 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4027, i8* %.tmp4029, i32 %.tmp4030, i8* %.tmp4031, i8* %.tmp4032)
-%.tmp4034 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4035 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4034, i32 0, i32 1
-%.tmp4036 = load %m0$.File.type*, %m0$.File.type** %.tmp4035
-%.tmp4038 = getelementptr [35 x i8], [35 x i8]*@.str4037, i32 0, i32 0
-%.tmp4039 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4005
-%.tmp4040 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4039)
-%.tmp4041 = load i8*, i8** %type_as_str.4024
-%.tmp4042 = load i32, i32* %tmp_id.4002
-%.tmp4043 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4036, i8* %.tmp4038, i8* %.tmp4040, i8* %.tmp4041, i32 %.tmp4042)
-%.tmp4044 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4005
-ret %m1861$.AssignableInfo.type* %.tmp4044
-br label %.if.end.3978
-.if.false.3978:
-%.tmp4045 = load %m307$.Node.type*, %m307$.Node.type** %dotted.3964
-%.tmp4046 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4045, i32 0, i32 1
-%.tmp4047 = load i8*, i8** %.tmp4046
-%.tmp4049 = getelementptr [4 x i8], [4 x i8]*@.str4048, i32 0, i32 0
-%.tmp4050 = call i32(i8*,i8*) @strcmp(i8* %.tmp4047, i8* %.tmp4049)
-%.tmp4051 = icmp eq i32 %.tmp4050, 0
-br i1 %.tmp4051, label %.if.true.4052, label %.if.false.4052
-.if.true.4052:
-%.tmp4053 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4055 = getelementptr [8 x i8], [8 x i8]*@.str4054, i32 0, i32 0
-%.tmp4056 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4053, i8* %.tmp4055)
-%args.4057 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp4056, %m307$.Node.type** %args.4057
-%.tmp4058 = load %m307$.Node.type*, %m307$.Node.type** %args.4057
-%.tmp4059 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4058, i32 0, i32 6
-%.tmp4060 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4059
-%.tmp4062 = getelementptr [11 x i8], [11 x i8]*@.str4061, i32 0, i32 0
-%.tmp4063 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4060, i8* %.tmp4062)
-%value.4064 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp4063, %m307$.Node.type** %value.4064
-%n.4065 = alloca %m307$.Node.type*
-store %m307$.Node.type* null, %m307$.Node.type** %n.4065
-%.tmp4067 = load %m307$.Node.type*, %m307$.Node.type** %args.4057
-%.tmp4068 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4067, i32 0, i32 6
-%.tmp4069 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4068
-store %m307$.Node.type* %.tmp4069, %m307$.Node.type** %n.4065
-br label %.for.start.4066
-.for.start.4066:
-%.tmp4070 = load %m307$.Node.type*, %m307$.Node.type** %n.4065
-%.tmp4071 = icmp ne %m307$.Node.type* %.tmp4070, null
-br i1 %.tmp4071, label %.for.continue.4066, label %.for.end.4066
-.for.continue.4066:
-%.tmp4072 = load %m307$.Node.type*, %m307$.Node.type** %n.4065
-%.tmp4073 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4072, i32 0, i32 0
-%.tmp4074 = load i8*, i8** %.tmp4073
-%.tmp4076 = getelementptr [12 x i8], [12 x i8]*@.str4075, i32 0, i32 0
-%.tmp4077 = call i32(i8*,i8*) @strcmp(i8* %.tmp4074, i8* %.tmp4076)
-%.tmp4078 = icmp eq i32 %.tmp4077, 0
-br i1 %.tmp4078, label %.if.true.4079, label %.if.false.4079
-.if.true.4079:
-br label %.for.end.4066
-br label %.if.end.4079
-.if.false.4079:
-br label %.if.end.4079
-.if.end.4079:
-%.tmp4080 = load %m307$.Node.type*, %m307$.Node.type** %n.4065
-%.tmp4081 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4080, i32 0, i32 6
-%.tmp4082 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4081
-store %m307$.Node.type* %.tmp4082, %m307$.Node.type** %n.4065
-br label %.for.start.4066
-.for.end.4066:
-%.tmp4083 = load %m307$.Node.type*, %m307$.Node.type** %n.4065
-%.tmp4084 = icmp eq %m307$.Node.type* %.tmp4083, null
-br i1 %.tmp4084, label %.if.true.4085, label %.if.false.4085
-.if.true.4085:
-%.tmp4087 = getelementptr [6 x i8], [6 x i8]*@.str4086, i32 0, i32 0
-%.tmp4088 = call i32(i8*,...) @printf(i8* %.tmp4087)
-%.tmp4089 = bitcast ptr null to %m1861$.AssignableInfo.type*
-ret %m1861$.AssignableInfo.type* %.tmp4089
-br label %.if.end.4085
-.if.false.4085:
-br label %.if.end.4085
-.if.end.4085:
-%.tmp4090 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4091 = load %m307$.Node.type*, %m307$.Node.type** %n.4065
-%.tmp4092 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_addr.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4090, %m307$.Node.type* %.tmp4091)
-%val.4093 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp4092, %m1861$.AssignableInfo.type** %val.4093
-%.tmp4094 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4095 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %val.4093
-%.tmp4096 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4095, i32 0, i32 3
-%.tmp4097 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4096
-%.tmp4098 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4094, %m1861$.Type.type* %.tmp4097)
-%type_as_str.4099 = alloca i8*
-store i8* %.tmp4098, i8** %type_as_str.4099
-%.tmp4100 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4101 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp4100)
-%info.4102 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp4101, %m1861$.AssignableInfo.type** %info.4102
-%.tmp4103 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4102
-%.tmp4104 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4103, i32 0, i32 3
-%.tmp4105 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-store %m1861$.Type.type* %.tmp4105, %m1861$.Type.type** %.tmp4104
-%.tmp4106 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4102
-%.tmp4107 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4106, i32 0, i32 3
-%.tmp4108 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4107
-%.tmp4109 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp4108, i32 0, i32 0
-%.tmp4111 = getelementptr [4 x i8], [4 x i8]*@.str4110, i32 0, i32 0
-store i8* %.tmp4111, i8** %.tmp4109
-%.tmp4112 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4113 = call i32(%m1861$.CompilerCtx.type*) @m1861$new_uid.i.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp4112)
-%tmp_id.4114 = alloca i32
-store i32 %.tmp4113, i32* %tmp_id.4114
-%.tmp4115 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4116 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4102
-call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp4115, %m1861$.AssignableInfo.type* %.tmp4116)
-%.tmp4117 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4118 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4117, i32 0, i32 1
-%.tmp4119 = load %m0$.File.type*, %m0$.File.type** %.tmp4118
-%.tmp4121 = getelementptr [51 x i8], [51 x i8]*@.str4120, i32 0, i32 0
-%.tmp4122 = load i32, i32* %tmp_id.4114
-%.tmp4123 = load i8*, i8** %type_as_str.4099
-%.tmp4124 = load i8*, i8** %type_as_str.4099
-%.tmp4125 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %val.4093
-%.tmp4126 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4125)
-%.tmp4127 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4119, i8* %.tmp4121, i32 %.tmp4122, i8* %.tmp4123, i8* %.tmp4124, i8* %.tmp4126)
-%.tmp4128 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4129 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4128, i32 0, i32 1
-%.tmp4130 = load %m0$.File.type*, %m0$.File.type** %.tmp4129
-%.tmp4132 = getelementptr [28 x i8], [28 x i8]*@.str4131, i32 0, i32 0
-%.tmp4133 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4102
-%.tmp4134 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4133)
-%.tmp4135 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4136 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4102
-%.tmp4137 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4136, i32 0, i32 3
-%.tmp4138 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4137
-%.tmp4139 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4135, %m1861$.Type.type* %.tmp4138)
-%.tmp4140 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4141 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4102
-%.tmp4142 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4141, i32 0, i32 3
-%.tmp4143 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4142
-%.tmp4144 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4140, %m1861$.Type.type* %.tmp4143)
-%.tmp4145 = load i32, i32* %tmp_id.4114
-%.tmp4146 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4130, i8* %.tmp4132, i8* %.tmp4134, i8* %.tmp4139, i8* %.tmp4144, i32 %.tmp4145)
-%.tmp4147 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4102
-ret %m1861$.AssignableInfo.type* %.tmp4147
-br label %.if.end.4052
-.if.false.4052:
-br label %.if.end.4052
-.if.end.4052:
-br label %.if.end.3978
-.if.end.3978:
-%.tmp4148 = bitcast ptr null to %m1861$.AssignableInfo.type*
-ret %m1861$.AssignableInfo.type* %.tmp4148
+%.tmp4112 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4113 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4112, i32 0, i32 6
+%.tmp4114 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4113
+%.tmp4115 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4114, i32 0, i32 6
+%.tmp4116 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4115
+%dotted.4117 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp4116, %m307$.Node.type** %dotted.4117
+%.tmp4118 = load %m307$.Node.type*, %m307$.Node.type** %dotted.4117
+%.tmp4119 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4118, i32 0, i32 7
+%.tmp4120 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4119
+%.tmp4121 = icmp ne %m307$.Node.type* %.tmp4120, null
+br i1 %.tmp4121, label %.if.true.4122, label %.if.false.4122
+.if.true.4122:
+%.tmp4123 = bitcast ptr null to %m1861$.AssignableInfo.type*
+ret %m1861$.AssignableInfo.type* %.tmp4123
+br label %.if.end.4122
+.if.false.4122:
+br label %.if.end.4122
+.if.end.4122:
+%.tmp4124 = load %m307$.Node.type*, %m307$.Node.type** %dotted.4117
+%.tmp4125 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4124, i32 0, i32 1
+%.tmp4126 = load i8*, i8** %.tmp4125
+%.tmp4128 = getelementptr [7 x i8], [7 x i8]*@.str4127, i32 0, i32 0
+%.tmp4129 = call i32(i8*,i8*) @strcmp(i8* %.tmp4126, i8* %.tmp4128)
+%.tmp4130 = icmp eq i32 %.tmp4129, 0
+br i1 %.tmp4130, label %.if.true.4131, label %.if.false.4131
+.if.true.4131:
+%.tmp4132 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4134 = getelementptr [8 x i8], [8 x i8]*@.str4133, i32 0, i32 0
+%.tmp4135 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4132, i8* %.tmp4134)
+%args.4136 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp4135, %m307$.Node.type** %args.4136
+%.tmp4137 = load %m307$.Node.type*, %m307$.Node.type** %args.4136
+%.tmp4138 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4137, i32 0, i32 6
+%.tmp4139 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4138
+%.tmp4141 = getelementptr [11 x i8], [11 x i8]*@.str4140, i32 0, i32 0
+%.tmp4142 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4139, i8* %.tmp4141)
+%value.4143 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp4142, %m307$.Node.type** %value.4143
+%.tmp4144 = load %m307$.Node.type*, %m307$.Node.type** %value.4143
+%.tmp4145 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4144, i32 0, i32 6
+%.tmp4146 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4145
+%.tmp4147 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4146, i32 0, i32 6
+%.tmp4148 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4147
+%.tmp4149 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4148, i32 0, i32 6
+%.tmp4150 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4149
+%.tmp4151 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4150, i32 0, i32 6
+%.tmp4152 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4151
+store %m307$.Node.type* %.tmp4152, %m307$.Node.type** %value.4143
+%.tmp4153 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4154 = call i32(%m1861$.CompilerCtx.type*) @m1861$new_uid.i.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp4153)
+%tmp_id.4155 = alloca i32
+store i32 %.tmp4154, i32* %tmp_id.4155
+%.tmp4156 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4157 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp4156)
+%info.4158 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp4157, %m1861$.AssignableInfo.type** %info.4158
+%.tmp4159 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4160 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4158
+call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp4159, %m1861$.AssignableInfo.type* %.tmp4160)
+%.tmp4161 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4158
+%.tmp4162 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4161, i32 0, i32 3
+%.tmp4163 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+store %m1861$.Type.type* %.tmp4163, %m1861$.Type.type** %.tmp4162
+%.tmp4164 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4158
+%.tmp4165 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4164, i32 0, i32 3
+%.tmp4166 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4165
+%.tmp4167 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp4166, i32 0, i32 0
+%.tmp4169 = getelementptr [4 x i8], [4 x i8]*@.str4168, i32 0, i32 0
+store i8* %.tmp4169, i8** %.tmp4167
+%.tmp4170 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4171 = load %m307$.Node.type*, %m307$.Node.type** %value.4143
+%.tmp4172 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$node_to_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4170, %m307$.Node.type* %.tmp4171)
+%inspected_type.4173 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp4172, %m1861$.Type.type** %inspected_type.4173
+%.tmp4174 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4175 = load %m1861$.Type.type*, %m1861$.Type.type** %inspected_type.4173
+%.tmp4176 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4174, %m1861$.Type.type* %.tmp4175)
+%type_as_str.4177 = alloca i8*
+store i8* %.tmp4176, i8** %type_as_str.4177
+%.tmp4178 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4179 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4178, i32 0, i32 1
+%.tmp4180 = load %m0$.File.type*, %m0$.File.type** %.tmp4179
+%.tmp4182 = getelementptr [46 x i8], [46 x i8]*@.str4181, i32 0, i32 0
+%.tmp4183 = load i32, i32* %tmp_id.4155
+%.tmp4184 = load i8*, i8** %type_as_str.4177
+%.tmp4185 = load i8*, i8** %type_as_str.4177
+%.tmp4186 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4180, i8* %.tmp4182, i32 %.tmp4183, i8* %.tmp4184, i8* %.tmp4185)
+%.tmp4187 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4188 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4187, i32 0, i32 1
+%.tmp4189 = load %m0$.File.type*, %m0$.File.type** %.tmp4188
+%.tmp4191 = getelementptr [35 x i8], [35 x i8]*@.str4190, i32 0, i32 0
+%.tmp4192 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4158
+%.tmp4193 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4192)
+%.tmp4194 = load i8*, i8** %type_as_str.4177
+%.tmp4195 = load i32, i32* %tmp_id.4155
+%.tmp4196 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4189, i8* %.tmp4191, i8* %.tmp4193, i8* %.tmp4194, i32 %.tmp4195)
+%.tmp4197 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4158
+ret %m1861$.AssignableInfo.type* %.tmp4197
+br label %.if.end.4131
+.if.false.4131:
+%.tmp4198 = load %m307$.Node.type*, %m307$.Node.type** %dotted.4117
+%.tmp4199 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4198, i32 0, i32 1
+%.tmp4200 = load i8*, i8** %.tmp4199
+%.tmp4202 = getelementptr [7 x i8], [7 x i8]*@.str4201, i32 0, i32 0
+%.tmp4203 = call i32(i8*,i8*) @strcmp(i8* %.tmp4200, i8* %.tmp4202)
+%.tmp4204 = icmp eq i32 %.tmp4203, 0
+br i1 %.tmp4204, label %.if.true.4205, label %.if.false.4205
+.if.true.4205:
+%.tmp4206 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4208 = getelementptr [8 x i8], [8 x i8]*@.str4207, i32 0, i32 0
+%.tmp4209 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4206, i8* %.tmp4208)
+%args.4210 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp4209, %m307$.Node.type** %args.4210
+%.tmp4211 = load %m307$.Node.type*, %m307$.Node.type** %args.4210
+%.tmp4212 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4211, i32 0, i32 6
+%.tmp4213 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4212
+%.tmp4215 = getelementptr [11 x i8], [11 x i8]*@.str4214, i32 0, i32 0
+%.tmp4216 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4213, i8* %.tmp4215)
+%array.4217 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp4216, %m307$.Node.type** %array.4217
+%.tmp4218 = load %m307$.Node.type*, %m307$.Node.type** %array.4217
+%.tmp4219 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4218, i32 0, i32 7
+%.tmp4220 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4219
+%.tmp4222 = getelementptr [11 x i8], [11 x i8]*@.str4221, i32 0, i32 0
+%.tmp4223 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4220, i8* %.tmp4222)
+%value.4224 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp4223, %m307$.Node.type** %value.4224
+%.tmp4225 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4226 = load %m307$.Node.type*, %m307$.Node.type** %value.4224
+%.tmp4227 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_assignable.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4225, %m307$.Node.type* %.tmp4226)
+%value_info.4228 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp4227, %m1861$.AssignableInfo.type** %value_info.4228
+%.tmp4229 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4230 = load %m307$.Node.type*, %m307$.Node.type** %array.4217
+%.tmp4231 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_addr.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4229, %m307$.Node.type* %.tmp4230)
+%array_info.4232 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp4231, %m1861$.AssignableInfo.type** %array_info.4232
+%.tmp4233 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4234 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp4233)
+%info.4235 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp4234, %m1861$.AssignableInfo.type** %info.4235
+%.tmp4236 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4237 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4235
+call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp4236, %m1861$.AssignableInfo.type* %.tmp4237)
+%.tmp4238 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4235
+%.tmp4239 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4238, i32 0, i32 3
+%.tmp4240 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %array_info.4232
+%.tmp4241 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4240, i32 0, i32 3
+%.tmp4242 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4241
+store %m1861$.Type.type* %.tmp4242, %m1861$.Type.type** %.tmp4239
+%builtin_prefix.4243 = alloca i8*
+store i8* null, i8** %builtin_prefix.4243
+%.tmp4244 = getelementptr i8*, i8** %builtin_prefix.4243, i32 0
+%.tmp4246 = getelementptr [5 x i8], [5 x i8]*@.str4245, i32 0, i32 0
+%.tmp4247 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4248 = call i32(%m1861$.CompilerCtx.type*) @m1861$new_uid.i.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp4247)
+%.tmp4249 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp4244, i8* %.tmp4246, i32 %.tmp4248)
+%.tmp4250 = call i8*() @m2531$append_tmpl.cp()
+%tmpl.4251 = alloca i8*
+store i8* %.tmp4250, i8** %tmpl.4251
+%.tmp4252 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4253 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4252, i32 0, i32 1
+%.tmp4254 = load %m0$.File.type*, %m0$.File.type** %.tmp4253
+%.tmp4255 = load i8*, i8** %tmpl.4251
+%.tmp4256 = load i8*, i8** %builtin_prefix.4243
+%.tmp4257 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4258 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %array_info.4232
+%.tmp4259 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4258, i32 0, i32 3
+%.tmp4260 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4259
+%.tmp4261 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4257, %m1861$.Type.type* %.tmp4260)
+%.tmp4262 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %array_info.4232
+%.tmp4263 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4262)
+%.tmp4264 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4265 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %value_info.4228
+%.tmp4266 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4265, i32 0, i32 3
+%.tmp4267 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4266
+%.tmp4268 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4264, %m1861$.Type.type* %.tmp4267)
+%.tmp4269 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %value_info.4228
+%.tmp4270 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4269)
+%.tmp4271 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4235
+%.tmp4272 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4271)
+%.tmp4273 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4254, i8* %.tmp4255, i8* %.tmp4256, i8* %.tmp4261, i8* %.tmp4263, i8* %.tmp4268, i8* %.tmp4270, i8* %.tmp4272)
+%.tmp4274 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4235
+ret %m1861$.AssignableInfo.type* %.tmp4274
+br label %.if.end.4205
+.if.false.4205:
+%.tmp4275 = load %m307$.Node.type*, %m307$.Node.type** %dotted.4117
+%.tmp4276 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4275, i32 0, i32 1
+%.tmp4277 = load i8*, i8** %.tmp4276
+%.tmp4279 = getelementptr [4 x i8], [4 x i8]*@.str4278, i32 0, i32 0
+%.tmp4280 = call i32(i8*,i8*) @strcmp(i8* %.tmp4277, i8* %.tmp4279)
+%.tmp4281 = icmp eq i32 %.tmp4280, 0
+br i1 %.tmp4281, label %.if.true.4282, label %.if.false.4282
+.if.true.4282:
+%.tmp4283 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4285 = getelementptr [8 x i8], [8 x i8]*@.str4284, i32 0, i32 0
+%.tmp4286 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4283, i8* %.tmp4285)
+%args.4287 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp4286, %m307$.Node.type** %args.4287
+%.tmp4288 = load %m307$.Node.type*, %m307$.Node.type** %args.4287
+%.tmp4289 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4288, i32 0, i32 6
+%.tmp4290 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4289
+%.tmp4292 = getelementptr [11 x i8], [11 x i8]*@.str4291, i32 0, i32 0
+%.tmp4293 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4290, i8* %.tmp4292)
+%value.4294 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp4293, %m307$.Node.type** %value.4294
+%.tmp4295 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4296 = load %m307$.Node.type*, %m307$.Node.type** %value.4294
+%.tmp4297 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i32) @m1861$get_struct_attr.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep.i(%m1861$.CompilerCtx.type* %.tmp4295, %m307$.Node.type* %.tmp4296, i32 1)
+ret %m1861$.AssignableInfo.type* %.tmp4297
+br label %.if.end.4282
+.if.false.4282:
+br label %.if.end.4282
+.if.end.4282:
+br label %.if.end.4205
+.if.end.4205:
+br label %.if.end.4131
+.if.end.4131:
+%.tmp4298 = bitcast ptr null to %m1861$.AssignableInfo.type*
+ret %m1861$.AssignableInfo.type* %.tmp4298
 }
 define %m1861$.AssignableInfo.type* @m1861$compile_fn_call.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.stmt.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %stmt = alloca %m307$.Node.type*
 store %m307$.Node.type* %.stmt.arg, %m307$.Node.type** %stmt
-%.tmp4149 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4150 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4151 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_builtin.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4149, %m307$.Node.type* %.tmp4150)
-%info.4152 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp4151, %m1861$.AssignableInfo.type** %info.4152
-%.tmp4153 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4152
-%.tmp4154 = icmp ne %m1861$.AssignableInfo.type* %.tmp4153, null
-br i1 %.tmp4154, label %.if.true.4155, label %.if.false.4155
-.if.true.4155:
-%.tmp4156 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4152
-ret %m1861$.AssignableInfo.type* %.tmp4156
-br label %.if.end.4155
-.if.false.4155:
-br label %.if.end.4155
-.if.end.4155:
-%.tmp4157 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4158 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4159 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_addr.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4157, %m307$.Node.type* %.tmp4158)
-store %m1861$.AssignableInfo.type* %.tmp4159, %m1861$.AssignableInfo.type** %info.4152
-%.tmp4160 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4152
-%.tmp4161 = icmp eq %m1861$.AssignableInfo.type* %.tmp4160, null
-br i1 %.tmp4161, label %.if.true.4162, label %.if.false.4162
-.if.true.4162:
-%.tmp4163 = load i1, i1* @DEBUG_INTERNALS
-br i1 %.tmp4163, label %.if.true.4164, label %.if.false.4164
-.if.true.4164:
-%.tmp4165 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4166 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4168 = getelementptr [35 x i8], [35 x i8]*@.str4167, i32 0, i32 0
-%.tmp4169 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp4165, %m307$.Node.type* %.tmp4166, i8* %.tmp4168)
-%.tmp4170 = call i32(i8*,...) @printf(i8* %.tmp4169)
-br label %.if.end.4164
-.if.false.4164:
-br label %.if.end.4164
-.if.end.4164:
-%.tmp4171 = bitcast ptr null to %m1861$.AssignableInfo.type*
-ret %m1861$.AssignableInfo.type* %.tmp4171
-br label %.if.end.4162
-.if.false.4162:
-br label %.if.end.4162
-.if.end.4162:
-%.tmp4172 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4174 = getelementptr [8 x i8], [8 x i8]*@.str4173, i32 0, i32 0
-%.tmp4175 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4172, i8* %.tmp4174)
-%args.4176 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp4175, %m307$.Node.type** %args.4176
-%.tmp4178 = getelementptr [1 x i8], [1 x i8]*@.str4177, i32 0, i32 0
-%params_buff.4179 = alloca i8*
-store i8* %.tmp4178, i8** %params_buff.4179
-%tmp.4180 = alloca i8*
-store i8* null, i8** %tmp.4180
-%.tmp4181 = load %m307$.Node.type*, %m307$.Node.type** %args.4176
-%.tmp4182 = icmp ne %m307$.Node.type* %.tmp4181, null
-br i1 %.tmp4182, label %.if.true.4183, label %.if.false.4183
-.if.true.4183:
-%.tmp4184 = load %m307$.Node.type*, %m307$.Node.type** %args.4176
-%.tmp4185 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4184, i32 0, i32 6
-%.tmp4186 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4185
-%.tmp4188 = getelementptr [11 x i8], [11 x i8]*@.str4187, i32 0, i32 0
-%.tmp4189 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4186, i8* %.tmp4188)
-%start.4190 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp4189, %m307$.Node.type** %start.4190
-%.tmp4192 = load %m307$.Node.type*, %m307$.Node.type** %start.4190
-%pp.4193 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp4192, %m307$.Node.type** %pp.4193
-br label %.for.start.4191
-.for.start.4191:
-%.tmp4194 = load %m307$.Node.type*, %m307$.Node.type** %pp.4193
-%.tmp4195 = icmp ne %m307$.Node.type* %.tmp4194, null
-br i1 %.tmp4195, label %.for.continue.4191, label %.for.end.4191
-.for.continue.4191:
-%.tmp4196 = load %m307$.Node.type*, %m307$.Node.type** %pp.4193
-%.tmp4197 = load %m307$.Node.type*, %m307$.Node.type** %start.4190
-%.tmp4198 = icmp ne %m307$.Node.type* %.tmp4196, %.tmp4197
-br i1 %.tmp4198, label %.if.true.4199, label %.if.false.4199
-.if.true.4199:
-%.tmp4200 = getelementptr i8*, i8** %tmp.4180, i32 0
-%.tmp4202 = getelementptr [5 x i8], [5 x i8]*@.str4201, i32 0, i32 0
-%.tmp4203 = load i8*, i8** %params_buff.4179
-%.tmp4204 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp4200, i8* %.tmp4202, i8* %.tmp4203)
-%.tmp4205 = load i8*, i8** %params_buff.4179
-%tmp_buff.4206 = alloca i8*
-store i8* %.tmp4205, i8** %tmp_buff.4206
-%.tmp4207 = load i8*, i8** %tmp.4180
-store i8* %.tmp4207, i8** %params_buff.4179
-%.tmp4208 = load i8*, i8** %tmp_buff.4206
-store i8* %.tmp4208, i8** %tmp.4180
-%.tmp4209 = load i8*, i8** %tmp.4180
-call void(i8*) @free(i8* %.tmp4209)
-br label %.if.end.4199
-.if.false.4199:
-br label %.if.end.4199
-.if.end.4199:
-%.tmp4210 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4211 = load %m307$.Node.type*, %m307$.Node.type** %pp.4193
-%.tmp4212 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_assignable.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4210, %m307$.Node.type* %.tmp4211)
-%a_info.4213 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp4212, %m1861$.AssignableInfo.type** %a_info.4213
-%.tmp4214 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4213
-%.tmp4215 = icmp eq %m1861$.AssignableInfo.type* %.tmp4214, null
-br i1 %.tmp4215, label %.if.true.4216, label %.if.false.4216
-.if.true.4216:
-%.tmp4217 = bitcast ptr null to %m1861$.AssignableInfo.type*
-ret %m1861$.AssignableInfo.type* %.tmp4217
-br label %.if.end.4216
-.if.false.4216:
-br label %.if.end.4216
-.if.end.4216:
-%.tmp4218 = getelementptr i8*, i8** %params_buff.4179, i32 0
-%.tmp4220 = getelementptr [8 x i8], [8 x i8]*@.str4219, i32 0, i32 0
-%.tmp4221 = load i8*, i8** %params_buff.4179
-%.tmp4222 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4223 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4213
-%.tmp4224 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4223, i32 0, i32 3
-%.tmp4225 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4224
-%.tmp4226 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4222, %m1861$.Type.type* %.tmp4225)
-%.tmp4227 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4213
-%.tmp4228 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4227)
-%.tmp4229 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp4218, i8* %.tmp4220, i8* %.tmp4221, i8* %.tmp4226, i8* %.tmp4228)
-%.tmp4230 = load %m307$.Node.type*, %m307$.Node.type** %pp.4193
-%.tmp4231 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4230, i32 0, i32 7
-%.tmp4232 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4231
-store %m307$.Node.type* %.tmp4232, %m307$.Node.type** %pp.4193
-%.tmp4233 = load %m307$.Node.type*, %m307$.Node.type** %pp.4193
-%.tmp4235 = getelementptr [11 x i8], [11 x i8]*@.str4234, i32 0, i32 0
-%.tmp4236 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4233, i8* %.tmp4235)
-store %m307$.Node.type* %.tmp4236, %m307$.Node.type** %pp.4193
-br label %.for.start.4191
-.for.end.4191:
-br label %.if.end.4183
-.if.false.4183:
-br label %.if.end.4183
-.if.end.4183:
-%.tmp4237 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4238 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4152
-%.tmp4239 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4238, i32 0, i32 3
-%.tmp4240 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4239
-%.tmp4241 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp4240, i32 0, i32 3
-%.tmp4242 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4241
-%.tmp4243 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4237, %m1861$.Type.type* %.tmp4242)
-%.tmp4245 = getelementptr [5 x i8], [5 x i8]*@.str4244, i32 0, i32 0
-%.tmp4246 = call i32(i8*,i8*) @strcmp(i8* %.tmp4243, i8* %.tmp4245)
-%.tmp4247 = icmp eq i32 %.tmp4246, 0
-br i1 %.tmp4247, label %.if.true.4248, label %.if.false.4248
-.if.true.4248:
-%.tmp4249 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4250 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4249, i32 0, i32 1
-%.tmp4251 = load %m0$.File.type*, %m0$.File.type** %.tmp4250
-%.tmp4253 = getelementptr [16 x i8], [16 x i8]*@.str4252, i32 0, i32 0
-%.tmp4254 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4255 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4152
-%.tmp4256 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4255, i32 0, i32 3
-%.tmp4257 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4256
-%.tmp4258 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4254, %m1861$.Type.type* %.tmp4257)
-%.tmp4259 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4152
-%.tmp4260 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4259)
-%.tmp4261 = load i8*, i8** %params_buff.4179
-%.tmp4262 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4251, i8* %.tmp4253, i8* %.tmp4258, i8* %.tmp4260, i8* %.tmp4261)
-%.tmp4263 = bitcast ptr null to %m1861$.AssignableInfo.type*
-ret %m1861$.AssignableInfo.type* %.tmp4263
-br label %.if.end.4248
-.if.false.4248:
-br label %.if.end.4248
-.if.end.4248:
-%.tmp4264 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4265 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp4264)
-%call_info.4266 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp4265, %m1861$.AssignableInfo.type** %call_info.4266
-%.tmp4267 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4268 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %call_info.4266
-call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp4267, %m1861$.AssignableInfo.type* %.tmp4268)
-%.tmp4269 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %call_info.4266
-%.tmp4270 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4269, i32 0, i32 3
-%.tmp4271 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4152
-%.tmp4272 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4271, i32 0, i32 3
-%.tmp4273 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4272
-%.tmp4274 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp4273, i32 0, i32 3
-%.tmp4275 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4274
-%.tmp4276 = call %m1861$.Type.type*(%m1861$.Type.type*) @m1861$type_clone.m1861$.Type.typep.m1861$.Type.typep(%m1861$.Type.type* %.tmp4275)
-store %m1861$.Type.type* %.tmp4276, %m1861$.Type.type** %.tmp4270
-%.tmp4277 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %call_info.4266
-%.tmp4278 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4277, i32 0, i32 3
-%.tmp4279 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4278
-%.tmp4280 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp4279, i32 0, i32 4
-store %m1861$.Type.type* null, %m1861$.Type.type** %.tmp4280
-%.tmp4281 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4282 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4281, i32 0, i32 1
-%.tmp4283 = load %m0$.File.type*, %m0$.File.type** %.tmp4282
-%.tmp4285 = getelementptr [21 x i8], [21 x i8]*@.str4284, i32 0, i32 0
-%.tmp4286 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %call_info.4266
-%.tmp4287 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4286)
-%.tmp4288 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4289 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4152
-%.tmp4290 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4289, i32 0, i32 3
-%.tmp4291 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4290
-%.tmp4292 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4288, %m1861$.Type.type* %.tmp4291)
-%.tmp4293 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4152
-%.tmp4294 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4293)
-%.tmp4295 = load i8*, i8** %params_buff.4179
-%.tmp4296 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4283, i8* %.tmp4285, i8* %.tmp4287, i8* %.tmp4292, i8* %.tmp4294, i8* %.tmp4295)
-%.tmp4297 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %call_info.4266
-%.tmp4298 = bitcast %m1861$.AssignableInfo.type* %.tmp4297 to %m1861$.AssignableInfo.type*
-ret %m1861$.AssignableInfo.type* %.tmp4298
+%.tmp4299 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4300 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4301 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_builtin.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4299, %m307$.Node.type* %.tmp4300)
+%info.4302 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp4301, %m1861$.AssignableInfo.type** %info.4302
+%.tmp4303 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4302
+%.tmp4304 = icmp ne %m1861$.AssignableInfo.type* %.tmp4303, null
+br i1 %.tmp4304, label %.if.true.4305, label %.if.false.4305
+.if.true.4305:
+%.tmp4306 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4302
+ret %m1861$.AssignableInfo.type* %.tmp4306
+br label %.if.end.4305
+.if.false.4305:
+br label %.if.end.4305
+.if.end.4305:
+%.tmp4307 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4308 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4309 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_addr.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4307, %m307$.Node.type* %.tmp4308)
+store %m1861$.AssignableInfo.type* %.tmp4309, %m1861$.AssignableInfo.type** %info.4302
+%.tmp4310 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4302
+%.tmp4311 = icmp eq %m1861$.AssignableInfo.type* %.tmp4310, null
+br i1 %.tmp4311, label %.if.true.4312, label %.if.false.4312
+.if.true.4312:
+%.tmp4313 = load i1, i1* @DEBUG_INTERNALS
+br i1 %.tmp4313, label %.if.true.4314, label %.if.false.4314
+.if.true.4314:
+%.tmp4315 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4316 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4318 = getelementptr [35 x i8], [35 x i8]*@.str4317, i32 0, i32 0
+%.tmp4319 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp4315, %m307$.Node.type* %.tmp4316, i8* %.tmp4318)
+%.tmp4320 = call i32(i8*,...) @printf(i8* %.tmp4319)
+br label %.if.end.4314
+.if.false.4314:
+br label %.if.end.4314
+.if.end.4314:
+%.tmp4321 = bitcast ptr null to %m1861$.AssignableInfo.type*
+ret %m1861$.AssignableInfo.type* %.tmp4321
+br label %.if.end.4312
+.if.false.4312:
+br label %.if.end.4312
+.if.end.4312:
+%.tmp4322 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4324 = getelementptr [8 x i8], [8 x i8]*@.str4323, i32 0, i32 0
+%.tmp4325 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4322, i8* %.tmp4324)
+%args.4326 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp4325, %m307$.Node.type** %args.4326
+%.tmp4328 = getelementptr [1 x i8], [1 x i8]*@.str4327, i32 0, i32 0
+%params_buff.4329 = alloca i8*
+store i8* %.tmp4328, i8** %params_buff.4329
+%tmp.4330 = alloca i8*
+store i8* null, i8** %tmp.4330
+%.tmp4331 = load %m307$.Node.type*, %m307$.Node.type** %args.4326
+%.tmp4332 = icmp ne %m307$.Node.type* %.tmp4331, null
+br i1 %.tmp4332, label %.if.true.4333, label %.if.false.4333
+.if.true.4333:
+%.tmp4334 = load %m307$.Node.type*, %m307$.Node.type** %args.4326
+%.tmp4335 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4334, i32 0, i32 6
+%.tmp4336 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4335
+%.tmp4338 = getelementptr [11 x i8], [11 x i8]*@.str4337, i32 0, i32 0
+%.tmp4339 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4336, i8* %.tmp4338)
+%start.4340 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp4339, %m307$.Node.type** %start.4340
+%.tmp4342 = load %m307$.Node.type*, %m307$.Node.type** %start.4340
+%pp.4343 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp4342, %m307$.Node.type** %pp.4343
+br label %.for.start.4341
+.for.start.4341:
+%.tmp4344 = load %m307$.Node.type*, %m307$.Node.type** %pp.4343
+%.tmp4345 = icmp ne %m307$.Node.type* %.tmp4344, null
+br i1 %.tmp4345, label %.for.continue.4341, label %.for.end.4341
+.for.continue.4341:
+%.tmp4346 = load %m307$.Node.type*, %m307$.Node.type** %pp.4343
+%.tmp4347 = load %m307$.Node.type*, %m307$.Node.type** %start.4340
+%.tmp4348 = icmp ne %m307$.Node.type* %.tmp4346, %.tmp4347
+br i1 %.tmp4348, label %.if.true.4349, label %.if.false.4349
+.if.true.4349:
+%.tmp4350 = getelementptr i8*, i8** %tmp.4330, i32 0
+%.tmp4352 = getelementptr [5 x i8], [5 x i8]*@.str4351, i32 0, i32 0
+%.tmp4353 = load i8*, i8** %params_buff.4329
+%.tmp4354 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp4350, i8* %.tmp4352, i8* %.tmp4353)
+%.tmp4355 = load i8*, i8** %params_buff.4329
+%tmp_buff.4356 = alloca i8*
+store i8* %.tmp4355, i8** %tmp_buff.4356
+%.tmp4357 = load i8*, i8** %tmp.4330
+store i8* %.tmp4357, i8** %params_buff.4329
+%.tmp4358 = load i8*, i8** %tmp_buff.4356
+store i8* %.tmp4358, i8** %tmp.4330
+%.tmp4359 = load i8*, i8** %tmp.4330
+call void(i8*) @free(i8* %.tmp4359)
+br label %.if.end.4349
+.if.false.4349:
+br label %.if.end.4349
+.if.end.4349:
+%.tmp4360 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4361 = load %m307$.Node.type*, %m307$.Node.type** %pp.4343
+%.tmp4362 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_assignable.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4360, %m307$.Node.type* %.tmp4361)
+%a_info.4363 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp4362, %m1861$.AssignableInfo.type** %a_info.4363
+%.tmp4364 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4363
+%.tmp4365 = icmp eq %m1861$.AssignableInfo.type* %.tmp4364, null
+br i1 %.tmp4365, label %.if.true.4366, label %.if.false.4366
+.if.true.4366:
+%.tmp4367 = bitcast ptr null to %m1861$.AssignableInfo.type*
+ret %m1861$.AssignableInfo.type* %.tmp4367
+br label %.if.end.4366
+.if.false.4366:
+br label %.if.end.4366
+.if.end.4366:
+%.tmp4368 = getelementptr i8*, i8** %params_buff.4329, i32 0
+%.tmp4370 = getelementptr [8 x i8], [8 x i8]*@.str4369, i32 0, i32 0
+%.tmp4371 = load i8*, i8** %params_buff.4329
+%.tmp4372 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4373 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4363
+%.tmp4374 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4373, i32 0, i32 3
+%.tmp4375 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4374
+%.tmp4376 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4372, %m1861$.Type.type* %.tmp4375)
+%.tmp4377 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4363
+%.tmp4378 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4377)
+%.tmp4379 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp4368, i8* %.tmp4370, i8* %.tmp4371, i8* %.tmp4376, i8* %.tmp4378)
+%.tmp4380 = load %m307$.Node.type*, %m307$.Node.type** %pp.4343
+%.tmp4381 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4380, i32 0, i32 7
+%.tmp4382 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4381
+store %m307$.Node.type* %.tmp4382, %m307$.Node.type** %pp.4343
+%.tmp4383 = load %m307$.Node.type*, %m307$.Node.type** %pp.4343
+%.tmp4385 = getelementptr [11 x i8], [11 x i8]*@.str4384, i32 0, i32 0
+%.tmp4386 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4383, i8* %.tmp4385)
+store %m307$.Node.type* %.tmp4386, %m307$.Node.type** %pp.4343
+br label %.for.start.4341
+.for.end.4341:
+br label %.if.end.4333
+.if.false.4333:
+br label %.if.end.4333
+.if.end.4333:
+%.tmp4387 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4388 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4302
+%.tmp4389 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4388, i32 0, i32 3
+%.tmp4390 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4389
+%.tmp4391 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp4390, i32 0, i32 3
+%.tmp4392 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4391
+%.tmp4393 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4387, %m1861$.Type.type* %.tmp4392)
+%.tmp4395 = getelementptr [5 x i8], [5 x i8]*@.str4394, i32 0, i32 0
+%.tmp4396 = call i32(i8*,i8*) @strcmp(i8* %.tmp4393, i8* %.tmp4395)
+%.tmp4397 = icmp eq i32 %.tmp4396, 0
+br i1 %.tmp4397, label %.if.true.4398, label %.if.false.4398
+.if.true.4398:
+%.tmp4399 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4400 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4399, i32 0, i32 1
+%.tmp4401 = load %m0$.File.type*, %m0$.File.type** %.tmp4400
+%.tmp4403 = getelementptr [16 x i8], [16 x i8]*@.str4402, i32 0, i32 0
+%.tmp4404 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4405 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4302
+%.tmp4406 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4405, i32 0, i32 3
+%.tmp4407 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4406
+%.tmp4408 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4404, %m1861$.Type.type* %.tmp4407)
+%.tmp4409 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4302
+%.tmp4410 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4409)
+%.tmp4411 = load i8*, i8** %params_buff.4329
+%.tmp4412 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4401, i8* %.tmp4403, i8* %.tmp4408, i8* %.tmp4410, i8* %.tmp4411)
+%.tmp4413 = bitcast ptr null to %m1861$.AssignableInfo.type*
+ret %m1861$.AssignableInfo.type* %.tmp4413
+br label %.if.end.4398
+.if.false.4398:
+br label %.if.end.4398
+.if.end.4398:
+%.tmp4414 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4415 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp4414)
+%call_info.4416 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp4415, %m1861$.AssignableInfo.type** %call_info.4416
+%.tmp4417 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4418 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %call_info.4416
+call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp4417, %m1861$.AssignableInfo.type* %.tmp4418)
+%.tmp4419 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %call_info.4416
+%.tmp4420 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4419, i32 0, i32 3
+%.tmp4421 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4302
+%.tmp4422 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4421, i32 0, i32 3
+%.tmp4423 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4422
+%.tmp4424 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp4423, i32 0, i32 3
+%.tmp4425 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4424
+%.tmp4426 = call %m1861$.Type.type*(%m1861$.Type.type*) @m1861$type_clone.m1861$.Type.typep.m1861$.Type.typep(%m1861$.Type.type* %.tmp4425)
+store %m1861$.Type.type* %.tmp4426, %m1861$.Type.type** %.tmp4420
+%.tmp4427 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %call_info.4416
+%.tmp4428 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4427, i32 0, i32 3
+%.tmp4429 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4428
+%.tmp4430 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp4429, i32 0, i32 4
+store %m1861$.Type.type* null, %m1861$.Type.type** %.tmp4430
+%.tmp4431 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4432 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4431, i32 0, i32 1
+%.tmp4433 = load %m0$.File.type*, %m0$.File.type** %.tmp4432
+%.tmp4435 = getelementptr [21 x i8], [21 x i8]*@.str4434, i32 0, i32 0
+%.tmp4436 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %call_info.4416
+%.tmp4437 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4436)
+%.tmp4438 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4439 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4302
+%.tmp4440 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4439, i32 0, i32 3
+%.tmp4441 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4440
+%.tmp4442 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4438, %m1861$.Type.type* %.tmp4441)
+%.tmp4443 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4302
+%.tmp4444 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4443)
+%.tmp4445 = load i8*, i8** %params_buff.4329
+%.tmp4446 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4433, i8* %.tmp4435, i8* %.tmp4437, i8* %.tmp4442, i8* %.tmp4444, i8* %.tmp4445)
+%.tmp4447 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %call_info.4416
+%.tmp4448 = bitcast %m1861$.AssignableInfo.type* %.tmp4447 to %m1861$.AssignableInfo.type*
+ret %m1861$.AssignableInfo.type* %.tmp4448
 }
 define void @m1861$compile_expression.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.stmt.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %stmt = alloca %m307$.Node.type*
 store %m307$.Node.type* %.stmt.arg, %m307$.Node.type** %stmt
-%err_msg.4299 = alloca i8*
-store i8* null, i8** %err_msg.4299
-%.tmp4300 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4301 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4300, i32 0, i32 0
-%.tmp4302 = load i8*, i8** %.tmp4301
-%expr_type.4303 = alloca i8*
-store i8* %.tmp4302, i8** %expr_type.4303
-%.tmp4304 = bitcast ptr null to %m1861$.AssignableInfo.type*
-%info.4305 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp4304, %m1861$.AssignableInfo.type** %info.4305
-%assignable.4306 = alloca %m307$.Node.type*
-store %m307$.Node.type* null, %m307$.Node.type** %assignable.4306
-%.tmp4307 = bitcast ptr null to %m1861$.AssignableInfo.type*
-%a_info.4308 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp4307, %m1861$.AssignableInfo.type** %a_info.4308
-%.tmp4309 = load i8*, i8** %expr_type.4303
-%.tmp4311 = getelementptr [7 x i8], [7 x i8]*@.str4310, i32 0, i32 0
-%.tmp4312 = call i32(i8*,i8*) @strcmp(i8* %.tmp4309, i8* %.tmp4311)
-%.tmp4313 = icmp eq i32 %.tmp4312, 0
-br i1 %.tmp4313, label %.if.true.4314, label %.if.false.4314
-.if.true.4314:
-%.tmp4315 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4316 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4315, i32 0, i32 6
-%.tmp4317 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4316
-%.tmp4318 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4317, i32 0, i32 7
-%.tmp4319 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4318
-%.tmp4320 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4319, i32 0, i32 0
-%.tmp4321 = load i8*, i8** %.tmp4320
-%.tmp4323 = getelementptr [3 x i8], [3 x i8]*@.str4322, i32 0, i32 0
-%.tmp4324 = call i32(i8*,i8*) @strcmp(i8* %.tmp4321, i8* %.tmp4323)
-%.tmp4325 = icmp ne i32 %.tmp4324, 0
-br i1 %.tmp4325, label %.if.true.4326, label %.if.false.4326
-.if.true.4326:
-%.tmp4327 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4328 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4329 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4328, i32 0, i32 6
-%.tmp4330 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4329
-%.tmp4331 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4330, i32 0, i32 7
-%.tmp4332 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4331
-%.tmp4333 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_assignable.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4327, %m307$.Node.type* %.tmp4332)
-store %m1861$.AssignableInfo.type* %.tmp4333, %m1861$.AssignableInfo.type** %info.4305
-%.tmp4334 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4305
-%.tmp4335 = icmp eq %m1861$.AssignableInfo.type* %.tmp4334, null
-br i1 %.tmp4335, label %.if.true.4336, label %.if.false.4336
-.if.true.4336:
+%err_msg.4449 = alloca i8*
+store i8* null, i8** %err_msg.4449
+%.tmp4450 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4451 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4450, i32 0, i32 0
+%.tmp4452 = load i8*, i8** %.tmp4451
+%expr_type.4453 = alloca i8*
+store i8* %.tmp4452, i8** %expr_type.4453
+%.tmp4454 = bitcast ptr null to %m1861$.AssignableInfo.type*
+%info.4455 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp4454, %m1861$.AssignableInfo.type** %info.4455
+%assignable.4456 = alloca %m307$.Node.type*
+store %m307$.Node.type* null, %m307$.Node.type** %assignable.4456
+%.tmp4457 = bitcast ptr null to %m1861$.AssignableInfo.type*
+%a_info.4458 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp4457, %m1861$.AssignableInfo.type** %a_info.4458
+%.tmp4459 = load i8*, i8** %expr_type.4453
+%.tmp4461 = getelementptr [7 x i8], [7 x i8]*@.str4460, i32 0, i32 0
+%.tmp4462 = call i32(i8*,i8*) @strcmp(i8* %.tmp4459, i8* %.tmp4461)
+%.tmp4463 = icmp eq i32 %.tmp4462, 0
+br i1 %.tmp4463, label %.if.true.4464, label %.if.false.4464
+.if.true.4464:
+%.tmp4465 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4466 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4465, i32 0, i32 6
+%.tmp4467 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4466
+%.tmp4468 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4467, i32 0, i32 7
+%.tmp4469 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4468
+%.tmp4470 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4469, i32 0, i32 0
+%.tmp4471 = load i8*, i8** %.tmp4470
+%.tmp4473 = getelementptr [3 x i8], [3 x i8]*@.str4472, i32 0, i32 0
+%.tmp4474 = call i32(i8*,i8*) @strcmp(i8* %.tmp4471, i8* %.tmp4473)
+%.tmp4475 = icmp ne i32 %.tmp4474, 0
+br i1 %.tmp4475, label %.if.true.4476, label %.if.false.4476
+.if.true.4476:
+%.tmp4477 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4478 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4479 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4478, i32 0, i32 6
+%.tmp4480 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4479
+%.tmp4481 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4480, i32 0, i32 7
+%.tmp4482 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4481
+%.tmp4483 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_assignable.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4477, %m307$.Node.type* %.tmp4482)
+store %m1861$.AssignableInfo.type* %.tmp4483, %m1861$.AssignableInfo.type** %info.4455
+%.tmp4484 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4455
+%.tmp4485 = icmp eq %m1861$.AssignableInfo.type* %.tmp4484, null
+br i1 %.tmp4485, label %.if.true.4486, label %.if.false.4486
+.if.true.4486:
 ret void
-br label %.if.end.4336
-.if.false.4336:
-br label %.if.end.4336
-.if.end.4336:
-%.tmp4337 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4338 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4337, i32 0, i32 1
-%.tmp4339 = load %m0$.File.type*, %m0$.File.type** %.tmp4338
-%.tmp4341 = getelementptr [11 x i8], [11 x i8]*@.str4340, i32 0, i32 0
-%.tmp4342 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4343 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4305
-%.tmp4344 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4343, i32 0, i32 3
-%.tmp4345 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4344
-%.tmp4346 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4342, %m1861$.Type.type* %.tmp4345)
-%.tmp4347 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4305
-%.tmp4348 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4347)
-%.tmp4349 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4339, i8* %.tmp4341, i8* %.tmp4346, i8* %.tmp4348)
-br label %.if.end.4326
-.if.false.4326:
-%.tmp4350 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4351 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4350, i32 0, i32 1
-%.tmp4352 = load %m0$.File.type*, %m0$.File.type** %.tmp4351
-%.tmp4354 = getelementptr [10 x i8], [10 x i8]*@.str4353, i32 0, i32 0
-%.tmp4355 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4352, i8* %.tmp4354)
-br label %.if.end.4326
-.if.end.4326:
-br label %.if.end.4314
-.if.false.4314:
-%.tmp4356 = load i8*, i8** %expr_type.4303
-%.tmp4358 = getelementptr [3 x i8], [3 x i8]*@.str4357, i32 0, i32 0
-%.tmp4359 = call i32(i8*,i8*) @strcmp(i8* %.tmp4356, i8* %.tmp4358)
-%.tmp4360 = icmp eq i32 %.tmp4359, 0
-br i1 %.tmp4360, label %.if.true.4361, label %.if.false.4361
-.if.true.4361:
-br label %.if.end.4361
-.if.false.4361:
-%.tmp4362 = load i8*, i8** %expr_type.4303
-%.tmp4364 = getelementptr [8 x i8], [8 x i8]*@.str4363, i32 0, i32 0
-%.tmp4365 = call i32(i8*,i8*) @strcmp(i8* %.tmp4362, i8* %.tmp4364)
-%.tmp4366 = icmp eq i32 %.tmp4365, 0
-br i1 %.tmp4366, label %.if.true.4367, label %.if.false.4367
-.if.true.4367:
-%.tmp4368 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4369 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4370 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4369, i32 0, i32 6
-%.tmp4371 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4370
-%.tmp4372 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_fn_call.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4368, %m307$.Node.type* %.tmp4371)
-br label %.if.end.4367
-.if.false.4367:
-%.tmp4373 = load i8*, i8** %expr_type.4303
-%.tmp4375 = getelementptr [12 x i8], [12 x i8]*@.str4374, i32 0, i32 0
-%.tmp4376 = call i32(i8*,i8*) @strcmp(i8* %.tmp4373, i8* %.tmp4375)
-%.tmp4377 = icmp eq i32 %.tmp4376, 0
-br i1 %.tmp4377, label %.if.true.4378, label %.if.false.4378
-.if.true.4378:
-%.tmp4379 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4380 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4381 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_declaration.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4379, %m307$.Node.type* %.tmp4380)
-br label %.if.end.4378
-.if.false.4378:
-%.tmp4382 = load i8*, i8** %expr_type.4303
-%.tmp4384 = getelementptr [11 x i8], [11 x i8]*@.str4383, i32 0, i32 0
-%.tmp4385 = call i32(i8*,i8*) @strcmp(i8* %.tmp4382, i8* %.tmp4384)
-%.tmp4386 = icmp eq i32 %.tmp4385, 0
-br i1 %.tmp4386, label %.if.true.4387, label %.if.false.4387
-.if.true.4387:
-%.tmp4388 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4389 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4388, i32 0, i32 6
-%.tmp4390 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4389
-%.tmp4392 = getelementptr [11 x i8], [11 x i8]*@.str4391, i32 0, i32 0
-%.tmp4393 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4390, i8* %.tmp4392)
-store %m307$.Node.type* %.tmp4393, %m307$.Node.type** %assignable.4306
-%.tmp4394 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4395 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4396 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4395, i32 0, i32 6
-%.tmp4397 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4396
-%.tmp4398 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_addr.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4394, %m307$.Node.type* %.tmp4397)
-%dest.4399 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp4398, %m1861$.AssignableInfo.type** %dest.4399
-%.tmp4400 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %dest.4399
-%.tmp4401 = icmp eq %m1861$.AssignableInfo.type* %.tmp4400, null
-br i1 %.tmp4401, label %.if.true.4402, label %.if.false.4402
-.if.true.4402:
+br label %.if.end.4486
+.if.false.4486:
+br label %.if.end.4486
+.if.end.4486:
+%.tmp4487 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4488 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4487, i32 0, i32 1
+%.tmp4489 = load %m0$.File.type*, %m0$.File.type** %.tmp4488
+%.tmp4491 = getelementptr [11 x i8], [11 x i8]*@.str4490, i32 0, i32 0
+%.tmp4492 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4493 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4455
+%.tmp4494 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4493, i32 0, i32 3
+%.tmp4495 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4494
+%.tmp4496 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4492, %m1861$.Type.type* %.tmp4495)
+%.tmp4497 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4455
+%.tmp4498 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4497)
+%.tmp4499 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4489, i8* %.tmp4491, i8* %.tmp4496, i8* %.tmp4498)
+br label %.if.end.4476
+.if.false.4476:
+%.tmp4500 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4501 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4500, i32 0, i32 1
+%.tmp4502 = load %m0$.File.type*, %m0$.File.type** %.tmp4501
+%.tmp4504 = getelementptr [10 x i8], [10 x i8]*@.str4503, i32 0, i32 0
+%.tmp4505 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4502, i8* %.tmp4504)
+br label %.if.end.4476
+.if.end.4476:
+br label %.if.end.4464
+.if.false.4464:
+%.tmp4506 = load i8*, i8** %expr_type.4453
+%.tmp4508 = getelementptr [3 x i8], [3 x i8]*@.str4507, i32 0, i32 0
+%.tmp4509 = call i32(i8*,i8*) @strcmp(i8* %.tmp4506, i8* %.tmp4508)
+%.tmp4510 = icmp eq i32 %.tmp4509, 0
+br i1 %.tmp4510, label %.if.true.4511, label %.if.false.4511
+.if.true.4511:
+br label %.if.end.4511
+.if.false.4511:
+%.tmp4512 = load i8*, i8** %expr_type.4453
+%.tmp4514 = getelementptr [8 x i8], [8 x i8]*@.str4513, i32 0, i32 0
+%.tmp4515 = call i32(i8*,i8*) @strcmp(i8* %.tmp4512, i8* %.tmp4514)
+%.tmp4516 = icmp eq i32 %.tmp4515, 0
+br i1 %.tmp4516, label %.if.true.4517, label %.if.false.4517
+.if.true.4517:
+%.tmp4518 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4519 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4520 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4519, i32 0, i32 6
+%.tmp4521 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4520
+%.tmp4522 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_fn_call.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4518, %m307$.Node.type* %.tmp4521)
+br label %.if.end.4517
+.if.false.4517:
+%.tmp4523 = load i8*, i8** %expr_type.4453
+%.tmp4525 = getelementptr [12 x i8], [12 x i8]*@.str4524, i32 0, i32 0
+%.tmp4526 = call i32(i8*,i8*) @strcmp(i8* %.tmp4523, i8* %.tmp4525)
+%.tmp4527 = icmp eq i32 %.tmp4526, 0
+br i1 %.tmp4527, label %.if.true.4528, label %.if.false.4528
+.if.true.4528:
+%.tmp4529 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4530 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4531 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_declaration.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4529, %m307$.Node.type* %.tmp4530)
+br label %.if.end.4528
+.if.false.4528:
+%.tmp4532 = load i8*, i8** %expr_type.4453
+%.tmp4534 = getelementptr [11 x i8], [11 x i8]*@.str4533, i32 0, i32 0
+%.tmp4535 = call i32(i8*,i8*) @strcmp(i8* %.tmp4532, i8* %.tmp4534)
+%.tmp4536 = icmp eq i32 %.tmp4535, 0
+br i1 %.tmp4536, label %.if.true.4537, label %.if.false.4537
+.if.true.4537:
+%.tmp4538 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4539 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4538, i32 0, i32 6
+%.tmp4540 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4539
+%.tmp4542 = getelementptr [11 x i8], [11 x i8]*@.str4541, i32 0, i32 0
+%.tmp4543 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4540, i8* %.tmp4542)
+store %m307$.Node.type* %.tmp4543, %m307$.Node.type** %assignable.4456
+%.tmp4544 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4545 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4546 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4545, i32 0, i32 6
+%.tmp4547 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4546
+%.tmp4548 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_addr.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4544, %m307$.Node.type* %.tmp4547)
+%dest.4549 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp4548, %m1861$.AssignableInfo.type** %dest.4549
+%.tmp4550 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %dest.4549
+%.tmp4551 = icmp eq %m1861$.AssignableInfo.type* %.tmp4550, null
+br i1 %.tmp4551, label %.if.true.4552, label %.if.false.4552
+.if.true.4552:
 ret void
-br label %.if.end.4402
-.if.false.4402:
-br label %.if.end.4402
-.if.end.4402:
-%.tmp4403 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4404 = load %m307$.Node.type*, %m307$.Node.type** %assignable.4306
-%.tmp4405 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_assignable.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4403, %m307$.Node.type* %.tmp4404)
-store %m1861$.AssignableInfo.type* %.tmp4405, %m1861$.AssignableInfo.type** %a_info.4308
-%.tmp4406 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4308
-%.tmp4407 = icmp eq %m1861$.AssignableInfo.type* %.tmp4406, null
-br i1 %.tmp4407, label %.if.true.4408, label %.if.false.4408
-.if.true.4408:
+br label %.if.end.4552
+.if.false.4552:
+br label %.if.end.4552
+.if.end.4552:
+%.tmp4553 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4554 = load %m307$.Node.type*, %m307$.Node.type** %assignable.4456
+%.tmp4555 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_assignable.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4553, %m307$.Node.type* %.tmp4554)
+store %m1861$.AssignableInfo.type* %.tmp4555, %m1861$.AssignableInfo.type** %a_info.4458
+%.tmp4556 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4458
+%.tmp4557 = icmp eq %m1861$.AssignableInfo.type* %.tmp4556, null
+br i1 %.tmp4557, label %.if.true.4558, label %.if.false.4558
+.if.true.4558:
 ret void
-br label %.if.end.4408
-.if.false.4408:
-br label %.if.end.4408
-.if.end.4408:
-%.tmp4409 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4410 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %dest.4399
-%.tmp4411 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4410, i32 0, i32 3
-%.tmp4412 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4411
-%.tmp4413 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4409, %m1861$.Type.type* %.tmp4412)
-%dest_tr.4414 = alloca i8*
-store i8* %.tmp4413, i8** %dest_tr.4414
-%.tmp4415 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4416 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4308
-%.tmp4417 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4416, i32 0, i32 3
-%.tmp4418 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4417
-%.tmp4419 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4415, %m1861$.Type.type* %.tmp4418)
-%src_tr.4420 = alloca i8*
-store i8* %.tmp4419, i8** %src_tr.4420
-%.tmp4421 = load i8*, i8** %src_tr.4420
-%.tmp4423 = getelementptr [4 x i8], [4 x i8]*@.str4422, i32 0, i32 0
-%.tmp4424 = call i32(i8*,i8*) @strcmp(i8* %.tmp4421, i8* %.tmp4423)
-%.tmp4425 = icmp eq i32 %.tmp4424, 0
-br i1 %.tmp4425, label %.if.true.4426, label %.if.false.4426
-.if.true.4426:
-%.tmp4427 = load i8*, i8** %dest_tr.4414
-store i8* %.tmp4427, i8** %src_tr.4420
-br label %.if.end.4426
-.if.false.4426:
-br label %.if.end.4426
-.if.end.4426:
-%.tmp4428 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4429 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4428, i32 0, i32 1
-%.tmp4430 = load %m0$.File.type*, %m0$.File.type** %.tmp4429
-%.tmp4432 = getelementptr [21 x i8], [21 x i8]*@.str4431, i32 0, i32 0
-%.tmp4433 = load i8*, i8** %src_tr.4420
-%.tmp4434 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4308
-%.tmp4435 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4434)
-%.tmp4436 = load i8*, i8** %dest_tr.4414
-%.tmp4437 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %dest.4399
-%.tmp4438 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4437)
-%.tmp4439 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4430, i8* %.tmp4432, i8* %.tmp4433, i8* %.tmp4435, i8* %.tmp4436, i8* %.tmp4438)
-br label %.if.end.4387
-.if.false.4387:
-%.tmp4440 = load i8*, i8** %expr_type.4303
-%.tmp4442 = getelementptr [9 x i8], [9 x i8]*@.str4441, i32 0, i32 0
-%.tmp4443 = call i32(i8*,i8*) @strcmp(i8* %.tmp4440, i8* %.tmp4442)
-%.tmp4444 = icmp eq i32 %.tmp4443, 0
-br i1 %.tmp4444, label %.if.true.4445, label %.if.false.4445
-.if.true.4445:
-%.tmp4446 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4447 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_if_block.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4446, %m307$.Node.type* %.tmp4447)
-br label %.if.end.4445
-.if.false.4445:
-%.tmp4448 = load i8*, i8** %expr_type.4303
-%.tmp4450 = getelementptr [9 x i8], [9 x i8]*@.str4449, i32 0, i32 0
-%.tmp4451 = call i32(i8*,i8*) @strcmp(i8* %.tmp4448, i8* %.tmp4450)
-%.tmp4452 = icmp eq i32 %.tmp4451, 0
-br i1 %.tmp4452, label %.if.true.4453, label %.if.false.4453
-.if.true.4453:
-%.tmp4454 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4455 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_for_loop.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4454, %m307$.Node.type* %.tmp4455)
-br label %.if.end.4453
-.if.false.4453:
-%.tmp4456 = load i8*, i8** %expr_type.4303
-%.tmp4458 = getelementptr [8 x i8], [8 x i8]*@.str4457, i32 0, i32 0
-%.tmp4459 = call i32(i8*,i8*) @strcmp(i8* %.tmp4456, i8* %.tmp4458)
-%.tmp4460 = icmp eq i32 %.tmp4459, 0
-br i1 %.tmp4460, label %.if.true.4461, label %.if.false.4461
-.if.true.4461:
-%.tmp4462 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4463 = call %m1861$.ModuleLookup.type*(%m1861$.CompilerCtx.type*) @m1861$get_current_module.m1861$.ModuleLookup.typep.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp4462)
-%mod.4464 = alloca %m1861$.ModuleLookup.type*
-store %m1861$.ModuleLookup.type* %.tmp4463, %m1861$.ModuleLookup.type** %mod.4464
-%found.4465 = alloca i1
-store i1 0, i1* %found.4465
-%.tmp4466 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.4464
-%.tmp4467 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp4466, i32 0, i32 3
-%.tmp4468 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp4467
-%s.4469 = alloca %m1861$.Scope.type*
-store %m1861$.Scope.type* %.tmp4468, %m1861$.Scope.type** %s.4469
-%.tmp4470 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4471 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4470, i32 0, i32 6
-%.tmp4472 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4471
-%.tmp4473 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4472, i32 0, i32 1
-%.tmp4474 = load i8*, i8** %.tmp4473
-%.tmp4476 = getelementptr [6 x i8], [6 x i8]*@.str4475, i32 0, i32 0
-%.tmp4477 = call i32(i8*,i8*) @strcmp(i8* %.tmp4474, i8* %.tmp4476)
-%.tmp4478 = icmp eq i32 %.tmp4477, 0
-br i1 %.tmp4478, label %.if.true.4479, label %.if.false.4479
-.if.true.4479:
-br label %.for.start.4480
-.for.start.4480:
-%.tmp4481 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.4469
-%.tmp4482 = icmp ne %m1861$.Scope.type* %.tmp4481, null
-%.tmp4483 = load i1, i1* %found.4465
-%.tmp4484 = icmp eq i1 %.tmp4483, 0
-%.tmp4485 = and i1 %.tmp4482, %.tmp4484
-br i1 %.tmp4485, label %.for.continue.4480, label %.for.end.4480
-.for.continue.4480:
-%.tmp4486 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.4469
-%.tmp4487 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp4486, i32 0, i32 2
-%.tmp4488 = load i8*, i8** %.tmp4487
-%.tmp4490 = getelementptr [4 x i8], [4 x i8]*@.str4489, i32 0, i32 0
-%.tmp4491 = call i32(i8*,i8*) @strcmp(i8* %.tmp4488, i8* %.tmp4490)
-%.tmp4492 = icmp eq i32 %.tmp4491, 0
-br i1 %.tmp4492, label %.if.true.4493, label %.if.false.4493
-.if.true.4493:
-store i1 1, i1* %found.4465
-%.tmp4494 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4495 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4494, i32 0, i32 1
-%.tmp4496 = load %m0$.File.type*, %m0$.File.type** %.tmp4495
-%.tmp4498 = getelementptr [15 x i8], [15 x i8]*@.str4497, i32 0, i32 0
-%.tmp4499 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.4469
-%.tmp4500 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp4499, i32 0, i32 4
-%.tmp4501 = load i8*, i8** %.tmp4500
-%.tmp4502 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4496, i8* %.tmp4498, i8* %.tmp4501)
-br label %.if.end.4493
-.if.false.4493:
-br label %.if.end.4493
-.if.end.4493:
-%.tmp4503 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.4469
-%.tmp4504 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp4503, i32 0, i32 5
-%.tmp4505 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp4504
-store %m1861$.Scope.type* %.tmp4505, %m1861$.Scope.type** %s.4469
-br label %.for.start.4480
-.for.end.4480:
-%.tmp4506 = load i1, i1* %found.4465
-%.tmp4507 = icmp eq i1 %.tmp4506, 0
-br i1 %.tmp4507, label %.if.true.4508, label %.if.false.4508
-.if.true.4508:
-%.tmp4509 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4510 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4512 = getelementptr [48 x i8], [48 x i8]*@.str4511, i32 0, i32 0
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp4509, %m307$.Node.type* %.tmp4510, i8* %.tmp4512)
-br label %.if.end.4508
-.if.false.4508:
-br label %.if.end.4508
-.if.end.4508:
-br label %.if.end.4479
-.if.false.4479:
-%.tmp4513 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4514 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4513, i32 0, i32 6
-%.tmp4515 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4514
-%.tmp4516 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4515, i32 0, i32 1
-%.tmp4517 = load i8*, i8** %.tmp4516
-%.tmp4519 = getelementptr [9 x i8], [9 x i8]*@.str4518, i32 0, i32 0
-%.tmp4520 = call i32(i8*,i8*) @strcmp(i8* %.tmp4517, i8* %.tmp4519)
-%.tmp4521 = icmp eq i32 %.tmp4520, 0
-br i1 %.tmp4521, label %.if.true.4522, label %.if.false.4522
-.if.true.4522:
-br label %.for.start.4523
-.for.start.4523:
-%.tmp4524 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.4469
-%.tmp4525 = icmp ne %m1861$.Scope.type* %.tmp4524, null
-%.tmp4526 = load i1, i1* %found.4465
-%.tmp4527 = icmp eq i1 %.tmp4526, 0
-%.tmp4528 = and i1 %.tmp4525, %.tmp4527
-br i1 %.tmp4528, label %.for.continue.4523, label %.for.end.4523
-.for.continue.4523:
-%.tmp4529 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.4469
-%.tmp4530 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp4529, i32 0, i32 2
-%.tmp4531 = load i8*, i8** %.tmp4530
-%.tmp4533 = getelementptr [4 x i8], [4 x i8]*@.str4532, i32 0, i32 0
-%.tmp4534 = call i32(i8*,i8*) @strcmp(i8* %.tmp4531, i8* %.tmp4533)
-%.tmp4535 = icmp eq i32 %.tmp4534, 0
-br i1 %.tmp4535, label %.if.true.4536, label %.if.false.4536
-.if.true.4536:
-store i1 1, i1* %found.4465
-%.tmp4537 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4538 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4537, i32 0, i32 1
-%.tmp4539 = load %m0$.File.type*, %m0$.File.type** %.tmp4538
-%.tmp4541 = getelementptr [15 x i8], [15 x i8]*@.str4540, i32 0, i32 0
-%.tmp4542 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.4469
-%.tmp4543 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp4542, i32 0, i32 3
-%.tmp4544 = load i8*, i8** %.tmp4543
-%.tmp4545 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4539, i8* %.tmp4541, i8* %.tmp4544)
-br label %.if.end.4536
-.if.false.4536:
-br label %.if.end.4536
-.if.end.4536:
-%.tmp4546 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.4469
-%.tmp4547 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp4546, i32 0, i32 5
-%.tmp4548 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp4547
-store %m1861$.Scope.type* %.tmp4548, %m1861$.Scope.type** %s.4469
-br label %.for.start.4523
-.for.end.4523:
-%.tmp4549 = load i1, i1* %found.4465
-%.tmp4550 = icmp eq i1 %.tmp4549, 0
-br i1 %.tmp4550, label %.if.true.4551, label %.if.false.4551
-.if.true.4551:
-%.tmp4552 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4553 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4555 = getelementptr [48 x i8], [48 x i8]*@.str4554, i32 0, i32 0
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp4552, %m307$.Node.type* %.tmp4553, i8* %.tmp4555)
-br label %.if.end.4551
-.if.false.4551:
-br label %.if.end.4551
-.if.end.4551:
-br label %.if.end.4522
-.if.false.4522:
-%.tmp4556 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4557 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4559 = getelementptr [29 x i8], [29 x i8]*@.str4558, i32 0, i32 0
-%.tmp4560 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp4556, %m307$.Node.type* %.tmp4557, i8* %.tmp4559)
-%.tmp4561 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4562 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4561, i32 0, i32 6
-%.tmp4563 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4562
-%.tmp4564 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4563, i32 0, i32 1
-%.tmp4565 = load i8*, i8** %.tmp4564
-%.tmp4566 = call i32(i8*,...) @printf(i8* %.tmp4560, i8* %.tmp4565)
-br label %.if.end.4522
-.if.end.4522:
-br label %.if.end.4479
-.if.end.4479:
-br label %.if.end.4461
-.if.false.4461:
-%.tmp4567 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4568 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4570 = getelementptr [34 x i8], [34 x i8]*@.str4569, i32 0, i32 0
-%.tmp4571 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp4567, %m307$.Node.type* %.tmp4568, i8* %.tmp4570)
-%.tmp4572 = load i8*, i8** %expr_type.4303
-%.tmp4573 = call i32(i8*,...) @printf(i8* %.tmp4571, i8* %.tmp4572)
-br label %.if.end.4461
-.if.end.4461:
-br label %.if.end.4453
-.if.end.4453:
-br label %.if.end.4445
-.if.end.4445:
-br label %.if.end.4387
-.if.end.4387:
-br label %.if.end.4378
-.if.end.4378:
-br label %.if.end.4367
-.if.end.4367:
-br label %.if.end.4361
-.if.end.4361:
-br label %.if.end.4314
-.if.end.4314:
+br label %.if.end.4558
+.if.false.4558:
+br label %.if.end.4558
+.if.end.4558:
+%.tmp4559 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4560 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %dest.4549
+%.tmp4561 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4560, i32 0, i32 3
+%.tmp4562 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4561
+%.tmp4563 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4559, %m1861$.Type.type* %.tmp4562)
+%dest_tr.4564 = alloca i8*
+store i8* %.tmp4563, i8** %dest_tr.4564
+%.tmp4565 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4566 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4458
+%.tmp4567 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4566, i32 0, i32 3
+%.tmp4568 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4567
+%.tmp4569 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4565, %m1861$.Type.type* %.tmp4568)
+%src_tr.4570 = alloca i8*
+store i8* %.tmp4569, i8** %src_tr.4570
+%.tmp4571 = load i8*, i8** %src_tr.4570
+%.tmp4573 = getelementptr [4 x i8], [4 x i8]*@.str4572, i32 0, i32 0
+%.tmp4574 = call i32(i8*,i8*) @strcmp(i8* %.tmp4571, i8* %.tmp4573)
+%.tmp4575 = icmp eq i32 %.tmp4574, 0
+br i1 %.tmp4575, label %.if.true.4576, label %.if.false.4576
+.if.true.4576:
+%.tmp4577 = load i8*, i8** %dest_tr.4564
+store i8* %.tmp4577, i8** %src_tr.4570
+br label %.if.end.4576
+.if.false.4576:
+br label %.if.end.4576
+.if.end.4576:
+%.tmp4578 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4579 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4578, i32 0, i32 1
+%.tmp4580 = load %m0$.File.type*, %m0$.File.type** %.tmp4579
+%.tmp4582 = getelementptr [21 x i8], [21 x i8]*@.str4581, i32 0, i32 0
+%.tmp4583 = load i8*, i8** %src_tr.4570
+%.tmp4584 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4458
+%.tmp4585 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4584)
+%.tmp4586 = load i8*, i8** %dest_tr.4564
+%.tmp4587 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %dest.4549
+%.tmp4588 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4587)
+%.tmp4589 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4580, i8* %.tmp4582, i8* %.tmp4583, i8* %.tmp4585, i8* %.tmp4586, i8* %.tmp4588)
+br label %.if.end.4537
+.if.false.4537:
+%.tmp4590 = load i8*, i8** %expr_type.4453
+%.tmp4592 = getelementptr [9 x i8], [9 x i8]*@.str4591, i32 0, i32 0
+%.tmp4593 = call i32(i8*,i8*) @strcmp(i8* %.tmp4590, i8* %.tmp4592)
+%.tmp4594 = icmp eq i32 %.tmp4593, 0
+br i1 %.tmp4594, label %.if.true.4595, label %.if.false.4595
+.if.true.4595:
+%.tmp4596 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4597 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_if_block.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4596, %m307$.Node.type* %.tmp4597)
+br label %.if.end.4595
+.if.false.4595:
+%.tmp4598 = load i8*, i8** %expr_type.4453
+%.tmp4600 = getelementptr [9 x i8], [9 x i8]*@.str4599, i32 0, i32 0
+%.tmp4601 = call i32(i8*,i8*) @strcmp(i8* %.tmp4598, i8* %.tmp4600)
+%.tmp4602 = icmp eq i32 %.tmp4601, 0
+br i1 %.tmp4602, label %.if.true.4603, label %.if.false.4603
+.if.true.4603:
+%.tmp4604 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4605 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_for_loop.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4604, %m307$.Node.type* %.tmp4605)
+br label %.if.end.4603
+.if.false.4603:
+%.tmp4606 = load i8*, i8** %expr_type.4453
+%.tmp4608 = getelementptr [8 x i8], [8 x i8]*@.str4607, i32 0, i32 0
+%.tmp4609 = call i32(i8*,i8*) @strcmp(i8* %.tmp4606, i8* %.tmp4608)
+%.tmp4610 = icmp eq i32 %.tmp4609, 0
+br i1 %.tmp4610, label %.if.true.4611, label %.if.false.4611
+.if.true.4611:
+%.tmp4612 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4613 = call %m1861$.ModuleLookup.type*(%m1861$.CompilerCtx.type*) @m1861$get_current_module.m1861$.ModuleLookup.typep.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp4612)
+%mod.4614 = alloca %m1861$.ModuleLookup.type*
+store %m1861$.ModuleLookup.type* %.tmp4613, %m1861$.ModuleLookup.type** %mod.4614
+%found.4615 = alloca i1
+store i1 0, i1* %found.4615
+%.tmp4616 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.4614
+%.tmp4617 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp4616, i32 0, i32 3
+%.tmp4618 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp4617
+%s.4619 = alloca %m1861$.Scope.type*
+store %m1861$.Scope.type* %.tmp4618, %m1861$.Scope.type** %s.4619
+%.tmp4620 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4621 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4620, i32 0, i32 6
+%.tmp4622 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4621
+%.tmp4623 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4622, i32 0, i32 1
+%.tmp4624 = load i8*, i8** %.tmp4623
+%.tmp4626 = getelementptr [6 x i8], [6 x i8]*@.str4625, i32 0, i32 0
+%.tmp4627 = call i32(i8*,i8*) @strcmp(i8* %.tmp4624, i8* %.tmp4626)
+%.tmp4628 = icmp eq i32 %.tmp4627, 0
+br i1 %.tmp4628, label %.if.true.4629, label %.if.false.4629
+.if.true.4629:
+br label %.for.start.4630
+.for.start.4630:
+%.tmp4631 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.4619
+%.tmp4632 = icmp ne %m1861$.Scope.type* %.tmp4631, null
+%.tmp4633 = load i1, i1* %found.4615
+%.tmp4634 = icmp eq i1 %.tmp4633, 0
+%.tmp4635 = and i1 %.tmp4632, %.tmp4634
+br i1 %.tmp4635, label %.for.continue.4630, label %.for.end.4630
+.for.continue.4630:
+%.tmp4636 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.4619
+%.tmp4637 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp4636, i32 0, i32 2
+%.tmp4638 = load i8*, i8** %.tmp4637
+%.tmp4640 = getelementptr [4 x i8], [4 x i8]*@.str4639, i32 0, i32 0
+%.tmp4641 = call i32(i8*,i8*) @strcmp(i8* %.tmp4638, i8* %.tmp4640)
+%.tmp4642 = icmp eq i32 %.tmp4641, 0
+br i1 %.tmp4642, label %.if.true.4643, label %.if.false.4643
+.if.true.4643:
+store i1 1, i1* %found.4615
+%.tmp4644 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4645 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4644, i32 0, i32 1
+%.tmp4646 = load %m0$.File.type*, %m0$.File.type** %.tmp4645
+%.tmp4648 = getelementptr [15 x i8], [15 x i8]*@.str4647, i32 0, i32 0
+%.tmp4649 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.4619
+%.tmp4650 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp4649, i32 0, i32 4
+%.tmp4651 = load i8*, i8** %.tmp4650
+%.tmp4652 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4646, i8* %.tmp4648, i8* %.tmp4651)
+br label %.if.end.4643
+.if.false.4643:
+br label %.if.end.4643
+.if.end.4643:
+%.tmp4653 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.4619
+%.tmp4654 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp4653, i32 0, i32 5
+%.tmp4655 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp4654
+store %m1861$.Scope.type* %.tmp4655, %m1861$.Scope.type** %s.4619
+br label %.for.start.4630
+.for.end.4630:
+%.tmp4656 = load i1, i1* %found.4615
+%.tmp4657 = icmp eq i1 %.tmp4656, 0
+br i1 %.tmp4657, label %.if.true.4658, label %.if.false.4658
+.if.true.4658:
+%.tmp4659 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4660 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4662 = getelementptr [48 x i8], [48 x i8]*@.str4661, i32 0, i32 0
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp4659, %m307$.Node.type* %.tmp4660, i8* %.tmp4662)
+br label %.if.end.4658
+.if.false.4658:
+br label %.if.end.4658
+.if.end.4658:
+br label %.if.end.4629
+.if.false.4629:
+%.tmp4663 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4664 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4663, i32 0, i32 6
+%.tmp4665 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4664
+%.tmp4666 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4665, i32 0, i32 1
+%.tmp4667 = load i8*, i8** %.tmp4666
+%.tmp4669 = getelementptr [9 x i8], [9 x i8]*@.str4668, i32 0, i32 0
+%.tmp4670 = call i32(i8*,i8*) @strcmp(i8* %.tmp4667, i8* %.tmp4669)
+%.tmp4671 = icmp eq i32 %.tmp4670, 0
+br i1 %.tmp4671, label %.if.true.4672, label %.if.false.4672
+.if.true.4672:
+br label %.for.start.4673
+.for.start.4673:
+%.tmp4674 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.4619
+%.tmp4675 = icmp ne %m1861$.Scope.type* %.tmp4674, null
+%.tmp4676 = load i1, i1* %found.4615
+%.tmp4677 = icmp eq i1 %.tmp4676, 0
+%.tmp4678 = and i1 %.tmp4675, %.tmp4677
+br i1 %.tmp4678, label %.for.continue.4673, label %.for.end.4673
+.for.continue.4673:
+%.tmp4679 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.4619
+%.tmp4680 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp4679, i32 0, i32 2
+%.tmp4681 = load i8*, i8** %.tmp4680
+%.tmp4683 = getelementptr [4 x i8], [4 x i8]*@.str4682, i32 0, i32 0
+%.tmp4684 = call i32(i8*,i8*) @strcmp(i8* %.tmp4681, i8* %.tmp4683)
+%.tmp4685 = icmp eq i32 %.tmp4684, 0
+br i1 %.tmp4685, label %.if.true.4686, label %.if.false.4686
+.if.true.4686:
+store i1 1, i1* %found.4615
+%.tmp4687 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4688 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4687, i32 0, i32 1
+%.tmp4689 = load %m0$.File.type*, %m0$.File.type** %.tmp4688
+%.tmp4691 = getelementptr [15 x i8], [15 x i8]*@.str4690, i32 0, i32 0
+%.tmp4692 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.4619
+%.tmp4693 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp4692, i32 0, i32 3
+%.tmp4694 = load i8*, i8** %.tmp4693
+%.tmp4695 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4689, i8* %.tmp4691, i8* %.tmp4694)
+br label %.if.end.4686
+.if.false.4686:
+br label %.if.end.4686
+.if.end.4686:
+%.tmp4696 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.4619
+%.tmp4697 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp4696, i32 0, i32 5
+%.tmp4698 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp4697
+store %m1861$.Scope.type* %.tmp4698, %m1861$.Scope.type** %s.4619
+br label %.for.start.4673
+.for.end.4673:
+%.tmp4699 = load i1, i1* %found.4615
+%.tmp4700 = icmp eq i1 %.tmp4699, 0
+br i1 %.tmp4700, label %.if.true.4701, label %.if.false.4701
+.if.true.4701:
+%.tmp4702 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4703 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4705 = getelementptr [48 x i8], [48 x i8]*@.str4704, i32 0, i32 0
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp4702, %m307$.Node.type* %.tmp4703, i8* %.tmp4705)
+br label %.if.end.4701
+.if.false.4701:
+br label %.if.end.4701
+.if.end.4701:
+br label %.if.end.4672
+.if.false.4672:
+%.tmp4706 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4707 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4709 = getelementptr [29 x i8], [29 x i8]*@.str4708, i32 0, i32 0
+%.tmp4710 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp4706, %m307$.Node.type* %.tmp4707, i8* %.tmp4709)
+%.tmp4711 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4712 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4711, i32 0, i32 6
+%.tmp4713 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4712
+%.tmp4714 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4713, i32 0, i32 1
+%.tmp4715 = load i8*, i8** %.tmp4714
+%.tmp4716 = call i32(i8*,...) @printf(i8* %.tmp4710, i8* %.tmp4715)
+br label %.if.end.4672
+.if.end.4672:
+br label %.if.end.4629
+.if.end.4629:
+br label %.if.end.4611
+.if.false.4611:
+%.tmp4717 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4718 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4720 = getelementptr [34 x i8], [34 x i8]*@.str4719, i32 0, i32 0
+%.tmp4721 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp4717, %m307$.Node.type* %.tmp4718, i8* %.tmp4720)
+%.tmp4722 = load i8*, i8** %expr_type.4453
+%.tmp4723 = call i32(i8*,...) @printf(i8* %.tmp4721, i8* %.tmp4722)
+br label %.if.end.4611
+.if.end.4611:
+br label %.if.end.4603
+.if.end.4603:
+br label %.if.end.4595
+.if.end.4595:
+br label %.if.end.4537
+.if.end.4537:
+br label %.if.end.4528
+.if.end.4528:
+br label %.if.end.4517
+.if.end.4517:
+br label %.if.end.4511
+.if.end.4511:
+br label %.if.end.4464
+.if.end.4464:
 ret void
 }
 define void @m1861$compile_for_loop.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.stmt.arg) {
@@ -6883,201 +7113,201 @@ define void @m1861$compile_for_loop.v.m1861$.CompilerCtx.typep.m307$.Node.typep(
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %stmt = alloca %m307$.Node.type*
 store %m307$.Node.type* %.stmt.arg, %m307$.Node.type** %stmt
-%.tmp4574 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4575 = call i32(%m1861$.CompilerCtx.type*) @m1861$new_uid.i.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp4574)
-%for_id.4576 = alloca i32
-store i32 %.tmp4575, i32* %for_id.4576
-%.tmp4577 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4578 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4577, i32 0, i32 6
-%.tmp4579 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4578
-%.tmp4580 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4579, i32 0, i32 7
-%.tmp4581 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4580
-%init_stmt.4582 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp4581, %m307$.Node.type** %init_stmt.4582
-%.tmp4583 = bitcast ptr null to i8*
-%begin_lbl.4584 = alloca i8*
-store i8* %.tmp4583, i8** %begin_lbl.4584
-%.tmp4585 = bitcast ptr null to i8*
-%end_lbl.4586 = alloca i8*
-store i8* %.tmp4585, i8** %end_lbl.4586
-%.tmp4587 = getelementptr i8*, i8** %begin_lbl.4584, i32 0
-%.tmp4589 = getelementptr [14 x i8], [14 x i8]*@.str4588, i32 0, i32 0
-%.tmp4590 = load i32, i32* %for_id.4576
-%.tmp4591 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp4587, i8* %.tmp4589, i32 %.tmp4590)
-%.tmp4592 = getelementptr i8*, i8** %end_lbl.4586, i32 0
-%.tmp4594 = getelementptr [12 x i8], [12 x i8]*@.str4593, i32 0, i32 0
-%.tmp4595 = load i32, i32* %for_id.4576
-%.tmp4596 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp4592, i8* %.tmp4594, i32 %.tmp4595)
-%.tmp4597 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4599 = getelementptr [4 x i8], [4 x i8]*@.str4598, i32 0, i32 0
-%.tmp4600 = load i8*, i8** %begin_lbl.4584
-%.tmp4601 = load i8*, i8** %end_lbl.4586
-call void(%m1861$.CompilerCtx.type*,i8*,i8*,i8*) @m1861$push_scope.v.m1861$.CompilerCtx.typep.cp.cp.cp(%m1861$.CompilerCtx.type* %.tmp4597, i8* %.tmp4599, i8* %.tmp4600, i8* %.tmp4601)
-%.tmp4602 = load %m307$.Node.type*, %m307$.Node.type** %init_stmt.4582
-%.tmp4603 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4602, i32 0, i32 0
-%.tmp4604 = load i8*, i8** %.tmp4603
-%.tmp4606 = getelementptr [12 x i8], [12 x i8]*@.str4605, i32 0, i32 0
-%.tmp4607 = call i32(i8*,i8*) @strcmp(i8* %.tmp4604, i8* %.tmp4606)
-%.tmp4608 = icmp eq i32 %.tmp4607, 0
-br i1 %.tmp4608, label %.if.true.4609, label %.if.false.4609
-.if.true.4609:
-%.tmp4610 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4611 = load %m307$.Node.type*, %m307$.Node.type** %init_stmt.4582
-%.tmp4612 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_declaration.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4610, %m307$.Node.type* %.tmp4611)
-br label %.if.end.4609
-.if.false.4609:
-%.tmp4613 = load %m307$.Node.type*, %m307$.Node.type** %init_stmt.4582
-%.tmp4614 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4613, i32 0, i32 0
-%.tmp4615 = load i8*, i8** %.tmp4614
-%.tmp4617 = getelementptr [11 x i8], [11 x i8]*@.str4616, i32 0, i32 0
-%.tmp4618 = call i32(i8*,i8*) @strcmp(i8* %.tmp4615, i8* %.tmp4617)
-%.tmp4619 = icmp eq i32 %.tmp4618, 0
-br i1 %.tmp4619, label %.if.true.4620, label %.if.false.4620
-.if.true.4620:
-%.tmp4621 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4622 = load %m307$.Node.type*, %m307$.Node.type** %init_stmt.4582
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_expression.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4621, %m307$.Node.type* %.tmp4622)
-br label %.if.end.4620
-.if.false.4620:
-%.tmp4623 = load %m307$.Node.type*, %m307$.Node.type** %init_stmt.4582
-%.tmp4624 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4623, i32 0, i32 0
-%.tmp4625 = load i8*, i8** %.tmp4624
-%.tmp4627 = getelementptr [9 x i8], [9 x i8]*@.str4626, i32 0, i32 0
-%.tmp4628 = call i32(i8*,i8*) @strcmp(i8* %.tmp4625, i8* %.tmp4627)
-%.tmp4629 = icmp eq i32 %.tmp4628, 0
-br i1 %.tmp4629, label %.if.true.4630, label %.if.false.4630
-.if.true.4630:
-br label %.if.end.4630
-.if.false.4630:
-%.tmp4631 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4632 = load %m307$.Node.type*, %m307$.Node.type** %init_stmt.4582
-%.tmp4634 = getelementptr [66 x i8], [66 x i8]*@.str4633, i32 0, i32 0
-%.tmp4635 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp4631, %m307$.Node.type* %.tmp4632, i8* %.tmp4634)
-%.tmp4636 = load %m307$.Node.type*, %m307$.Node.type** %init_stmt.4582
-%.tmp4637 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4636, i32 0, i32 0
-%.tmp4638 = load i8*, i8** %.tmp4637
-%.tmp4639 = call i32(i8*,...) @printf(i8* %.tmp4635, i8* %.tmp4638)
-%.tmp4640 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-call void(%m1861$.CompilerCtx.type*) @m1861$pop_scope.v.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp4640)
+%.tmp4724 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4725 = call i32(%m1861$.CompilerCtx.type*) @m1861$new_uid.i.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp4724)
+%for_id.4726 = alloca i32
+store i32 %.tmp4725, i32* %for_id.4726
+%.tmp4727 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4728 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4727, i32 0, i32 6
+%.tmp4729 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4728
+%.tmp4730 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4729, i32 0, i32 7
+%.tmp4731 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4730
+%init_stmt.4732 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp4731, %m307$.Node.type** %init_stmt.4732
+%.tmp4733 = bitcast ptr null to i8*
+%begin_lbl.4734 = alloca i8*
+store i8* %.tmp4733, i8** %begin_lbl.4734
+%.tmp4735 = bitcast ptr null to i8*
+%end_lbl.4736 = alloca i8*
+store i8* %.tmp4735, i8** %end_lbl.4736
+%.tmp4737 = getelementptr i8*, i8** %begin_lbl.4734, i32 0
+%.tmp4739 = getelementptr [14 x i8], [14 x i8]*@.str4738, i32 0, i32 0
+%.tmp4740 = load i32, i32* %for_id.4726
+%.tmp4741 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp4737, i8* %.tmp4739, i32 %.tmp4740)
+%.tmp4742 = getelementptr i8*, i8** %end_lbl.4736, i32 0
+%.tmp4744 = getelementptr [12 x i8], [12 x i8]*@.str4743, i32 0, i32 0
+%.tmp4745 = load i32, i32* %for_id.4726
+%.tmp4746 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp4742, i8* %.tmp4744, i32 %.tmp4745)
+%.tmp4747 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4749 = getelementptr [4 x i8], [4 x i8]*@.str4748, i32 0, i32 0
+%.tmp4750 = load i8*, i8** %begin_lbl.4734
+%.tmp4751 = load i8*, i8** %end_lbl.4736
+call void(%m1861$.CompilerCtx.type*,i8*,i8*,i8*) @m1861$push_scope.v.m1861$.CompilerCtx.typep.cp.cp.cp(%m1861$.CompilerCtx.type* %.tmp4747, i8* %.tmp4749, i8* %.tmp4750, i8* %.tmp4751)
+%.tmp4752 = load %m307$.Node.type*, %m307$.Node.type** %init_stmt.4732
+%.tmp4753 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4752, i32 0, i32 0
+%.tmp4754 = load i8*, i8** %.tmp4753
+%.tmp4756 = getelementptr [12 x i8], [12 x i8]*@.str4755, i32 0, i32 0
+%.tmp4757 = call i32(i8*,i8*) @strcmp(i8* %.tmp4754, i8* %.tmp4756)
+%.tmp4758 = icmp eq i32 %.tmp4757, 0
+br i1 %.tmp4758, label %.if.true.4759, label %.if.false.4759
+.if.true.4759:
+%.tmp4760 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4761 = load %m307$.Node.type*, %m307$.Node.type** %init_stmt.4732
+%.tmp4762 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_declaration.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4760, %m307$.Node.type* %.tmp4761)
+br label %.if.end.4759
+.if.false.4759:
+%.tmp4763 = load %m307$.Node.type*, %m307$.Node.type** %init_stmt.4732
+%.tmp4764 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4763, i32 0, i32 0
+%.tmp4765 = load i8*, i8** %.tmp4764
+%.tmp4767 = getelementptr [11 x i8], [11 x i8]*@.str4766, i32 0, i32 0
+%.tmp4768 = call i32(i8*,i8*) @strcmp(i8* %.tmp4765, i8* %.tmp4767)
+%.tmp4769 = icmp eq i32 %.tmp4768, 0
+br i1 %.tmp4769, label %.if.true.4770, label %.if.false.4770
+.if.true.4770:
+%.tmp4771 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4772 = load %m307$.Node.type*, %m307$.Node.type** %init_stmt.4732
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_expression.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4771, %m307$.Node.type* %.tmp4772)
+br label %.if.end.4770
+.if.false.4770:
+%.tmp4773 = load %m307$.Node.type*, %m307$.Node.type** %init_stmt.4732
+%.tmp4774 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4773, i32 0, i32 0
+%.tmp4775 = load i8*, i8** %.tmp4774
+%.tmp4777 = getelementptr [9 x i8], [9 x i8]*@.str4776, i32 0, i32 0
+%.tmp4778 = call i32(i8*,i8*) @strcmp(i8* %.tmp4775, i8* %.tmp4777)
+%.tmp4779 = icmp eq i32 %.tmp4778, 0
+br i1 %.tmp4779, label %.if.true.4780, label %.if.false.4780
+.if.true.4780:
+br label %.if.end.4780
+.if.false.4780:
+%.tmp4781 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4782 = load %m307$.Node.type*, %m307$.Node.type** %init_stmt.4732
+%.tmp4784 = getelementptr [66 x i8], [66 x i8]*@.str4783, i32 0, i32 0
+%.tmp4785 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp4781, %m307$.Node.type* %.tmp4782, i8* %.tmp4784)
+%.tmp4786 = load %m307$.Node.type*, %m307$.Node.type** %init_stmt.4732
+%.tmp4787 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4786, i32 0, i32 0
+%.tmp4788 = load i8*, i8** %.tmp4787
+%.tmp4789 = call i32(i8*,...) @printf(i8* %.tmp4785, i8* %.tmp4788)
+%.tmp4790 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+call void(%m1861$.CompilerCtx.type*) @m1861$pop_scope.v.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp4790)
 ret void
-br label %.if.end.4630
-.if.end.4630:
-br label %.if.end.4620
-.if.end.4620:
-br label %.if.end.4609
-.if.end.4609:
-%.tmp4641 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4642 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4641, i32 0, i32 1
-%.tmp4643 = load %m0$.File.type*, %m0$.File.type** %.tmp4642
-%.tmp4645 = getelementptr [26 x i8], [26 x i8]*@.str4644, i32 0, i32 0
-%.tmp4646 = load i32, i32* %for_id.4576
-%.tmp4647 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4643, i8* %.tmp4645, i32 %.tmp4646)
-%.tmp4648 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4649 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4648, i32 0, i32 1
-%.tmp4650 = load %m0$.File.type*, %m0$.File.type** %.tmp4649
-%.tmp4652 = getelementptr [16 x i8], [16 x i8]*@.str4651, i32 0, i32 0
-%.tmp4653 = load i32, i32* %for_id.4576
-%.tmp4654 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4650, i8* %.tmp4652, i32 %.tmp4653)
-%.tmp4655 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4656 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4655, i32 0, i32 6
-%.tmp4657 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4656
-%.tmp4659 = getelementptr [9 x i8], [9 x i8]*@.str4658, i32 0, i32 0
-%.tmp4660 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4657, i8* %.tmp4659)
-%fst_colon.4661 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp4660, %m307$.Node.type** %fst_colon.4661
-%.tmp4662 = load %m307$.Node.type*, %m307$.Node.type** %fst_colon.4661
-%.tmp4663 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4662, i32 0, i32 7
-%.tmp4664 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4663
-%condition.4665 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp4664, %m307$.Node.type** %condition.4665
-%.tmp4666 = load %m307$.Node.type*, %m307$.Node.type** %condition.4665
-%.tmp4667 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4666, i32 0, i32 0
-%.tmp4668 = load i8*, i8** %.tmp4667
-%.tmp4670 = getelementptr [9 x i8], [9 x i8]*@.str4669, i32 0, i32 0
-%.tmp4671 = call i32(i8*,i8*) @strcmp(i8* %.tmp4668, i8* %.tmp4670)
-%.tmp4672 = icmp eq i32 %.tmp4671, 0
-br i1 %.tmp4672, label %.if.true.4673, label %.if.false.4673
-.if.true.4673:
-%.tmp4674 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4675 = load %m307$.Node.type*, %m307$.Node.type** %condition.4665
-%.tmp4677 = getelementptr [39 x i8], [39 x i8]*@.str4676, i32 0, i32 0
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp4674, %m307$.Node.type* %.tmp4675, i8* %.tmp4677)
+br label %.if.end.4780
+.if.end.4780:
+br label %.if.end.4770
+.if.end.4770:
+br label %.if.end.4759
+.if.end.4759:
+%.tmp4791 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4792 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4791, i32 0, i32 1
+%.tmp4793 = load %m0$.File.type*, %m0$.File.type** %.tmp4792
+%.tmp4795 = getelementptr [26 x i8], [26 x i8]*@.str4794, i32 0, i32 0
+%.tmp4796 = load i32, i32* %for_id.4726
+%.tmp4797 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4793, i8* %.tmp4795, i32 %.tmp4796)
+%.tmp4798 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4799 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4798, i32 0, i32 1
+%.tmp4800 = load %m0$.File.type*, %m0$.File.type** %.tmp4799
+%.tmp4802 = getelementptr [16 x i8], [16 x i8]*@.str4801, i32 0, i32 0
+%.tmp4803 = load i32, i32* %for_id.4726
+%.tmp4804 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4800, i8* %.tmp4802, i32 %.tmp4803)
+%.tmp4805 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4806 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4805, i32 0, i32 6
+%.tmp4807 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4806
+%.tmp4809 = getelementptr [9 x i8], [9 x i8]*@.str4808, i32 0, i32 0
+%.tmp4810 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4807, i8* %.tmp4809)
+%fst_colon.4811 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp4810, %m307$.Node.type** %fst_colon.4811
+%.tmp4812 = load %m307$.Node.type*, %m307$.Node.type** %fst_colon.4811
+%.tmp4813 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4812, i32 0, i32 7
+%.tmp4814 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4813
+%condition.4815 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp4814, %m307$.Node.type** %condition.4815
+%.tmp4816 = load %m307$.Node.type*, %m307$.Node.type** %condition.4815
+%.tmp4817 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4816, i32 0, i32 0
+%.tmp4818 = load i8*, i8** %.tmp4817
+%.tmp4820 = getelementptr [9 x i8], [9 x i8]*@.str4819, i32 0, i32 0
+%.tmp4821 = call i32(i8*,i8*) @strcmp(i8* %.tmp4818, i8* %.tmp4820)
+%.tmp4822 = icmp eq i32 %.tmp4821, 0
+br i1 %.tmp4822, label %.if.true.4823, label %.if.false.4823
+.if.true.4823:
+%.tmp4824 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4825 = load %m307$.Node.type*, %m307$.Node.type** %condition.4815
+%.tmp4827 = getelementptr [39 x i8], [39 x i8]*@.str4826, i32 0, i32 0
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp4824, %m307$.Node.type* %.tmp4825, i8* %.tmp4827)
 ret void
-br label %.if.end.4673
-.if.false.4673:
-br label %.if.end.4673
-.if.end.4673:
-%.tmp4678 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4679 = load %m307$.Node.type*, %m307$.Node.type** %condition.4665
-%.tmp4680 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_assignable.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4678, %m307$.Node.type* %.tmp4679)
-%condition_info.4681 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp4680, %m1861$.AssignableInfo.type** %condition_info.4681
-%.tmp4682 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4683 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4682, i32 0, i32 1
-%.tmp4684 = load %m0$.File.type*, %m0$.File.type** %.tmp4683
-%.tmp4686 = getelementptr [48 x i8], [48 x i8]*@.str4685, i32 0, i32 0
-%.tmp4687 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4688 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %condition_info.4681
-%.tmp4689 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4688, i32 0, i32 3
-%.tmp4690 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4689
-%.tmp4691 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4687, %m1861$.Type.type* %.tmp4690)
-%.tmp4692 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %condition_info.4681
-%.tmp4693 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4692)
-%.tmp4694 = load i32, i32* %for_id.4576
-%.tmp4695 = load i8*, i8** %end_lbl.4586
-%.tmp4696 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4684, i8* %.tmp4686, i8* %.tmp4691, i8* %.tmp4693, i32 %.tmp4694, i8* %.tmp4695)
-%.tmp4697 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4698 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4697, i32 0, i32 1
-%.tmp4699 = load %m0$.File.type*, %m0$.File.type** %.tmp4698
-%.tmp4701 = getelementptr [19 x i8], [19 x i8]*@.str4700, i32 0, i32 0
-%.tmp4702 = load i32, i32* %for_id.4576
-%.tmp4703 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4699, i8* %.tmp4701, i32 %.tmp4702)
-%.tmp4704 = load %m307$.Node.type*, %m307$.Node.type** %fst_colon.4661
-%.tmp4705 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4704, i32 0, i32 7
-%.tmp4706 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4705
-%.tmp4708 = getelementptr [9 x i8], [9 x i8]*@.str4707, i32 0, i32 0
-%.tmp4709 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4706, i8* %.tmp4708)
-%snd_colon.4710 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp4709, %m307$.Node.type** %snd_colon.4710
-%.tmp4711 = load %m307$.Node.type*, %m307$.Node.type** %snd_colon.4710
-%.tmp4712 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4711, i32 0, i32 7
-%.tmp4713 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4712
-%increment.4714 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp4713, %m307$.Node.type** %increment.4714
-%.tmp4715 = load %m307$.Node.type*, %m307$.Node.type** %snd_colon.4710
-%.tmp4717 = getelementptr [6 x i8], [6 x i8]*@.str4716, i32 0, i32 0
-%.tmp4718 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4715, i8* %.tmp4717)
-%for_body.4719 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp4718, %m307$.Node.type** %for_body.4719
-%.tmp4720 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4721 = load %m307$.Node.type*, %m307$.Node.type** %for_body.4719
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_block.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4720, %m307$.Node.type* %.tmp4721)
-%.tmp4722 = load %m307$.Node.type*, %m307$.Node.type** %increment.4714
-%.tmp4723 = load %m307$.Node.type*, %m307$.Node.type** %for_body.4719
-%.tmp4724 = icmp ne %m307$.Node.type* %.tmp4722, %.tmp4723
-br i1 %.tmp4724, label %.if.true.4725, label %.if.false.4725
-.if.true.4725:
-%.tmp4726 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4727 = load %m307$.Node.type*, %m307$.Node.type** %increment.4714
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_expression.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4726, %m307$.Node.type* %.tmp4727)
-br label %.if.end.4725
-.if.false.4725:
-br label %.if.end.4725
-.if.end.4725:
-%.tmp4728 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4729 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4728, i32 0, i32 1
-%.tmp4730 = load %m0$.File.type*, %m0$.File.type** %.tmp4729
-%.tmp4732 = getelementptr [15 x i8], [15 x i8]*@.str4731, i32 0, i32 0
-%.tmp4733 = load i8*, i8** %begin_lbl.4584
-%.tmp4734 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4730, i8* %.tmp4732, i8* %.tmp4733)
-%.tmp4735 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4736 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4735, i32 0, i32 1
-%.tmp4737 = load %m0$.File.type*, %m0$.File.type** %.tmp4736
-%.tmp4739 = getelementptr [5 x i8], [5 x i8]*@.str4738, i32 0, i32 0
-%.tmp4740 = load i8*, i8** %end_lbl.4586
-%.tmp4741 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4737, i8* %.tmp4739, i8* %.tmp4740)
-%.tmp4742 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-call void(%m1861$.CompilerCtx.type*) @m1861$pop_scope.v.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp4742)
+br label %.if.end.4823
+.if.false.4823:
+br label %.if.end.4823
+.if.end.4823:
+%.tmp4828 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4829 = load %m307$.Node.type*, %m307$.Node.type** %condition.4815
+%.tmp4830 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_assignable.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4828, %m307$.Node.type* %.tmp4829)
+%condition_info.4831 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp4830, %m1861$.AssignableInfo.type** %condition_info.4831
+%.tmp4832 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4833 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4832, i32 0, i32 1
+%.tmp4834 = load %m0$.File.type*, %m0$.File.type** %.tmp4833
+%.tmp4836 = getelementptr [48 x i8], [48 x i8]*@.str4835, i32 0, i32 0
+%.tmp4837 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4838 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %condition_info.4831
+%.tmp4839 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4838, i32 0, i32 3
+%.tmp4840 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4839
+%.tmp4841 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4837, %m1861$.Type.type* %.tmp4840)
+%.tmp4842 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %condition_info.4831
+%.tmp4843 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4842)
+%.tmp4844 = load i32, i32* %for_id.4726
+%.tmp4845 = load i8*, i8** %end_lbl.4736
+%.tmp4846 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4834, i8* %.tmp4836, i8* %.tmp4841, i8* %.tmp4843, i32 %.tmp4844, i8* %.tmp4845)
+%.tmp4847 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4848 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4847, i32 0, i32 1
+%.tmp4849 = load %m0$.File.type*, %m0$.File.type** %.tmp4848
+%.tmp4851 = getelementptr [19 x i8], [19 x i8]*@.str4850, i32 0, i32 0
+%.tmp4852 = load i32, i32* %for_id.4726
+%.tmp4853 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4849, i8* %.tmp4851, i32 %.tmp4852)
+%.tmp4854 = load %m307$.Node.type*, %m307$.Node.type** %fst_colon.4811
+%.tmp4855 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4854, i32 0, i32 7
+%.tmp4856 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4855
+%.tmp4858 = getelementptr [9 x i8], [9 x i8]*@.str4857, i32 0, i32 0
+%.tmp4859 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4856, i8* %.tmp4858)
+%snd_colon.4860 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp4859, %m307$.Node.type** %snd_colon.4860
+%.tmp4861 = load %m307$.Node.type*, %m307$.Node.type** %snd_colon.4860
+%.tmp4862 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4861, i32 0, i32 7
+%.tmp4863 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4862
+%increment.4864 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp4863, %m307$.Node.type** %increment.4864
+%.tmp4865 = load %m307$.Node.type*, %m307$.Node.type** %snd_colon.4860
+%.tmp4867 = getelementptr [6 x i8], [6 x i8]*@.str4866, i32 0, i32 0
+%.tmp4868 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4865, i8* %.tmp4867)
+%for_body.4869 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp4868, %m307$.Node.type** %for_body.4869
+%.tmp4870 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4871 = load %m307$.Node.type*, %m307$.Node.type** %for_body.4869
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_block.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4870, %m307$.Node.type* %.tmp4871)
+%.tmp4872 = load %m307$.Node.type*, %m307$.Node.type** %increment.4864
+%.tmp4873 = load %m307$.Node.type*, %m307$.Node.type** %for_body.4869
+%.tmp4874 = icmp ne %m307$.Node.type* %.tmp4872, %.tmp4873
+br i1 %.tmp4874, label %.if.true.4875, label %.if.false.4875
+.if.true.4875:
+%.tmp4876 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4877 = load %m307$.Node.type*, %m307$.Node.type** %increment.4864
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_expression.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4876, %m307$.Node.type* %.tmp4877)
+br label %.if.end.4875
+.if.false.4875:
+br label %.if.end.4875
+.if.end.4875:
+%.tmp4878 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4879 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4878, i32 0, i32 1
+%.tmp4880 = load %m0$.File.type*, %m0$.File.type** %.tmp4879
+%.tmp4882 = getelementptr [15 x i8], [15 x i8]*@.str4881, i32 0, i32 0
+%.tmp4883 = load i8*, i8** %begin_lbl.4734
+%.tmp4884 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4880, i8* %.tmp4882, i8* %.tmp4883)
+%.tmp4885 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4886 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4885, i32 0, i32 1
+%.tmp4887 = load %m0$.File.type*, %m0$.File.type** %.tmp4886
+%.tmp4889 = getelementptr [5 x i8], [5 x i8]*@.str4888, i32 0, i32 0
+%.tmp4890 = load i8*, i8** %end_lbl.4736
+%.tmp4891 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4887, i8* %.tmp4889, i8* %.tmp4890)
+%.tmp4892 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+call void(%m1861$.CompilerCtx.type*) @m1861$pop_scope.v.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp4892)
 ret void
 }
 define %m1861$.AssignableInfo.type* @m1861$compile_declaration.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.stmt.arg) {
@@ -7085,265 +7315,265 @@ define %m1861$.AssignableInfo.type* @m1861$compile_declaration.m1861$.Assignable
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %stmt = alloca %m307$.Node.type*
 store %m307$.Node.type* %.stmt.arg, %m307$.Node.type** %stmt
-%.tmp4743 = bitcast ptr null to %m1861$.Type.type*
-%decl_type.4744 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp4743, %m1861$.Type.type** %decl_type.4744
-%.tmp4745 = bitcast ptr null to %m1861$.AssignableInfo.type*
-%a_info.4746 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp4745, %m1861$.AssignableInfo.type** %a_info.4746
-%.tmp4747 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4748 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4747, i32 0, i32 6
-%.tmp4749 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4748
-%.tmp4750 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4749, i32 0, i32 0
-%.tmp4751 = load i8*, i8** %.tmp4750
-%.tmp4753 = getelementptr [5 x i8], [5 x i8]*@.str4752, i32 0, i32 0
-%.tmp4754 = call i32(i8*,i8*) @strcmp(i8* %.tmp4751, i8* %.tmp4753)
-%.tmp4755 = icmp eq i32 %.tmp4754, 0
-br i1 %.tmp4755, label %.if.true.4756, label %.if.false.4756
-.if.true.4756:
-%.tmp4757 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4758 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4759 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4758, i32 0, i32 6
-%.tmp4760 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4759
-%.tmp4761 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4760, i32 0, i32 6
-%.tmp4762 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4761
-%.tmp4763 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$node_to_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4757, %m307$.Node.type* %.tmp4762)
-store %m1861$.Type.type* %.tmp4763, %m1861$.Type.type** %decl_type.4744
-br label %.if.end.4756
-.if.false.4756:
-br label %.if.end.4756
-.if.end.4756:
-%.tmp4764 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4765 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4764, i32 0, i32 6
-%.tmp4766 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4765
-%.tmp4768 = getelementptr [11 x i8], [11 x i8]*@.str4767, i32 0, i32 0
-%.tmp4769 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4766, i8* %.tmp4768)
-%assignable.4770 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp4769, %m307$.Node.type** %assignable.4770
-%.tmp4771 = load %m307$.Node.type*, %m307$.Node.type** %assignable.4770
-%.tmp4772 = icmp ne %m307$.Node.type* %.tmp4771, null
-br i1 %.tmp4772, label %.if.true.4773, label %.if.false.4773
-.if.true.4773:
-%.tmp4774 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4775 = load %m307$.Node.type*, %m307$.Node.type** %assignable.4770
-%.tmp4776 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_assignable.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4774, %m307$.Node.type* %.tmp4775)
-store %m1861$.AssignableInfo.type* %.tmp4776, %m1861$.AssignableInfo.type** %a_info.4746
-br label %.if.end.4773
-.if.false.4773:
-br label %.if.end.4773
-.if.end.4773:
-%.tmp4777 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4778 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp4777)
-%info.4779 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp4778, %m1861$.AssignableInfo.type** %info.4779
-%.tmp4780 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4779
-%.tmp4781 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4780, i32 0, i32 2
-%.tmp4783 = getelementptr [9 x i8], [9 x i8]*@.str4782, i32 0, i32 0
-store i8* %.tmp4783, i8** %.tmp4781
-%.tmp4784 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4785 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4784, i32 0, i32 6
-%.tmp4786 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4785
-%.tmp4788 = getelementptr [5 x i8], [5 x i8]*@.str4787, i32 0, i32 0
-%.tmp4789 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4786, i8* %.tmp4788)
-%var_name.4790 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp4789, %m307$.Node.type** %var_name.4790
-%.tmp4791 = load %m307$.Node.type*, %m307$.Node.type** %var_name.4790
-%.tmp4792 = icmp eq %m307$.Node.type* %.tmp4791, null
-br i1 %.tmp4792, label %.if.true.4793, label %.if.false.4793
-.if.true.4793:
-%.tmp4794 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4795 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4797 = getelementptr [31 x i8], [31 x i8]*@.str4796, i32 0, i32 0
-%.tmp4798 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp4794, %m307$.Node.type* %.tmp4795, i8* %.tmp4797)
-%.tmp4799 = call i32(i8*,...) @printf(i8* %.tmp4798)
-%.tmp4800 = bitcast ptr null to %m1861$.AssignableInfo.type*
-ret %m1861$.AssignableInfo.type* %.tmp4800
-br label %.if.end.4793
-.if.false.4793:
-br label %.if.end.4793
-.if.end.4793:
-%.tmp4801 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4802 = call %m1861$.ModuleLookup.type*(%m1861$.CompilerCtx.type*) @m1861$get_current_module.m1861$.ModuleLookup.typep.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp4801)
-%mod.4803 = alloca %m1861$.ModuleLookup.type*
-store %m1861$.ModuleLookup.type* %.tmp4802, %m1861$.ModuleLookup.type** %mod.4803
-%.tmp4804 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4805 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.4803
-%.tmp4806 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp4805, i32 0, i32 3
-%.tmp4807 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp4806
-%.tmp4808 = load %m307$.Node.type*, %m307$.Node.type** %var_name.4790
-%.tmp4809 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4808, i32 0, i32 1
-%.tmp4810 = load i8*, i8** %.tmp4809
-%.tmp4811 = call %m1861$.ScopeItem.type*(%m1861$.CompilerCtx.type*,%m1861$.Scope.type*,i8*) @m1861$find_defined_here.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.m1861$.Scope.typep.cp(%m1861$.CompilerCtx.type* %.tmp4804, %m1861$.Scope.type* %.tmp4807, i8* %.tmp4810)
-%.tmp4812 = icmp ne %m1861$.ScopeItem.type* %.tmp4811, null
-br i1 %.tmp4812, label %.if.true.4813, label %.if.false.4813
-.if.true.4813:
-%err_buf.4814 = alloca i8*
-store i8* null, i8** %err_buf.4814
-%.tmp4815 = getelementptr i8*, i8** %err_buf.4814, i32 0
-%.tmp4817 = getelementptr [43 x i8], [43 x i8]*@.str4816, i32 0, i32 0
-%.tmp4818 = load %m307$.Node.type*, %m307$.Node.type** %var_name.4790
-%.tmp4819 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4818, i32 0, i32 1
-%.tmp4820 = load i8*, i8** %.tmp4819
-%.tmp4821 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp4815, i8* %.tmp4817, i8* %.tmp4820)
-%.tmp4822 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4823 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4824 = load i8*, i8** %err_buf.4814
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp4822, %m307$.Node.type* %.tmp4823, i8* %.tmp4824)
-%.tmp4825 = bitcast ptr null to %m1861$.AssignableInfo.type*
-ret %m1861$.AssignableInfo.type* %.tmp4825
-br label %.if.end.4813
-.if.false.4813:
-br label %.if.end.4813
-.if.end.4813:
-%var_id.4826 = alloca i8*
-store i8* null, i8** %var_id.4826
-%.tmp4827 = getelementptr i8*, i8** %var_id.4826, i32 0
-%.tmp4829 = getelementptr [6 x i8], [6 x i8]*@.str4828, i32 0, i32 0
-%.tmp4830 = load %m307$.Node.type*, %m307$.Node.type** %var_name.4790
-%.tmp4831 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4830, i32 0, i32 1
-%.tmp4832 = load i8*, i8** %.tmp4831
-%.tmp4833 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4834 = call i32(%m1861$.CompilerCtx.type*) @m1861$new_uid.i.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp4833)
-%.tmp4835 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp4827, i8* %.tmp4829, i8* %.tmp4832, i32 %.tmp4834)
-%.tmp4836 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4779
-%.tmp4837 = load i8, i8* @SCOPE_LOCAL
-%.tmp4838 = load i8*, i8** %var_id.4826
-call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp4836, i8 %.tmp4837, i8* %.tmp4838)
-%.tmp4839 = load %m1861$.Type.type*, %m1861$.Type.type** %decl_type.4744
-%.tmp4840 = icmp ne %m1861$.Type.type* %.tmp4839, null
-br i1 %.tmp4840, label %.if.true.4841, label %.if.false.4841
-.if.true.4841:
-%.tmp4842 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4779
-%.tmp4843 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4842, i32 0, i32 3
-%.tmp4844 = load %m1861$.Type.type*, %m1861$.Type.type** %decl_type.4744
-store %m1861$.Type.type* %.tmp4844, %m1861$.Type.type** %.tmp4843
-br label %.if.end.4841
-.if.false.4841:
-%.tmp4845 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4746
-%.tmp4846 = icmp ne %m1861$.AssignableInfo.type* %.tmp4845, null
-br i1 %.tmp4846, label %.if.true.4847, label %.if.false.4847
-.if.true.4847:
-%.tmp4848 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4779
-%.tmp4849 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4848, i32 0, i32 3
-%.tmp4850 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4746
-%.tmp4851 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4850, i32 0, i32 3
-%.tmp4852 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4851
-store %m1861$.Type.type* %.tmp4852, %m1861$.Type.type** %.tmp4849
-br label %.if.end.4847
-.if.false.4847:
-br label %.if.end.4847
-.if.end.4847:
-br label %.if.end.4841
-.if.end.4841:
-%.tmp4853 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4854 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4779
-%.tmp4855 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4854, i32 0, i32 3
-%.tmp4856 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4855
-%.tmp4857 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4853, %m1861$.Type.type* %.tmp4856)
-%var_type_repr.4858 = alloca i8*
-store i8* %.tmp4857, i8** %var_type_repr.4858
-%.tmp4859 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4746
-%.tmp4860 = icmp ne %m1861$.AssignableInfo.type* %.tmp4859, null
-br i1 %.tmp4860, label %.if.true.4861, label %.if.false.4861
-.if.true.4861:
-%.tmp4862 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4863 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4746
-%.tmp4864 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4863, i32 0, i32 3
-%.tmp4865 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4864
-%.tmp4866 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4862, %m1861$.Type.type* %.tmp4865)
-%a_type_repr.4867 = alloca i8*
-store i8* %.tmp4866, i8** %a_type_repr.4867
-%type_error.4868 = alloca i1
-store i1 0, i1* %type_error.4868
-%.tmp4869 = load i8*, i8** %a_type_repr.4867
-%.tmp4870 = call i32(i8*) @strlen(i8* %.tmp4869)
-%.tmp4871 = load i8*, i8** %var_type_repr.4858
-%.tmp4872 = call i32(i8*) @strlen(i8* %.tmp4871)
-%.tmp4873 = icmp ne i32 %.tmp4870, %.tmp4872
-br i1 %.tmp4873, label %.if.true.4874, label %.if.false.4874
-.if.true.4874:
-store i1 1, i1* %type_error.4868
-br label %.if.end.4874
-.if.false.4874:
-%.tmp4875 = load i8*, i8** %a_type_repr.4867
-%.tmp4876 = load i8*, i8** %var_type_repr.4858
-%.tmp4877 = call i32(i8*,i8*) @strcmp(i8* %.tmp4875, i8* %.tmp4876)
-%.tmp4878 = icmp ne i32 %.tmp4877, 0
-br i1 %.tmp4878, label %.if.true.4879, label %.if.false.4879
-.if.true.4879:
-store i1 1, i1* %type_error.4868
-br label %.if.end.4879
-.if.false.4879:
-br label %.if.end.4879
-.if.end.4879:
-br label %.if.end.4874
-.if.end.4874:
-%.tmp4880 = load i1, i1* %type_error.4868
-br i1 %.tmp4880, label %.if.true.4881, label %.if.false.4881
-.if.true.4881:
-%.tmp4882 = bitcast ptr null to i8*
-%err_msg.4883 = alloca i8*
-store i8* %.tmp4882, i8** %err_msg.4883
-%.tmp4884 = getelementptr i8*, i8** %err_msg.4883, i32 0
-%.tmp4886 = getelementptr [49 x i8], [49 x i8]*@.str4885, i32 0, i32 0
-%.tmp4887 = load i8*, i8** %a_type_repr.4867
-%.tmp4888 = load i8*, i8** %var_type_repr.4858
-%.tmp4889 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp4884, i8* %.tmp4886, i8* %.tmp4887, i8* %.tmp4888)
-%.tmp4890 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4891 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4892 = load i8*, i8** %err_msg.4883
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp4890, %m307$.Node.type* %.tmp4891, i8* %.tmp4892)
-br label %.if.end.4881
-.if.false.4881:
-br label %.if.end.4881
-.if.end.4881:
-br label %.if.end.4861
-.if.false.4861:
-br label %.if.end.4861
-.if.end.4861:
-%.tmp4893 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4894 = load %m307$.Node.type*, %m307$.Node.type** %var_name.4790
-%.tmp4895 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4894, i32 0, i32 1
-%.tmp4896 = load i8*, i8** %.tmp4895
-%.tmp4897 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4779
-call void(%m1861$.CompilerCtx.type*,i8*,%m1861$.AssignableInfo.type*) @m1861$define_assignable.v.m1861$.CompilerCtx.typep.cp.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp4893, i8* %.tmp4896, %m1861$.AssignableInfo.type* %.tmp4897)
-%.tmp4898 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4899 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4898, i32 0, i32 1
-%.tmp4900 = load %m0$.File.type*, %m0$.File.type** %.tmp4899
-%.tmp4902 = getelementptr [16 x i8], [16 x i8]*@.str4901, i32 0, i32 0
-%.tmp4903 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4779
-%.tmp4904 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4903)
-%.tmp4905 = load i8*, i8** %var_type_repr.4858
-%.tmp4906 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4900, i8* %.tmp4902, i8* %.tmp4904, i8* %.tmp4905)
-%.tmp4907 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4746
-%.tmp4908 = icmp ne %m1861$.AssignableInfo.type* %.tmp4907, null
-br i1 %.tmp4908, label %.if.true.4909, label %.if.false.4909
-.if.true.4909:
-%.tmp4910 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4911 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4910, i32 0, i32 1
-%.tmp4912 = load %m0$.File.type*, %m0$.File.type** %.tmp4911
-%.tmp4914 = getelementptr [21 x i8], [21 x i8]*@.str4913, i32 0, i32 0
-%.tmp4915 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4916 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4746
-%.tmp4917 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4916, i32 0, i32 3
-%.tmp4918 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4917
-%.tmp4919 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4915, %m1861$.Type.type* %.tmp4918)
-%.tmp4920 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4746
-%.tmp4921 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4920)
-%.tmp4922 = load i8*, i8** %var_type_repr.4858
-%.tmp4923 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4779
-%.tmp4924 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4923)
-%.tmp4925 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4912, i8* %.tmp4914, i8* %.tmp4919, i8* %.tmp4921, i8* %.tmp4922, i8* %.tmp4924)
-br label %.if.end.4909
-.if.false.4909:
-%.tmp4926 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4893 = bitcast ptr null to %m1861$.Type.type*
+%decl_type.4894 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp4893, %m1861$.Type.type** %decl_type.4894
+%.tmp4895 = bitcast ptr null to %m1861$.AssignableInfo.type*
+%a_info.4896 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp4895, %m1861$.AssignableInfo.type** %a_info.4896
+%.tmp4897 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4898 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4897, i32 0, i32 6
+%.tmp4899 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4898
+%.tmp4900 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4899, i32 0, i32 0
+%.tmp4901 = load i8*, i8** %.tmp4900
+%.tmp4903 = getelementptr [5 x i8], [5 x i8]*@.str4902, i32 0, i32 0
+%.tmp4904 = call i32(i8*,i8*) @strcmp(i8* %.tmp4901, i8* %.tmp4903)
+%.tmp4905 = icmp eq i32 %.tmp4904, 0
+br i1 %.tmp4905, label %.if.true.4906, label %.if.false.4906
+.if.true.4906:
+%.tmp4907 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4908 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4909 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4908, i32 0, i32 6
+%.tmp4910 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4909
+%.tmp4911 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4910, i32 0, i32 6
+%.tmp4912 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4911
+%.tmp4913 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$node_to_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4907, %m307$.Node.type* %.tmp4912)
+store %m1861$.Type.type* %.tmp4913, %m1861$.Type.type** %decl_type.4894
+br label %.if.end.4906
+.if.false.4906:
+br label %.if.end.4906
+.if.end.4906:
+%.tmp4914 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4915 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4914, i32 0, i32 6
+%.tmp4916 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4915
+%.tmp4918 = getelementptr [11 x i8], [11 x i8]*@.str4917, i32 0, i32 0
+%.tmp4919 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4916, i8* %.tmp4918)
+%assignable.4920 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp4919, %m307$.Node.type** %assignable.4920
+%.tmp4921 = load %m307$.Node.type*, %m307$.Node.type** %assignable.4920
+%.tmp4922 = icmp ne %m307$.Node.type* %.tmp4921, null
+br i1 %.tmp4922, label %.if.true.4923, label %.if.false.4923
+.if.true.4923:
+%.tmp4924 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4925 = load %m307$.Node.type*, %m307$.Node.type** %assignable.4920
+%.tmp4926 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_assignable.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp4924, %m307$.Node.type* %.tmp4925)
+store %m1861$.AssignableInfo.type* %.tmp4926, %m1861$.AssignableInfo.type** %a_info.4896
+br label %.if.end.4923
+.if.false.4923:
+br label %.if.end.4923
+.if.end.4923:
 %.tmp4927 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp4928 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4779
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,%m1861$.AssignableInfo.type*) @m1861$compile_zero_value.v.m1861$.CompilerCtx.typep.m307$.Node.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp4926, %m307$.Node.type* %.tmp4927, %m1861$.AssignableInfo.type* %.tmp4928)
-br label %.if.end.4909
-.if.end.4909:
-%.tmp4929 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4779
-ret %m1861$.AssignableInfo.type* %.tmp4929
+%.tmp4928 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp4927)
+%info.4929 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp4928, %m1861$.AssignableInfo.type** %info.4929
+%.tmp4930 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4929
+%.tmp4931 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4930, i32 0, i32 2
+%.tmp4933 = getelementptr [9 x i8], [9 x i8]*@.str4932, i32 0, i32 0
+store i8* %.tmp4933, i8** %.tmp4931
+%.tmp4934 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4935 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4934, i32 0, i32 6
+%.tmp4936 = load %m307$.Node.type*, %m307$.Node.type** %.tmp4935
+%.tmp4938 = getelementptr [5 x i8], [5 x i8]*@.str4937, i32 0, i32 0
+%.tmp4939 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp4936, i8* %.tmp4938)
+%var_name.4940 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp4939, %m307$.Node.type** %var_name.4940
+%.tmp4941 = load %m307$.Node.type*, %m307$.Node.type** %var_name.4940
+%.tmp4942 = icmp eq %m307$.Node.type* %.tmp4941, null
+br i1 %.tmp4942, label %.if.true.4943, label %.if.false.4943
+.if.true.4943:
+%.tmp4944 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4945 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4947 = getelementptr [31 x i8], [31 x i8]*@.str4946, i32 0, i32 0
+%.tmp4948 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp4944, %m307$.Node.type* %.tmp4945, i8* %.tmp4947)
+%.tmp4949 = call i32(i8*,...) @printf(i8* %.tmp4948)
+%.tmp4950 = bitcast ptr null to %m1861$.AssignableInfo.type*
+ret %m1861$.AssignableInfo.type* %.tmp4950
+br label %.if.end.4943
+.if.false.4943:
+br label %.if.end.4943
+.if.end.4943:
+%.tmp4951 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4952 = call %m1861$.ModuleLookup.type*(%m1861$.CompilerCtx.type*) @m1861$get_current_module.m1861$.ModuleLookup.typep.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp4951)
+%mod.4953 = alloca %m1861$.ModuleLookup.type*
+store %m1861$.ModuleLookup.type* %.tmp4952, %m1861$.ModuleLookup.type** %mod.4953
+%.tmp4954 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4955 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.4953
+%.tmp4956 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp4955, i32 0, i32 3
+%.tmp4957 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp4956
+%.tmp4958 = load %m307$.Node.type*, %m307$.Node.type** %var_name.4940
+%.tmp4959 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4958, i32 0, i32 1
+%.tmp4960 = load i8*, i8** %.tmp4959
+%.tmp4961 = call %m1861$.ScopeItem.type*(%m1861$.CompilerCtx.type*,%m1861$.Scope.type*,i8*) @m1861$find_defined_here.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.m1861$.Scope.typep.cp(%m1861$.CompilerCtx.type* %.tmp4954, %m1861$.Scope.type* %.tmp4957, i8* %.tmp4960)
+%.tmp4962 = icmp ne %m1861$.ScopeItem.type* %.tmp4961, null
+br i1 %.tmp4962, label %.if.true.4963, label %.if.false.4963
+.if.true.4963:
+%err_buf.4964 = alloca i8*
+store i8* null, i8** %err_buf.4964
+%.tmp4965 = getelementptr i8*, i8** %err_buf.4964, i32 0
+%.tmp4967 = getelementptr [43 x i8], [43 x i8]*@.str4966, i32 0, i32 0
+%.tmp4968 = load %m307$.Node.type*, %m307$.Node.type** %var_name.4940
+%.tmp4969 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4968, i32 0, i32 1
+%.tmp4970 = load i8*, i8** %.tmp4969
+%.tmp4971 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp4965, i8* %.tmp4967, i8* %.tmp4970)
+%.tmp4972 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4973 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp4974 = load i8*, i8** %err_buf.4964
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp4972, %m307$.Node.type* %.tmp4973, i8* %.tmp4974)
+%.tmp4975 = bitcast ptr null to %m1861$.AssignableInfo.type*
+ret %m1861$.AssignableInfo.type* %.tmp4975
+br label %.if.end.4963
+.if.false.4963:
+br label %.if.end.4963
+.if.end.4963:
+%var_id.4976 = alloca i8*
+store i8* null, i8** %var_id.4976
+%.tmp4977 = getelementptr i8*, i8** %var_id.4976, i32 0
+%.tmp4979 = getelementptr [6 x i8], [6 x i8]*@.str4978, i32 0, i32 0
+%.tmp4980 = load %m307$.Node.type*, %m307$.Node.type** %var_name.4940
+%.tmp4981 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp4980, i32 0, i32 1
+%.tmp4982 = load i8*, i8** %.tmp4981
+%.tmp4983 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp4984 = call i32(%m1861$.CompilerCtx.type*) @m1861$new_uid.i.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp4983)
+%.tmp4985 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp4977, i8* %.tmp4979, i8* %.tmp4982, i32 %.tmp4984)
+%.tmp4986 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4929
+%.tmp4987 = load i8, i8* @SCOPE_LOCAL
+%.tmp4988 = load i8*, i8** %var_id.4976
+call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp4986, i8 %.tmp4987, i8* %.tmp4988)
+%.tmp4989 = load %m1861$.Type.type*, %m1861$.Type.type** %decl_type.4894
+%.tmp4990 = icmp ne %m1861$.Type.type* %.tmp4989, null
+br i1 %.tmp4990, label %.if.true.4991, label %.if.false.4991
+.if.true.4991:
+%.tmp4992 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4929
+%.tmp4993 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4992, i32 0, i32 3
+%.tmp4994 = load %m1861$.Type.type*, %m1861$.Type.type** %decl_type.4894
+store %m1861$.Type.type* %.tmp4994, %m1861$.Type.type** %.tmp4993
+br label %.if.end.4991
+.if.false.4991:
+%.tmp4995 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4896
+%.tmp4996 = icmp ne %m1861$.AssignableInfo.type* %.tmp4995, null
+br i1 %.tmp4996, label %.if.true.4997, label %.if.false.4997
+.if.true.4997:
+%.tmp4998 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4929
+%.tmp4999 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4998, i32 0, i32 3
+%.tmp5000 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4896
+%.tmp5001 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5000, i32 0, i32 3
+%.tmp5002 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5001
+store %m1861$.Type.type* %.tmp5002, %m1861$.Type.type** %.tmp4999
+br label %.if.end.4997
+.if.false.4997:
+br label %.if.end.4997
+.if.end.4997:
+br label %.if.end.4991
+.if.end.4991:
+%.tmp5003 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5004 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4929
+%.tmp5005 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5004, i32 0, i32 3
+%.tmp5006 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5005
+%.tmp5007 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp5003, %m1861$.Type.type* %.tmp5006)
+%var_type_repr.5008 = alloca i8*
+store i8* %.tmp5007, i8** %var_type_repr.5008
+%.tmp5009 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4896
+%.tmp5010 = icmp ne %m1861$.AssignableInfo.type* %.tmp5009, null
+br i1 %.tmp5010, label %.if.true.5011, label %.if.false.5011
+.if.true.5011:
+%.tmp5012 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5013 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4896
+%.tmp5014 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5013, i32 0, i32 3
+%.tmp5015 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5014
+%.tmp5016 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp5012, %m1861$.Type.type* %.tmp5015)
+%a_type_repr.5017 = alloca i8*
+store i8* %.tmp5016, i8** %a_type_repr.5017
+%type_error.5018 = alloca i1
+store i1 0, i1* %type_error.5018
+%.tmp5019 = load i8*, i8** %a_type_repr.5017
+%.tmp5020 = call i32(i8*) @strlen(i8* %.tmp5019)
+%.tmp5021 = load i8*, i8** %var_type_repr.5008
+%.tmp5022 = call i32(i8*) @strlen(i8* %.tmp5021)
+%.tmp5023 = icmp ne i32 %.tmp5020, %.tmp5022
+br i1 %.tmp5023, label %.if.true.5024, label %.if.false.5024
+.if.true.5024:
+store i1 1, i1* %type_error.5018
+br label %.if.end.5024
+.if.false.5024:
+%.tmp5025 = load i8*, i8** %a_type_repr.5017
+%.tmp5026 = load i8*, i8** %var_type_repr.5008
+%.tmp5027 = call i32(i8*,i8*) @strcmp(i8* %.tmp5025, i8* %.tmp5026)
+%.tmp5028 = icmp ne i32 %.tmp5027, 0
+br i1 %.tmp5028, label %.if.true.5029, label %.if.false.5029
+.if.true.5029:
+store i1 1, i1* %type_error.5018
+br label %.if.end.5029
+.if.false.5029:
+br label %.if.end.5029
+.if.end.5029:
+br label %.if.end.5024
+.if.end.5024:
+%.tmp5030 = load i1, i1* %type_error.5018
+br i1 %.tmp5030, label %.if.true.5031, label %.if.false.5031
+.if.true.5031:
+%.tmp5032 = bitcast ptr null to i8*
+%err_msg.5033 = alloca i8*
+store i8* %.tmp5032, i8** %err_msg.5033
+%.tmp5034 = getelementptr i8*, i8** %err_msg.5033, i32 0
+%.tmp5036 = getelementptr [49 x i8], [49 x i8]*@.str5035, i32 0, i32 0
+%.tmp5037 = load i8*, i8** %a_type_repr.5017
+%.tmp5038 = load i8*, i8** %var_type_repr.5008
+%.tmp5039 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp5034, i8* %.tmp5036, i8* %.tmp5037, i8* %.tmp5038)
+%.tmp5040 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5041 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp5042 = load i8*, i8** %err_msg.5033
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp5040, %m307$.Node.type* %.tmp5041, i8* %.tmp5042)
+br label %.if.end.5031
+.if.false.5031:
+br label %.if.end.5031
+.if.end.5031:
+br label %.if.end.5011
+.if.false.5011:
+br label %.if.end.5011
+.if.end.5011:
+%.tmp5043 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5044 = load %m307$.Node.type*, %m307$.Node.type** %var_name.4940
+%.tmp5045 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5044, i32 0, i32 1
+%.tmp5046 = load i8*, i8** %.tmp5045
+%.tmp5047 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4929
+call void(%m1861$.CompilerCtx.type*,i8*,%m1861$.AssignableInfo.type*) @m1861$define_assignable.v.m1861$.CompilerCtx.typep.cp.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp5043, i8* %.tmp5046, %m1861$.AssignableInfo.type* %.tmp5047)
+%.tmp5048 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5049 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5048, i32 0, i32 1
+%.tmp5050 = load %m0$.File.type*, %m0$.File.type** %.tmp5049
+%.tmp5052 = getelementptr [16 x i8], [16 x i8]*@.str5051, i32 0, i32 0
+%.tmp5053 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4929
+%.tmp5054 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5053)
+%.tmp5055 = load i8*, i8** %var_type_repr.5008
+%.tmp5056 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5050, i8* %.tmp5052, i8* %.tmp5054, i8* %.tmp5055)
+%.tmp5057 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4896
+%.tmp5058 = icmp ne %m1861$.AssignableInfo.type* %.tmp5057, null
+br i1 %.tmp5058, label %.if.true.5059, label %.if.false.5059
+.if.true.5059:
+%.tmp5060 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5061 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5060, i32 0, i32 1
+%.tmp5062 = load %m0$.File.type*, %m0$.File.type** %.tmp5061
+%.tmp5064 = getelementptr [21 x i8], [21 x i8]*@.str5063, i32 0, i32 0
+%.tmp5065 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5066 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4896
+%.tmp5067 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5066, i32 0, i32 3
+%.tmp5068 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5067
+%.tmp5069 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp5065, %m1861$.Type.type* %.tmp5068)
+%.tmp5070 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.4896
+%.tmp5071 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5070)
+%.tmp5072 = load i8*, i8** %var_type_repr.5008
+%.tmp5073 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4929
+%.tmp5074 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5073)
+%.tmp5075 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5062, i8* %.tmp5064, i8* %.tmp5069, i8* %.tmp5071, i8* %.tmp5072, i8* %.tmp5074)
+br label %.if.end.5059
+.if.false.5059:
+%.tmp5076 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5077 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp5078 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4929
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,%m1861$.AssignableInfo.type*) @m1861$compile_zero_value.v.m1861$.CompilerCtx.typep.m307$.Node.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp5076, %m307$.Node.type* %.tmp5077, %m1861$.AssignableInfo.type* %.tmp5078)
+br label %.if.end.5059
+.if.end.5059:
+%.tmp5079 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.4929
+ret %m1861$.AssignableInfo.type* %.tmp5079
 }
 define void @m1861$compile_zero_value.v.m1861$.CompilerCtx.typep.m307$.Node.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.stmt.arg, %m1861$.AssignableInfo.type* %.info.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
@@ -7352,224 +7582,224 @@ store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 store %m307$.Node.type* %.stmt.arg, %m307$.Node.type** %stmt
 %info = alloca %m1861$.AssignableInfo.type*
 store %m1861$.AssignableInfo.type* %.info.arg, %m1861$.AssignableInfo.type** %info
-%.tmp4930 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-%.tmp4931 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4930, i32 0, i32 3
-%.tmp4932 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4931
-%.tmp4933 = icmp eq %m1861$.Type.type* %.tmp4932, null
-br i1 %.tmp4933, label %.if.true.4934, label %.if.false.4934
-.if.true.4934:
+%.tmp5080 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
+%.tmp5081 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5080, i32 0, i32 3
+%.tmp5082 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5081
+%.tmp5083 = icmp eq %m1861$.Type.type* %.tmp5082, null
+br i1 %.tmp5083, label %.if.true.5084, label %.if.false.5084
+.if.true.5084:
 ret void
-br label %.if.end.4934
-.if.false.4934:
-br label %.if.end.4934
-.if.end.4934:
-%.tmp4935 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4936 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-%.tmp4937 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4936, i32 0, i32 3
-%.tmp4938 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4937
-%.tmp4939 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp4935, %m1861$.Type.type* %.tmp4938)
-%t_repr.4940 = alloca i8*
-store i8* %.tmp4939, i8** %t_repr.4940
-%.tmp4941 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-%.tmp4942 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp4941)
-%id.4943 = alloca i8*
-store i8* %.tmp4942, i8** %id.4943
-%field_id.4944 = alloca i32
-store i32 0, i32* %field_id.4944
-%field.4945 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* null, %m1861$.Type.type** %field.4945
-%field_info.4946 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* null, %m1861$.AssignableInfo.type** %field_info.4946
-%.tmp4947 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-%.tmp4948 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp4947, i32 0, i32 3
-%.tmp4949 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp4948
-%t.4950 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp4949, %m1861$.Type.type** %t.4950
-%.tmp4951 = load %m1861$.Type.type*, %m1861$.Type.type** %t.4950
-%.tmp4952 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp4951, i32 0, i32 0
-%.tmp4953 = load i8*, i8** %.tmp4952
-%.tmp4955 = getelementptr [4 x i8], [4 x i8]*@.str4954, i32 0, i32 0
-%.tmp4956 = call i32(i8*,i8*) @strcmp(i8* %.tmp4953, i8* %.tmp4955)
-%.tmp4957 = icmp eq i32 %.tmp4956, 0
-%.tmp4958 = load %m1861$.Type.type*, %m1861$.Type.type** %t.4950
-%.tmp4959 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp4958, i32 0, i32 0
-%.tmp4960 = load i8*, i8** %.tmp4959
-%.tmp4962 = getelementptr [4 x i8], [4 x i8]*@.str4961, i32 0, i32 0
-%.tmp4963 = call i32(i8*,i8*) @strcmp(i8* %.tmp4960, i8* %.tmp4962)
-%.tmp4964 = icmp eq i32 %.tmp4963, 0
-%.tmp4965 = or i1 %.tmp4957, %.tmp4964
-%.tmp4966 = load %m1861$.Type.type*, %m1861$.Type.type** %t.4950
-%.tmp4967 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp4966, i32 0, i32 0
-%.tmp4968 = load i8*, i8** %.tmp4967
-%.tmp4970 = getelementptr [5 x i8], [5 x i8]*@.str4969, i32 0, i32 0
-%.tmp4971 = call i32(i8*,i8*) @strcmp(i8* %.tmp4968, i8* %.tmp4970)
-%.tmp4972 = icmp eq i32 %.tmp4971, 0
-%.tmp4973 = or i1 %.tmp4965, %.tmp4972
-br i1 %.tmp4973, label %.if.true.4974, label %.if.false.4974
-.if.true.4974:
-%.tmp4975 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4976 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4975, i32 0, i32 1
-%.tmp4977 = load %m0$.File.type*, %m0$.File.type** %.tmp4976
-%.tmp4979 = getelementptr [21 x i8], [21 x i8]*@.str4978, i32 0, i32 0
-%.tmp4980 = load i8*, i8** %t_repr.4940
-%.tmp4981 = load i8*, i8** %t_repr.4940
-%.tmp4982 = load i8*, i8** %id.4943
-%.tmp4983 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4977, i8* %.tmp4979, i8* %.tmp4980, i32 0, i8* %.tmp4981, i8* %.tmp4982)
-br label %.if.end.4974
-.if.false.4974:
-%.tmp4984 = load %m1861$.Type.type*, %m1861$.Type.type** %t.4950
-%.tmp4985 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp4984, i32 0, i32 0
-%.tmp4986 = load i8*, i8** %.tmp4985
-%.tmp4988 = getelementptr [4 x i8], [4 x i8]*@.str4987, i32 0, i32 0
-%.tmp4989 = call i32(i8*,i8*) @strcmp(i8* %.tmp4986, i8* %.tmp4988)
-%.tmp4990 = icmp eq i32 %.tmp4989, 0
-br i1 %.tmp4990, label %.if.true.4991, label %.if.false.4991
-.if.true.4991:
-%.tmp4992 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp4993 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp4992, i32 0, i32 1
-%.tmp4994 = load %m0$.File.type*, %m0$.File.type** %.tmp4993
-%.tmp4996 = getelementptr [21 x i8], [21 x i8]*@.str4995, i32 0, i32 0
-%.tmp4997 = load i8*, i8** %t_repr.4940
-%.tmp4999 = getelementptr [5 x i8], [5 x i8]*@.str4998, i32 0, i32 0
-%.tmp5000 = load i8*, i8** %t_repr.4940
-%.tmp5001 = load i8*, i8** %id.4943
-%.tmp5002 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp4994, i8* %.tmp4996, i8* %.tmp4997, i8* %.tmp4999, i8* %.tmp5000, i8* %.tmp5001)
-br label %.if.end.4991
-.if.false.4991:
-%.tmp5003 = load %m1861$.Type.type*, %m1861$.Type.type** %t.4950
-%.tmp5004 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5003, i32 0, i32 0
-%.tmp5005 = load i8*, i8** %.tmp5004
-%.tmp5007 = getelementptr [7 x i8], [7 x i8]*@.str5006, i32 0, i32 0
-%.tmp5008 = call i32(i8*,i8*) @strcmp(i8* %.tmp5005, i8* %.tmp5007)
-%.tmp5009 = icmp eq i32 %.tmp5008, 0
-br i1 %.tmp5009, label %.if.true.5010, label %.if.false.5010
-.if.true.5010:
-%.tmp5012 = load %m1861$.Type.type*, %m1861$.Type.type** %t.4950
-%.tmp5013 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5012, i32 0, i32 3
-%.tmp5014 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5013
-store %m1861$.Type.type* %.tmp5014, %m1861$.Type.type** %field.4945
-br label %.for.start.5011
-.for.start.5011:
-%.tmp5015 = load %m1861$.Type.type*, %m1861$.Type.type** %field.4945
-%.tmp5016 = icmp ne %m1861$.Type.type* %.tmp5015, null
-br i1 %.tmp5016, label %.for.continue.5011, label %.for.end.5011
-.for.continue.5011:
-%.tmp5017 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp5018 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp5017)
-store %m1861$.AssignableInfo.type* %.tmp5018, %m1861$.AssignableInfo.type** %field_info.4946
-%.tmp5019 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5020 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %field_info.4946
-call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp5019, %m1861$.AssignableInfo.type* %.tmp5020)
-%.tmp5021 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %field_info.4946
-%.tmp5022 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5021, i32 0, i32 3
-%.tmp5023 = load %m1861$.Type.type*, %m1861$.Type.type** %field.4945
-store %m1861$.Type.type* %.tmp5023, %m1861$.Type.type** %.tmp5022
-%.tmp5024 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5025 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5024, i32 0, i32 1
-%.tmp5026 = load %m0$.File.type*, %m0$.File.type** %.tmp5025
-%.tmp5028 = getelementptr [46 x i8], [46 x i8]*@.str5027, i32 0, i32 0
-%.tmp5029 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %field_info.4946
-%.tmp5030 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5029)
-%.tmp5031 = load i8*, i8** %t_repr.4940
-%.tmp5032 = load i8*, i8** %t_repr.4940
-%.tmp5033 = load i8*, i8** %id.4943
-%.tmp5034 = load i32, i32* %field_id.4944
-%.tmp5035 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5026, i8* %.tmp5028, i8* %.tmp5030, i8* %.tmp5031, i8* %.tmp5032, i8* %.tmp5033, i32 %.tmp5034)
-%.tmp5036 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5037 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp5038 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %field_info.4946
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,%m1861$.AssignableInfo.type*) @m1861$compile_zero_value.v.m1861$.CompilerCtx.typep.m307$.Node.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp5036, %m307$.Node.type* %.tmp5037, %m1861$.AssignableInfo.type* %.tmp5038)
-%.tmp5039 = load i32, i32* %field_id.4944
-%.tmp5040 = add i32 %.tmp5039, 1
-store i32 %.tmp5040, i32* %field_id.4944
-%.tmp5041 = load %m1861$.Type.type*, %m1861$.Type.type** %field.4945
-%.tmp5042 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5041, i32 0, i32 4
-%.tmp5043 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5042
-store %m1861$.Type.type* %.tmp5043, %m1861$.Type.type** %field.4945
-br label %.for.start.5011
-.for.end.5011:
-br label %.if.end.5010
-.if.false.5010:
-%.tmp5044 = load %m1861$.Type.type*, %m1861$.Type.type** %t.4950
-%.tmp5045 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5044, i32 0, i32 0
-%.tmp5046 = load i8*, i8** %.tmp5045
-%.tmp5048 = getelementptr [10 x i8], [10 x i8]*@.str5047, i32 0, i32 0
-%.tmp5049 = call i32(i8*,i8*) @strcmp(i8* %.tmp5046, i8* %.tmp5048)
-%.tmp5050 = icmp eq i32 %.tmp5049, 0
-br i1 %.tmp5050, label %.if.true.5051, label %.if.false.5051
-.if.true.5051:
-%.tmp5053 = load %m1861$.Type.type*, %m1861$.Type.type** %t.4950
-%.tmp5054 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5053, i32 0, i32 3
-%.tmp5055 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5054
-%.tmp5056 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5055, i32 0, i32 3
-%.tmp5057 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5056
-store %m1861$.Type.type* %.tmp5057, %m1861$.Type.type** %field.4945
-br label %.for.start.5052
-.for.start.5052:
-%.tmp5058 = load %m1861$.Type.type*, %m1861$.Type.type** %field.4945
-%.tmp5059 = icmp ne %m1861$.Type.type* %.tmp5058, null
-br i1 %.tmp5059, label %.for.continue.5052, label %.for.end.5052
-.for.continue.5052:
-%.tmp5060 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp5061 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp5060)
-store %m1861$.AssignableInfo.type* %.tmp5061, %m1861$.AssignableInfo.type** %field_info.4946
-%.tmp5062 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5063 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %field_info.4946
-call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp5062, %m1861$.AssignableInfo.type* %.tmp5063)
-%.tmp5064 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %field_info.4946
-%.tmp5065 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5064, i32 0, i32 3
-%.tmp5066 = load %m1861$.Type.type*, %m1861$.Type.type** %field.4945
-store %m1861$.Type.type* %.tmp5066, %m1861$.Type.type** %.tmp5065
-%.tmp5067 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5068 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5067, i32 0, i32 1
-%.tmp5069 = load %m0$.File.type*, %m0$.File.type** %.tmp5068
-%.tmp5071 = getelementptr [46 x i8], [46 x i8]*@.str5070, i32 0, i32 0
-%.tmp5072 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %field_info.4946
-%.tmp5073 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5072)
-%.tmp5074 = load i8*, i8** %t_repr.4940
-%.tmp5075 = load i8*, i8** %t_repr.4940
-%.tmp5076 = load i8*, i8** %id.4943
-%.tmp5077 = load i32, i32* %field_id.4944
-%.tmp5078 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5069, i8* %.tmp5071, i8* %.tmp5073, i8* %.tmp5074, i8* %.tmp5075, i8* %.tmp5076, i32 %.tmp5077)
-%.tmp5079 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5080 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp5081 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %field_info.4946
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,%m1861$.AssignableInfo.type*) @m1861$compile_zero_value.v.m1861$.CompilerCtx.typep.m307$.Node.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp5079, %m307$.Node.type* %.tmp5080, %m1861$.AssignableInfo.type* %.tmp5081)
-%.tmp5082 = load i32, i32* %field_id.4944
-%.tmp5083 = add i32 %.tmp5082, 1
-store i32 %.tmp5083, i32* %field_id.4944
-%.tmp5084 = load %m1861$.Type.type*, %m1861$.Type.type** %field.4945
-%.tmp5085 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5084, i32 0, i32 4
-%.tmp5086 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5085
-store %m1861$.Type.type* %.tmp5086, %m1861$.Type.type** %field.4945
-br label %.for.start.5052
-.for.end.5052:
-br label %.if.end.5051
-.if.false.5051:
-%.tmp5087 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5088 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp5090 = getelementptr [44 x i8], [44 x i8]*@.str5089, i32 0, i32 0
-%.tmp5091 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp5087, %m307$.Node.type* %.tmp5088, i8* %.tmp5090)
-%.tmp5092 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-%.tmp5093 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5092, i32 0, i32 3
-%.tmp5094 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5093
-%.tmp5095 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5094, i32 0, i32 0
-%.tmp5096 = load i8*, i8** %.tmp5095
-%.tmp5097 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5098 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-%.tmp5099 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5098, i32 0, i32 3
-%.tmp5100 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5099
-%.tmp5101 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp5097, %m1861$.Type.type* %.tmp5100)
-%.tmp5102 = call i32(i8*,...) @printf(i8* %.tmp5091, i8* %.tmp5096, i8* %.tmp5101)
+br label %.if.end.5084
+.if.false.5084:
+br label %.if.end.5084
+.if.end.5084:
+%.tmp5085 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5086 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
+%.tmp5087 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5086, i32 0, i32 3
+%.tmp5088 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5087
+%.tmp5089 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp5085, %m1861$.Type.type* %.tmp5088)
+%t_repr.5090 = alloca i8*
+store i8* %.tmp5089, i8** %t_repr.5090
+%.tmp5091 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
+%.tmp5092 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5091)
+%id.5093 = alloca i8*
+store i8* %.tmp5092, i8** %id.5093
+%field_id.5094 = alloca i32
+store i32 0, i32* %field_id.5094
+%field.5095 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* null, %m1861$.Type.type** %field.5095
+%field_info.5096 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* null, %m1861$.AssignableInfo.type** %field_info.5096
+%.tmp5097 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
+%.tmp5098 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5097, i32 0, i32 3
+%.tmp5099 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5098
+%t.5100 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp5099, %m1861$.Type.type** %t.5100
+%.tmp5101 = load %m1861$.Type.type*, %m1861$.Type.type** %t.5100
+%.tmp5102 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5101, i32 0, i32 0
+%.tmp5103 = load i8*, i8** %.tmp5102
+%.tmp5105 = getelementptr [4 x i8], [4 x i8]*@.str5104, i32 0, i32 0
+%.tmp5106 = call i32(i8*,i8*) @strcmp(i8* %.tmp5103, i8* %.tmp5105)
+%.tmp5107 = icmp eq i32 %.tmp5106, 0
+%.tmp5108 = load %m1861$.Type.type*, %m1861$.Type.type** %t.5100
+%.tmp5109 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5108, i32 0, i32 0
+%.tmp5110 = load i8*, i8** %.tmp5109
+%.tmp5112 = getelementptr [4 x i8], [4 x i8]*@.str5111, i32 0, i32 0
+%.tmp5113 = call i32(i8*,i8*) @strcmp(i8* %.tmp5110, i8* %.tmp5112)
+%.tmp5114 = icmp eq i32 %.tmp5113, 0
+%.tmp5115 = or i1 %.tmp5107, %.tmp5114
+%.tmp5116 = load %m1861$.Type.type*, %m1861$.Type.type** %t.5100
+%.tmp5117 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5116, i32 0, i32 0
+%.tmp5118 = load i8*, i8** %.tmp5117
+%.tmp5120 = getelementptr [5 x i8], [5 x i8]*@.str5119, i32 0, i32 0
+%.tmp5121 = call i32(i8*,i8*) @strcmp(i8* %.tmp5118, i8* %.tmp5120)
+%.tmp5122 = icmp eq i32 %.tmp5121, 0
+%.tmp5123 = or i1 %.tmp5115, %.tmp5122
+br i1 %.tmp5123, label %.if.true.5124, label %.if.false.5124
+.if.true.5124:
+%.tmp5125 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5126 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5125, i32 0, i32 1
+%.tmp5127 = load %m0$.File.type*, %m0$.File.type** %.tmp5126
+%.tmp5129 = getelementptr [21 x i8], [21 x i8]*@.str5128, i32 0, i32 0
+%.tmp5130 = load i8*, i8** %t_repr.5090
+%.tmp5131 = load i8*, i8** %t_repr.5090
+%.tmp5132 = load i8*, i8** %id.5093
+%.tmp5133 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5127, i8* %.tmp5129, i8* %.tmp5130, i32 0, i8* %.tmp5131, i8* %.tmp5132)
+br label %.if.end.5124
+.if.false.5124:
+%.tmp5134 = load %m1861$.Type.type*, %m1861$.Type.type** %t.5100
+%.tmp5135 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5134, i32 0, i32 0
+%.tmp5136 = load i8*, i8** %.tmp5135
+%.tmp5138 = getelementptr [4 x i8], [4 x i8]*@.str5137, i32 0, i32 0
+%.tmp5139 = call i32(i8*,i8*) @strcmp(i8* %.tmp5136, i8* %.tmp5138)
+%.tmp5140 = icmp eq i32 %.tmp5139, 0
+br i1 %.tmp5140, label %.if.true.5141, label %.if.false.5141
+.if.true.5141:
+%.tmp5142 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5143 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5142, i32 0, i32 1
+%.tmp5144 = load %m0$.File.type*, %m0$.File.type** %.tmp5143
+%.tmp5146 = getelementptr [21 x i8], [21 x i8]*@.str5145, i32 0, i32 0
+%.tmp5147 = load i8*, i8** %t_repr.5090
+%.tmp5149 = getelementptr [5 x i8], [5 x i8]*@.str5148, i32 0, i32 0
+%.tmp5150 = load i8*, i8** %t_repr.5090
+%.tmp5151 = load i8*, i8** %id.5093
+%.tmp5152 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5144, i8* %.tmp5146, i8* %.tmp5147, i8* %.tmp5149, i8* %.tmp5150, i8* %.tmp5151)
+br label %.if.end.5141
+.if.false.5141:
+%.tmp5153 = load %m1861$.Type.type*, %m1861$.Type.type** %t.5100
+%.tmp5154 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5153, i32 0, i32 0
+%.tmp5155 = load i8*, i8** %.tmp5154
+%.tmp5157 = getelementptr [7 x i8], [7 x i8]*@.str5156, i32 0, i32 0
+%.tmp5158 = call i32(i8*,i8*) @strcmp(i8* %.tmp5155, i8* %.tmp5157)
+%.tmp5159 = icmp eq i32 %.tmp5158, 0
+br i1 %.tmp5159, label %.if.true.5160, label %.if.false.5160
+.if.true.5160:
+%.tmp5162 = load %m1861$.Type.type*, %m1861$.Type.type** %t.5100
+%.tmp5163 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5162, i32 0, i32 3
+%.tmp5164 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5163
+store %m1861$.Type.type* %.tmp5164, %m1861$.Type.type** %field.5095
+br label %.for.start.5161
+.for.start.5161:
+%.tmp5165 = load %m1861$.Type.type*, %m1861$.Type.type** %field.5095
+%.tmp5166 = icmp ne %m1861$.Type.type* %.tmp5165, null
+br i1 %.tmp5166, label %.for.continue.5161, label %.for.end.5161
+.for.continue.5161:
+%.tmp5167 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp5168 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp5167)
+store %m1861$.AssignableInfo.type* %.tmp5168, %m1861$.AssignableInfo.type** %field_info.5096
+%.tmp5169 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5170 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %field_info.5096
+call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp5169, %m1861$.AssignableInfo.type* %.tmp5170)
+%.tmp5171 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %field_info.5096
+%.tmp5172 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5171, i32 0, i32 3
+%.tmp5173 = load %m1861$.Type.type*, %m1861$.Type.type** %field.5095
+store %m1861$.Type.type* %.tmp5173, %m1861$.Type.type** %.tmp5172
+%.tmp5174 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5175 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5174, i32 0, i32 1
+%.tmp5176 = load %m0$.File.type*, %m0$.File.type** %.tmp5175
+%.tmp5178 = getelementptr [46 x i8], [46 x i8]*@.str5177, i32 0, i32 0
+%.tmp5179 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %field_info.5096
+%.tmp5180 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5179)
+%.tmp5181 = load i8*, i8** %t_repr.5090
+%.tmp5182 = load i8*, i8** %t_repr.5090
+%.tmp5183 = load i8*, i8** %id.5093
+%.tmp5184 = load i32, i32* %field_id.5094
+%.tmp5185 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5176, i8* %.tmp5178, i8* %.tmp5180, i8* %.tmp5181, i8* %.tmp5182, i8* %.tmp5183, i32 %.tmp5184)
+%.tmp5186 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5187 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp5188 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %field_info.5096
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,%m1861$.AssignableInfo.type*) @m1861$compile_zero_value.v.m1861$.CompilerCtx.typep.m307$.Node.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp5186, %m307$.Node.type* %.tmp5187, %m1861$.AssignableInfo.type* %.tmp5188)
+%.tmp5189 = load i32, i32* %field_id.5094
+%.tmp5190 = add i32 %.tmp5189, 1
+store i32 %.tmp5190, i32* %field_id.5094
+%.tmp5191 = load %m1861$.Type.type*, %m1861$.Type.type** %field.5095
+%.tmp5192 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5191, i32 0, i32 4
+%.tmp5193 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5192
+store %m1861$.Type.type* %.tmp5193, %m1861$.Type.type** %field.5095
+br label %.for.start.5161
+.for.end.5161:
+br label %.if.end.5160
+.if.false.5160:
+%.tmp5194 = load %m1861$.Type.type*, %m1861$.Type.type** %t.5100
+%.tmp5195 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5194, i32 0, i32 0
+%.tmp5196 = load i8*, i8** %.tmp5195
+%.tmp5198 = getelementptr [10 x i8], [10 x i8]*@.str5197, i32 0, i32 0
+%.tmp5199 = call i32(i8*,i8*) @strcmp(i8* %.tmp5196, i8* %.tmp5198)
+%.tmp5200 = icmp eq i32 %.tmp5199, 0
+br i1 %.tmp5200, label %.if.true.5201, label %.if.false.5201
+.if.true.5201:
+%.tmp5203 = load %m1861$.Type.type*, %m1861$.Type.type** %t.5100
+%.tmp5204 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5203, i32 0, i32 3
+%.tmp5205 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5204
+%.tmp5206 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5205, i32 0, i32 3
+%.tmp5207 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5206
+store %m1861$.Type.type* %.tmp5207, %m1861$.Type.type** %field.5095
+br label %.for.start.5202
+.for.start.5202:
+%.tmp5208 = load %m1861$.Type.type*, %m1861$.Type.type** %field.5095
+%.tmp5209 = icmp ne %m1861$.Type.type* %.tmp5208, null
+br i1 %.tmp5209, label %.for.continue.5202, label %.for.end.5202
+.for.continue.5202:
+%.tmp5210 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp5211 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp5210)
+store %m1861$.AssignableInfo.type* %.tmp5211, %m1861$.AssignableInfo.type** %field_info.5096
+%.tmp5212 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5213 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %field_info.5096
+call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp5212, %m1861$.AssignableInfo.type* %.tmp5213)
+%.tmp5214 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %field_info.5096
+%.tmp5215 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5214, i32 0, i32 3
+%.tmp5216 = load %m1861$.Type.type*, %m1861$.Type.type** %field.5095
+store %m1861$.Type.type* %.tmp5216, %m1861$.Type.type** %.tmp5215
+%.tmp5217 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5218 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5217, i32 0, i32 1
+%.tmp5219 = load %m0$.File.type*, %m0$.File.type** %.tmp5218
+%.tmp5221 = getelementptr [46 x i8], [46 x i8]*@.str5220, i32 0, i32 0
+%.tmp5222 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %field_info.5096
+%.tmp5223 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5222)
+%.tmp5224 = load i8*, i8** %t_repr.5090
+%.tmp5225 = load i8*, i8** %t_repr.5090
+%.tmp5226 = load i8*, i8** %id.5093
+%.tmp5227 = load i32, i32* %field_id.5094
+%.tmp5228 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5219, i8* %.tmp5221, i8* %.tmp5223, i8* %.tmp5224, i8* %.tmp5225, i8* %.tmp5226, i32 %.tmp5227)
+%.tmp5229 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5230 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp5231 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %field_info.5096
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,%m1861$.AssignableInfo.type*) @m1861$compile_zero_value.v.m1861$.CompilerCtx.typep.m307$.Node.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp5229, %m307$.Node.type* %.tmp5230, %m1861$.AssignableInfo.type* %.tmp5231)
+%.tmp5232 = load i32, i32* %field_id.5094
+%.tmp5233 = add i32 %.tmp5232, 1
+store i32 %.tmp5233, i32* %field_id.5094
+%.tmp5234 = load %m1861$.Type.type*, %m1861$.Type.type** %field.5095
+%.tmp5235 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5234, i32 0, i32 4
+%.tmp5236 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5235
+store %m1861$.Type.type* %.tmp5236, %m1861$.Type.type** %field.5095
+br label %.for.start.5202
+.for.end.5202:
+br label %.if.end.5201
+.if.false.5201:
+%.tmp5237 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5238 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp5240 = getelementptr [44 x i8], [44 x i8]*@.str5239, i32 0, i32 0
+%.tmp5241 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp5237, %m307$.Node.type* %.tmp5238, i8* %.tmp5240)
+%.tmp5242 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
+%.tmp5243 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5242, i32 0, i32 3
+%.tmp5244 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5243
+%.tmp5245 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5244, i32 0, i32 0
+%.tmp5246 = load i8*, i8** %.tmp5245
+%.tmp5247 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5248 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
+%.tmp5249 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5248, i32 0, i32 3
+%.tmp5250 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5249
+%.tmp5251 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp5247, %m1861$.Type.type* %.tmp5250)
+%.tmp5252 = call i32(i8*,...) @printf(i8* %.tmp5241, i8* %.tmp5246, i8* %.tmp5251)
 ret void
-br label %.if.end.5051
-.if.end.5051:
-br label %.if.end.5010
-.if.end.5010:
-br label %.if.end.4991
-.if.end.4991:
-br label %.if.end.4974
-.if.end.4974:
+br label %.if.end.5201
+.if.end.5201:
+br label %.if.end.5160
+.if.end.5160:
+br label %.if.end.5141
+.if.end.5141:
+br label %.if.end.5124
+.if.end.5124:
 ret void
 }
 define void @m1861$compile_if_block.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.stmt.arg) {
@@ -7577,128 +7807,128 @@ define void @m1861$compile_if_block.v.m1861$.CompilerCtx.typep.m307$.Node.typep(
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %stmt = alloca %m307$.Node.type*
 store %m307$.Node.type* %.stmt.arg, %m307$.Node.type** %stmt
-%.tmp5103 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp5104 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5103, i32 0, i32 6
-%.tmp5105 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5104
-%.tmp5107 = getelementptr [11 x i8], [11 x i8]*@.str5106, i32 0, i32 0
-%.tmp5108 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp5105, i8* %.tmp5107)
-%assignable.5109 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp5108, %m307$.Node.type** %assignable.5109
-%.tmp5110 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5111 = load %m307$.Node.type*, %m307$.Node.type** %assignable.5109
-%.tmp5112 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_assignable.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp5110, %m307$.Node.type* %.tmp5111)
-%a_info.5113 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp5112, %m1861$.AssignableInfo.type** %a_info.5113
-%.tmp5114 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.5113
-%.tmp5115 = icmp eq %m1861$.AssignableInfo.type* %.tmp5114, null
-br i1 %.tmp5115, label %.if.true.5116, label %.if.false.5116
-.if.true.5116:
+%.tmp5253 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp5254 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5253, i32 0, i32 6
+%.tmp5255 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5254
+%.tmp5257 = getelementptr [11 x i8], [11 x i8]*@.str5256, i32 0, i32 0
+%.tmp5258 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp5255, i8* %.tmp5257)
+%assignable.5259 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp5258, %m307$.Node.type** %assignable.5259
+%.tmp5260 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5261 = load %m307$.Node.type*, %m307$.Node.type** %assignable.5259
+%.tmp5262 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_assignable.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp5260, %m307$.Node.type* %.tmp5261)
+%a_info.5263 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp5262, %m1861$.AssignableInfo.type** %a_info.5263
+%.tmp5264 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.5263
+%.tmp5265 = icmp eq %m1861$.AssignableInfo.type* %.tmp5264, null
+br i1 %.tmp5265, label %.if.true.5266, label %.if.false.5266
+.if.true.5266:
 ret void
-br label %.if.end.5116
-.if.false.5116:
-br label %.if.end.5116
-.if.end.5116:
-%.tmp5117 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5118 = call i32(%m1861$.CompilerCtx.type*) @m1861$new_uid.i.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp5117)
-%if_id.5119 = alloca i32
-store i32 %.tmp5118, i32* %if_id.5119
-%.tmp5120 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5121 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5120, i32 0, i32 1
-%.tmp5122 = load %m0$.File.type*, %m0$.File.type** %.tmp5121
-%.tmp5124 = getelementptr [53 x i8], [53 x i8]*@.str5123, i32 0, i32 0
-%.tmp5125 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5126 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.5113
-%.tmp5127 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5126, i32 0, i32 3
-%.tmp5128 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5127
-%.tmp5129 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp5125, %m1861$.Type.type* %.tmp5128)
-%.tmp5130 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.5113
-%.tmp5131 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5130)
-%.tmp5132 = load i32, i32* %if_id.5119
-%.tmp5133 = load i32, i32* %if_id.5119
-%.tmp5134 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5122, i8* %.tmp5124, i8* %.tmp5129, i8* %.tmp5131, i32 %.tmp5132, i32 %.tmp5133)
-%.tmp5135 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5136 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5135, i32 0, i32 1
-%.tmp5137 = load %m0$.File.type*, %m0$.File.type** %.tmp5136
-%.tmp5139 = getelementptr [14 x i8], [14 x i8]*@.str5138, i32 0, i32 0
-%.tmp5140 = load i32, i32* %if_id.5119
-%.tmp5141 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5137, i8* %.tmp5139, i32 %.tmp5140)
-%.tmp5142 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp5143 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5142, i32 0, i32 6
-%.tmp5144 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5143
-%.tmp5146 = getelementptr [6 x i8], [6 x i8]*@.str5145, i32 0, i32 0
-%.tmp5147 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp5144, i8* %.tmp5146)
-%block.5148 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp5147, %m307$.Node.type** %block.5148
-%.tmp5149 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5150 = load %m307$.Node.type*, %m307$.Node.type** %block.5148
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_block.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp5149, %m307$.Node.type* %.tmp5150)
-%.tmp5151 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5152 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5151, i32 0, i32 1
-%.tmp5153 = load %m0$.File.type*, %m0$.File.type** %.tmp5152
-%.tmp5155 = getelementptr [23 x i8], [23 x i8]*@.str5154, i32 0, i32 0
-%.tmp5156 = load i32, i32* %if_id.5119
-%.tmp5157 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5153, i8* %.tmp5155, i32 %.tmp5156)
-%.tmp5158 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5159 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5158, i32 0, i32 1
-%.tmp5160 = load %m0$.File.type*, %m0$.File.type** %.tmp5159
-%.tmp5162 = getelementptr [15 x i8], [15 x i8]*@.str5161, i32 0, i32 0
-%.tmp5163 = load i32, i32* %if_id.5119
-%.tmp5164 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5160, i8* %.tmp5162, i32 %.tmp5163)
-%.tmp5165 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp5166 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5165, i32 0, i32 6
-%.tmp5167 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5166
-%.tmp5169 = getelementptr [11 x i8], [11 x i8]*@.str5168, i32 0, i32 0
-%.tmp5170 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp5167, i8* %.tmp5169)
-%else_block.5171 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp5170, %m307$.Node.type** %else_block.5171
-%.tmp5172 = load %m307$.Node.type*, %m307$.Node.type** %else_block.5171
-%.tmp5173 = icmp ne %m307$.Node.type* %.tmp5172, null
-br i1 %.tmp5173, label %.if.true.5174, label %.if.false.5174
-.if.true.5174:
-%.tmp5175 = load %m307$.Node.type*, %m307$.Node.type** %else_block.5171
-%.tmp5176 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5175, i32 0, i32 6
-%.tmp5177 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5176
-%.tmp5178 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5177, i32 0, i32 0
-%.tmp5179 = load i8*, i8** %.tmp5178
-%.tmp5181 = getelementptr [11 x i8], [11 x i8]*@.str5180, i32 0, i32 0
-%.tmp5182 = call i32(i8*,i8*) @strcmp(i8* %.tmp5179, i8* %.tmp5181)
-%.tmp5183 = icmp eq i32 %.tmp5182, 0
-br i1 %.tmp5183, label %.if.true.5184, label %.if.false.5184
-.if.true.5184:
-%.tmp5185 = load %m307$.Node.type*, %m307$.Node.type** %else_block.5171
-%.tmp5186 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5185, i32 0, i32 6
-%.tmp5187 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5186
-%.tmp5188 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5187, i32 0, i32 6
-%.tmp5189 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5188
-%.tmp5191 = getelementptr [6 x i8], [6 x i8]*@.str5190, i32 0, i32 0
-%.tmp5192 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp5189, i8* %.tmp5191)
-store %m307$.Node.type* %.tmp5192, %m307$.Node.type** %block.5148
-%.tmp5193 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5194 = load %m307$.Node.type*, %m307$.Node.type** %block.5148
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_block.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp5193, %m307$.Node.type* %.tmp5194)
-br label %.if.end.5184
-.if.false.5184:
-%.tmp5195 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5196 = load %m307$.Node.type*, %m307$.Node.type** %else_block.5171
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_if_block.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp5195, %m307$.Node.type* %.tmp5196)
-br label %.if.end.5184
-.if.end.5184:
-br label %.if.end.5174
-.if.false.5174:
-br label %.if.end.5174
-.if.end.5174:
-%.tmp5197 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5198 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5197, i32 0, i32 1
-%.tmp5199 = load %m0$.File.type*, %m0$.File.type** %.tmp5198
-%.tmp5201 = getelementptr [23 x i8], [23 x i8]*@.str5200, i32 0, i32 0
-%.tmp5202 = load i32, i32* %if_id.5119
-%.tmp5203 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5199, i8* %.tmp5201, i32 %.tmp5202)
-%.tmp5204 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5205 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5204, i32 0, i32 1
-%.tmp5206 = load %m0$.File.type*, %m0$.File.type** %.tmp5205
-%.tmp5208 = getelementptr [13 x i8], [13 x i8]*@.str5207, i32 0, i32 0
-%.tmp5209 = load i32, i32* %if_id.5119
-%.tmp5210 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5206, i8* %.tmp5208, i32 %.tmp5209)
+br label %.if.end.5266
+.if.false.5266:
+br label %.if.end.5266
+.if.end.5266:
+%.tmp5267 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5268 = call i32(%m1861$.CompilerCtx.type*) @m1861$new_uid.i.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp5267)
+%if_id.5269 = alloca i32
+store i32 %.tmp5268, i32* %if_id.5269
+%.tmp5270 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5271 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5270, i32 0, i32 1
+%.tmp5272 = load %m0$.File.type*, %m0$.File.type** %.tmp5271
+%.tmp5274 = getelementptr [53 x i8], [53 x i8]*@.str5273, i32 0, i32 0
+%.tmp5275 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5276 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.5263
+%.tmp5277 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5276, i32 0, i32 3
+%.tmp5278 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5277
+%.tmp5279 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp5275, %m1861$.Type.type* %.tmp5278)
+%.tmp5280 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %a_info.5263
+%.tmp5281 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5280)
+%.tmp5282 = load i32, i32* %if_id.5269
+%.tmp5283 = load i32, i32* %if_id.5269
+%.tmp5284 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5272, i8* %.tmp5274, i8* %.tmp5279, i8* %.tmp5281, i32 %.tmp5282, i32 %.tmp5283)
+%.tmp5285 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5286 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5285, i32 0, i32 1
+%.tmp5287 = load %m0$.File.type*, %m0$.File.type** %.tmp5286
+%.tmp5289 = getelementptr [14 x i8], [14 x i8]*@.str5288, i32 0, i32 0
+%.tmp5290 = load i32, i32* %if_id.5269
+%.tmp5291 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5287, i8* %.tmp5289, i32 %.tmp5290)
+%.tmp5292 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp5293 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5292, i32 0, i32 6
+%.tmp5294 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5293
+%.tmp5296 = getelementptr [6 x i8], [6 x i8]*@.str5295, i32 0, i32 0
+%.tmp5297 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp5294, i8* %.tmp5296)
+%block.5298 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp5297, %m307$.Node.type** %block.5298
+%.tmp5299 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5300 = load %m307$.Node.type*, %m307$.Node.type** %block.5298
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_block.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp5299, %m307$.Node.type* %.tmp5300)
+%.tmp5301 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5302 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5301, i32 0, i32 1
+%.tmp5303 = load %m0$.File.type*, %m0$.File.type** %.tmp5302
+%.tmp5305 = getelementptr [23 x i8], [23 x i8]*@.str5304, i32 0, i32 0
+%.tmp5306 = load i32, i32* %if_id.5269
+%.tmp5307 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5303, i8* %.tmp5305, i32 %.tmp5306)
+%.tmp5308 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5309 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5308, i32 0, i32 1
+%.tmp5310 = load %m0$.File.type*, %m0$.File.type** %.tmp5309
+%.tmp5312 = getelementptr [15 x i8], [15 x i8]*@.str5311, i32 0, i32 0
+%.tmp5313 = load i32, i32* %if_id.5269
+%.tmp5314 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5310, i8* %.tmp5312, i32 %.tmp5313)
+%.tmp5315 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp5316 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5315, i32 0, i32 6
+%.tmp5317 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5316
+%.tmp5319 = getelementptr [11 x i8], [11 x i8]*@.str5318, i32 0, i32 0
+%.tmp5320 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp5317, i8* %.tmp5319)
+%else_block.5321 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp5320, %m307$.Node.type** %else_block.5321
+%.tmp5322 = load %m307$.Node.type*, %m307$.Node.type** %else_block.5321
+%.tmp5323 = icmp ne %m307$.Node.type* %.tmp5322, null
+br i1 %.tmp5323, label %.if.true.5324, label %.if.false.5324
+.if.true.5324:
+%.tmp5325 = load %m307$.Node.type*, %m307$.Node.type** %else_block.5321
+%.tmp5326 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5325, i32 0, i32 6
+%.tmp5327 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5326
+%.tmp5328 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5327, i32 0, i32 0
+%.tmp5329 = load i8*, i8** %.tmp5328
+%.tmp5331 = getelementptr [11 x i8], [11 x i8]*@.str5330, i32 0, i32 0
+%.tmp5332 = call i32(i8*,i8*) @strcmp(i8* %.tmp5329, i8* %.tmp5331)
+%.tmp5333 = icmp eq i32 %.tmp5332, 0
+br i1 %.tmp5333, label %.if.true.5334, label %.if.false.5334
+.if.true.5334:
+%.tmp5335 = load %m307$.Node.type*, %m307$.Node.type** %else_block.5321
+%.tmp5336 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5335, i32 0, i32 6
+%.tmp5337 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5336
+%.tmp5338 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5337, i32 0, i32 6
+%.tmp5339 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5338
+%.tmp5341 = getelementptr [6 x i8], [6 x i8]*@.str5340, i32 0, i32 0
+%.tmp5342 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp5339, i8* %.tmp5341)
+store %m307$.Node.type* %.tmp5342, %m307$.Node.type** %block.5298
+%.tmp5343 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5344 = load %m307$.Node.type*, %m307$.Node.type** %block.5298
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_block.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp5343, %m307$.Node.type* %.tmp5344)
+br label %.if.end.5334
+.if.false.5334:
+%.tmp5345 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5346 = load %m307$.Node.type*, %m307$.Node.type** %else_block.5321
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_if_block.v.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp5345, %m307$.Node.type* %.tmp5346)
+br label %.if.end.5334
+.if.end.5334:
+br label %.if.end.5324
+.if.false.5324:
+br label %.if.end.5324
+.if.end.5324:
+%.tmp5347 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5348 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5347, i32 0, i32 1
+%.tmp5349 = load %m0$.File.type*, %m0$.File.type** %.tmp5348
+%.tmp5351 = getelementptr [23 x i8], [23 x i8]*@.str5350, i32 0, i32 0
+%.tmp5352 = load i32, i32* %if_id.5269
+%.tmp5353 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5349, i8* %.tmp5351, i32 %.tmp5352)
+%.tmp5354 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5355 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5354, i32 0, i32 1
+%.tmp5356 = load %m0$.File.type*, %m0$.File.type** %.tmp5355
+%.tmp5358 = getelementptr [13 x i8], [13 x i8]*@.str5357, i32 0, i32 0
+%.tmp5359 = load i32, i32* %if_id.5269
+%.tmp5360 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5356, i8* %.tmp5358, i32 %.tmp5359)
 ret void
 }
 define void @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.curr_node.arg, i8* %.msg.arg) {
@@ -7708,32 +7938,32 @@ store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 store %m307$.Node.type* %.curr_node.arg, %m307$.Node.type** %curr_node
 %msg = alloca i8*
 store i8* %.msg.arg, i8** %msg
-%.tmp5211 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
-%.tmp5212 = icmp ne %m307$.Node.type* %.tmp5211, null
-br i1 %.tmp5212, label %.if.true.5213, label %.if.false.5213
-.if.true.5213:
-%.tmp5214 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5215 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5214, i32 0, i32 6
-%.tmp5216 = load i8*, i8** %.tmp5215
-%.tmp5217 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
-%.tmp5218 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5217, i32 0, i32 3
-%.tmp5219 = load i32, i32* %.tmp5218
-%.tmp5220 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
-%.tmp5221 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5220, i32 0, i32 4
-%.tmp5222 = load i32, i32* %.tmp5221
-%.tmp5223 = load i8*, i8** %msg
-%.tmp5224 = call %m751$.Error.type*(i8*,i32,i32,i8*) @m751$new.m751$.Error.typep.cp.i.i.cp(i8* %.tmp5216, i32 %.tmp5219, i32 %.tmp5222, i8* %.tmp5223)
-%err.5225 = alloca %m751$.Error.type*
-store %m751$.Error.type* %.tmp5224, %m751$.Error.type** %err.5225
-%.tmp5226 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5227 = load %m751$.Error.type*, %m751$.Error.type** %err.5225
-call void(%m1861$.CompilerCtx.type*,%m751$.Error.type*) @m1861$append_error.v.m1861$.CompilerCtx.typep.m751$.Error.typep(%m1861$.CompilerCtx.type* %.tmp5226, %m751$.Error.type* %.tmp5227)
-br label %.if.end.5213
-.if.false.5213:
-%.tmp5229 = getelementptr [61 x i8], [61 x i8]*@.str5228, i32 0, i32 0
-call void(i1,i8*) @m2$assert.v.b.cp(i1 0, i8* %.tmp5229)
-br label %.if.end.5213
-.if.end.5213:
+%.tmp5361 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
+%.tmp5362 = icmp ne %m307$.Node.type* %.tmp5361, null
+br i1 %.tmp5362, label %.if.true.5363, label %.if.false.5363
+.if.true.5363:
+%.tmp5364 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5365 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5364, i32 0, i32 6
+%.tmp5366 = load i8*, i8** %.tmp5365
+%.tmp5367 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
+%.tmp5368 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5367, i32 0, i32 3
+%.tmp5369 = load i32, i32* %.tmp5368
+%.tmp5370 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
+%.tmp5371 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5370, i32 0, i32 4
+%.tmp5372 = load i32, i32* %.tmp5371
+%.tmp5373 = load i8*, i8** %msg
+%.tmp5374 = call %m751$.Error.type*(i8*,i32,i32,i8*) @m751$new.m751$.Error.typep.cp.i.i.cp(i8* %.tmp5366, i32 %.tmp5369, i32 %.tmp5372, i8* %.tmp5373)
+%err.5375 = alloca %m751$.Error.type*
+store %m751$.Error.type* %.tmp5374, %m751$.Error.type** %err.5375
+%.tmp5376 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5377 = load %m751$.Error.type*, %m751$.Error.type** %err.5375
+call void(%m1861$.CompilerCtx.type*,%m751$.Error.type*) @m1861$append_error.v.m1861$.CompilerCtx.typep.m751$.Error.typep(%m1861$.CompilerCtx.type* %.tmp5376, %m751$.Error.type* %.tmp5377)
+br label %.if.end.5363
+.if.false.5363:
+%.tmp5379 = getelementptr [61 x i8], [61 x i8]*@.str5378, i32 0, i32 0
+call void(i1,i8*) @m2$assert.v.b.cp(i1 0, i8* %.tmp5379)
+br label %.if.end.5363
+.if.end.5363:
 ret void
 }
 define void @m1861$define_assignable.v.m1861$.CompilerCtx.typep.cp.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.ctx.arg, i8* %.name.arg, %m1861$.AssignableInfo.type* %.info.arg) {
@@ -7743,76 +7973,76 @@ store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 store i8* %.name.arg, i8** %name
 %info = alloca %m1861$.AssignableInfo.type*
 store %m1861$.AssignableInfo.type* %.info.arg, %m1861$.AssignableInfo.type** %info
-%.tmp5230 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5231 = call %m1861$.ModuleLookup.type*(%m1861$.CompilerCtx.type*) @m1861$get_current_module.m1861$.ModuleLookup.typep.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp5230)
-%mod.5232 = alloca %m1861$.ModuleLookup.type*
-store %m1861$.ModuleLookup.type* %.tmp5231, %m1861$.ModuleLookup.type** %mod.5232
-%.tmp5233 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.5232
-%.tmp5234 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp5233, i32 0, i32 3
-%.tmp5235 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp5234
-%.tmp5236 = icmp ne %m1861$.Scope.type* %.tmp5235, null
-%.tmp5238 = getelementptr [82 x i8], [82 x i8]*@.str5237, i32 0, i32 0
-call void(i1,i8*) @m2$assert.v.b.cp(i1 %.tmp5236, i8* %.tmp5238)
-%.tmp5239 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.5232
-%.tmp5240 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp5239, i32 0, i32 3
-%.tmp5241 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp5240
-%current_scope.5242 = alloca %m1861$.Scope.type*
-store %m1861$.Scope.type* %.tmp5241, %m1861$.Scope.type** %current_scope.5242
-%.tmp5243 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* null, i32 1
-%.tmp5244 = ptrtoint %m1861$.ScopeItem.type* %.tmp5243 to i32
-%.tmp5245 = call i8*(i32) @malloc(i32 %.tmp5244)
-%.tmp5246 = bitcast i8* %.tmp5245 to %m1861$.ScopeItem.type*
-%newitem.5247 = alloca %m1861$.ScopeItem.type*
-store %m1861$.ScopeItem.type* %.tmp5246, %m1861$.ScopeItem.type** %newitem.5247
-%.tmp5248 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %newitem.5247
-%.tmp5249 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5248, i32 0, i32 0
-%.tmp5250 = load i8*, i8** %name
-store i8* %.tmp5250, i8** %.tmp5249
-%.tmp5251 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %newitem.5247
-%.tmp5252 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5251, i32 0, i32 1
-%.tmp5253 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-store %m1861$.AssignableInfo.type* %.tmp5253, %m1861$.AssignableInfo.type** %.tmp5252
-%.tmp5254 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %newitem.5247
-%.tmp5255 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5254, i32 0, i32 2
-store %m1861$.ScopeItem.type* null, %m1861$.ScopeItem.type** %.tmp5255
-%.tmp5256 = load %m1861$.Scope.type*, %m1861$.Scope.type** %current_scope.5242
-%.tmp5257 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp5256, i32 0, i32 1
-%.tmp5258 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %.tmp5257
-%.tmp5259 = icmp eq %m1861$.ScopeItem.type* %.tmp5258, null
-br i1 %.tmp5259, label %.if.true.5260, label %.if.false.5260
-.if.true.5260:
-%.tmp5261 = load %m1861$.Scope.type*, %m1861$.Scope.type** %current_scope.5242
-%.tmp5262 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp5261, i32 0, i32 1
-%.tmp5263 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %newitem.5247
-store %m1861$.ScopeItem.type* %.tmp5263, %m1861$.ScopeItem.type** %.tmp5262
+%.tmp5380 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5381 = call %m1861$.ModuleLookup.type*(%m1861$.CompilerCtx.type*) @m1861$get_current_module.m1861$.ModuleLookup.typep.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp5380)
+%mod.5382 = alloca %m1861$.ModuleLookup.type*
+store %m1861$.ModuleLookup.type* %.tmp5381, %m1861$.ModuleLookup.type** %mod.5382
+%.tmp5383 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.5382
+%.tmp5384 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp5383, i32 0, i32 3
+%.tmp5385 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp5384
+%.tmp5386 = icmp ne %m1861$.Scope.type* %.tmp5385, null
+%.tmp5388 = getelementptr [82 x i8], [82 x i8]*@.str5387, i32 0, i32 0
+call void(i1,i8*) @m2$assert.v.b.cp(i1 %.tmp5386, i8* %.tmp5388)
+%.tmp5389 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.5382
+%.tmp5390 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp5389, i32 0, i32 3
+%.tmp5391 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp5390
+%current_scope.5392 = alloca %m1861$.Scope.type*
+store %m1861$.Scope.type* %.tmp5391, %m1861$.Scope.type** %current_scope.5392
+%.tmp5393 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* null, i32 1
+%.tmp5394 = ptrtoint %m1861$.ScopeItem.type* %.tmp5393 to i32
+%.tmp5395 = call i8*(i32) @malloc(i32 %.tmp5394)
+%.tmp5396 = bitcast i8* %.tmp5395 to %m1861$.ScopeItem.type*
+%newitem.5397 = alloca %m1861$.ScopeItem.type*
+store %m1861$.ScopeItem.type* %.tmp5396, %m1861$.ScopeItem.type** %newitem.5397
+%.tmp5398 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %newitem.5397
+%.tmp5399 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5398, i32 0, i32 0
+%.tmp5400 = load i8*, i8** %name
+store i8* %.tmp5400, i8** %.tmp5399
+%.tmp5401 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %newitem.5397
+%.tmp5402 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5401, i32 0, i32 1
+%.tmp5403 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
+store %m1861$.AssignableInfo.type* %.tmp5403, %m1861$.AssignableInfo.type** %.tmp5402
+%.tmp5404 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %newitem.5397
+%.tmp5405 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5404, i32 0, i32 2
+store %m1861$.ScopeItem.type* null, %m1861$.ScopeItem.type** %.tmp5405
+%.tmp5406 = load %m1861$.Scope.type*, %m1861$.Scope.type** %current_scope.5392
+%.tmp5407 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp5406, i32 0, i32 1
+%.tmp5408 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %.tmp5407
+%.tmp5409 = icmp eq %m1861$.ScopeItem.type* %.tmp5408, null
+br i1 %.tmp5409, label %.if.true.5410, label %.if.false.5410
+.if.true.5410:
+%.tmp5411 = load %m1861$.Scope.type*, %m1861$.Scope.type** %current_scope.5392
+%.tmp5412 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp5411, i32 0, i32 1
+%.tmp5413 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %newitem.5397
+store %m1861$.ScopeItem.type* %.tmp5413, %m1861$.ScopeItem.type** %.tmp5412
 ret void
-br label %.if.end.5260
-.if.false.5260:
-br label %.if.end.5260
-.if.end.5260:
-%.tmp5264 = load %m1861$.Scope.type*, %m1861$.Scope.type** %current_scope.5242
-%.tmp5265 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp5264, i32 0, i32 1
-%.tmp5266 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %.tmp5265
-%last_item.5267 = alloca %m1861$.ScopeItem.type*
-store %m1861$.ScopeItem.type* %.tmp5266, %m1861$.ScopeItem.type** %last_item.5267
-br label %.for.start.5268
-.for.start.5268:
-%.tmp5269 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %last_item.5267
-%.tmp5270 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5269, i32 0, i32 2
-%.tmp5271 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %.tmp5270
-%.tmp5272 = icmp ne %m1861$.ScopeItem.type* %.tmp5271, null
-br i1 %.tmp5272, label %.for.continue.5268, label %.for.end.5268
-.for.continue.5268:
-%.tmp5273 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %last_item.5267
-%.tmp5274 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5273, i32 0, i32 2
-%.tmp5275 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %.tmp5274
-store %m1861$.ScopeItem.type* %.tmp5275, %m1861$.ScopeItem.type** %last_item.5267
-br label %.for.start.5268
-.for.end.5268:
-%.tmp5276 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %last_item.5267
-%.tmp5277 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5276, i32 0, i32 2
-%.tmp5278 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %newitem.5247
-store %m1861$.ScopeItem.type* %.tmp5278, %m1861$.ScopeItem.type** %.tmp5277
+br label %.if.end.5410
+.if.false.5410:
+br label %.if.end.5410
+.if.end.5410:
+%.tmp5414 = load %m1861$.Scope.type*, %m1861$.Scope.type** %current_scope.5392
+%.tmp5415 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp5414, i32 0, i32 1
+%.tmp5416 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %.tmp5415
+%last_item.5417 = alloca %m1861$.ScopeItem.type*
+store %m1861$.ScopeItem.type* %.tmp5416, %m1861$.ScopeItem.type** %last_item.5417
+br label %.for.start.5418
+.for.start.5418:
+%.tmp5419 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %last_item.5417
+%.tmp5420 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5419, i32 0, i32 2
+%.tmp5421 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %.tmp5420
+%.tmp5422 = icmp ne %m1861$.ScopeItem.type* %.tmp5421, null
+br i1 %.tmp5422, label %.for.continue.5418, label %.for.end.5418
+.for.continue.5418:
+%.tmp5423 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %last_item.5417
+%.tmp5424 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5423, i32 0, i32 2
+%.tmp5425 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %.tmp5424
+store %m1861$.ScopeItem.type* %.tmp5425, %m1861$.ScopeItem.type** %last_item.5417
+br label %.for.start.5418
+.for.end.5418:
+%.tmp5426 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %last_item.5417
+%.tmp5427 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5426, i32 0, i32 2
+%.tmp5428 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %newitem.5397
+store %m1861$.ScopeItem.type* %.tmp5428, %m1861$.ScopeItem.type** %.tmp5427
 ret void
 }
 define %m1861$.ScopeItem.type* @m1861$find_defined_in.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.cp.m307$.Node.typep(%m1861$.CompilerCtx.type* %.ctx.arg, i8* %.module.arg, %m307$.Node.type* %.dotted_name.arg) {
@@ -7822,81 +8052,81 @@ store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 store i8* %.module.arg, i8** %module
 %dotted_name = alloca %m307$.Node.type*
 store %m307$.Node.type* %.dotted_name.arg, %m307$.Node.type** %dotted_name
-%err_buf.5279 = alloca i8*
-store i8* null, i8** %err_buf.5279
-%.tmp5280 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5281 = load i8*, i8** %module
-%.tmp5282 = load %m307$.Node.type*, %m307$.Node.type** %dotted_name
-%.tmp5283 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5282, i32 0, i32 1
-%.tmp5284 = load i8*, i8** %.tmp5283
-%.tmp5285 = call %m1861$.ScopeItem.type*(%m1861$.CompilerCtx.type*,i8*,i8*) @m1861$find_defined_str.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.cp.cp(%m1861$.CompilerCtx.type* %.tmp5280, i8* %.tmp5281, i8* %.tmp5284)
-%found.5286 = alloca %m1861$.ScopeItem.type*
-store %m1861$.ScopeItem.type* %.tmp5285, %m1861$.ScopeItem.type** %found.5286
-%.tmp5287 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %found.5286
-%.tmp5288 = icmp eq %m1861$.ScopeItem.type* %.tmp5287, null
-br i1 %.tmp5288, label %.if.true.5289, label %.if.false.5289
-.if.true.5289:
-%.tmp5290 = getelementptr i8*, i8** %err_buf.5279, i32 0
-%.tmp5292 = getelementptr [31 x i8], [31 x i8]*@.str5291, i32 0, i32 0
-%.tmp5293 = load %m307$.Node.type*, %m307$.Node.type** %dotted_name
-%.tmp5294 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5293, i32 0, i32 1
-%.tmp5295 = load i8*, i8** %.tmp5294
-%.tmp5296 = load i8*, i8** %module
-%.tmp5297 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp5290, i8* %.tmp5292, i8* %.tmp5295, i8* %.tmp5296)
-%.tmp5298 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5299 = load %m307$.Node.type*, %m307$.Node.type** %dotted_name
-%.tmp5300 = load i8*, i8** %err_buf.5279
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp5298, %m307$.Node.type* %.tmp5299, i8* %.tmp5300)
-%.tmp5301 = bitcast ptr null to %m1861$.ScopeItem.type*
-ret %m1861$.ScopeItem.type* %.tmp5301
-br label %.if.end.5289
-.if.false.5289:
-br label %.if.end.5289
-.if.end.5289:
-br label %.for.start.5302
-.for.start.5302:
-%.tmp5303 = load %m307$.Node.type*, %m307$.Node.type** %dotted_name
-%.tmp5304 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5303, i32 0, i32 7
-%.tmp5305 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5304
-%.tmp5306 = icmp ne %m307$.Node.type* %.tmp5305, null
-%.tmp5307 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %found.5286
-%.tmp5308 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5307, i32 0, i32 1
-%.tmp5309 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %.tmp5308
-%.tmp5310 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5309, i32 0, i32 2
-%.tmp5311 = load i8*, i8** %.tmp5310
-%.tmp5313 = getelementptr [7 x i8], [7 x i8]*@.str5312, i32 0, i32 0
-%.tmp5314 = call i32(i8*,i8*) @strcmp(i8* %.tmp5311, i8* %.tmp5313)
-%.tmp5315 = icmp eq i32 %.tmp5314, 0
-%.tmp5316 = and i1 %.tmp5306, %.tmp5315
-br i1 %.tmp5316, label %.for.continue.5302, label %.for.end.5302
-.for.continue.5302:
-%.tmp5317 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5318 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %found.5286
-%.tmp5319 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5318, i32 0, i32 1
-%.tmp5320 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %.tmp5319
-%.tmp5321 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5320, i32 0, i32 0
-%.tmp5322 = load i8*, i8** %.tmp5321
-%.tmp5323 = load %m307$.Node.type*, %m307$.Node.type** %dotted_name
-%.tmp5324 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5323, i32 0, i32 7
-%.tmp5325 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5324
-%.tmp5326 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5325, i32 0, i32 7
-%.tmp5327 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5326
-%.tmp5328 = call %m1861$.ScopeItem.type*(%m1861$.CompilerCtx.type*,i8*,%m307$.Node.type*) @m1861$find_defined_in.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.cp.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp5317, i8* %.tmp5322, %m307$.Node.type* %.tmp5327)
-store %m1861$.ScopeItem.type* %.tmp5328, %m1861$.ScopeItem.type** %found.5286
-%.tmp5329 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %found.5286
-%.tmp5330 = icmp eq %m1861$.ScopeItem.type* %.tmp5329, null
-br i1 %.tmp5330, label %.if.true.5331, label %.if.false.5331
-.if.true.5331:
-%.tmp5332 = bitcast ptr null to %m1861$.ScopeItem.type*
-ret %m1861$.ScopeItem.type* %.tmp5332
-br label %.if.end.5331
-.if.false.5331:
-br label %.if.end.5331
-.if.end.5331:
-br label %.for.start.5302
-.for.end.5302:
-%.tmp5333 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %found.5286
-ret %m1861$.ScopeItem.type* %.tmp5333
+%err_buf.5429 = alloca i8*
+store i8* null, i8** %err_buf.5429
+%.tmp5430 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5431 = load i8*, i8** %module
+%.tmp5432 = load %m307$.Node.type*, %m307$.Node.type** %dotted_name
+%.tmp5433 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5432, i32 0, i32 1
+%.tmp5434 = load i8*, i8** %.tmp5433
+%.tmp5435 = call %m1861$.ScopeItem.type*(%m1861$.CompilerCtx.type*,i8*,i8*) @m1861$find_defined_str.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.cp.cp(%m1861$.CompilerCtx.type* %.tmp5430, i8* %.tmp5431, i8* %.tmp5434)
+%found.5436 = alloca %m1861$.ScopeItem.type*
+store %m1861$.ScopeItem.type* %.tmp5435, %m1861$.ScopeItem.type** %found.5436
+%.tmp5437 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %found.5436
+%.tmp5438 = icmp eq %m1861$.ScopeItem.type* %.tmp5437, null
+br i1 %.tmp5438, label %.if.true.5439, label %.if.false.5439
+.if.true.5439:
+%.tmp5440 = getelementptr i8*, i8** %err_buf.5429, i32 0
+%.tmp5442 = getelementptr [31 x i8], [31 x i8]*@.str5441, i32 0, i32 0
+%.tmp5443 = load %m307$.Node.type*, %m307$.Node.type** %dotted_name
+%.tmp5444 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5443, i32 0, i32 1
+%.tmp5445 = load i8*, i8** %.tmp5444
+%.tmp5446 = load i8*, i8** %module
+%.tmp5447 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp5440, i8* %.tmp5442, i8* %.tmp5445, i8* %.tmp5446)
+%.tmp5448 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5449 = load %m307$.Node.type*, %m307$.Node.type** %dotted_name
+%.tmp5450 = load i8*, i8** %err_buf.5429
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp5448, %m307$.Node.type* %.tmp5449, i8* %.tmp5450)
+%.tmp5451 = bitcast ptr null to %m1861$.ScopeItem.type*
+ret %m1861$.ScopeItem.type* %.tmp5451
+br label %.if.end.5439
+.if.false.5439:
+br label %.if.end.5439
+.if.end.5439:
+br label %.for.start.5452
+.for.start.5452:
+%.tmp5453 = load %m307$.Node.type*, %m307$.Node.type** %dotted_name
+%.tmp5454 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5453, i32 0, i32 7
+%.tmp5455 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5454
+%.tmp5456 = icmp ne %m307$.Node.type* %.tmp5455, null
+%.tmp5457 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %found.5436
+%.tmp5458 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5457, i32 0, i32 1
+%.tmp5459 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %.tmp5458
+%.tmp5460 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5459, i32 0, i32 2
+%.tmp5461 = load i8*, i8** %.tmp5460
+%.tmp5463 = getelementptr [7 x i8], [7 x i8]*@.str5462, i32 0, i32 0
+%.tmp5464 = call i32(i8*,i8*) @strcmp(i8* %.tmp5461, i8* %.tmp5463)
+%.tmp5465 = icmp eq i32 %.tmp5464, 0
+%.tmp5466 = and i1 %.tmp5456, %.tmp5465
+br i1 %.tmp5466, label %.for.continue.5452, label %.for.end.5452
+.for.continue.5452:
+%.tmp5467 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5468 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %found.5436
+%.tmp5469 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5468, i32 0, i32 1
+%.tmp5470 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %.tmp5469
+%.tmp5471 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5470, i32 0, i32 0
+%.tmp5472 = load i8*, i8** %.tmp5471
+%.tmp5473 = load %m307$.Node.type*, %m307$.Node.type** %dotted_name
+%.tmp5474 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5473, i32 0, i32 7
+%.tmp5475 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5474
+%.tmp5476 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5475, i32 0, i32 7
+%.tmp5477 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5476
+%.tmp5478 = call %m1861$.ScopeItem.type*(%m1861$.CompilerCtx.type*,i8*,%m307$.Node.type*) @m1861$find_defined_in.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.cp.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp5467, i8* %.tmp5472, %m307$.Node.type* %.tmp5477)
+store %m1861$.ScopeItem.type* %.tmp5478, %m1861$.ScopeItem.type** %found.5436
+%.tmp5479 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %found.5436
+%.tmp5480 = icmp eq %m1861$.ScopeItem.type* %.tmp5479, null
+br i1 %.tmp5480, label %.if.true.5481, label %.if.false.5481
+.if.true.5481:
+%.tmp5482 = bitcast ptr null to %m1861$.ScopeItem.type*
+ret %m1861$.ScopeItem.type* %.tmp5482
+br label %.if.end.5481
+.if.false.5481:
+br label %.if.end.5481
+.if.end.5481:
+br label %.for.start.5452
+.for.end.5452:
+%.tmp5483 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %found.5436
+ret %m1861$.ScopeItem.type* %.tmp5483
 }
 define %m1861$.ScopeItem.type* @m1861$find_defined_here.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.m1861$.Scope.typep.cp(%m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.Scope.type* %.s.arg, i8* %.name.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
@@ -7905,49 +8135,49 @@ store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 store %m1861$.Scope.type* %.s.arg, %m1861$.Scope.type** %s
 %name = alloca i8*
 store i8* %.name.arg, i8** %name
-%.tmp5334 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s
-%.tmp5335 = icmp eq %m1861$.Scope.type* %.tmp5334, null
-br i1 %.tmp5335, label %.if.true.5336, label %.if.false.5336
-.if.true.5336:
-%.tmp5337 = bitcast ptr null to %m1861$.ScopeItem.type*
-ret %m1861$.ScopeItem.type* %.tmp5337
-br label %.if.end.5336
-.if.false.5336:
-br label %.if.end.5336
-.if.end.5336:
-%.tmp5339 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s
-%.tmp5340 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp5339, i32 0, i32 1
-%.tmp5341 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %.tmp5340
-%item.5342 = alloca %m1861$.ScopeItem.type*
-store %m1861$.ScopeItem.type* %.tmp5341, %m1861$.ScopeItem.type** %item.5342
-br label %.for.start.5338
-.for.start.5338:
-%.tmp5343 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %item.5342
-%.tmp5344 = icmp ne %m1861$.ScopeItem.type* %.tmp5343, null
-br i1 %.tmp5344, label %.for.continue.5338, label %.for.end.5338
-.for.continue.5338:
-%.tmp5345 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %item.5342
-%.tmp5346 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5345, i32 0, i32 0
-%.tmp5347 = load i8*, i8** %.tmp5346
-%.tmp5348 = load i8*, i8** %name
-%.tmp5349 = call i32(i8*,i8*) @strcmp(i8* %.tmp5347, i8* %.tmp5348)
-%.tmp5350 = icmp eq i32 %.tmp5349, 0
-br i1 %.tmp5350, label %.if.true.5351, label %.if.false.5351
-.if.true.5351:
-%.tmp5352 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %item.5342
-ret %m1861$.ScopeItem.type* %.tmp5352
-br label %.if.end.5351
-.if.false.5351:
-br label %.if.end.5351
-.if.end.5351:
-%.tmp5353 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %item.5342
-%.tmp5354 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5353, i32 0, i32 2
-%.tmp5355 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %.tmp5354
-store %m1861$.ScopeItem.type* %.tmp5355, %m1861$.ScopeItem.type** %item.5342
-br label %.for.start.5338
-.for.end.5338:
-%.tmp5356 = bitcast ptr null to %m1861$.ScopeItem.type*
-ret %m1861$.ScopeItem.type* %.tmp5356
+%.tmp5484 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s
+%.tmp5485 = icmp eq %m1861$.Scope.type* %.tmp5484, null
+br i1 %.tmp5485, label %.if.true.5486, label %.if.false.5486
+.if.true.5486:
+%.tmp5487 = bitcast ptr null to %m1861$.ScopeItem.type*
+ret %m1861$.ScopeItem.type* %.tmp5487
+br label %.if.end.5486
+.if.false.5486:
+br label %.if.end.5486
+.if.end.5486:
+%.tmp5489 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s
+%.tmp5490 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp5489, i32 0, i32 1
+%.tmp5491 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %.tmp5490
+%item.5492 = alloca %m1861$.ScopeItem.type*
+store %m1861$.ScopeItem.type* %.tmp5491, %m1861$.ScopeItem.type** %item.5492
+br label %.for.start.5488
+.for.start.5488:
+%.tmp5493 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %item.5492
+%.tmp5494 = icmp ne %m1861$.ScopeItem.type* %.tmp5493, null
+br i1 %.tmp5494, label %.for.continue.5488, label %.for.end.5488
+.for.continue.5488:
+%.tmp5495 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %item.5492
+%.tmp5496 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5495, i32 0, i32 0
+%.tmp5497 = load i8*, i8** %.tmp5496
+%.tmp5498 = load i8*, i8** %name
+%.tmp5499 = call i32(i8*,i8*) @strcmp(i8* %.tmp5497, i8* %.tmp5498)
+%.tmp5500 = icmp eq i32 %.tmp5499, 0
+br i1 %.tmp5500, label %.if.true.5501, label %.if.false.5501
+.if.true.5501:
+%.tmp5502 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %item.5492
+ret %m1861$.ScopeItem.type* %.tmp5502
+br label %.if.end.5501
+.if.false.5501:
+br label %.if.end.5501
+.if.end.5501:
+%.tmp5503 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %item.5492
+%.tmp5504 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5503, i32 0, i32 2
+%.tmp5505 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %.tmp5504
+store %m1861$.ScopeItem.type* %.tmp5505, %m1861$.ScopeItem.type** %item.5492
+br label %.for.start.5488
+.for.end.5488:
+%.tmp5506 = bitcast ptr null to %m1861$.ScopeItem.type*
+ret %m1861$.ScopeItem.type* %.tmp5506
 }
 define %m1861$.ScopeItem.type* @m1861$find_defined_str.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.cp.cp(%m1861$.CompilerCtx.type* %.ctx.arg, i8* %.module.arg, i8* %.assignable_name.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
@@ -7956,67 +8186,67 @@ store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 store i8* %.module.arg, i8** %module
 %assignable_name = alloca i8*
 store i8* %.assignable_name.arg, i8** %assignable_name
-%.tmp5357 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5358 = load i8*, i8** %module
-%.tmp5359 = call %m1861$.ModuleLookup.type*(%m1861$.CompilerCtx.type*,i8*) @m1861$get_module.m1861$.ModuleLookup.typep.m1861$.CompilerCtx.typep.cp(%m1861$.CompilerCtx.type* %.tmp5357, i8* %.tmp5358)
-%mod.5360 = alloca %m1861$.ModuleLookup.type*
-store %m1861$.ModuleLookup.type* %.tmp5359, %m1861$.ModuleLookup.type** %mod.5360
-%.tmp5361 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.5360
-%.tmp5362 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp5361, i32 0, i32 3
-%.tmp5363 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp5362
-%.tmp5364 = icmp ne %m1861$.Scope.type* %.tmp5363, null
-%.tmp5366 = getelementptr [77 x i8], [77 x i8]*@.str5365, i32 0, i32 0
-call void(i1,i8*) @m2$assert.v.b.cp(i1 %.tmp5364, i8* %.tmp5366)
-%.tmp5368 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.5360
-%.tmp5369 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp5368, i32 0, i32 3
-%.tmp5370 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp5369
-%s.5371 = alloca %m1861$.Scope.type*
-store %m1861$.Scope.type* %.tmp5370, %m1861$.Scope.type** %s.5371
-br label %.for.start.5367
-.for.start.5367:
-%.tmp5372 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.5371
-%.tmp5373 = icmp ne %m1861$.Scope.type* %.tmp5372, null
-br i1 %.tmp5373, label %.for.continue.5367, label %.for.end.5367
-.for.continue.5367:
-%.tmp5374 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5375 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.5371
-%.tmp5376 = load i8*, i8** %assignable_name
-%.tmp5377 = call %m1861$.ScopeItem.type*(%m1861$.CompilerCtx.type*,%m1861$.Scope.type*,i8*) @m1861$find_defined_here.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.m1861$.Scope.typep.cp(%m1861$.CompilerCtx.type* %.tmp5374, %m1861$.Scope.type* %.tmp5375, i8* %.tmp5376)
-%item.5378 = alloca %m1861$.ScopeItem.type*
-store %m1861$.ScopeItem.type* %.tmp5377, %m1861$.ScopeItem.type** %item.5378
-%.tmp5379 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %item.5378
-%.tmp5380 = icmp ne %m1861$.ScopeItem.type* %.tmp5379, null
-br i1 %.tmp5380, label %.if.true.5381, label %.if.false.5381
-.if.true.5381:
-%.tmp5382 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %item.5378
-ret %m1861$.ScopeItem.type* %.tmp5382
-br label %.if.end.5381
-.if.false.5381:
-br label %.if.end.5381
-.if.end.5381:
-%.tmp5383 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.5371
-%.tmp5384 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp5383, i32 0, i32 5
-%.tmp5385 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp5384
-store %m1861$.Scope.type* %.tmp5385, %m1861$.Scope.type** %s.5371
-br label %.for.start.5367
-.for.end.5367:
-%.tmp5386 = bitcast ptr null to %m1861$.ScopeItem.type*
-ret %m1861$.ScopeItem.type* %.tmp5386
+%.tmp5507 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5508 = load i8*, i8** %module
+%.tmp5509 = call %m1861$.ModuleLookup.type*(%m1861$.CompilerCtx.type*,i8*) @m1861$get_module.m1861$.ModuleLookup.typep.m1861$.CompilerCtx.typep.cp(%m1861$.CompilerCtx.type* %.tmp5507, i8* %.tmp5508)
+%mod.5510 = alloca %m1861$.ModuleLookup.type*
+store %m1861$.ModuleLookup.type* %.tmp5509, %m1861$.ModuleLookup.type** %mod.5510
+%.tmp5511 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.5510
+%.tmp5512 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp5511, i32 0, i32 3
+%.tmp5513 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp5512
+%.tmp5514 = icmp ne %m1861$.Scope.type* %.tmp5513, null
+%.tmp5516 = getelementptr [77 x i8], [77 x i8]*@.str5515, i32 0, i32 0
+call void(i1,i8*) @m2$assert.v.b.cp(i1 %.tmp5514, i8* %.tmp5516)
+%.tmp5518 = load %m1861$.ModuleLookup.type*, %m1861$.ModuleLookup.type** %mod.5510
+%.tmp5519 = getelementptr %m1861$.ModuleLookup.type, %m1861$.ModuleLookup.type* %.tmp5518, i32 0, i32 3
+%.tmp5520 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp5519
+%s.5521 = alloca %m1861$.Scope.type*
+store %m1861$.Scope.type* %.tmp5520, %m1861$.Scope.type** %s.5521
+br label %.for.start.5517
+.for.start.5517:
+%.tmp5522 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.5521
+%.tmp5523 = icmp ne %m1861$.Scope.type* %.tmp5522, null
+br i1 %.tmp5523, label %.for.continue.5517, label %.for.end.5517
+.for.continue.5517:
+%.tmp5524 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5525 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.5521
+%.tmp5526 = load i8*, i8** %assignable_name
+%.tmp5527 = call %m1861$.ScopeItem.type*(%m1861$.CompilerCtx.type*,%m1861$.Scope.type*,i8*) @m1861$find_defined_here.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.m1861$.Scope.typep.cp(%m1861$.CompilerCtx.type* %.tmp5524, %m1861$.Scope.type* %.tmp5525, i8* %.tmp5526)
+%item.5528 = alloca %m1861$.ScopeItem.type*
+store %m1861$.ScopeItem.type* %.tmp5527, %m1861$.ScopeItem.type** %item.5528
+%.tmp5529 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %item.5528
+%.tmp5530 = icmp ne %m1861$.ScopeItem.type* %.tmp5529, null
+br i1 %.tmp5530, label %.if.true.5531, label %.if.false.5531
+.if.true.5531:
+%.tmp5532 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %item.5528
+ret %m1861$.ScopeItem.type* %.tmp5532
+br label %.if.end.5531
+.if.false.5531:
+br label %.if.end.5531
+.if.end.5531:
+%.tmp5533 = load %m1861$.Scope.type*, %m1861$.Scope.type** %s.5521
+%.tmp5534 = getelementptr %m1861$.Scope.type, %m1861$.Scope.type* %.tmp5533, i32 0, i32 5
+%.tmp5535 = load %m1861$.Scope.type*, %m1861$.Scope.type** %.tmp5534
+store %m1861$.Scope.type* %.tmp5535, %m1861$.Scope.type** %s.5521
+br label %.for.start.5517
+.for.end.5517:
+%.tmp5536 = bitcast ptr null to %m1861$.ScopeItem.type*
+ret %m1861$.ScopeItem.type* %.tmp5536
 }
 define %m1861$.ScopeItem.type* @m1861$find_defined.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.dotted_name.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %dotted_name = alloca %m307$.Node.type*
 store %m307$.Node.type* %.dotted_name.arg, %m307$.Node.type** %dotted_name
-%.tmp5387 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5388 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5389 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5388, i32 0, i32 6
-%.tmp5390 = load i8*, i8** %.tmp5389
-%.tmp5391 = load %m307$.Node.type*, %m307$.Node.type** %dotted_name
-%.tmp5392 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5391, i32 0, i32 6
-%.tmp5393 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5392
-%.tmp5394 = call %m1861$.ScopeItem.type*(%m1861$.CompilerCtx.type*,i8*,%m307$.Node.type*) @m1861$find_defined_in.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.cp.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp5387, i8* %.tmp5390, %m307$.Node.type* %.tmp5393)
-ret %m1861$.ScopeItem.type* %.tmp5394
+%.tmp5537 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5538 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5539 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5538, i32 0, i32 6
+%.tmp5540 = load i8*, i8** %.tmp5539
+%.tmp5541 = load %m307$.Node.type*, %m307$.Node.type** %dotted_name
+%.tmp5542 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5541, i32 0, i32 6
+%.tmp5543 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5542
+%.tmp5544 = call %m1861$.ScopeItem.type*(%m1861$.CompilerCtx.type*,i8*,%m307$.Node.type*) @m1861$find_defined_in.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.cp.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp5537, i8* %.tmp5540, %m307$.Node.type* %.tmp5543)
+ret %m1861$.ScopeItem.type* %.tmp5544
 }
 define %m1861$.AssignableInfo.type* @m1861$get_dotted_name.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.dot_name_ptr.arg, %m1861$.AssignableInfo.type* %.info.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
@@ -8025,612 +8255,644 @@ store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 store %m307$.Node.type* %.dot_name_ptr.arg, %m307$.Node.type** %dot_name_ptr
 %info = alloca %m1861$.AssignableInfo.type*
 store %m1861$.AssignableInfo.type* %.info.arg, %m1861$.AssignableInfo.type** %info
-%err_msg.5395 = alloca i8*
-store i8* null, i8** %err_msg.5395
-%buf.5396 = alloca i8*
-store i8* null, i8** %buf.5396
-%.tmp5397 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-%.tmp5398 = icmp eq %m1861$.AssignableInfo.type* %.tmp5397, null
-br i1 %.tmp5398, label %.if.true.5399, label %.if.false.5399
-.if.true.5399:
-%.tmp5400 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5401 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
-%.tmp5403 = getelementptr [54 x i8], [54 x i8]*@.str5402, i32 0, i32 0
-%.tmp5404 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp5400, %m307$.Node.type* %.tmp5401, i8* %.tmp5403)
-%.tmp5405 = call i32(i8*,...) @printf(i8* %.tmp5404)
-%.tmp5406 = bitcast ptr null to %m1861$.AssignableInfo.type*
-ret %m1861$.AssignableInfo.type* %.tmp5406
-br label %.if.end.5399
-.if.false.5399:
-br label %.if.end.5399
-.if.end.5399:
-%.tmp5407 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-%.tmp5408 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5407, i32 0, i32 2
-%.tmp5409 = load i8*, i8** %.tmp5408
-%.tmp5411 = getelementptr [9 x i8], [9 x i8]*@.str5410, i32 0, i32 0
-%.tmp5412 = call i32(i8*,i8*) @strcmp(i8* %.tmp5409, i8* %.tmp5411)
-%.tmp5413 = icmp eq i32 %.tmp5412, 0
-%.tmp5414 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-%.tmp5415 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5414, i32 0, i32 2
-%.tmp5416 = load i8*, i8** %.tmp5415
-%.tmp5418 = getelementptr [7 x i8], [7 x i8]*@.str5417, i32 0, i32 0
-%.tmp5419 = call i32(i8*,i8*) @strcmp(i8* %.tmp5416, i8* %.tmp5418)
-%.tmp5420 = icmp eq i32 %.tmp5419, 0
-%.tmp5421 = or i1 %.tmp5413, %.tmp5420
-br i1 %.tmp5421, label %.if.true.5422, label %.if.false.5422
-.if.true.5422:
-%.tmp5423 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
-%.tmp5424 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5423, i32 0, i32 7
-%.tmp5425 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5424
-%.tmp5426 = icmp ne %m307$.Node.type* %.tmp5425, null
-br i1 %.tmp5426, label %.if.true.5427, label %.if.false.5427
-.if.true.5427:
-%.tmp5428 = getelementptr i8*, i8** %err_msg.5395, i32 0
-%.tmp5430 = getelementptr [46 x i8], [46 x i8]*@.str5429, i32 0, i32 0
-%.tmp5431 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
-%.tmp5432 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5431, i32 0, i32 7
-%.tmp5433 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5432
-%.tmp5434 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5433, i32 0, i32 7
-%.tmp5435 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5434
-%.tmp5436 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5435, i32 0, i32 1
-%.tmp5437 = load i8*, i8** %.tmp5436
-%.tmp5438 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
-%.tmp5439 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5438, i32 0, i32 1
-%.tmp5440 = load i8*, i8** %.tmp5439
-%.tmp5441 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp5428, i8* %.tmp5430, i8* %.tmp5437, i8* %.tmp5440)
-%.tmp5442 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5443 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
-%.tmp5444 = load i8*, i8** %err_msg.5395
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp5442, %m307$.Node.type* %.tmp5443, i8* %.tmp5444)
-%.tmp5445 = bitcast ptr null to %m1861$.AssignableInfo.type*
-ret %m1861$.AssignableInfo.type* %.tmp5445
-br label %.if.end.5427
-.if.false.5427:
-br label %.if.end.5427
-.if.end.5427:
-%.tmp5446 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-ret %m1861$.AssignableInfo.type* %.tmp5446
-br label %.if.end.5422
-.if.false.5422:
-%.tmp5447 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-%.tmp5448 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5447, i32 0, i32 2
-%.tmp5449 = load i8*, i8** %.tmp5448
-%.tmp5451 = getelementptr [9 x i8], [9 x i8]*@.str5450, i32 0, i32 0
-%.tmp5452 = call i32(i8*,i8*) @strcmp(i8* %.tmp5449, i8* %.tmp5451)
-%.tmp5453 = icmp eq i32 %.tmp5452, 0
-%.tmp5454 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
-%.tmp5455 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5454, i32 0, i32 7
-%.tmp5456 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5455
-%.tmp5457 = icmp ne %m307$.Node.type* %.tmp5456, null
-%.tmp5458 = and i1 %.tmp5453, %.tmp5457
-br i1 %.tmp5458, label %.if.true.5459, label %.if.false.5459
-.if.true.5459:
-%.tmp5460 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-%base_var.5461 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp5460, %m1861$.AssignableInfo.type** %base_var.5461
-%.tmp5462 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base_var.5461
-%.tmp5463 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5462, i32 0, i32 3
-%.tmp5464 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5463
-%struct_info.5465 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp5464, %m1861$.Type.type** %struct_info.5465
-br label %.for.start.5466
-.for.start.5466:
-%.tmp5467 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base_var.5461
-%.tmp5468 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5467, i32 0, i32 3
-%.tmp5469 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5468
-%.tmp5470 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5469, i32 0, i32 0
-%.tmp5471 = load i8*, i8** %.tmp5470
-%.tmp5473 = getelementptr [4 x i8], [4 x i8]*@.str5472, i32 0, i32 0
-%.tmp5474 = call i32(i8*,i8*) @strcmp(i8* %.tmp5471, i8* %.tmp5473)
-%.tmp5475 = icmp eq i32 %.tmp5474, 0
-br i1 %.tmp5475, label %.for.continue.5466, label %.for.end.5466
-.for.continue.5466:
-%.tmp5476 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
-%.tmp5477 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp5476)
-%new_base.5478 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp5477, %m1861$.AssignableInfo.type** %new_base.5478
-%.tmp5479 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5480 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_base.5478
-call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp5479, %m1861$.AssignableInfo.type* %.tmp5480)
-%.tmp5481 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_base.5478
-%.tmp5482 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5481, i32 0, i32 3
-%.tmp5483 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base_var.5461
-%.tmp5484 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5483, i32 0, i32 3
-%.tmp5485 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5484
-%.tmp5486 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5485, i32 0, i32 3
-%.tmp5487 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5486
-store %m1861$.Type.type* %.tmp5487, %m1861$.Type.type** %.tmp5482
-%.tmp5488 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5489 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5488, i32 0, i32 1
-%.tmp5490 = load %m0$.File.type*, %m0$.File.type** %.tmp5489
-%.tmp5492 = getelementptr [23 x i8], [23 x i8]*@.str5491, i32 0, i32 0
-%.tmp5493 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_base.5478
-%.tmp5494 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5493)
-%.tmp5495 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5496 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_base.5478
-%.tmp5497 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5496, i32 0, i32 3
-%.tmp5498 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5497
-%.tmp5499 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp5495, %m1861$.Type.type* %.tmp5498)
-%.tmp5500 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5501 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base_var.5461
-%.tmp5502 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5501, i32 0, i32 3
-%.tmp5503 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5502
-%.tmp5504 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp5500, %m1861$.Type.type* %.tmp5503)
-%.tmp5505 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base_var.5461
-%.tmp5506 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5505)
-%.tmp5507 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5490, i8* %.tmp5492, i8* %.tmp5494, i8* %.tmp5499, i8* %.tmp5504, i8* %.tmp5506)
-%.tmp5508 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_base.5478
-store %m1861$.AssignableInfo.type* %.tmp5508, %m1861$.AssignableInfo.type** %base_var.5461
-%.tmp5509 = load %m1861$.Type.type*, %m1861$.Type.type** %struct_info.5465
-%.tmp5510 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5509, i32 0, i32 3
-%.tmp5511 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5510
-store %m1861$.Type.type* %.tmp5511, %m1861$.Type.type** %struct_info.5465
-br label %.for.start.5466
-.for.end.5466:
-%.tmp5512 = load %m1861$.Type.type*, %m1861$.Type.type** %struct_info.5465
-%.tmp5513 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5512, i32 0, i32 0
-%.tmp5514 = load i8*, i8** %.tmp5513
-%.tmp5516 = getelementptr [10 x i8], [10 x i8]*@.str5515, i32 0, i32 0
-%.tmp5517 = call i32(i8*,i8*) @strcmp(i8* %.tmp5514, i8* %.tmp5516)
-%.tmp5518 = icmp eq i32 %.tmp5517, 0
-br i1 %.tmp5518, label %.if.true.5519, label %.if.false.5519
-.if.true.5519:
-%.tmp5520 = load %m1861$.Type.type*, %m1861$.Type.type** %struct_info.5465
-%.tmp5521 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5520, i32 0, i32 3
-%.tmp5522 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5521
-store %m1861$.Type.type* %.tmp5522, %m1861$.Type.type** %struct_info.5465
-br label %.if.end.5519
-.if.false.5519:
-br label %.if.end.5519
-.if.end.5519:
-%.tmp5523 = load %m1861$.Type.type*, %m1861$.Type.type** %struct_info.5465
-%.tmp5524 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5523, i32 0, i32 0
-%.tmp5525 = load i8*, i8** %.tmp5524
-%.tmp5527 = getelementptr [7 x i8], [7 x i8]*@.str5526, i32 0, i32 0
-%.tmp5528 = call i32(i8*,i8*) @strcmp(i8* %.tmp5525, i8* %.tmp5527)
-%.tmp5529 = icmp ne i32 %.tmp5528, 0
-br i1 %.tmp5529, label %.if.true.5530, label %.if.false.5530
-.if.true.5530:
-%.tmp5531 = getelementptr i8*, i8** %err_msg.5395, i32 0
-%.tmp5533 = getelementptr [48 x i8], [48 x i8]*@.str5532, i32 0, i32 0
-%.tmp5534 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
-%.tmp5535 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5534, i32 0, i32 7
-%.tmp5536 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5535
-%.tmp5537 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5536, i32 0, i32 7
-%.tmp5538 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5537
-%.tmp5539 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5538, i32 0, i32 1
-%.tmp5540 = load i8*, i8** %.tmp5539
-%.tmp5541 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
-%.tmp5542 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5541, i32 0, i32 1
-%.tmp5543 = load i8*, i8** %.tmp5542
-%.tmp5544 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp5531, i8* %.tmp5533, i8* %.tmp5540, i8* %.tmp5543)
-%.tmp5545 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5546 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
-%.tmp5547 = load i8*, i8** %err_msg.5395
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp5545, %m307$.Node.type* %.tmp5546, i8* %.tmp5547)
-%.tmp5548 = bitcast ptr null to %m1861$.AssignableInfo.type*
-ret %m1861$.AssignableInfo.type* %.tmp5548
-br label %.if.end.5530
-.if.false.5530:
-br label %.if.end.5530
-.if.end.5530:
-%.tmp5549 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
-%.tmp5550 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5549, i32 0, i32 7
-%.tmp5551 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5550
-%.tmp5552 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5551, i32 0, i32 7
-%.tmp5553 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5552
-%.tmp5554 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5553, i32 0, i32 1
-%.tmp5555 = load i8*, i8** %.tmp5554
-%field_name.5556 = alloca i8*
-store i8* %.tmp5555, i8** %field_name.5556
-%field_id.5557 = alloca i32
-store i32 0, i32* %field_id.5557
-%.tmp5558 = bitcast ptr null to %m1861$.Type.type*
-%found_field.5559 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp5558, %m1861$.Type.type** %found_field.5559
-%.tmp5561 = load %m1861$.Type.type*, %m1861$.Type.type** %struct_info.5465
-%.tmp5562 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5561, i32 0, i32 3
-%.tmp5563 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5562
-%field.5564 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp5563, %m1861$.Type.type** %field.5564
-br label %.for.start.5560
-.for.start.5560:
-%.tmp5565 = load %m1861$.Type.type*, %m1861$.Type.type** %field.5564
-%.tmp5566 = icmp ne %m1861$.Type.type* %.tmp5565, null
-br i1 %.tmp5566, label %.for.continue.5560, label %.for.end.5560
-.for.continue.5560:
-%.tmp5567 = load %m1861$.Type.type*, %m1861$.Type.type** %field.5564
-%.tmp5568 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5567, i32 0, i32 1
-%.tmp5569 = load i8*, i8** %.tmp5568
-%.tmp5570 = load i8*, i8** %field_name.5556
-%.tmp5571 = call i32(i8*,i8*) @strcmp(i8* %.tmp5569, i8* %.tmp5570)
-%.tmp5572 = icmp eq i32 %.tmp5571, 0
-br i1 %.tmp5572, label %.if.true.5573, label %.if.false.5573
-.if.true.5573:
-%.tmp5574 = load %m1861$.Type.type*, %m1861$.Type.type** %field.5564
-store %m1861$.Type.type* %.tmp5574, %m1861$.Type.type** %found_field.5559
-br label %.for.end.5560
-br label %.if.end.5573
-.if.false.5573:
-%.tmp5575 = load i32, i32* %field_id.5557
-%.tmp5576 = add i32 %.tmp5575, 1
-store i32 %.tmp5576, i32* %field_id.5557
-br label %.if.end.5573
-.if.end.5573:
-%.tmp5577 = load %m1861$.Type.type*, %m1861$.Type.type** %field.5564
-%.tmp5578 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5577, i32 0, i32 4
-%.tmp5579 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5578
-store %m1861$.Type.type* %.tmp5579, %m1861$.Type.type** %field.5564
-br label %.for.start.5560
-.for.end.5560:
-%.tmp5580 = load %m1861$.Type.type*, %m1861$.Type.type** %found_field.5559
-%.tmp5581 = icmp eq %m1861$.Type.type* %.tmp5580, null
-br i1 %.tmp5581, label %.if.true.5582, label %.if.false.5582
-.if.true.5582:
-%.tmp5583 = getelementptr i8*, i8** %err_msg.5395, i32 0
-%.tmp5585 = getelementptr [34 x i8], [34 x i8]*@.str5584, i32 0, i32 0
-%.tmp5586 = load i8*, i8** %field_name.5556
-%.tmp5587 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
-%.tmp5588 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5587, i32 0, i32 1
-%.tmp5589 = load i8*, i8** %.tmp5588
-%.tmp5590 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp5583, i8* %.tmp5585, i8* %.tmp5586, i8* %.tmp5589)
-%.tmp5591 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5592 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
-%.tmp5593 = load i8*, i8** %err_msg.5395
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp5591, %m307$.Node.type* %.tmp5592, i8* %.tmp5593)
-%.tmp5594 = bitcast ptr null to %m1861$.AssignableInfo.type*
-ret %m1861$.AssignableInfo.type* %.tmp5594
-br label %.if.end.5582
-.if.false.5582:
-br label %.if.end.5582
-.if.end.5582:
-%.tmp5595 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
-%.tmp5596 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp5595)
-%new_info.5597 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp5596, %m1861$.AssignableInfo.type** %new_info.5597
-%.tmp5598 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_info.5597
-%.tmp5599 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5598, i32 0, i32 3
-%.tmp5600 = load %m1861$.Type.type*, %m1861$.Type.type** %found_field.5559
-store %m1861$.Type.type* %.tmp5600, %m1861$.Type.type** %.tmp5599
-%.tmp5601 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5602 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_info.5597
-call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp5601, %m1861$.AssignableInfo.type* %.tmp5602)
-%.tmp5603 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_info.5597
-%.tmp5604 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5603, i32 0, i32 2
-%.tmp5606 = getelementptr [9 x i8], [9 x i8]*@.str5605, i32 0, i32 0
-store i8* %.tmp5606, i8** %.tmp5604
-%.tmp5607 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5608 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base_var.5461
-%.tmp5609 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5608, i32 0, i32 3
-%.tmp5610 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5609
-%.tmp5611 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp5607, %m1861$.Type.type* %.tmp5610)
-%info_tr.5612 = alloca i8*
-store i8* %.tmp5611, i8** %info_tr.5612
-%.tmp5613 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5614 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5613, i32 0, i32 1
-%.tmp5615 = load %m0$.File.type*, %m0$.File.type** %.tmp5614
-%.tmp5617 = getelementptr [46 x i8], [46 x i8]*@.str5616, i32 0, i32 0
-%.tmp5618 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_info.5597
-%.tmp5619 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5618)
-%.tmp5620 = load i8*, i8** %info_tr.5612
-%.tmp5621 = load i8*, i8** %info_tr.5612
-%.tmp5622 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base_var.5461
-%.tmp5623 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5622)
-%.tmp5624 = load i32, i32* %field_id.5557
-%.tmp5625 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5615, i8* %.tmp5617, i8* %.tmp5619, i8* %.tmp5620, i8* %.tmp5621, i8* %.tmp5623, i32 %.tmp5624)
-%.tmp5626 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5627 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
-%.tmp5628 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5627, i32 0, i32 7
-%.tmp5629 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5628
-%.tmp5630 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5629, i32 0, i32 7
-%.tmp5631 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5630
-%.tmp5632 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_info.5597
-%.tmp5633 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,%m1861$.AssignableInfo.type*) @m1861$get_dotted_name.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp5626, %m307$.Node.type* %.tmp5631, %m1861$.AssignableInfo.type* %.tmp5632)
-ret %m1861$.AssignableInfo.type* %.tmp5633
-br label %.if.end.5459
-.if.false.5459:
-%.tmp5634 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-%.tmp5635 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5634, i32 0, i32 2
-%.tmp5636 = load i8*, i8** %.tmp5635
-%.tmp5638 = getelementptr [9 x i8], [9 x i8]*@.str5637, i32 0, i32 0
-%.tmp5639 = call i32(i8*,i8*) @strcmp(i8* %.tmp5636, i8* %.tmp5638)
-%.tmp5640 = icmp eq i32 %.tmp5639, 0
-br i1 %.tmp5640, label %.if.true.5641, label %.if.false.5641
-.if.true.5641:
-%.tmp5642 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-ret %m1861$.AssignableInfo.type* %.tmp5642
-br label %.if.end.5641
-.if.false.5641:
-br label %.if.end.5641
-.if.end.5641:
-br label %.if.end.5459
-.if.end.5459:
-br label %.if.end.5422
-.if.end.5422:
-%.tmp5643 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5644 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
-%.tmp5646 = getelementptr [43 x i8], [43 x i8]*@.str5645, i32 0, i32 0
-%.tmp5647 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp5643, %m307$.Node.type* %.tmp5644, i8* %.tmp5646)
-%.tmp5648 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
-%.tmp5649 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5648, i32 0, i32 2
-%.tmp5650 = load i8*, i8** %.tmp5649
-%.tmp5651 = call i32(i8*,...) @printf(i8* %.tmp5647, i8* %.tmp5650)
-%.tmp5652 = bitcast ptr null to %m1861$.AssignableInfo.type*
-ret %m1861$.AssignableInfo.type* %.tmp5652
+%err_msg.5545 = alloca i8*
+store i8* null, i8** %err_msg.5545
+%buf.5546 = alloca i8*
+store i8* null, i8** %buf.5546
+%.tmp5547 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
+%.tmp5548 = icmp eq %m1861$.AssignableInfo.type* %.tmp5547, null
+br i1 %.tmp5548, label %.if.true.5549, label %.if.false.5549
+.if.true.5549:
+%.tmp5550 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5551 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
+%.tmp5553 = getelementptr [54 x i8], [54 x i8]*@.str5552, i32 0, i32 0
+%.tmp5554 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp5550, %m307$.Node.type* %.tmp5551, i8* %.tmp5553)
+%.tmp5555 = call i32(i8*,...) @printf(i8* %.tmp5554)
+%.tmp5556 = bitcast ptr null to %m1861$.AssignableInfo.type*
+ret %m1861$.AssignableInfo.type* %.tmp5556
+br label %.if.end.5549
+.if.false.5549:
+br label %.if.end.5549
+.if.end.5549:
+%.tmp5557 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
+%.tmp5558 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5557, i32 0, i32 2
+%.tmp5559 = load i8*, i8** %.tmp5558
+%.tmp5561 = getelementptr [9 x i8], [9 x i8]*@.str5560, i32 0, i32 0
+%.tmp5562 = call i32(i8*,i8*) @strcmp(i8* %.tmp5559, i8* %.tmp5561)
+%.tmp5563 = icmp eq i32 %.tmp5562, 0
+%.tmp5564 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
+%.tmp5565 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5564, i32 0, i32 2
+%.tmp5566 = load i8*, i8** %.tmp5565
+%.tmp5568 = getelementptr [7 x i8], [7 x i8]*@.str5567, i32 0, i32 0
+%.tmp5569 = call i32(i8*,i8*) @strcmp(i8* %.tmp5566, i8* %.tmp5568)
+%.tmp5570 = icmp eq i32 %.tmp5569, 0
+%.tmp5571 = or i1 %.tmp5563, %.tmp5570
+br i1 %.tmp5571, label %.if.true.5572, label %.if.false.5572
+.if.true.5572:
+%.tmp5573 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
+%.tmp5574 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5573, i32 0, i32 7
+%.tmp5575 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5574
+%.tmp5576 = icmp ne %m307$.Node.type* %.tmp5575, null
+br i1 %.tmp5576, label %.if.true.5577, label %.if.false.5577
+.if.true.5577:
+%.tmp5578 = getelementptr i8*, i8** %err_msg.5545, i32 0
+%.tmp5580 = getelementptr [46 x i8], [46 x i8]*@.str5579, i32 0, i32 0
+%.tmp5581 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
+%.tmp5582 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5581, i32 0, i32 7
+%.tmp5583 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5582
+%.tmp5584 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5583, i32 0, i32 7
+%.tmp5585 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5584
+%.tmp5586 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5585, i32 0, i32 1
+%.tmp5587 = load i8*, i8** %.tmp5586
+%.tmp5588 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
+%.tmp5589 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5588, i32 0, i32 1
+%.tmp5590 = load i8*, i8** %.tmp5589
+%.tmp5591 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp5578, i8* %.tmp5580, i8* %.tmp5587, i8* %.tmp5590)
+%.tmp5592 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5593 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
+%.tmp5594 = load i8*, i8** %err_msg.5545
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp5592, %m307$.Node.type* %.tmp5593, i8* %.tmp5594)
+%.tmp5595 = bitcast ptr null to %m1861$.AssignableInfo.type*
+ret %m1861$.AssignableInfo.type* %.tmp5595
+br label %.if.end.5577
+.if.false.5577:
+br label %.if.end.5577
+.if.end.5577:
+%.tmp5596 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
+ret %m1861$.AssignableInfo.type* %.tmp5596
+br label %.if.end.5572
+.if.false.5572:
+%.tmp5597 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
+%.tmp5598 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5597, i32 0, i32 2
+%.tmp5599 = load i8*, i8** %.tmp5598
+%.tmp5601 = getelementptr [9 x i8], [9 x i8]*@.str5600, i32 0, i32 0
+%.tmp5602 = call i32(i8*,i8*) @strcmp(i8* %.tmp5599, i8* %.tmp5601)
+%.tmp5603 = icmp eq i32 %.tmp5602, 0
+%.tmp5604 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
+%.tmp5605 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5604, i32 0, i32 7
+%.tmp5606 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5605
+%.tmp5607 = icmp ne %m307$.Node.type* %.tmp5606, null
+%.tmp5608 = and i1 %.tmp5603, %.tmp5607
+br i1 %.tmp5608, label %.if.true.5609, label %.if.false.5609
+.if.true.5609:
+%.tmp5610 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
+%base_var.5611 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp5610, %m1861$.AssignableInfo.type** %base_var.5611
+%.tmp5612 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base_var.5611
+%.tmp5613 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5612, i32 0, i32 3
+%.tmp5614 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5613
+%struct_info.5615 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp5614, %m1861$.Type.type** %struct_info.5615
+br label %.for.start.5616
+.for.start.5616:
+%.tmp5617 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base_var.5611
+%.tmp5618 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5617, i32 0, i32 3
+%.tmp5619 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5618
+%.tmp5620 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5619, i32 0, i32 0
+%.tmp5621 = load i8*, i8** %.tmp5620
+%.tmp5623 = getelementptr [4 x i8], [4 x i8]*@.str5622, i32 0, i32 0
+%.tmp5624 = call i32(i8*,i8*) @strcmp(i8* %.tmp5621, i8* %.tmp5623)
+%.tmp5625 = icmp eq i32 %.tmp5624, 0
+br i1 %.tmp5625, label %.for.continue.5616, label %.for.end.5616
+.for.continue.5616:
+%.tmp5626 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
+%.tmp5627 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp5626)
+%new_base.5628 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp5627, %m1861$.AssignableInfo.type** %new_base.5628
+%.tmp5629 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5630 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_base.5628
+call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp5629, %m1861$.AssignableInfo.type* %.tmp5630)
+%.tmp5631 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_base.5628
+%.tmp5632 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5631, i32 0, i32 3
+%.tmp5633 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base_var.5611
+%.tmp5634 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5633, i32 0, i32 3
+%.tmp5635 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5634
+%.tmp5636 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5635, i32 0, i32 3
+%.tmp5637 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5636
+store %m1861$.Type.type* %.tmp5637, %m1861$.Type.type** %.tmp5632
+%.tmp5638 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5639 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5638, i32 0, i32 1
+%.tmp5640 = load %m0$.File.type*, %m0$.File.type** %.tmp5639
+%.tmp5642 = getelementptr [23 x i8], [23 x i8]*@.str5641, i32 0, i32 0
+%.tmp5643 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_base.5628
+%.tmp5644 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5643)
+%.tmp5645 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5646 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_base.5628
+%.tmp5647 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5646, i32 0, i32 3
+%.tmp5648 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5647
+%.tmp5649 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp5645, %m1861$.Type.type* %.tmp5648)
+%.tmp5650 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5651 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base_var.5611
+%.tmp5652 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5651, i32 0, i32 3
+%.tmp5653 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5652
+%.tmp5654 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp5650, %m1861$.Type.type* %.tmp5653)
+%.tmp5655 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base_var.5611
+%.tmp5656 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5655)
+%.tmp5657 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5640, i8* %.tmp5642, i8* %.tmp5644, i8* %.tmp5649, i8* %.tmp5654, i8* %.tmp5656)
+%.tmp5658 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_base.5628
+store %m1861$.AssignableInfo.type* %.tmp5658, %m1861$.AssignableInfo.type** %base_var.5611
+%.tmp5659 = load %m1861$.Type.type*, %m1861$.Type.type** %struct_info.5615
+%.tmp5660 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5659, i32 0, i32 3
+%.tmp5661 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5660
+store %m1861$.Type.type* %.tmp5661, %m1861$.Type.type** %struct_info.5615
+br label %.for.start.5616
+.for.end.5616:
+%.tmp5662 = load %m1861$.Type.type*, %m1861$.Type.type** %struct_info.5615
+%.tmp5663 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5662, i32 0, i32 0
+%.tmp5664 = load i8*, i8** %.tmp5663
+%.tmp5666 = getelementptr [10 x i8], [10 x i8]*@.str5665, i32 0, i32 0
+%.tmp5667 = call i32(i8*,i8*) @strcmp(i8* %.tmp5664, i8* %.tmp5666)
+%.tmp5668 = icmp eq i32 %.tmp5667, 0
+br i1 %.tmp5668, label %.if.true.5669, label %.if.false.5669
+.if.true.5669:
+%.tmp5670 = load %m1861$.Type.type*, %m1861$.Type.type** %struct_info.5615
+%.tmp5671 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5670, i32 0, i32 3
+%.tmp5672 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5671
+store %m1861$.Type.type* %.tmp5672, %m1861$.Type.type** %struct_info.5615
+br label %.if.end.5669
+.if.false.5669:
+br label %.if.end.5669
+.if.end.5669:
+%.tmp5673 = load %m1861$.Type.type*, %m1861$.Type.type** %struct_info.5615
+%.tmp5674 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5673, i32 0, i32 0
+%.tmp5675 = load i8*, i8** %.tmp5674
+%.tmp5677 = getelementptr [7 x i8], [7 x i8]*@.str5676, i32 0, i32 0
+%.tmp5678 = call i32(i8*,i8*) @strcmp(i8* %.tmp5675, i8* %.tmp5677)
+%.tmp5679 = icmp ne i32 %.tmp5678, 0
+br i1 %.tmp5679, label %.if.true.5680, label %.if.false.5680
+.if.true.5680:
+%.tmp5681 = getelementptr i8*, i8** %err_msg.5545, i32 0
+%.tmp5683 = getelementptr [48 x i8], [48 x i8]*@.str5682, i32 0, i32 0
+%.tmp5684 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
+%.tmp5685 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5684, i32 0, i32 7
+%.tmp5686 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5685
+%.tmp5687 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5686, i32 0, i32 7
+%.tmp5688 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5687
+%.tmp5689 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5688, i32 0, i32 1
+%.tmp5690 = load i8*, i8** %.tmp5689
+%.tmp5691 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
+%.tmp5692 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5691, i32 0, i32 1
+%.tmp5693 = load i8*, i8** %.tmp5692
+%.tmp5694 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp5681, i8* %.tmp5683, i8* %.tmp5690, i8* %.tmp5693)
+%.tmp5695 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5696 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
+%.tmp5697 = load i8*, i8** %err_msg.5545
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp5695, %m307$.Node.type* %.tmp5696, i8* %.tmp5697)
+%.tmp5698 = bitcast ptr null to %m1861$.AssignableInfo.type*
+ret %m1861$.AssignableInfo.type* %.tmp5698
+br label %.if.end.5680
+.if.false.5680:
+br label %.if.end.5680
+.if.end.5680:
+%.tmp5699 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
+%.tmp5700 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5699, i32 0, i32 7
+%.tmp5701 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5700
+%.tmp5702 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5701, i32 0, i32 7
+%.tmp5703 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5702
+%.tmp5704 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5703, i32 0, i32 1
+%.tmp5705 = load i8*, i8** %.tmp5704
+%field_name.5706 = alloca i8*
+store i8* %.tmp5705, i8** %field_name.5706
+%field_id.5707 = alloca i32
+store i32 0, i32* %field_id.5707
+%.tmp5708 = bitcast ptr null to %m1861$.Type.type*
+%found_field.5709 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp5708, %m1861$.Type.type** %found_field.5709
+%.tmp5711 = load %m1861$.Type.type*, %m1861$.Type.type** %struct_info.5615
+%.tmp5712 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5711, i32 0, i32 3
+%.tmp5713 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5712
+%field.5714 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp5713, %m1861$.Type.type** %field.5714
+br label %.for.start.5710
+.for.start.5710:
+%.tmp5715 = load %m1861$.Type.type*, %m1861$.Type.type** %field.5714
+%.tmp5716 = icmp ne %m1861$.Type.type* %.tmp5715, null
+br i1 %.tmp5716, label %.for.continue.5710, label %.for.end.5710
+.for.continue.5710:
+%.tmp5717 = load %m1861$.Type.type*, %m1861$.Type.type** %field.5714
+%.tmp5718 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5717, i32 0, i32 1
+%.tmp5719 = load i8*, i8** %.tmp5718
+%.tmp5720 = load i8*, i8** %field_name.5706
+%.tmp5721 = call i32(i8*,i8*) @strcmp(i8* %.tmp5719, i8* %.tmp5720)
+%.tmp5722 = icmp eq i32 %.tmp5721, 0
+br i1 %.tmp5722, label %.if.true.5723, label %.if.false.5723
+.if.true.5723:
+%.tmp5724 = load %m1861$.Type.type*, %m1861$.Type.type** %field.5714
+store %m1861$.Type.type* %.tmp5724, %m1861$.Type.type** %found_field.5709
+br label %.for.end.5710
+br label %.if.end.5723
+.if.false.5723:
+%.tmp5725 = load i32, i32* %field_id.5707
+%.tmp5726 = add i32 %.tmp5725, 1
+store i32 %.tmp5726, i32* %field_id.5707
+br label %.if.end.5723
+.if.end.5723:
+%.tmp5727 = load %m1861$.Type.type*, %m1861$.Type.type** %field.5714
+%.tmp5728 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5727, i32 0, i32 4
+%.tmp5729 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5728
+store %m1861$.Type.type* %.tmp5729, %m1861$.Type.type** %field.5714
+br label %.for.start.5710
+.for.end.5710:
+%.tmp5730 = load %m1861$.Type.type*, %m1861$.Type.type** %found_field.5709
+%.tmp5731 = icmp eq %m1861$.Type.type* %.tmp5730, null
+br i1 %.tmp5731, label %.if.true.5732, label %.if.false.5732
+.if.true.5732:
+%.tmp5733 = getelementptr i8*, i8** %err_msg.5545, i32 0
+%.tmp5735 = getelementptr [34 x i8], [34 x i8]*@.str5734, i32 0, i32 0
+%.tmp5736 = load i8*, i8** %field_name.5706
+%.tmp5737 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
+%.tmp5738 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5737, i32 0, i32 1
+%.tmp5739 = load i8*, i8** %.tmp5738
+%.tmp5740 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp5733, i8* %.tmp5735, i8* %.tmp5736, i8* %.tmp5739)
+%.tmp5741 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5742 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
+%.tmp5743 = load i8*, i8** %err_msg.5545
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp5741, %m307$.Node.type* %.tmp5742, i8* %.tmp5743)
+%.tmp5744 = bitcast ptr null to %m1861$.AssignableInfo.type*
+ret %m1861$.AssignableInfo.type* %.tmp5744
+br label %.if.end.5732
+.if.false.5732:
+br label %.if.end.5732
+.if.end.5732:
+%.tmp5745 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
+%.tmp5746 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp5745)
+%new_info.5747 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp5746, %m1861$.AssignableInfo.type** %new_info.5747
+%.tmp5748 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_info.5747
+%.tmp5749 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5748, i32 0, i32 3
+%.tmp5750 = load %m1861$.Type.type*, %m1861$.Type.type** %found_field.5709
+store %m1861$.Type.type* %.tmp5750, %m1861$.Type.type** %.tmp5749
+%.tmp5751 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5752 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_info.5747
+call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp5751, %m1861$.AssignableInfo.type* %.tmp5752)
+%.tmp5753 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_info.5747
+%.tmp5754 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5753, i32 0, i32 2
+%.tmp5756 = getelementptr [9 x i8], [9 x i8]*@.str5755, i32 0, i32 0
+store i8* %.tmp5756, i8** %.tmp5754
+%.tmp5757 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5758 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base_var.5611
+%.tmp5759 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5758, i32 0, i32 3
+%.tmp5760 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5759
+%.tmp5761 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp5757, %m1861$.Type.type* %.tmp5760)
+%info_tr.5762 = alloca i8*
+store i8* %.tmp5761, i8** %info_tr.5762
+%.tmp5763 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5764 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5763, i32 0, i32 1
+%.tmp5765 = load %m0$.File.type*, %m0$.File.type** %.tmp5764
+%.tmp5767 = getelementptr [46 x i8], [46 x i8]*@.str5766, i32 0, i32 0
+%.tmp5768 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_info.5747
+%.tmp5769 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5768)
+%.tmp5770 = load i8*, i8** %info_tr.5762
+%.tmp5771 = load i8*, i8** %info_tr.5762
+%.tmp5772 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base_var.5611
+%.tmp5773 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5772)
+%.tmp5774 = load i32, i32* %field_id.5707
+%.tmp5775 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5765, i8* %.tmp5767, i8* %.tmp5769, i8* %.tmp5770, i8* %.tmp5771, i8* %.tmp5773, i32 %.tmp5774)
+%.tmp5776 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5777 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
+%.tmp5778 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5777, i32 0, i32 7
+%.tmp5779 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5778
+%.tmp5780 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5779, i32 0, i32 7
+%.tmp5781 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5780
+%.tmp5782 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_info.5747
+%.tmp5783 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,%m1861$.AssignableInfo.type*) @m1861$get_dotted_name.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp5776, %m307$.Node.type* %.tmp5781, %m1861$.AssignableInfo.type* %.tmp5782)
+ret %m1861$.AssignableInfo.type* %.tmp5783
+br label %.if.end.5609
+.if.false.5609:
+%.tmp5784 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
+%.tmp5785 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5784, i32 0, i32 2
+%.tmp5786 = load i8*, i8** %.tmp5785
+%.tmp5788 = getelementptr [9 x i8], [9 x i8]*@.str5787, i32 0, i32 0
+%.tmp5789 = call i32(i8*,i8*) @strcmp(i8* %.tmp5786, i8* %.tmp5788)
+%.tmp5790 = icmp eq i32 %.tmp5789, 0
+br i1 %.tmp5790, label %.if.true.5791, label %.if.false.5791
+.if.true.5791:
+%.tmp5792 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
+ret %m1861$.AssignableInfo.type* %.tmp5792
+br label %.if.end.5791
+.if.false.5791:
+br label %.if.end.5791
+.if.end.5791:
+br label %.if.end.5609
+.if.end.5609:
+br label %.if.end.5572
+.if.end.5572:
+%.tmp5793 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5794 = load %m307$.Node.type*, %m307$.Node.type** %dot_name_ptr
+%.tmp5796 = getelementptr [43 x i8], [43 x i8]*@.str5795, i32 0, i32 0
+%.tmp5797 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp5793, %m307$.Node.type* %.tmp5794, i8* %.tmp5796)
+%.tmp5798 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info
+%.tmp5799 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5798, i32 0, i32 2
+%.tmp5800 = load i8*, i8** %.tmp5799
+%.tmp5801 = call i32(i8*,...) @printf(i8* %.tmp5797, i8* %.tmp5800)
+%.tmp5802 = bitcast ptr null to %m1861$.AssignableInfo.type*
+ret %m1861$.AssignableInfo.type* %.tmp5802
 }
 define %m1861$.AssignableInfo.type* @m1861$compile_addr.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.stmt.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %stmt = alloca %m307$.Node.type*
 store %m307$.Node.type* %.stmt.arg, %m307$.Node.type** %stmt
-%err_msg.5653 = alloca i8*
-store i8* null, i8** %err_msg.5653
-%.tmp5654 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%curr_node.5655 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp5654, %m307$.Node.type** %curr_node.5655
-%.tmp5656 = load %m307$.Node.type*, %m307$.Node.type** %curr_node.5655
-%.tmp5657 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5656, i32 0, i32 0
-%.tmp5658 = load i8*, i8** %.tmp5657
-%.tmp5660 = getelementptr [12 x i8], [12 x i8]*@.str5659, i32 0, i32 0
-%.tmp5661 = call i32(i8*,i8*) @strcmp(i8* %.tmp5658, i8* %.tmp5660)
-%.tmp5662 = icmp ne i32 %.tmp5661, 0
-br i1 %.tmp5662, label %.if.true.5663, label %.if.false.5663
-.if.true.5663:
-%.tmp5665 = getelementptr [92 x i8], [92 x i8]*@.str5664, i32 0, i32 0
-%.tmp5666 = load %m307$.Node.type*, %m307$.Node.type** %curr_node.5655
-%.tmp5667 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5666, i32 0, i32 0
-%.tmp5668 = load i8*, i8** %.tmp5667
-%.tmp5669 = call i32(i8*,...) @printf(i8* %.tmp5665, i8* %.tmp5668)
-%.tmp5670 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp5671 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5670, i32 0, i32 6
-%.tmp5672 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5671
-store %m307$.Node.type* %.tmp5672, %m307$.Node.type** %curr_node.5655
-br label %.if.end.5663
-.if.false.5663:
-br label %.if.end.5663
-.if.end.5663:
-%.tmp5673 = load %m307$.Node.type*, %m307$.Node.type** %curr_node.5655
-%.tmp5674 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5673, i32 0, i32 6
-%.tmp5675 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5674
-%assignable_name.5676 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp5675, %m307$.Node.type** %assignable_name.5676
-%.tmp5677 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5678 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5679 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5678, i32 0, i32 6
-%.tmp5680 = load i8*, i8** %.tmp5679
-%.tmp5681 = load %m307$.Node.type*, %m307$.Node.type** %assignable_name.5676
-%.tmp5682 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5681, i32 0, i32 6
-%.tmp5683 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5682
-%.tmp5684 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5683, i32 0, i32 1
-%.tmp5685 = load i8*, i8** %.tmp5684
-%.tmp5686 = call %m1861$.ScopeItem.type*(%m1861$.CompilerCtx.type*,i8*,i8*) @m1861$find_defined_str.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.cp.cp(%m1861$.CompilerCtx.type* %.tmp5677, i8* %.tmp5680, i8* %.tmp5685)
-%scope_info.5687 = alloca %m1861$.ScopeItem.type*
-store %m1861$.ScopeItem.type* %.tmp5686, %m1861$.ScopeItem.type** %scope_info.5687
-%.tmp5688 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %scope_info.5687
-%.tmp5689 = icmp eq %m1861$.ScopeItem.type* %.tmp5688, null
-br i1 %.tmp5689, label %.if.true.5690, label %.if.false.5690
-.if.true.5690:
-%.tmp5691 = getelementptr i8*, i8** %err_msg.5653, i32 0
-%.tmp5693 = getelementptr [41 x i8], [41 x i8]*@.str5692, i32 0, i32 0
-%.tmp5694 = load %m307$.Node.type*, %m307$.Node.type** %assignable_name.5676
-%.tmp5695 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5694, i32 0, i32 6
-%.tmp5696 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5695
-%.tmp5697 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5696, i32 0, i32 1
-%.tmp5698 = load i8*, i8** %.tmp5697
-%.tmp5699 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp5691, i8* %.tmp5693, i8* %.tmp5698)
-%.tmp5700 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5701 = load %m307$.Node.type*, %m307$.Node.type** %assignable_name.5676
-%.tmp5702 = load i8*, i8** %err_msg.5653
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp5700, %m307$.Node.type* %.tmp5701, i8* %.tmp5702)
-%.tmp5703 = bitcast ptr null to %m1861$.AssignableInfo.type*
-ret %m1861$.AssignableInfo.type* %.tmp5703
-br label %.if.end.5690
-.if.false.5690:
-br label %.if.end.5690
-.if.end.5690:
-%.tmp5704 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %scope_info.5687
-%.tmp5705 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5704, i32 0, i32 1
-%.tmp5706 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %.tmp5705
-%info.5707 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp5706, %m1861$.AssignableInfo.type** %info.5707
-%.tmp5708 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.5707
-%.tmp5709 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5708, i32 0, i32 2
-%.tmp5710 = load i8*, i8** %.tmp5709
-%.tmp5712 = getelementptr [7 x i8], [7 x i8]*@.str5711, i32 0, i32 0
-%.tmp5713 = call i32(i8*,i8*) @strcmp(i8* %.tmp5710, i8* %.tmp5712)
-%.tmp5714 = icmp eq i32 %.tmp5713, 0
-br i1 %.tmp5714, label %.if.true.5715, label %.if.false.5715
-.if.true.5715:
-%.tmp5716 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5717 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.5707
-%.tmp5718 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5717)
-%.tmp5719 = load %m307$.Node.type*, %m307$.Node.type** %assignable_name.5676
-%.tmp5720 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5719, i32 0, i32 6
-%.tmp5721 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5720
-%.tmp5722 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5721, i32 0, i32 7
-%.tmp5723 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5722
-%.tmp5724 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5723, i32 0, i32 7
-%.tmp5725 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5724
-%.tmp5726 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5725, i32 0, i32 1
-%.tmp5727 = load i8*, i8** %.tmp5726
-%.tmp5728 = call %m1861$.ScopeItem.type*(%m1861$.CompilerCtx.type*,i8*,i8*) @m1861$find_defined_str.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.cp.cp(%m1861$.CompilerCtx.type* %.tmp5716, i8* %.tmp5718, i8* %.tmp5727)
-store %m1861$.ScopeItem.type* %.tmp5728, %m1861$.ScopeItem.type** %scope_info.5687
-%.tmp5729 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %scope_info.5687
-%.tmp5730 = icmp eq %m1861$.ScopeItem.type* %.tmp5729, null
-br i1 %.tmp5730, label %.if.true.5731, label %.if.false.5731
-.if.true.5731:
-%.tmp5732 = getelementptr i8*, i8** %err_msg.5653, i32 0
-%.tmp5734 = getelementptr [31 x i8], [31 x i8]*@.str5733, i32 0, i32 0
-%.tmp5735 = load %m307$.Node.type*, %m307$.Node.type** %assignable_name.5676
-%.tmp5736 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5735, i32 0, i32 6
-%.tmp5737 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5736
-%.tmp5738 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5737, i32 0, i32 7
-%.tmp5739 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5738
-%.tmp5740 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5739, i32 0, i32 7
-%.tmp5741 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5740
-%.tmp5742 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5741, i32 0, i32 1
-%.tmp5743 = load i8*, i8** %.tmp5742
-%.tmp5744 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.5707
-%.tmp5745 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5744)
-%.tmp5746 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp5732, i8* %.tmp5734, i8* %.tmp5743, i8* %.tmp5745)
-%.tmp5747 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5748 = load %m307$.Node.type*, %m307$.Node.type** %curr_node.5655
-%.tmp5749 = load i8*, i8** %err_msg.5653
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp5747, %m307$.Node.type* %.tmp5748, i8* %.tmp5749)
-%.tmp5750 = bitcast ptr null to %m1861$.AssignableInfo.type*
-ret %m1861$.AssignableInfo.type* %.tmp5750
-br label %.if.end.5731
-.if.false.5731:
-br label %.if.end.5731
-.if.end.5731:
-%.tmp5751 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %scope_info.5687
-%.tmp5752 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5751, i32 0, i32 1
-%.tmp5753 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %.tmp5752
-store %m1861$.AssignableInfo.type* %.tmp5753, %m1861$.AssignableInfo.type** %info.5707
-%.tmp5754 = load %m307$.Node.type*, %m307$.Node.type** %assignable_name.5676
-%.tmp5755 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5754, i32 0, i32 6
-%.tmp5756 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5755
-%.tmp5757 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5756, i32 0, i32 7
-%.tmp5758 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5757
-%.tmp5759 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5758, i32 0, i32 7
-%.tmp5760 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5759
-store %m307$.Node.type* %.tmp5760, %m307$.Node.type** %assignable_name.5676
-br label %.if.end.5715
-.if.false.5715:
-%.tmp5761 = load %m307$.Node.type*, %m307$.Node.type** %assignable_name.5676
-%.tmp5762 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5761, i32 0, i32 6
-%.tmp5763 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5762
-store %m307$.Node.type* %.tmp5763, %m307$.Node.type** %assignable_name.5676
-br label %.if.end.5715
-.if.end.5715:
-%.tmp5764 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5765 = load %m307$.Node.type*, %m307$.Node.type** %assignable_name.5676
-%.tmp5766 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.5707
-%.tmp5767 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,%m1861$.AssignableInfo.type*) @m1861$get_dotted_name.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp5764, %m307$.Node.type* %.tmp5765, %m1861$.AssignableInfo.type* %.tmp5766)
-%base.5768 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp5767, %m1861$.AssignableInfo.type** %base.5768
-%.tmp5770 = load %m307$.Node.type*, %m307$.Node.type** %curr_node.5655
-%.tmp5771 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5770, i32 0, i32 6
-%.tmp5772 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5771
-%.tmp5773 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5772, i32 0, i32 7
-%.tmp5774 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5773
-%addr.5775 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp5774, %m307$.Node.type** %addr.5775
-br label %.for.start.5769
-.for.start.5769:
-%.tmp5776 = load %m307$.Node.type*, %m307$.Node.type** %addr.5775
-%.tmp5777 = icmp ne %m307$.Node.type* %.tmp5776, null
-br i1 %.tmp5777, label %.for.continue.5769, label %.for.end.5769
-.for.continue.5769:
-%.tmp5778 = load %m307$.Node.type*, %m307$.Node.type** %addr.5775
-%.tmp5779 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5778, i32 0, i32 7
-%.tmp5780 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5779
-%index.5781 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp5780, %m307$.Node.type** %index.5781
-%.tmp5782 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5783 = load %m307$.Node.type*, %m307$.Node.type** %index.5781
-%.tmp5784 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_assignable.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp5782, %m307$.Node.type* %.tmp5783)
-%index_info.5785 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp5784, %m1861$.AssignableInfo.type** %index_info.5785
-%.tmp5786 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5787 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base.5768
-%.tmp5788 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5787, i32 0, i32 3
-%.tmp5789 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5788
-%.tmp5790 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp5786, %m1861$.Type.type* %.tmp5789)
-%base_type.5791 = alloca i8*
-store i8* %.tmp5790, i8** %base_type.5791
-%.tmp5792 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5793 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %index_info.5785
-%.tmp5794 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5793, i32 0, i32 3
-%.tmp5795 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5794
-%.tmp5796 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp5792, %m1861$.Type.type* %.tmp5795)
-%index_type.5797 = alloca i8*
-store i8* %.tmp5796, i8** %index_type.5797
-%.tmp5798 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5799 = call i32(%m1861$.CompilerCtx.type*) @m1861$new_uid.i.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp5798)
-%tmp_id.5800 = alloca i32
-store i32 %.tmp5799, i32* %tmp_id.5800
-%.tmp5801 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5802 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5801, i32 0, i32 1
-%.tmp5803 = load %m0$.File.type*, %m0$.File.type** %.tmp5802
-%.tmp5805 = getelementptr [28 x i8], [28 x i8]*@.str5804, i32 0, i32 0
-%.tmp5806 = load i32, i32* %tmp_id.5800
-%.tmp5807 = load i8*, i8** %base_type.5791
-%.tmp5808 = load i8*, i8** %base_type.5791
-%.tmp5809 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base.5768
-%.tmp5810 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5809)
-%.tmp5811 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5803, i8* %.tmp5805, i32 %.tmp5806, i8* %.tmp5807, i8* %.tmp5808, i8* %.tmp5810)
-%.tmp5812 = load %m307$.Node.type*, %m307$.Node.type** %curr_node.5655
-%.tmp5813 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp5812)
-%new_base.5814 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp5813, %m1861$.AssignableInfo.type** %new_base.5814
-%.tmp5815 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5816 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_base.5814
-call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp5815, %m1861$.AssignableInfo.type* %.tmp5816)
-%.tmp5817 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base.5768
-%.tmp5818 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5817, i32 0, i32 3
-%.tmp5819 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5818
-%.tmp5820 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5819, i32 0, i32 3
-%.tmp5821 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5820
-%.tmp5822 = icmp eq %m1861$.Type.type* %.tmp5821, null
-br i1 %.tmp5822, label %.if.true.5823, label %.if.false.5823
-.if.true.5823:
-%.tmp5824 = getelementptr i8*, i8** %err_msg.5653, i32 0
-%.tmp5826 = getelementptr [35 x i8], [35 x i8]*@.str5825, i32 0, i32 0
-%.tmp5827 = load i8*, i8** %base_type.5791
-%.tmp5828 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp5824, i8* %.tmp5826, i8* %.tmp5827)
-%.tmp5829 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5830 = load %m307$.Node.type*, %m307$.Node.type** %addr.5775
-%.tmp5831 = load i8*, i8** %err_msg.5653
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp5829, %m307$.Node.type* %.tmp5830, i8* %.tmp5831)
-%.tmp5832 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base.5768
-ret %m1861$.AssignableInfo.type* %.tmp5832
-br label %.if.end.5823
-.if.false.5823:
-br label %.if.end.5823
-.if.end.5823:
-%.tmp5833 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_base.5814
-%.tmp5834 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5833, i32 0, i32 3
-%.tmp5835 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base.5768
-%.tmp5836 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5835, i32 0, i32 3
-%.tmp5837 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5836
-%.tmp5838 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5837, i32 0, i32 3
-%.tmp5839 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5838
-store %m1861$.Type.type* %.tmp5839, %m1861$.Type.type** %.tmp5834
-%.tmp5840 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5841 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_base.5814
-%.tmp5842 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5841, i32 0, i32 3
-%.tmp5843 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5842
-%.tmp5844 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp5840, %m1861$.Type.type* %.tmp5843)
-%base_type_2.5845 = alloca i8*
-store i8* %.tmp5844, i8** %base_type_2.5845
-%.tmp5846 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5847 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5846, i32 0, i32 1
-%.tmp5848 = load %m0$.File.type*, %m0$.File.type** %.tmp5847
-%.tmp5850 = getelementptr [44 x i8], [44 x i8]*@.str5849, i32 0, i32 0
-%.tmp5851 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_base.5814
-%.tmp5852 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5851)
-%.tmp5853 = load i8*, i8** %base_type_2.5845
-%.tmp5854 = load i8*, i8** %base_type_2.5845
-%.tmp5855 = load i32, i32* %tmp_id.5800
-%.tmp5856 = load i8*, i8** %index_type.5797
-%.tmp5857 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %index_info.5785
-%.tmp5858 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5857)
-%.tmp5859 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5848, i8* %.tmp5850, i8* %.tmp5852, i8* %.tmp5853, i8* %.tmp5854, i32 %.tmp5855, i8* %.tmp5856, i8* %.tmp5858)
-%.tmp5860 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_base.5814
-store %m1861$.AssignableInfo.type* %.tmp5860, %m1861$.AssignableInfo.type** %base.5768
-%.tmp5861 = load %m307$.Node.type*, %m307$.Node.type** %addr.5775
-%.tmp5862 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5861, i32 0, i32 7
-%.tmp5863 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5862
-%.tmp5864 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5863, i32 0, i32 7
-%.tmp5865 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5864
-%.tmp5866 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5865, i32 0, i32 7
-%.tmp5867 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5866
-store %m307$.Node.type* %.tmp5867, %m307$.Node.type** %addr.5775
-br label %.for.start.5769
-.for.end.5769:
-%.tmp5868 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base.5768
-ret %m1861$.AssignableInfo.type* %.tmp5868
+%err_msg.5803 = alloca i8*
+store i8* null, i8** %err_msg.5803
+%.tmp5804 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%curr_node.5805 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp5804, %m307$.Node.type** %curr_node.5805
+%.tmp5806 = load %m307$.Node.type*, %m307$.Node.type** %curr_node.5805
+%.tmp5807 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5806, i32 0, i32 0
+%.tmp5808 = load i8*, i8** %.tmp5807
+%.tmp5810 = getelementptr [17 x i8], [17 x i8]*@.str5809, i32 0, i32 0
+%.tmp5811 = call i32(i8*,i8*) @strcmp(i8* %.tmp5808, i8* %.tmp5810)
+%.tmp5812 = icmp eq i32 %.tmp5811, 0
+%.tmp5813 = load %m307$.Node.type*, %m307$.Node.type** %curr_node.5805
+%.tmp5814 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5813, i32 0, i32 0
+%.tmp5815 = load i8*, i8** %.tmp5814
+%.tmp5817 = getelementptr [16 x i8], [16 x i8]*@.str5816, i32 0, i32 0
+%.tmp5818 = call i32(i8*,i8*) @strcmp(i8* %.tmp5815, i8* %.tmp5817)
+%.tmp5819 = icmp eq i32 %.tmp5818, 0
+%.tmp5820 = or i1 %.tmp5812, %.tmp5819
+%.tmp5821 = load %m307$.Node.type*, %m307$.Node.type** %curr_node.5805
+%.tmp5822 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5821, i32 0, i32 0
+%.tmp5823 = load i8*, i8** %.tmp5822
+%.tmp5825 = getelementptr [11 x i8], [11 x i8]*@.str5824, i32 0, i32 0
+%.tmp5826 = call i32(i8*,i8*) @strcmp(i8* %.tmp5823, i8* %.tmp5825)
+%.tmp5827 = icmp eq i32 %.tmp5826, 0
+%.tmp5828 = or i1 %.tmp5820, %.tmp5827
+br i1 %.tmp5828, label %.if.true.5829, label %.if.false.5829
+.if.true.5829:
+%.tmp5830 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5831 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp5832 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5831, i32 0, i32 6
+%.tmp5833 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5832
+%.tmp5834 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_addr.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp5830, %m307$.Node.type* %.tmp5833)
+ret %m1861$.AssignableInfo.type* %.tmp5834
+br label %.if.end.5829
+.if.false.5829:
+br label %.if.end.5829
+.if.end.5829:
+%.tmp5835 = load %m307$.Node.type*, %m307$.Node.type** %curr_node.5805
+%.tmp5836 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5835, i32 0, i32 0
+%.tmp5837 = load i8*, i8** %.tmp5836
+%.tmp5839 = getelementptr [12 x i8], [12 x i8]*@.str5838, i32 0, i32 0
+%.tmp5840 = call i32(i8*,i8*) @strcmp(i8* %.tmp5837, i8* %.tmp5839)
+%.tmp5841 = icmp ne i32 %.tmp5840, 0
+br i1 %.tmp5841, label %.if.true.5842, label %.if.false.5842
+.if.true.5842:
+%.tmp5844 = getelementptr [92 x i8], [92 x i8]*@.str5843, i32 0, i32 0
+%.tmp5845 = load %m307$.Node.type*, %m307$.Node.type** %curr_node.5805
+%.tmp5846 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5845, i32 0, i32 0
+%.tmp5847 = load i8*, i8** %.tmp5846
+%.tmp5848 = call i32(i8*,...) @printf(i8* %.tmp5844, i8* %.tmp5847)
+%.tmp5849 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp5850 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5849, i32 0, i32 6
+%.tmp5851 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5850
+store %m307$.Node.type* %.tmp5851, %m307$.Node.type** %curr_node.5805
+br label %.if.end.5842
+.if.false.5842:
+br label %.if.end.5842
+.if.end.5842:
+%.tmp5852 = load %m307$.Node.type*, %m307$.Node.type** %curr_node.5805
+%.tmp5853 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5852, i32 0, i32 6
+%.tmp5854 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5853
+%assignable_name.5855 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp5854, %m307$.Node.type** %assignable_name.5855
+%.tmp5856 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5857 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5858 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5857, i32 0, i32 6
+%.tmp5859 = load i8*, i8** %.tmp5858
+%.tmp5860 = load %m307$.Node.type*, %m307$.Node.type** %assignable_name.5855
+%.tmp5861 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5860, i32 0, i32 6
+%.tmp5862 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5861
+%.tmp5863 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5862, i32 0, i32 1
+%.tmp5864 = load i8*, i8** %.tmp5863
+%.tmp5865 = call %m1861$.ScopeItem.type*(%m1861$.CompilerCtx.type*,i8*,i8*) @m1861$find_defined_str.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.cp.cp(%m1861$.CompilerCtx.type* %.tmp5856, i8* %.tmp5859, i8* %.tmp5864)
+%scope_info.5866 = alloca %m1861$.ScopeItem.type*
+store %m1861$.ScopeItem.type* %.tmp5865, %m1861$.ScopeItem.type** %scope_info.5866
+%.tmp5867 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %scope_info.5866
+%.tmp5868 = icmp eq %m1861$.ScopeItem.type* %.tmp5867, null
+br i1 %.tmp5868, label %.if.true.5869, label %.if.false.5869
+.if.true.5869:
+%.tmp5870 = getelementptr i8*, i8** %err_msg.5803, i32 0
+%.tmp5872 = getelementptr [41 x i8], [41 x i8]*@.str5871, i32 0, i32 0
+%.tmp5873 = load %m307$.Node.type*, %m307$.Node.type** %assignable_name.5855
+%.tmp5874 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5873, i32 0, i32 6
+%.tmp5875 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5874
+%.tmp5876 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5875, i32 0, i32 1
+%.tmp5877 = load i8*, i8** %.tmp5876
+%.tmp5878 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp5870, i8* %.tmp5872, i8* %.tmp5877)
+%.tmp5879 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5880 = load %m307$.Node.type*, %m307$.Node.type** %assignable_name.5855
+%.tmp5881 = load i8*, i8** %err_msg.5803
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp5879, %m307$.Node.type* %.tmp5880, i8* %.tmp5881)
+%.tmp5882 = bitcast ptr null to %m1861$.AssignableInfo.type*
+ret %m1861$.AssignableInfo.type* %.tmp5882
+br label %.if.end.5869
+.if.false.5869:
+br label %.if.end.5869
+.if.end.5869:
+%.tmp5883 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %scope_info.5866
+%.tmp5884 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5883, i32 0, i32 1
+%.tmp5885 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %.tmp5884
+%info.5886 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp5885, %m1861$.AssignableInfo.type** %info.5886
+%.tmp5887 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.5886
+%.tmp5888 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5887, i32 0, i32 2
+%.tmp5889 = load i8*, i8** %.tmp5888
+%.tmp5891 = getelementptr [7 x i8], [7 x i8]*@.str5890, i32 0, i32 0
+%.tmp5892 = call i32(i8*,i8*) @strcmp(i8* %.tmp5889, i8* %.tmp5891)
+%.tmp5893 = icmp eq i32 %.tmp5892, 0
+br i1 %.tmp5893, label %.if.true.5894, label %.if.false.5894
+.if.true.5894:
+%.tmp5895 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5896 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.5886
+%.tmp5897 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5896)
+%.tmp5898 = load %m307$.Node.type*, %m307$.Node.type** %assignable_name.5855
+%.tmp5899 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5898, i32 0, i32 6
+%.tmp5900 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5899
+%.tmp5901 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5900, i32 0, i32 7
+%.tmp5902 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5901
+%.tmp5903 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5902, i32 0, i32 7
+%.tmp5904 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5903
+%.tmp5905 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5904, i32 0, i32 1
+%.tmp5906 = load i8*, i8** %.tmp5905
+%.tmp5907 = call %m1861$.ScopeItem.type*(%m1861$.CompilerCtx.type*,i8*,i8*) @m1861$find_defined_str.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.cp.cp(%m1861$.CompilerCtx.type* %.tmp5895, i8* %.tmp5897, i8* %.tmp5906)
+store %m1861$.ScopeItem.type* %.tmp5907, %m1861$.ScopeItem.type** %scope_info.5866
+%.tmp5908 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %scope_info.5866
+%.tmp5909 = icmp eq %m1861$.ScopeItem.type* %.tmp5908, null
+br i1 %.tmp5909, label %.if.true.5910, label %.if.false.5910
+.if.true.5910:
+%.tmp5911 = getelementptr i8*, i8** %err_msg.5803, i32 0
+%.tmp5913 = getelementptr [31 x i8], [31 x i8]*@.str5912, i32 0, i32 0
+%.tmp5914 = load %m307$.Node.type*, %m307$.Node.type** %assignable_name.5855
+%.tmp5915 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5914, i32 0, i32 6
+%.tmp5916 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5915
+%.tmp5917 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5916, i32 0, i32 7
+%.tmp5918 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5917
+%.tmp5919 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5918, i32 0, i32 7
+%.tmp5920 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5919
+%.tmp5921 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5920, i32 0, i32 1
+%.tmp5922 = load i8*, i8** %.tmp5921
+%.tmp5923 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.5886
+%.tmp5924 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5923)
+%.tmp5925 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp5911, i8* %.tmp5913, i8* %.tmp5922, i8* %.tmp5924)
+%.tmp5926 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5927 = load %m307$.Node.type*, %m307$.Node.type** %curr_node.5805
+%.tmp5928 = load i8*, i8** %err_msg.5803
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp5926, %m307$.Node.type* %.tmp5927, i8* %.tmp5928)
+%.tmp5929 = bitcast ptr null to %m1861$.AssignableInfo.type*
+ret %m1861$.AssignableInfo.type* %.tmp5929
+br label %.if.end.5910
+.if.false.5910:
+br label %.if.end.5910
+.if.end.5910:
+%.tmp5930 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %scope_info.5866
+%.tmp5931 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp5930, i32 0, i32 1
+%.tmp5932 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %.tmp5931
+store %m1861$.AssignableInfo.type* %.tmp5932, %m1861$.AssignableInfo.type** %info.5886
+%.tmp5933 = load %m307$.Node.type*, %m307$.Node.type** %assignable_name.5855
+%.tmp5934 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5933, i32 0, i32 6
+%.tmp5935 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5934
+%.tmp5936 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5935, i32 0, i32 7
+%.tmp5937 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5936
+%.tmp5938 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5937, i32 0, i32 7
+%.tmp5939 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5938
+store %m307$.Node.type* %.tmp5939, %m307$.Node.type** %assignable_name.5855
+br label %.if.end.5894
+.if.false.5894:
+%.tmp5940 = load %m307$.Node.type*, %m307$.Node.type** %assignable_name.5855
+%.tmp5941 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5940, i32 0, i32 6
+%.tmp5942 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5941
+store %m307$.Node.type* %.tmp5942, %m307$.Node.type** %assignable_name.5855
+br label %.if.end.5894
+.if.end.5894:
+%.tmp5943 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5944 = load %m307$.Node.type*, %m307$.Node.type** %assignable_name.5855
+%.tmp5945 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.5886
+%.tmp5946 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,%m1861$.AssignableInfo.type*) @m1861$get_dotted_name.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp5943, %m307$.Node.type* %.tmp5944, %m1861$.AssignableInfo.type* %.tmp5945)
+%base.5947 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp5946, %m1861$.AssignableInfo.type** %base.5947
+%.tmp5949 = load %m307$.Node.type*, %m307$.Node.type** %curr_node.5805
+%.tmp5950 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5949, i32 0, i32 6
+%.tmp5951 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5950
+%.tmp5952 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5951, i32 0, i32 7
+%.tmp5953 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5952
+%addr.5954 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp5953, %m307$.Node.type** %addr.5954
+br label %.for.start.5948
+.for.start.5948:
+%.tmp5955 = load %m307$.Node.type*, %m307$.Node.type** %addr.5954
+%.tmp5956 = icmp ne %m307$.Node.type* %.tmp5955, null
+br i1 %.tmp5956, label %.for.continue.5948, label %.for.end.5948
+.for.continue.5948:
+%.tmp5957 = load %m307$.Node.type*, %m307$.Node.type** %addr.5954
+%.tmp5958 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5957, i32 0, i32 7
+%.tmp5959 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5958
+%index.5960 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp5959, %m307$.Node.type** %index.5960
+%.tmp5961 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5962 = load %m307$.Node.type*, %m307$.Node.type** %index.5960
+%.tmp5963 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_assignable.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp5961, %m307$.Node.type* %.tmp5962)
+%index_info.5964 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp5963, %m1861$.AssignableInfo.type** %index_info.5964
+%.tmp5965 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5966 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base.5947
+%.tmp5967 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5966, i32 0, i32 3
+%.tmp5968 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5967
+%.tmp5969 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp5965, %m1861$.Type.type* %.tmp5968)
+%base_type.5970 = alloca i8*
+store i8* %.tmp5969, i8** %base_type.5970
+%.tmp5971 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5972 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %index_info.5964
+%.tmp5973 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5972, i32 0, i32 3
+%.tmp5974 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5973
+%.tmp5975 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp5971, %m1861$.Type.type* %.tmp5974)
+%index_type.5976 = alloca i8*
+store i8* %.tmp5975, i8** %index_type.5976
+%.tmp5977 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5978 = call i32(%m1861$.CompilerCtx.type*) @m1861$new_uid.i.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp5977)
+%tmp_id.5979 = alloca i32
+store i32 %.tmp5978, i32* %tmp_id.5979
+%.tmp5980 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5981 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5980, i32 0, i32 1
+%.tmp5982 = load %m0$.File.type*, %m0$.File.type** %.tmp5981
+%.tmp5984 = getelementptr [28 x i8], [28 x i8]*@.str5983, i32 0, i32 0
+%.tmp5985 = load i32, i32* %tmp_id.5979
+%.tmp5986 = load i8*, i8** %base_type.5970
+%.tmp5987 = load i8*, i8** %base_type.5970
+%.tmp5988 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base.5947
+%.tmp5989 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5988)
+%.tmp5990 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5982, i8* %.tmp5984, i32 %.tmp5985, i8* %.tmp5986, i8* %.tmp5987, i8* %.tmp5989)
+%.tmp5991 = load %m307$.Node.type*, %m307$.Node.type** %curr_node.5805
+%.tmp5992 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp5991)
+%new_base.5993 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp5992, %m1861$.AssignableInfo.type** %new_base.5993
+%.tmp5994 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp5995 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_base.5993
+call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp5994, %m1861$.AssignableInfo.type* %.tmp5995)
+%.tmp5996 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base.5947
+%.tmp5997 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5996, i32 0, i32 3
+%.tmp5998 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5997
+%.tmp5999 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5998, i32 0, i32 3
+%.tmp6000 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5999
+%.tmp6001 = icmp eq %m1861$.Type.type* %.tmp6000, null
+br i1 %.tmp6001, label %.if.true.6002, label %.if.false.6002
+.if.true.6002:
+%.tmp6003 = getelementptr i8*, i8** %err_msg.5803, i32 0
+%.tmp6005 = getelementptr [35 x i8], [35 x i8]*@.str6004, i32 0, i32 0
+%.tmp6006 = load i8*, i8** %base_type.5970
+%.tmp6007 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp6003, i8* %.tmp6005, i8* %.tmp6006)
+%.tmp6008 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6009 = load %m307$.Node.type*, %m307$.Node.type** %addr.5954
+%.tmp6010 = load i8*, i8** %err_msg.5803
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp6008, %m307$.Node.type* %.tmp6009, i8* %.tmp6010)
+%.tmp6011 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base.5947
+ret %m1861$.AssignableInfo.type* %.tmp6011
+br label %.if.end.6002
+.if.false.6002:
+br label %.if.end.6002
+.if.end.6002:
+%.tmp6012 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_base.5993
+%.tmp6013 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6012, i32 0, i32 3
+%.tmp6014 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base.5947
+%.tmp6015 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6014, i32 0, i32 3
+%.tmp6016 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6015
+%.tmp6017 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6016, i32 0, i32 3
+%.tmp6018 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6017
+store %m1861$.Type.type* %.tmp6018, %m1861$.Type.type** %.tmp6013
+%.tmp6019 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6020 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_base.5993
+%.tmp6021 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6020, i32 0, i32 3
+%.tmp6022 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6021
+%.tmp6023 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp6019, %m1861$.Type.type* %.tmp6022)
+%base_type_2.6024 = alloca i8*
+store i8* %.tmp6023, i8** %base_type_2.6024
+%.tmp6025 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6026 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp6025, i32 0, i32 1
+%.tmp6027 = load %m0$.File.type*, %m0$.File.type** %.tmp6026
+%.tmp6029 = getelementptr [44 x i8], [44 x i8]*@.str6028, i32 0, i32 0
+%.tmp6030 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_base.5993
+%.tmp6031 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6030)
+%.tmp6032 = load i8*, i8** %base_type_2.6024
+%.tmp6033 = load i8*, i8** %base_type_2.6024
+%.tmp6034 = load i32, i32* %tmp_id.5979
+%.tmp6035 = load i8*, i8** %index_type.5976
+%.tmp6036 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %index_info.5964
+%.tmp6037 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6036)
+%.tmp6038 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp6027, i8* %.tmp6029, i8* %.tmp6031, i8* %.tmp6032, i8* %.tmp6033, i32 %.tmp6034, i8* %.tmp6035, i8* %.tmp6037)
+%.tmp6039 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %new_base.5993
+store %m1861$.AssignableInfo.type* %.tmp6039, %m1861$.AssignableInfo.type** %base.5947
+%.tmp6040 = load %m307$.Node.type*, %m307$.Node.type** %addr.5954
+%.tmp6041 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6040, i32 0, i32 7
+%.tmp6042 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6041
+%.tmp6043 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6042, i32 0, i32 7
+%.tmp6044 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6043
+%.tmp6045 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6044, i32 0, i32 7
+%.tmp6046 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6045
+store %m307$.Node.type* %.tmp6046, %m307$.Node.type** %addr.5954
+br label %.for.start.5948
+.for.end.5948:
+%.tmp6047 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %base.5947
+ret %m1861$.AssignableInfo.type* %.tmp6047
 }
 %m1861$.StackHead.type = type {%m1988$.SYStack.type*}
 define %m1861$.AssignableInfo.type* @m1861$compile_assignable.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.curr_node.arg) {
@@ -8638,1278 +8900,1278 @@ define %m1861$.AssignableInfo.type* @m1861$compile_assignable.m1861$.AssignableI
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %curr_node = alloca %m307$.Node.type*
 store %m307$.Node.type* %.curr_node.arg, %m307$.Node.type** %curr_node
-%.tmp5869 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
-%.tmp5870 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5869, i32 0, i32 6
-%.tmp5871 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5870
-%.tmp5873 = getelementptr [16 x i8], [16 x i8]*@.str5872, i32 0, i32 0
-%.tmp5874 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp5871, i8* %.tmp5873)
-%assignable_start.5875 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp5874, %m307$.Node.type** %assignable_start.5875
-%.tmp5876 = load %m307$.Node.type*, %m307$.Node.type** %assignable_start.5875
-%.tmp5877 = call %m1988$.SYStack.type*(%m307$.Node.type*) @m1988$sy_algorithm.m1988$.SYStack.typep.m307$.Node.typep(%m307$.Node.type* %.tmp5876)
-%operator_stack.5878 = alloca %m1988$.SYStack.type*
-store %m1988$.SYStack.type* %.tmp5877, %m1988$.SYStack.type** %operator_stack.5878
-%.tmp5879 = getelementptr %m1861$.StackHead.type, %m1861$.StackHead.type* null, i32 1
-%.tmp5880 = ptrtoint %m1861$.StackHead.type* %.tmp5879 to i32
-%.tmp5881 = call i8*(i32) @malloc(i32 %.tmp5880)
-%.tmp5882 = bitcast i8* %.tmp5881 to %m1861$.StackHead.type*
-%stack.5883 = alloca %m1861$.StackHead.type*
-store %m1861$.StackHead.type* %.tmp5882, %m1861$.StackHead.type** %stack.5883
-%.tmp5884 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack.5883
-%.tmp5885 = getelementptr %m1861$.StackHead.type, %m1861$.StackHead.type* %.tmp5884, i32 0, i32 0
-%.tmp5886 = load %m1988$.SYStack.type*, %m1988$.SYStack.type** %operator_stack.5878
-store %m1988$.SYStack.type* %.tmp5886, %m1988$.SYStack.type** %.tmp5885
-%.tmp5887 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5888 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack.5883
-%.tmp5889 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m1861$.StackHead.type*) @m1861$compile_assignable_stack.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m1861$.StackHead.typep(%m1861$.CompilerCtx.type* %.tmp5887, %m1861$.StackHead.type* %.tmp5888)
-%info.5890 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp5889, %m1861$.AssignableInfo.type** %info.5890
-%.tmp5891 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.5890
-%.tmp5892 = icmp eq %m1861$.AssignableInfo.type* %.tmp5891, null
-br i1 %.tmp5892, label %.if.true.5893, label %.if.false.5893
-.if.true.5893:
-%.tmp5894 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.5890
-ret %m1861$.AssignableInfo.type* %.tmp5894
-br label %.if.end.5893
-.if.false.5893:
-br label %.if.end.5893
-.if.end.5893:
-%.tmp5895 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
-%.tmp5896 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5895, i32 0, i32 6
-%.tmp5897 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5896
-%.tmp5899 = getelementptr [5 x i8], [5 x i8]*@.str5898, i32 0, i32 0
-%.tmp5900 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp5897, i8* %.tmp5899)
-%cast.5901 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp5900, %m307$.Node.type** %cast.5901
-%.tmp5902 = load %m307$.Node.type*, %m307$.Node.type** %cast.5901
-%.tmp5903 = icmp ne %m307$.Node.type* %.tmp5902, null
-br i1 %.tmp5903, label %.if.true.5904, label %.if.false.5904
-.if.true.5904:
-%.tmp5905 = load %m307$.Node.type*, %m307$.Node.type** %cast.5901
-%.tmp5906 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5905, i32 0, i32 6
-%.tmp5907 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5906
-%.tmp5909 = getelementptr [5 x i8], [5 x i8]*@.str5908, i32 0, i32 0
-%.tmp5910 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp5907, i8* %.tmp5909)
-%cast_type.5911 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp5910, %m307$.Node.type** %cast_type.5911
-%.tmp5912 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5913 = load %m307$.Node.type*, %m307$.Node.type** %cast_type.5911
-%.tmp5914 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp5913, i32 0, i32 6
-%.tmp5915 = load %m307$.Node.type*, %m307$.Node.type** %.tmp5914
-%.tmp5916 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$node_to_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp5912, %m307$.Node.type* %.tmp5915)
-%type.5917 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp5916, %m1861$.Type.type** %type.5917
-%.tmp5918 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.5890
-%.tmp5919 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5918)
-%prev_id.5920 = alloca i8*
-store i8* %.tmp5919, i8** %prev_id.5920
-%.tmp5921 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5922 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.5890
-call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp5921, %m1861$.AssignableInfo.type* %.tmp5922)
-%.tmp5923 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5924 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.5890
-%.tmp5925 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5924, i32 0, i32 3
-%.tmp5926 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5925
-%.tmp5927 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp5923, %m1861$.Type.type* %.tmp5926)
-%from_type.5928 = alloca i8*
-store i8* %.tmp5927, i8** %from_type.5928
-%.tmp5929 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5930 = load %m1861$.Type.type*, %m1861$.Type.type** %type.5917
-%.tmp5931 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp5929, %m1861$.Type.type* %.tmp5930)
-%to_type.5932 = alloca i8*
-store i8* %.tmp5931, i8** %to_type.5932
-%.tmp5934 = getelementptr [8 x i8], [8 x i8]*@.str5933, i32 0, i32 0
-%cast_fn.5935 = alloca i8*
-store i8* %.tmp5934, i8** %cast_fn.5935
-%.tmp5936 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.5890
-%.tmp5937 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5936, i32 0, i32 3
-%.tmp5938 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp5937
-%.tmp5939 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5938, i32 0, i32 0
-%.tmp5940 = load i8*, i8** %.tmp5939
-%.tmp5942 = getelementptr [4 x i8], [4 x i8]*@.str5941, i32 0, i32 0
-%.tmp5943 = call i32(i8*,i8*) @strcmp(i8* %.tmp5940, i8* %.tmp5942)
-%.tmp5944 = icmp ne i32 %.tmp5943, 0
-%.tmp5945 = load %m1861$.Type.type*, %m1861$.Type.type** %type.5917
-%.tmp5946 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp5945, i32 0, i32 0
-%.tmp5947 = load i8*, i8** %.tmp5946
-%.tmp5949 = getelementptr [4 x i8], [4 x i8]*@.str5948, i32 0, i32 0
-%.tmp5950 = call i32(i8*,i8*) @strcmp(i8* %.tmp5947, i8* %.tmp5949)
-%.tmp5951 = icmp ne i32 %.tmp5950, 0
-%.tmp5952 = and i1 %.tmp5944, %.tmp5951
-br i1 %.tmp5952, label %.if.true.5953, label %.if.false.5953
-.if.true.5953:
-%.tmp5954 = load i8*, i8** %from_type.5928
-%.tmp5955 = getelementptr i8, i8* %.tmp5954, i32 0
-%.tmp5956 = load i8, i8* %.tmp5955
-%.tmp5957 = icmp eq i8 %.tmp5956, 105
-%.tmp5958 = load i8*, i8** %to_type.5932
-%.tmp5959 = getelementptr i8, i8* %.tmp5958, i32 0
-%.tmp5960 = load i8, i8* %.tmp5959
-%.tmp5961 = icmp eq i8 %.tmp5960, 105
-%.tmp5962 = and i1 %.tmp5957, %.tmp5961
-br i1 %.tmp5962, label %.if.true.5963, label %.if.false.5963
-.if.true.5963:
-%from_size.5964 = alloca i32
-store i32 0, i32* %from_size.5964
-%to_size.5965 = alloca i32
-store i32 0, i32* %to_size.5965
-%.tmp5966 = load i8*, i8** %from_type.5928
-%.tmp5968 = getelementptr [4 x i8], [4 x i8]*@.str5967, i32 0, i32 0
-%.tmp5969 = getelementptr i32, i32* %from_size.5964, i32 0
-%.tmp5970 = call i32(i8*,i8*,...) @sscanf(i8* %.tmp5966, i8* %.tmp5968, i32* %.tmp5969)
-%.tmp5971 = load i8*, i8** %to_type.5932
-%.tmp5973 = getelementptr [4 x i8], [4 x i8]*@.str5972, i32 0, i32 0
-%.tmp5974 = getelementptr i32, i32* %to_size.5965, i32 0
-%.tmp5975 = call i32(i8*,i8*,...) @sscanf(i8* %.tmp5971, i8* %.tmp5973, i32* %.tmp5974)
-%.tmp5976 = load i32, i32* %from_size.5964
-%.tmp5977 = load i32, i32* %to_size.5965
-%.tmp5978 = icmp slt i32 %.tmp5976, %.tmp5977
-br i1 %.tmp5978, label %.if.true.5979, label %.if.false.5979
-.if.true.5979:
-%.tmp5981 = getelementptr [5 x i8], [5 x i8]*@.str5980, i32 0, i32 0
-store i8* %.tmp5981, i8** %cast_fn.5935
-br label %.if.end.5979
-.if.false.5979:
-%.tmp5983 = getelementptr [6 x i8], [6 x i8]*@.str5982, i32 0, i32 0
-store i8* %.tmp5983, i8** %cast_fn.5935
-br label %.if.end.5979
-.if.end.5979:
-br label %.if.end.5963
-.if.false.5963:
-br label %.if.end.5963
-.if.end.5963:
-br label %.if.end.5953
-.if.false.5953:
-br label %.if.end.5953
-.if.end.5953:
-%.tmp5984 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp5985 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp5984, i32 0, i32 1
-%.tmp5986 = load %m0$.File.type*, %m0$.File.type** %.tmp5985
-%.tmp5988 = getelementptr [21 x i8], [21 x i8]*@.str5987, i32 0, i32 0
-%.tmp5989 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.5890
-%.tmp5990 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp5989)
-%.tmp5991 = load i8*, i8** %cast_fn.5935
-%.tmp5992 = load i8*, i8** %from_type.5928
-%.tmp5993 = load i8*, i8** %prev_id.5920
-%.tmp5994 = load i8*, i8** %to_type.5932
-%.tmp5995 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp5986, i8* %.tmp5988, i8* %.tmp5990, i8* %.tmp5991, i8* %.tmp5992, i8* %.tmp5993, i8* %.tmp5994)
-%.tmp5996 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.5890
-%.tmp5997 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp5996, i32 0, i32 3
-%.tmp5998 = load %m1861$.Type.type*, %m1861$.Type.type** %type.5917
-store %m1861$.Type.type* %.tmp5998, %m1861$.Type.type** %.tmp5997
-br label %.if.end.5904
-.if.false.5904:
-br label %.if.end.5904
-.if.end.5904:
-%.tmp5999 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.5890
-ret %m1861$.AssignableInfo.type* %.tmp5999
+%.tmp6048 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
+%.tmp6049 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6048, i32 0, i32 6
+%.tmp6050 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6049
+%.tmp6052 = getelementptr [16 x i8], [16 x i8]*@.str6051, i32 0, i32 0
+%.tmp6053 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp6050, i8* %.tmp6052)
+%assignable_start.6054 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp6053, %m307$.Node.type** %assignable_start.6054
+%.tmp6055 = load %m307$.Node.type*, %m307$.Node.type** %assignable_start.6054
+%.tmp6056 = call %m1988$.SYStack.type*(%m307$.Node.type*) @m1988$sy_algorithm.m1988$.SYStack.typep.m307$.Node.typep(%m307$.Node.type* %.tmp6055)
+%operator_stack.6057 = alloca %m1988$.SYStack.type*
+store %m1988$.SYStack.type* %.tmp6056, %m1988$.SYStack.type** %operator_stack.6057
+%.tmp6058 = getelementptr %m1861$.StackHead.type, %m1861$.StackHead.type* null, i32 1
+%.tmp6059 = ptrtoint %m1861$.StackHead.type* %.tmp6058 to i32
+%.tmp6060 = call i8*(i32) @malloc(i32 %.tmp6059)
+%.tmp6061 = bitcast i8* %.tmp6060 to %m1861$.StackHead.type*
+%stack.6062 = alloca %m1861$.StackHead.type*
+store %m1861$.StackHead.type* %.tmp6061, %m1861$.StackHead.type** %stack.6062
+%.tmp6063 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack.6062
+%.tmp6064 = getelementptr %m1861$.StackHead.type, %m1861$.StackHead.type* %.tmp6063, i32 0, i32 0
+%.tmp6065 = load %m1988$.SYStack.type*, %m1988$.SYStack.type** %operator_stack.6057
+store %m1988$.SYStack.type* %.tmp6065, %m1988$.SYStack.type** %.tmp6064
+%.tmp6066 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6067 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack.6062
+%.tmp6068 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m1861$.StackHead.type*) @m1861$compile_assignable_stack.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m1861$.StackHead.typep(%m1861$.CompilerCtx.type* %.tmp6066, %m1861$.StackHead.type* %.tmp6067)
+%info.6069 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp6068, %m1861$.AssignableInfo.type** %info.6069
+%.tmp6070 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6069
+%.tmp6071 = icmp eq %m1861$.AssignableInfo.type* %.tmp6070, null
+br i1 %.tmp6071, label %.if.true.6072, label %.if.false.6072
+.if.true.6072:
+%.tmp6073 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6069
+ret %m1861$.AssignableInfo.type* %.tmp6073
+br label %.if.end.6072
+.if.false.6072:
+br label %.if.end.6072
+.if.end.6072:
+%.tmp6074 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
+%.tmp6075 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6074, i32 0, i32 6
+%.tmp6076 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6075
+%.tmp6078 = getelementptr [5 x i8], [5 x i8]*@.str6077, i32 0, i32 0
+%.tmp6079 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp6076, i8* %.tmp6078)
+%cast.6080 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp6079, %m307$.Node.type** %cast.6080
+%.tmp6081 = load %m307$.Node.type*, %m307$.Node.type** %cast.6080
+%.tmp6082 = icmp ne %m307$.Node.type* %.tmp6081, null
+br i1 %.tmp6082, label %.if.true.6083, label %.if.false.6083
+.if.true.6083:
+%.tmp6084 = load %m307$.Node.type*, %m307$.Node.type** %cast.6080
+%.tmp6085 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6084, i32 0, i32 6
+%.tmp6086 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6085
+%.tmp6088 = getelementptr [5 x i8], [5 x i8]*@.str6087, i32 0, i32 0
+%.tmp6089 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp6086, i8* %.tmp6088)
+%cast_type.6090 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp6089, %m307$.Node.type** %cast_type.6090
+%.tmp6091 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6092 = load %m307$.Node.type*, %m307$.Node.type** %cast_type.6090
+%.tmp6093 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6092, i32 0, i32 6
+%.tmp6094 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6093
+%.tmp6095 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$node_to_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp6091, %m307$.Node.type* %.tmp6094)
+%type.6096 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp6095, %m1861$.Type.type** %type.6096
+%.tmp6097 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6069
+%.tmp6098 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6097)
+%prev_id.6099 = alloca i8*
+store i8* %.tmp6098, i8** %prev_id.6099
+%.tmp6100 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6101 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6069
+call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp6100, %m1861$.AssignableInfo.type* %.tmp6101)
+%.tmp6102 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6103 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6069
+%.tmp6104 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6103, i32 0, i32 3
+%.tmp6105 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6104
+%.tmp6106 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp6102, %m1861$.Type.type* %.tmp6105)
+%from_type.6107 = alloca i8*
+store i8* %.tmp6106, i8** %from_type.6107
+%.tmp6108 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6109 = load %m1861$.Type.type*, %m1861$.Type.type** %type.6096
+%.tmp6110 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp6108, %m1861$.Type.type* %.tmp6109)
+%to_type.6111 = alloca i8*
+store i8* %.tmp6110, i8** %to_type.6111
+%.tmp6113 = getelementptr [8 x i8], [8 x i8]*@.str6112, i32 0, i32 0
+%cast_fn.6114 = alloca i8*
+store i8* %.tmp6113, i8** %cast_fn.6114
+%.tmp6115 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6069
+%.tmp6116 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6115, i32 0, i32 3
+%.tmp6117 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6116
+%.tmp6118 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6117, i32 0, i32 0
+%.tmp6119 = load i8*, i8** %.tmp6118
+%.tmp6121 = getelementptr [4 x i8], [4 x i8]*@.str6120, i32 0, i32 0
+%.tmp6122 = call i32(i8*,i8*) @strcmp(i8* %.tmp6119, i8* %.tmp6121)
+%.tmp6123 = icmp ne i32 %.tmp6122, 0
+%.tmp6124 = load %m1861$.Type.type*, %m1861$.Type.type** %type.6096
+%.tmp6125 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6124, i32 0, i32 0
+%.tmp6126 = load i8*, i8** %.tmp6125
+%.tmp6128 = getelementptr [4 x i8], [4 x i8]*@.str6127, i32 0, i32 0
+%.tmp6129 = call i32(i8*,i8*) @strcmp(i8* %.tmp6126, i8* %.tmp6128)
+%.tmp6130 = icmp ne i32 %.tmp6129, 0
+%.tmp6131 = and i1 %.tmp6123, %.tmp6130
+br i1 %.tmp6131, label %.if.true.6132, label %.if.false.6132
+.if.true.6132:
+%.tmp6133 = load i8*, i8** %from_type.6107
+%.tmp6134 = getelementptr i8, i8* %.tmp6133, i32 0
+%.tmp6135 = load i8, i8* %.tmp6134
+%.tmp6136 = icmp eq i8 %.tmp6135, 105
+%.tmp6137 = load i8*, i8** %to_type.6111
+%.tmp6138 = getelementptr i8, i8* %.tmp6137, i32 0
+%.tmp6139 = load i8, i8* %.tmp6138
+%.tmp6140 = icmp eq i8 %.tmp6139, 105
+%.tmp6141 = and i1 %.tmp6136, %.tmp6140
+br i1 %.tmp6141, label %.if.true.6142, label %.if.false.6142
+.if.true.6142:
+%from_size.6143 = alloca i32
+store i32 0, i32* %from_size.6143
+%to_size.6144 = alloca i32
+store i32 0, i32* %to_size.6144
+%.tmp6145 = load i8*, i8** %from_type.6107
+%.tmp6147 = getelementptr [4 x i8], [4 x i8]*@.str6146, i32 0, i32 0
+%.tmp6148 = getelementptr i32, i32* %from_size.6143, i32 0
+%.tmp6149 = call i32(i8*,i8*,...) @sscanf(i8* %.tmp6145, i8* %.tmp6147, i32* %.tmp6148)
+%.tmp6150 = load i8*, i8** %to_type.6111
+%.tmp6152 = getelementptr [4 x i8], [4 x i8]*@.str6151, i32 0, i32 0
+%.tmp6153 = getelementptr i32, i32* %to_size.6144, i32 0
+%.tmp6154 = call i32(i8*,i8*,...) @sscanf(i8* %.tmp6150, i8* %.tmp6152, i32* %.tmp6153)
+%.tmp6155 = load i32, i32* %from_size.6143
+%.tmp6156 = load i32, i32* %to_size.6144
+%.tmp6157 = icmp slt i32 %.tmp6155, %.tmp6156
+br i1 %.tmp6157, label %.if.true.6158, label %.if.false.6158
+.if.true.6158:
+%.tmp6160 = getelementptr [5 x i8], [5 x i8]*@.str6159, i32 0, i32 0
+store i8* %.tmp6160, i8** %cast_fn.6114
+br label %.if.end.6158
+.if.false.6158:
+%.tmp6162 = getelementptr [6 x i8], [6 x i8]*@.str6161, i32 0, i32 0
+store i8* %.tmp6162, i8** %cast_fn.6114
+br label %.if.end.6158
+.if.end.6158:
+br label %.if.end.6142
+.if.false.6142:
+br label %.if.end.6142
+.if.end.6142:
+br label %.if.end.6132
+.if.false.6132:
+br label %.if.end.6132
+.if.end.6132:
+%.tmp6163 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6164 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp6163, i32 0, i32 1
+%.tmp6165 = load %m0$.File.type*, %m0$.File.type** %.tmp6164
+%.tmp6167 = getelementptr [21 x i8], [21 x i8]*@.str6166, i32 0, i32 0
+%.tmp6168 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6069
+%.tmp6169 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6168)
+%.tmp6170 = load i8*, i8** %cast_fn.6114
+%.tmp6171 = load i8*, i8** %from_type.6107
+%.tmp6172 = load i8*, i8** %prev_id.6099
+%.tmp6173 = load i8*, i8** %to_type.6111
+%.tmp6174 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp6165, i8* %.tmp6167, i8* %.tmp6169, i8* %.tmp6170, i8* %.tmp6171, i8* %.tmp6172, i8* %.tmp6173)
+%.tmp6175 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6069
+%.tmp6176 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6175, i32 0, i32 3
+%.tmp6177 = load %m1861$.Type.type*, %m1861$.Type.type** %type.6096
+store %m1861$.Type.type* %.tmp6177, %m1861$.Type.type** %.tmp6176
+br label %.if.end.6083
+.if.false.6083:
+br label %.if.end.6083
+.if.end.6083:
+%.tmp6178 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6069
+ret %m1861$.AssignableInfo.type* %.tmp6178
 }
 define %m1861$.AssignableInfo.type* @m1861$compile_assignable_stack.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m1861$.StackHead.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.StackHead.type* %.stack.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %stack = alloca %m1861$.StackHead.type*
 store %m1861$.StackHead.type* %.stack.arg, %m1861$.StackHead.type** %stack
-%.tmp6000 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack
-%.tmp6001 = getelementptr %m1861$.StackHead.type, %m1861$.StackHead.type* %.tmp6000, i32 0, i32 0
-%.tmp6002 = load %m1988$.SYStack.type*, %m1988$.SYStack.type** %.tmp6001
-%.tmp6003 = getelementptr %m1988$.SYStack.type, %m1988$.SYStack.type* %.tmp6002, i32 0, i32 0
-%.tmp6004 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6003
-%.tmp6005 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6004, i32 0, i32 0
-%.tmp6006 = load i8*, i8** %.tmp6005
-%.tmp6008 = getelementptr [16 x i8], [16 x i8]*@.str6007, i32 0, i32 0
-%.tmp6009 = call i32(i8*,i8*) @strcmp(i8* %.tmp6006, i8* %.tmp6008)
-%.tmp6010 = icmp eq i32 %.tmp6009, 0
-br i1 %.tmp6010, label %.if.true.6011, label %.if.false.6011
-.if.true.6011:
-%.tmp6012 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6013 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack
-%.tmp6014 = getelementptr %m1861$.StackHead.type, %m1861$.StackHead.type* %.tmp6013, i32 0, i32 0
-%.tmp6015 = load %m1988$.SYStack.type*, %m1988$.SYStack.type** %.tmp6014
-%.tmp6016 = getelementptr %m1988$.SYStack.type, %m1988$.SYStack.type* %.tmp6015, i32 0, i32 0
-%.tmp6017 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6016
-%.tmp6018 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_mono_assignable.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp6012, %m307$.Node.type* %.tmp6017)
-ret %m1861$.AssignableInfo.type* %.tmp6018
-br label %.if.end.6011
-.if.false.6011:
-br label %.if.end.6011
-.if.end.6011:
-%.tmp6019 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack
-%.tmp6020 = getelementptr %m1861$.StackHead.type, %m1861$.StackHead.type* %.tmp6019, i32 0, i32 0
-%.tmp6021 = load %m1988$.SYStack.type*, %m1988$.SYStack.type** %.tmp6020
-%.tmp6022 = getelementptr %m1988$.SYStack.type, %m1988$.SYStack.type* %.tmp6021, i32 0, i32 0
-%.tmp6023 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6022
-%.tmp6024 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6023, i32 0, i32 6
-%.tmp6025 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6024
-%operator.6026 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp6025, %m307$.Node.type** %operator.6026
-%.tmp6027 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack
-%.tmp6028 = getelementptr %m1861$.StackHead.type, %m1861$.StackHead.type* %.tmp6027, i32 0, i32 0
-%.tmp6029 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack
-%.tmp6030 = getelementptr %m1861$.StackHead.type, %m1861$.StackHead.type* %.tmp6029, i32 0, i32 0
-%.tmp6031 = load %m1988$.SYStack.type*, %m1988$.SYStack.type** %.tmp6030
-%.tmp6032 = getelementptr %m1988$.SYStack.type, %m1988$.SYStack.type* %.tmp6031, i32 0, i32 1
-%.tmp6033 = load %m1988$.SYStack.type*, %m1988$.SYStack.type** %.tmp6032
-store %m1988$.SYStack.type* %.tmp6033, %m1988$.SYStack.type** %.tmp6028
-%.tmp6034 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6035 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack
-%.tmp6036 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m1861$.StackHead.type*) @m1861$compile_assignable_stack.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m1861$.StackHead.typep(%m1861$.CompilerCtx.type* %.tmp6034, %m1861$.StackHead.type* %.tmp6035)
-%A.6037 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp6036, %m1861$.AssignableInfo.type** %A.6037
-%.tmp6038 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %A.6037
-%.tmp6039 = icmp eq %m1861$.AssignableInfo.type* %.tmp6038, null
-br i1 %.tmp6039, label %.if.true.6040, label %.if.false.6040
-.if.true.6040:
-%.tmp6041 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %A.6037
-ret %m1861$.AssignableInfo.type* %.tmp6041
-br label %.if.end.6040
-.if.false.6040:
-br label %.if.end.6040
-.if.end.6040:
-%.tmp6042 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack
-%.tmp6043 = getelementptr %m1861$.StackHead.type, %m1861$.StackHead.type* %.tmp6042, i32 0, i32 0
-%.tmp6044 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack
-%.tmp6045 = getelementptr %m1861$.StackHead.type, %m1861$.StackHead.type* %.tmp6044, i32 0, i32 0
-%.tmp6046 = load %m1988$.SYStack.type*, %m1988$.SYStack.type** %.tmp6045
-%.tmp6047 = getelementptr %m1988$.SYStack.type, %m1988$.SYStack.type* %.tmp6046, i32 0, i32 1
-%.tmp6048 = load %m1988$.SYStack.type*, %m1988$.SYStack.type** %.tmp6047
-store %m1988$.SYStack.type* %.tmp6048, %m1988$.SYStack.type** %.tmp6043
-%.tmp6049 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6050 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack
-%.tmp6051 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m1861$.StackHead.type*) @m1861$compile_assignable_stack.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m1861$.StackHead.typep(%m1861$.CompilerCtx.type* %.tmp6049, %m1861$.StackHead.type* %.tmp6050)
-%B.6052 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp6051, %m1861$.AssignableInfo.type** %B.6052
-%.tmp6053 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %B.6052
-%.tmp6054 = icmp eq %m1861$.AssignableInfo.type* %.tmp6053, null
-br i1 %.tmp6054, label %.if.true.6055, label %.if.false.6055
-.if.true.6055:
-%.tmp6056 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %B.6052
-ret %m1861$.AssignableInfo.type* %.tmp6056
-br label %.if.end.6055
-.if.false.6055:
-br label %.if.end.6055
-.if.end.6055:
-%.tmp6057 = bitcast ptr null to %m307$.Node.type*
-%.tmp6058 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp6057)
-%op_info.6059 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp6058, %m1861$.AssignableInfo.type** %op_info.6059
-%.tmp6060 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %op_info.6059
-%.tmp6061 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6060, i32 0, i32 3
-%.tmp6062 = load %m307$.Node.type*, %m307$.Node.type** %operator.6026
-%.tmp6063 = call %m1861$.Type.type*(%m307$.Node.type*) @m1861$operator_type.m1861$.Type.typep.m307$.Node.typep(%m307$.Node.type* %.tmp6062)
-store %m1861$.Type.type* %.tmp6063, %m1861$.Type.type** %.tmp6061
-%.tmp6064 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6065 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %op_info.6059
-call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp6064, %m1861$.AssignableInfo.type* %.tmp6065)
-%.tmp6066 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6067 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp6066, i32 0, i32 1
-%.tmp6068 = load %m0$.File.type*, %m0$.File.type** %.tmp6067
-%.tmp6070 = getelementptr [19 x i8], [19 x i8]*@.str6069, i32 0, i32 0
-%.tmp6071 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %op_info.6059
-%.tmp6072 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6071)
-%.tmp6073 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6074 = load %m307$.Node.type*, %m307$.Node.type** %operator.6026
-%.tmp6075 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$operator_op.cp.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp6073, %m307$.Node.type* %.tmp6074)
-%.tmp6076 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6077 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %A.6037
-%.tmp6078 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6077, i32 0, i32 3
-%.tmp6079 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6078
-%.tmp6080 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp6076, %m1861$.Type.type* %.tmp6079)
-%.tmp6081 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %A.6037
-%.tmp6082 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6081)
-%.tmp6083 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %B.6052
-%.tmp6084 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6083)
-%.tmp6085 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp6068, i8* %.tmp6070, i8* %.tmp6072, i8* %.tmp6075, i8* %.tmp6080, i8* %.tmp6082, i8* %.tmp6084)
-%.tmp6086 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %op_info.6059
-ret %m1861$.AssignableInfo.type* %.tmp6086
+%.tmp6179 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack
+%.tmp6180 = getelementptr %m1861$.StackHead.type, %m1861$.StackHead.type* %.tmp6179, i32 0, i32 0
+%.tmp6181 = load %m1988$.SYStack.type*, %m1988$.SYStack.type** %.tmp6180
+%.tmp6182 = getelementptr %m1988$.SYStack.type, %m1988$.SYStack.type* %.tmp6181, i32 0, i32 0
+%.tmp6183 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6182
+%.tmp6184 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6183, i32 0, i32 0
+%.tmp6185 = load i8*, i8** %.tmp6184
+%.tmp6187 = getelementptr [16 x i8], [16 x i8]*@.str6186, i32 0, i32 0
+%.tmp6188 = call i32(i8*,i8*) @strcmp(i8* %.tmp6185, i8* %.tmp6187)
+%.tmp6189 = icmp eq i32 %.tmp6188, 0
+br i1 %.tmp6189, label %.if.true.6190, label %.if.false.6190
+.if.true.6190:
+%.tmp6191 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6192 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack
+%.tmp6193 = getelementptr %m1861$.StackHead.type, %m1861$.StackHead.type* %.tmp6192, i32 0, i32 0
+%.tmp6194 = load %m1988$.SYStack.type*, %m1988$.SYStack.type** %.tmp6193
+%.tmp6195 = getelementptr %m1988$.SYStack.type, %m1988$.SYStack.type* %.tmp6194, i32 0, i32 0
+%.tmp6196 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6195
+%.tmp6197 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_mono_assignable.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp6191, %m307$.Node.type* %.tmp6196)
+ret %m1861$.AssignableInfo.type* %.tmp6197
+br label %.if.end.6190
+.if.false.6190:
+br label %.if.end.6190
+.if.end.6190:
+%.tmp6198 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack
+%.tmp6199 = getelementptr %m1861$.StackHead.type, %m1861$.StackHead.type* %.tmp6198, i32 0, i32 0
+%.tmp6200 = load %m1988$.SYStack.type*, %m1988$.SYStack.type** %.tmp6199
+%.tmp6201 = getelementptr %m1988$.SYStack.type, %m1988$.SYStack.type* %.tmp6200, i32 0, i32 0
+%.tmp6202 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6201
+%.tmp6203 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6202, i32 0, i32 6
+%.tmp6204 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6203
+%operator.6205 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp6204, %m307$.Node.type** %operator.6205
+%.tmp6206 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack
+%.tmp6207 = getelementptr %m1861$.StackHead.type, %m1861$.StackHead.type* %.tmp6206, i32 0, i32 0
+%.tmp6208 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack
+%.tmp6209 = getelementptr %m1861$.StackHead.type, %m1861$.StackHead.type* %.tmp6208, i32 0, i32 0
+%.tmp6210 = load %m1988$.SYStack.type*, %m1988$.SYStack.type** %.tmp6209
+%.tmp6211 = getelementptr %m1988$.SYStack.type, %m1988$.SYStack.type* %.tmp6210, i32 0, i32 1
+%.tmp6212 = load %m1988$.SYStack.type*, %m1988$.SYStack.type** %.tmp6211
+store %m1988$.SYStack.type* %.tmp6212, %m1988$.SYStack.type** %.tmp6207
+%.tmp6213 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6214 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack
+%.tmp6215 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m1861$.StackHead.type*) @m1861$compile_assignable_stack.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m1861$.StackHead.typep(%m1861$.CompilerCtx.type* %.tmp6213, %m1861$.StackHead.type* %.tmp6214)
+%A.6216 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp6215, %m1861$.AssignableInfo.type** %A.6216
+%.tmp6217 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %A.6216
+%.tmp6218 = icmp eq %m1861$.AssignableInfo.type* %.tmp6217, null
+br i1 %.tmp6218, label %.if.true.6219, label %.if.false.6219
+.if.true.6219:
+%.tmp6220 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %A.6216
+ret %m1861$.AssignableInfo.type* %.tmp6220
+br label %.if.end.6219
+.if.false.6219:
+br label %.if.end.6219
+.if.end.6219:
+%.tmp6221 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack
+%.tmp6222 = getelementptr %m1861$.StackHead.type, %m1861$.StackHead.type* %.tmp6221, i32 0, i32 0
+%.tmp6223 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack
+%.tmp6224 = getelementptr %m1861$.StackHead.type, %m1861$.StackHead.type* %.tmp6223, i32 0, i32 0
+%.tmp6225 = load %m1988$.SYStack.type*, %m1988$.SYStack.type** %.tmp6224
+%.tmp6226 = getelementptr %m1988$.SYStack.type, %m1988$.SYStack.type* %.tmp6225, i32 0, i32 1
+%.tmp6227 = load %m1988$.SYStack.type*, %m1988$.SYStack.type** %.tmp6226
+store %m1988$.SYStack.type* %.tmp6227, %m1988$.SYStack.type** %.tmp6222
+%.tmp6228 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6229 = load %m1861$.StackHead.type*, %m1861$.StackHead.type** %stack
+%.tmp6230 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m1861$.StackHead.type*) @m1861$compile_assignable_stack.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m1861$.StackHead.typep(%m1861$.CompilerCtx.type* %.tmp6228, %m1861$.StackHead.type* %.tmp6229)
+%B.6231 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp6230, %m1861$.AssignableInfo.type** %B.6231
+%.tmp6232 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %B.6231
+%.tmp6233 = icmp eq %m1861$.AssignableInfo.type* %.tmp6232, null
+br i1 %.tmp6233, label %.if.true.6234, label %.if.false.6234
+.if.true.6234:
+%.tmp6235 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %B.6231
+ret %m1861$.AssignableInfo.type* %.tmp6235
+br label %.if.end.6234
+.if.false.6234:
+br label %.if.end.6234
+.if.end.6234:
+%.tmp6236 = bitcast ptr null to %m307$.Node.type*
+%.tmp6237 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp6236)
+%op_info.6238 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp6237, %m1861$.AssignableInfo.type** %op_info.6238
+%.tmp6239 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %op_info.6238
+%.tmp6240 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6239, i32 0, i32 3
+%.tmp6241 = load %m307$.Node.type*, %m307$.Node.type** %operator.6205
+%.tmp6242 = call %m1861$.Type.type*(%m307$.Node.type*) @m1861$operator_type.m1861$.Type.typep.m307$.Node.typep(%m307$.Node.type* %.tmp6241)
+store %m1861$.Type.type* %.tmp6242, %m1861$.Type.type** %.tmp6240
+%.tmp6243 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6244 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %op_info.6238
+call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp6243, %m1861$.AssignableInfo.type* %.tmp6244)
+%.tmp6245 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6246 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp6245, i32 0, i32 1
+%.tmp6247 = load %m0$.File.type*, %m0$.File.type** %.tmp6246
+%.tmp6249 = getelementptr [19 x i8], [19 x i8]*@.str6248, i32 0, i32 0
+%.tmp6250 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %op_info.6238
+%.tmp6251 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6250)
+%.tmp6252 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6253 = load %m307$.Node.type*, %m307$.Node.type** %operator.6205
+%.tmp6254 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$operator_op.cp.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp6252, %m307$.Node.type* %.tmp6253)
+%.tmp6255 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6256 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %A.6216
+%.tmp6257 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6256, i32 0, i32 3
+%.tmp6258 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6257
+%.tmp6259 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp6255, %m1861$.Type.type* %.tmp6258)
+%.tmp6260 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %A.6216
+%.tmp6261 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6260)
+%.tmp6262 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %B.6231
+%.tmp6263 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6262)
+%.tmp6264 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp6247, i8* %.tmp6249, i8* %.tmp6251, i8* %.tmp6254, i8* %.tmp6259, i8* %.tmp6261, i8* %.tmp6263)
+%.tmp6265 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %op_info.6238
+ret %m1861$.AssignableInfo.type* %.tmp6265
 }
 define i8* @m1861$operator_op.cp.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.op.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %op = alloca %m307$.Node.type*
 store %m307$.Node.type* %.op.arg, %m307$.Node.type** %op
-%.tmp6087 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6088 = icmp eq %m307$.Node.type* %.tmp6087, null
-br i1 %.tmp6088, label %.if.true.6089, label %.if.false.6089
-.if.true.6089:
-%.tmp6090 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6091 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6093 = getelementptr [31 x i8], [31 x i8]*@.str6092, i32 0, i32 0
-%.tmp6094 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp6090, %m307$.Node.type* %.tmp6091, i8* %.tmp6093)
-%.tmp6095 = call i32(i8*,...) @printf(i8* %.tmp6094)
-br label %.if.end.6089
-.if.false.6089:
-br label %.if.end.6089
-.if.end.6089:
-%.tmp6096 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6097 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6096, i32 0, i32 1
-%.tmp6098 = load i8*, i8** %.tmp6097
-%.tmp6100 = getelementptr [2 x i8], [2 x i8]*@.str6099, i32 0, i32 0
-%.tmp6101 = call i32(i8*,i8*) @strcmp(i8* %.tmp6098, i8* %.tmp6100)
-%.tmp6102 = icmp eq i32 %.tmp6101, 0
-br i1 %.tmp6102, label %.if.true.6103, label %.if.false.6103
-.if.true.6103:
-%.tmp6105 = getelementptr [4 x i8], [4 x i8]*@.str6104, i32 0, i32 0
-ret i8* %.tmp6105
-br label %.if.end.6103
-.if.false.6103:
-%.tmp6106 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6107 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6106, i32 0, i32 1
-%.tmp6108 = load i8*, i8** %.tmp6107
-%.tmp6110 = getelementptr [2 x i8], [2 x i8]*@.str6109, i32 0, i32 0
-%.tmp6111 = call i32(i8*,i8*) @strcmp(i8* %.tmp6108, i8* %.tmp6110)
-%.tmp6112 = icmp eq i32 %.tmp6111, 0
-br i1 %.tmp6112, label %.if.true.6113, label %.if.false.6113
-.if.true.6113:
-%.tmp6115 = getelementptr [4 x i8], [4 x i8]*@.str6114, i32 0, i32 0
-ret i8* %.tmp6115
-br label %.if.end.6113
-.if.false.6113:
-%.tmp6116 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6117 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6116, i32 0, i32 1
-%.tmp6118 = load i8*, i8** %.tmp6117
-%.tmp6120 = getelementptr [2 x i8], [2 x i8]*@.str6119, i32 0, i32 0
-%.tmp6121 = call i32(i8*,i8*) @strcmp(i8* %.tmp6118, i8* %.tmp6120)
-%.tmp6122 = icmp eq i32 %.tmp6121, 0
-br i1 %.tmp6122, label %.if.true.6123, label %.if.false.6123
-.if.true.6123:
-%.tmp6125 = getelementptr [4 x i8], [4 x i8]*@.str6124, i32 0, i32 0
-ret i8* %.tmp6125
-br label %.if.end.6123
-.if.false.6123:
-%.tmp6126 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6127 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6126, i32 0, i32 1
-%.tmp6128 = load i8*, i8** %.tmp6127
-%.tmp6130 = getelementptr [2 x i8], [2 x i8]*@.str6129, i32 0, i32 0
-%.tmp6131 = call i32(i8*,i8*) @strcmp(i8* %.tmp6128, i8* %.tmp6130)
-%.tmp6132 = icmp eq i32 %.tmp6131, 0
-br i1 %.tmp6132, label %.if.true.6133, label %.if.false.6133
-.if.true.6133:
-%.tmp6135 = getelementptr [5 x i8], [5 x i8]*@.str6134, i32 0, i32 0
-ret i8* %.tmp6135
-br label %.if.end.6133
-.if.false.6133:
-%.tmp6136 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6137 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6136, i32 0, i32 1
-%.tmp6138 = load i8*, i8** %.tmp6137
-%.tmp6140 = getelementptr [3 x i8], [3 x i8]*@.str6139, i32 0, i32 0
-%.tmp6141 = call i32(i8*,i8*) @strcmp(i8* %.tmp6138, i8* %.tmp6140)
-%.tmp6142 = icmp eq i32 %.tmp6141, 0
-br i1 %.tmp6142, label %.if.true.6143, label %.if.false.6143
-.if.true.6143:
-%.tmp6145 = getelementptr [8 x i8], [8 x i8]*@.str6144, i32 0, i32 0
-ret i8* %.tmp6145
-br label %.if.end.6143
-.if.false.6143:
-%.tmp6146 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6147 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6146, i32 0, i32 1
-%.tmp6148 = load i8*, i8** %.tmp6147
-%.tmp6150 = getelementptr [3 x i8], [3 x i8]*@.str6149, i32 0, i32 0
-%.tmp6151 = call i32(i8*,i8*) @strcmp(i8* %.tmp6148, i8* %.tmp6150)
-%.tmp6152 = icmp eq i32 %.tmp6151, 0
-br i1 %.tmp6152, label %.if.true.6153, label %.if.false.6153
-.if.true.6153:
-%.tmp6155 = getelementptr [8 x i8], [8 x i8]*@.str6154, i32 0, i32 0
-ret i8* %.tmp6155
-br label %.if.end.6153
-.if.false.6153:
-%.tmp6156 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6157 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6156, i32 0, i32 1
-%.tmp6158 = load i8*, i8** %.tmp6157
-%.tmp6160 = getelementptr [2 x i8], [2 x i8]*@.str6159, i32 0, i32 0
-%.tmp6161 = call i32(i8*,i8*) @strcmp(i8* %.tmp6158, i8* %.tmp6160)
-%.tmp6162 = icmp eq i32 %.tmp6161, 0
-br i1 %.tmp6162, label %.if.true.6163, label %.if.false.6163
-.if.true.6163:
-%.tmp6165 = getelementptr [9 x i8], [9 x i8]*@.str6164, i32 0, i32 0
-ret i8* %.tmp6165
-br label %.if.end.6163
-.if.false.6163:
-%.tmp6166 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6167 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6166, i32 0, i32 1
-%.tmp6168 = load i8*, i8** %.tmp6167
-%.tmp6170 = getelementptr [2 x i8], [2 x i8]*@.str6169, i32 0, i32 0
-%.tmp6171 = call i32(i8*,i8*) @strcmp(i8* %.tmp6168, i8* %.tmp6170)
-%.tmp6172 = icmp eq i32 %.tmp6171, 0
-br i1 %.tmp6172, label %.if.true.6173, label %.if.false.6173
-.if.true.6173:
-%.tmp6175 = getelementptr [9 x i8], [9 x i8]*@.str6174, i32 0, i32 0
-ret i8* %.tmp6175
-br label %.if.end.6173
-.if.false.6173:
-%.tmp6176 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6177 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6176, i32 0, i32 1
-%.tmp6178 = load i8*, i8** %.tmp6177
-%.tmp6180 = getelementptr [2 x i8], [2 x i8]*@.str6179, i32 0, i32 0
-%.tmp6181 = call i32(i8*,i8*) @strcmp(i8* %.tmp6178, i8* %.tmp6180)
-%.tmp6182 = icmp eq i32 %.tmp6181, 0
-br i1 %.tmp6182, label %.if.true.6183, label %.if.false.6183
-.if.true.6183:
-%.tmp6185 = getelementptr [4 x i8], [4 x i8]*@.str6184, i32 0, i32 0
-ret i8* %.tmp6185
-br label %.if.end.6183
-.if.false.6183:
-%.tmp6186 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6187 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6186, i32 0, i32 1
-%.tmp6188 = load i8*, i8** %.tmp6187
-%.tmp6190 = getelementptr [2 x i8], [2 x i8]*@.str6189, i32 0, i32 0
-%.tmp6191 = call i32(i8*,i8*) @strcmp(i8* %.tmp6188, i8* %.tmp6190)
-%.tmp6192 = icmp eq i32 %.tmp6191, 0
-br i1 %.tmp6192, label %.if.true.6193, label %.if.false.6193
-.if.true.6193:
-%.tmp6195 = getelementptr [3 x i8], [3 x i8]*@.str6194, i32 0, i32 0
-ret i8* %.tmp6195
-br label %.if.end.6193
-.if.false.6193:
-%.tmp6196 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6197 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6196, i32 0, i32 1
-%.tmp6198 = load i8*, i8** %.tmp6197
-%.tmp6200 = getelementptr [3 x i8], [3 x i8]*@.str6199, i32 0, i32 0
-%.tmp6201 = call i32(i8*,i8*) @strcmp(i8* %.tmp6198, i8* %.tmp6200)
-%.tmp6202 = icmp eq i32 %.tmp6201, 0
-br i1 %.tmp6202, label %.if.true.6203, label %.if.false.6203
-.if.true.6203:
-%.tmp6205 = getelementptr [9 x i8], [9 x i8]*@.str6204, i32 0, i32 0
-ret i8* %.tmp6205
-br label %.if.end.6203
-.if.false.6203:
-%.tmp6206 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6207 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6206, i32 0, i32 1
-%.tmp6208 = load i8*, i8** %.tmp6207
-%.tmp6210 = getelementptr [3 x i8], [3 x i8]*@.str6209, i32 0, i32 0
-%.tmp6211 = call i32(i8*,i8*) @strcmp(i8* %.tmp6208, i8* %.tmp6210)
-%.tmp6212 = icmp eq i32 %.tmp6211, 0
-br i1 %.tmp6212, label %.if.true.6213, label %.if.false.6213
-.if.true.6213:
-%.tmp6215 = getelementptr [9 x i8], [9 x i8]*@.str6214, i32 0, i32 0
-ret i8* %.tmp6215
-br label %.if.end.6213
-.if.false.6213:
-%.tmp6216 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6217 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6219 = getelementptr [30 x i8], [30 x i8]*@.str6218, i32 0, i32 0
-%.tmp6220 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp6216, %m307$.Node.type* %.tmp6217, i8* %.tmp6219)
-%.tmp6221 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6222 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6221, i32 0, i32 1
-%.tmp6223 = load i8*, i8** %.tmp6222
-%.tmp6224 = call i32(i8*,...) @printf(i8* %.tmp6220, i8* %.tmp6223)
-br label %.if.end.6213
-.if.end.6213:
-br label %.if.end.6203
-.if.end.6203:
-br label %.if.end.6193
-.if.end.6193:
-br label %.if.end.6183
-.if.end.6183:
-br label %.if.end.6173
-.if.end.6173:
-br label %.if.end.6163
-.if.end.6163:
-br label %.if.end.6153
-.if.end.6153:
-br label %.if.end.6143
-.if.end.6143:
-br label %.if.end.6133
-.if.end.6133:
-br label %.if.end.6123
-.if.end.6123:
-br label %.if.end.6113
-.if.end.6113:
-br label %.if.end.6103
-.if.end.6103:
-%.tmp6226 = getelementptr [4 x i8], [4 x i8]*@.str6225, i32 0, i32 0
-ret i8* %.tmp6226
+%.tmp6266 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6267 = icmp eq %m307$.Node.type* %.tmp6266, null
+br i1 %.tmp6267, label %.if.true.6268, label %.if.false.6268
+.if.true.6268:
+%.tmp6269 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6270 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6272 = getelementptr [31 x i8], [31 x i8]*@.str6271, i32 0, i32 0
+%.tmp6273 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp6269, %m307$.Node.type* %.tmp6270, i8* %.tmp6272)
+%.tmp6274 = call i32(i8*,...) @printf(i8* %.tmp6273)
+br label %.if.end.6268
+.if.false.6268:
+br label %.if.end.6268
+.if.end.6268:
+%.tmp6275 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6276 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6275, i32 0, i32 1
+%.tmp6277 = load i8*, i8** %.tmp6276
+%.tmp6279 = getelementptr [2 x i8], [2 x i8]*@.str6278, i32 0, i32 0
+%.tmp6280 = call i32(i8*,i8*) @strcmp(i8* %.tmp6277, i8* %.tmp6279)
+%.tmp6281 = icmp eq i32 %.tmp6280, 0
+br i1 %.tmp6281, label %.if.true.6282, label %.if.false.6282
+.if.true.6282:
+%.tmp6284 = getelementptr [4 x i8], [4 x i8]*@.str6283, i32 0, i32 0
+ret i8* %.tmp6284
+br label %.if.end.6282
+.if.false.6282:
+%.tmp6285 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6286 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6285, i32 0, i32 1
+%.tmp6287 = load i8*, i8** %.tmp6286
+%.tmp6289 = getelementptr [2 x i8], [2 x i8]*@.str6288, i32 0, i32 0
+%.tmp6290 = call i32(i8*,i8*) @strcmp(i8* %.tmp6287, i8* %.tmp6289)
+%.tmp6291 = icmp eq i32 %.tmp6290, 0
+br i1 %.tmp6291, label %.if.true.6292, label %.if.false.6292
+.if.true.6292:
+%.tmp6294 = getelementptr [4 x i8], [4 x i8]*@.str6293, i32 0, i32 0
+ret i8* %.tmp6294
+br label %.if.end.6292
+.if.false.6292:
+%.tmp6295 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6296 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6295, i32 0, i32 1
+%.tmp6297 = load i8*, i8** %.tmp6296
+%.tmp6299 = getelementptr [2 x i8], [2 x i8]*@.str6298, i32 0, i32 0
+%.tmp6300 = call i32(i8*,i8*) @strcmp(i8* %.tmp6297, i8* %.tmp6299)
+%.tmp6301 = icmp eq i32 %.tmp6300, 0
+br i1 %.tmp6301, label %.if.true.6302, label %.if.false.6302
+.if.true.6302:
+%.tmp6304 = getelementptr [4 x i8], [4 x i8]*@.str6303, i32 0, i32 0
+ret i8* %.tmp6304
+br label %.if.end.6302
+.if.false.6302:
+%.tmp6305 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6306 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6305, i32 0, i32 1
+%.tmp6307 = load i8*, i8** %.tmp6306
+%.tmp6309 = getelementptr [2 x i8], [2 x i8]*@.str6308, i32 0, i32 0
+%.tmp6310 = call i32(i8*,i8*) @strcmp(i8* %.tmp6307, i8* %.tmp6309)
+%.tmp6311 = icmp eq i32 %.tmp6310, 0
+br i1 %.tmp6311, label %.if.true.6312, label %.if.false.6312
+.if.true.6312:
+%.tmp6314 = getelementptr [5 x i8], [5 x i8]*@.str6313, i32 0, i32 0
+ret i8* %.tmp6314
+br label %.if.end.6312
+.if.false.6312:
+%.tmp6315 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6316 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6315, i32 0, i32 1
+%.tmp6317 = load i8*, i8** %.tmp6316
+%.tmp6319 = getelementptr [3 x i8], [3 x i8]*@.str6318, i32 0, i32 0
+%.tmp6320 = call i32(i8*,i8*) @strcmp(i8* %.tmp6317, i8* %.tmp6319)
+%.tmp6321 = icmp eq i32 %.tmp6320, 0
+br i1 %.tmp6321, label %.if.true.6322, label %.if.false.6322
+.if.true.6322:
+%.tmp6324 = getelementptr [8 x i8], [8 x i8]*@.str6323, i32 0, i32 0
+ret i8* %.tmp6324
+br label %.if.end.6322
+.if.false.6322:
+%.tmp6325 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6326 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6325, i32 0, i32 1
+%.tmp6327 = load i8*, i8** %.tmp6326
+%.tmp6329 = getelementptr [3 x i8], [3 x i8]*@.str6328, i32 0, i32 0
+%.tmp6330 = call i32(i8*,i8*) @strcmp(i8* %.tmp6327, i8* %.tmp6329)
+%.tmp6331 = icmp eq i32 %.tmp6330, 0
+br i1 %.tmp6331, label %.if.true.6332, label %.if.false.6332
+.if.true.6332:
+%.tmp6334 = getelementptr [8 x i8], [8 x i8]*@.str6333, i32 0, i32 0
+ret i8* %.tmp6334
+br label %.if.end.6332
+.if.false.6332:
+%.tmp6335 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6336 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6335, i32 0, i32 1
+%.tmp6337 = load i8*, i8** %.tmp6336
+%.tmp6339 = getelementptr [2 x i8], [2 x i8]*@.str6338, i32 0, i32 0
+%.tmp6340 = call i32(i8*,i8*) @strcmp(i8* %.tmp6337, i8* %.tmp6339)
+%.tmp6341 = icmp eq i32 %.tmp6340, 0
+br i1 %.tmp6341, label %.if.true.6342, label %.if.false.6342
+.if.true.6342:
+%.tmp6344 = getelementptr [9 x i8], [9 x i8]*@.str6343, i32 0, i32 0
+ret i8* %.tmp6344
+br label %.if.end.6342
+.if.false.6342:
+%.tmp6345 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6346 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6345, i32 0, i32 1
+%.tmp6347 = load i8*, i8** %.tmp6346
+%.tmp6349 = getelementptr [2 x i8], [2 x i8]*@.str6348, i32 0, i32 0
+%.tmp6350 = call i32(i8*,i8*) @strcmp(i8* %.tmp6347, i8* %.tmp6349)
+%.tmp6351 = icmp eq i32 %.tmp6350, 0
+br i1 %.tmp6351, label %.if.true.6352, label %.if.false.6352
+.if.true.6352:
+%.tmp6354 = getelementptr [9 x i8], [9 x i8]*@.str6353, i32 0, i32 0
+ret i8* %.tmp6354
+br label %.if.end.6352
+.if.false.6352:
+%.tmp6355 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6356 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6355, i32 0, i32 1
+%.tmp6357 = load i8*, i8** %.tmp6356
+%.tmp6359 = getelementptr [2 x i8], [2 x i8]*@.str6358, i32 0, i32 0
+%.tmp6360 = call i32(i8*,i8*) @strcmp(i8* %.tmp6357, i8* %.tmp6359)
+%.tmp6361 = icmp eq i32 %.tmp6360, 0
+br i1 %.tmp6361, label %.if.true.6362, label %.if.false.6362
+.if.true.6362:
+%.tmp6364 = getelementptr [4 x i8], [4 x i8]*@.str6363, i32 0, i32 0
+ret i8* %.tmp6364
+br label %.if.end.6362
+.if.false.6362:
+%.tmp6365 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6366 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6365, i32 0, i32 1
+%.tmp6367 = load i8*, i8** %.tmp6366
+%.tmp6369 = getelementptr [2 x i8], [2 x i8]*@.str6368, i32 0, i32 0
+%.tmp6370 = call i32(i8*,i8*) @strcmp(i8* %.tmp6367, i8* %.tmp6369)
+%.tmp6371 = icmp eq i32 %.tmp6370, 0
+br i1 %.tmp6371, label %.if.true.6372, label %.if.false.6372
+.if.true.6372:
+%.tmp6374 = getelementptr [3 x i8], [3 x i8]*@.str6373, i32 0, i32 0
+ret i8* %.tmp6374
+br label %.if.end.6372
+.if.false.6372:
+%.tmp6375 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6376 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6375, i32 0, i32 1
+%.tmp6377 = load i8*, i8** %.tmp6376
+%.tmp6379 = getelementptr [3 x i8], [3 x i8]*@.str6378, i32 0, i32 0
+%.tmp6380 = call i32(i8*,i8*) @strcmp(i8* %.tmp6377, i8* %.tmp6379)
+%.tmp6381 = icmp eq i32 %.tmp6380, 0
+br i1 %.tmp6381, label %.if.true.6382, label %.if.false.6382
+.if.true.6382:
+%.tmp6384 = getelementptr [9 x i8], [9 x i8]*@.str6383, i32 0, i32 0
+ret i8* %.tmp6384
+br label %.if.end.6382
+.if.false.6382:
+%.tmp6385 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6386 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6385, i32 0, i32 1
+%.tmp6387 = load i8*, i8** %.tmp6386
+%.tmp6389 = getelementptr [3 x i8], [3 x i8]*@.str6388, i32 0, i32 0
+%.tmp6390 = call i32(i8*,i8*) @strcmp(i8* %.tmp6387, i8* %.tmp6389)
+%.tmp6391 = icmp eq i32 %.tmp6390, 0
+br i1 %.tmp6391, label %.if.true.6392, label %.if.false.6392
+.if.true.6392:
+%.tmp6394 = getelementptr [9 x i8], [9 x i8]*@.str6393, i32 0, i32 0
+ret i8* %.tmp6394
+br label %.if.end.6392
+.if.false.6392:
+%.tmp6395 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6396 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6398 = getelementptr [30 x i8], [30 x i8]*@.str6397, i32 0, i32 0
+%.tmp6399 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp6395, %m307$.Node.type* %.tmp6396, i8* %.tmp6398)
+%.tmp6400 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6401 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6400, i32 0, i32 1
+%.tmp6402 = load i8*, i8** %.tmp6401
+%.tmp6403 = call i32(i8*,...) @printf(i8* %.tmp6399, i8* %.tmp6402)
+br label %.if.end.6392
+.if.end.6392:
+br label %.if.end.6382
+.if.end.6382:
+br label %.if.end.6372
+.if.end.6372:
+br label %.if.end.6362
+.if.end.6362:
+br label %.if.end.6352
+.if.end.6352:
+br label %.if.end.6342
+.if.end.6342:
+br label %.if.end.6332
+.if.end.6332:
+br label %.if.end.6322
+.if.end.6322:
+br label %.if.end.6312
+.if.end.6312:
+br label %.if.end.6302
+.if.end.6302:
+br label %.if.end.6292
+.if.end.6292:
+br label %.if.end.6282
+.if.end.6282:
+%.tmp6405 = getelementptr [4 x i8], [4 x i8]*@.str6404, i32 0, i32 0
+ret i8* %.tmp6405
 }
 define %m1861$.Type.type* @m1861$operator_type.m1861$.Type.typep.m307$.Node.typep(%m307$.Node.type* %.op.arg) {
 %op = alloca %m307$.Node.type*
 store %m307$.Node.type* %.op.arg, %m307$.Node.type** %op
-%.tmp6227 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-%type.6228 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp6227, %m1861$.Type.type** %type.6228
-%.tmp6229 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6230 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6229, i32 0, i32 1
-%.tmp6231 = load i8*, i8** %.tmp6230
-%.tmp6233 = getelementptr [3 x i8], [3 x i8]*@.str6232, i32 0, i32 0
-%.tmp6234 = call i32(i8*,i8*) @strcmp(i8* %.tmp6231, i8* %.tmp6233)
-%.tmp6235 = icmp eq i32 %.tmp6234, 0
-%.tmp6236 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6237 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6236, i32 0, i32 1
-%.tmp6238 = load i8*, i8** %.tmp6237
-%.tmp6240 = getelementptr [3 x i8], [3 x i8]*@.str6239, i32 0, i32 0
-%.tmp6241 = call i32(i8*,i8*) @strcmp(i8* %.tmp6238, i8* %.tmp6240)
-%.tmp6242 = icmp eq i32 %.tmp6241, 0
-%.tmp6243 = or i1 %.tmp6235, %.tmp6242
-%.tmp6244 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6245 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6244, i32 0, i32 1
-%.tmp6246 = load i8*, i8** %.tmp6245
-%.tmp6248 = getelementptr [2 x i8], [2 x i8]*@.str6247, i32 0, i32 0
-%.tmp6249 = call i32(i8*,i8*) @strcmp(i8* %.tmp6246, i8* %.tmp6248)
-%.tmp6250 = icmp eq i32 %.tmp6249, 0
-%.tmp6251 = or i1 %.tmp6243, %.tmp6250
-%.tmp6252 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6253 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6252, i32 0, i32 1
-%.tmp6254 = load i8*, i8** %.tmp6253
-%.tmp6256 = getelementptr [2 x i8], [2 x i8]*@.str6255, i32 0, i32 0
-%.tmp6257 = call i32(i8*,i8*) @strcmp(i8* %.tmp6254, i8* %.tmp6256)
-%.tmp6258 = icmp eq i32 %.tmp6257, 0
-%.tmp6259 = or i1 %.tmp6251, %.tmp6258
-%.tmp6260 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6261 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6260, i32 0, i32 1
-%.tmp6262 = load i8*, i8** %.tmp6261
-%.tmp6264 = getelementptr [2 x i8], [2 x i8]*@.str6263, i32 0, i32 0
-%.tmp6265 = call i32(i8*,i8*) @strcmp(i8* %.tmp6262, i8* %.tmp6264)
-%.tmp6266 = icmp eq i32 %.tmp6265, 0
-%.tmp6267 = or i1 %.tmp6259, %.tmp6266
-%.tmp6268 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6269 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6268, i32 0, i32 1
-%.tmp6270 = load i8*, i8** %.tmp6269
-%.tmp6272 = getelementptr [2 x i8], [2 x i8]*@.str6271, i32 0, i32 0
-%.tmp6273 = call i32(i8*,i8*) @strcmp(i8* %.tmp6270, i8* %.tmp6272)
-%.tmp6274 = icmp eq i32 %.tmp6273, 0
-%.tmp6275 = or i1 %.tmp6267, %.tmp6274
-%.tmp6276 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6277 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6276, i32 0, i32 1
-%.tmp6278 = load i8*, i8** %.tmp6277
-%.tmp6280 = getelementptr [3 x i8], [3 x i8]*@.str6279, i32 0, i32 0
-%.tmp6281 = call i32(i8*,i8*) @strcmp(i8* %.tmp6278, i8* %.tmp6280)
-%.tmp6282 = icmp eq i32 %.tmp6281, 0
-%.tmp6283 = or i1 %.tmp6275, %.tmp6282
-%.tmp6284 = load %m307$.Node.type*, %m307$.Node.type** %op
-%.tmp6285 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6284, i32 0, i32 1
-%.tmp6286 = load i8*, i8** %.tmp6285
-%.tmp6288 = getelementptr [3 x i8], [3 x i8]*@.str6287, i32 0, i32 0
-%.tmp6289 = call i32(i8*,i8*) @strcmp(i8* %.tmp6286, i8* %.tmp6288)
-%.tmp6290 = icmp eq i32 %.tmp6289, 0
-%.tmp6291 = or i1 %.tmp6283, %.tmp6290
-br i1 %.tmp6291, label %.if.true.6292, label %.if.false.6292
-.if.true.6292:
-%.tmp6293 = load %m1861$.Type.type*, %m1861$.Type.type** %type.6228
-%.tmp6294 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6293, i32 0, i32 0
-%.tmp6296 = getelementptr [5 x i8], [5 x i8]*@.str6295, i32 0, i32 0
-store i8* %.tmp6296, i8** %.tmp6294
-br label %.if.end.6292
-.if.false.6292:
-%.tmp6297 = load %m1861$.Type.type*, %m1861$.Type.type** %type.6228
-%.tmp6298 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6297, i32 0, i32 0
-%.tmp6300 = getelementptr [4 x i8], [4 x i8]*@.str6299, i32 0, i32 0
-store i8* %.tmp6300, i8** %.tmp6298
-br label %.if.end.6292
-.if.end.6292:
-%.tmp6301 = load %m1861$.Type.type*, %m1861$.Type.type** %type.6228
-ret %m1861$.Type.type* %.tmp6301
+%.tmp6406 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+%type.6407 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp6406, %m1861$.Type.type** %type.6407
+%.tmp6408 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6409 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6408, i32 0, i32 1
+%.tmp6410 = load i8*, i8** %.tmp6409
+%.tmp6412 = getelementptr [3 x i8], [3 x i8]*@.str6411, i32 0, i32 0
+%.tmp6413 = call i32(i8*,i8*) @strcmp(i8* %.tmp6410, i8* %.tmp6412)
+%.tmp6414 = icmp eq i32 %.tmp6413, 0
+%.tmp6415 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6416 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6415, i32 0, i32 1
+%.tmp6417 = load i8*, i8** %.tmp6416
+%.tmp6419 = getelementptr [3 x i8], [3 x i8]*@.str6418, i32 0, i32 0
+%.tmp6420 = call i32(i8*,i8*) @strcmp(i8* %.tmp6417, i8* %.tmp6419)
+%.tmp6421 = icmp eq i32 %.tmp6420, 0
+%.tmp6422 = or i1 %.tmp6414, %.tmp6421
+%.tmp6423 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6424 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6423, i32 0, i32 1
+%.tmp6425 = load i8*, i8** %.tmp6424
+%.tmp6427 = getelementptr [2 x i8], [2 x i8]*@.str6426, i32 0, i32 0
+%.tmp6428 = call i32(i8*,i8*) @strcmp(i8* %.tmp6425, i8* %.tmp6427)
+%.tmp6429 = icmp eq i32 %.tmp6428, 0
+%.tmp6430 = or i1 %.tmp6422, %.tmp6429
+%.tmp6431 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6432 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6431, i32 0, i32 1
+%.tmp6433 = load i8*, i8** %.tmp6432
+%.tmp6435 = getelementptr [2 x i8], [2 x i8]*@.str6434, i32 0, i32 0
+%.tmp6436 = call i32(i8*,i8*) @strcmp(i8* %.tmp6433, i8* %.tmp6435)
+%.tmp6437 = icmp eq i32 %.tmp6436, 0
+%.tmp6438 = or i1 %.tmp6430, %.tmp6437
+%.tmp6439 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6440 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6439, i32 0, i32 1
+%.tmp6441 = load i8*, i8** %.tmp6440
+%.tmp6443 = getelementptr [2 x i8], [2 x i8]*@.str6442, i32 0, i32 0
+%.tmp6444 = call i32(i8*,i8*) @strcmp(i8* %.tmp6441, i8* %.tmp6443)
+%.tmp6445 = icmp eq i32 %.tmp6444, 0
+%.tmp6446 = or i1 %.tmp6438, %.tmp6445
+%.tmp6447 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6448 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6447, i32 0, i32 1
+%.tmp6449 = load i8*, i8** %.tmp6448
+%.tmp6451 = getelementptr [2 x i8], [2 x i8]*@.str6450, i32 0, i32 0
+%.tmp6452 = call i32(i8*,i8*) @strcmp(i8* %.tmp6449, i8* %.tmp6451)
+%.tmp6453 = icmp eq i32 %.tmp6452, 0
+%.tmp6454 = or i1 %.tmp6446, %.tmp6453
+%.tmp6455 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6456 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6455, i32 0, i32 1
+%.tmp6457 = load i8*, i8** %.tmp6456
+%.tmp6459 = getelementptr [3 x i8], [3 x i8]*@.str6458, i32 0, i32 0
+%.tmp6460 = call i32(i8*,i8*) @strcmp(i8* %.tmp6457, i8* %.tmp6459)
+%.tmp6461 = icmp eq i32 %.tmp6460, 0
+%.tmp6462 = or i1 %.tmp6454, %.tmp6461
+%.tmp6463 = load %m307$.Node.type*, %m307$.Node.type** %op
+%.tmp6464 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6463, i32 0, i32 1
+%.tmp6465 = load i8*, i8** %.tmp6464
+%.tmp6467 = getelementptr [3 x i8], [3 x i8]*@.str6466, i32 0, i32 0
+%.tmp6468 = call i32(i8*,i8*) @strcmp(i8* %.tmp6465, i8* %.tmp6467)
+%.tmp6469 = icmp eq i32 %.tmp6468, 0
+%.tmp6470 = or i1 %.tmp6462, %.tmp6469
+br i1 %.tmp6470, label %.if.true.6471, label %.if.false.6471
+.if.true.6471:
+%.tmp6472 = load %m1861$.Type.type*, %m1861$.Type.type** %type.6407
+%.tmp6473 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6472, i32 0, i32 0
+%.tmp6475 = getelementptr [5 x i8], [5 x i8]*@.str6474, i32 0, i32 0
+store i8* %.tmp6475, i8** %.tmp6473
+br label %.if.end.6471
+.if.false.6471:
+%.tmp6476 = load %m1861$.Type.type*, %m1861$.Type.type** %type.6407
+%.tmp6477 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6476, i32 0, i32 0
+%.tmp6479 = getelementptr [4 x i8], [4 x i8]*@.str6478, i32 0, i32 0
+store i8* %.tmp6479, i8** %.tmp6477
+br label %.if.end.6471
+.if.end.6471:
+%.tmp6480 = load %m1861$.Type.type*, %m1861$.Type.type** %type.6407
+ret %m1861$.Type.type* %.tmp6480
 }
 define %m1861$.AssignableInfo.type* @m1861$compile_mono_assignable.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.curr_node.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %curr_node = alloca %m307$.Node.type*
 store %m307$.Node.type* %.curr_node.arg, %m307$.Node.type** %curr_node
-%.tmp6302 = bitcast ptr null to %m1861$.AssignableInfo.type*
-%assignable_info.6303 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp6302, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6304 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
-%mono.6305 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp6304, %m307$.Node.type** %mono.6305
-%err_buf.6306 = alloca i8*
-store i8* null, i8** %err_buf.6306
-%buf.6307 = alloca i8*
-store i8* null, i8** %buf.6307
-%.tmp6308 = load %m307$.Node.type*, %m307$.Node.type** %mono.6305
-%.tmp6309 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6308, i32 0, i32 6
-%.tmp6310 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6309
-%.tmp6311 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6310, i32 0, i32 0
-%.tmp6312 = load i8*, i8** %.tmp6311
-%.tmp6314 = getelementptr [7 x i8], [7 x i8]*@.str6313, i32 0, i32 0
-%.tmp6315 = call i32(i8*,i8*) @strcmp(i8* %.tmp6312, i8* %.tmp6314)
-%.tmp6316 = icmp eq i32 %.tmp6315, 0
-br i1 %.tmp6316, label %.if.true.6317, label %.if.false.6317
-.if.true.6317:
-%.tmp6318 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
-%.tmp6319 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp6318)
-store %m1861$.AssignableInfo.type* %.tmp6319, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6320 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6321 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6320, i32 0, i32 3
-%.tmp6322 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-store %m1861$.Type.type* %.tmp6322, %m1861$.Type.type** %.tmp6321
-%.tmp6323 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6324 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6323, i32 0, i32 3
-%.tmp6325 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6324
-%.tmp6326 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6325, i32 0, i32 0
-%.tmp6328 = getelementptr [4 x i8], [4 x i8]*@.str6327, i32 0, i32 0
-store i8* %.tmp6328, i8** %.tmp6326
-%.tmp6329 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6330 = load i8, i8* @SCOPE_CONST
-%.tmp6331 = load %m307$.Node.type*, %m307$.Node.type** %mono.6305
-%.tmp6332 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6331, i32 0, i32 6
-%.tmp6333 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6332
-%.tmp6334 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6333, i32 0, i32 1
-%.tmp6335 = load i8*, i8** %.tmp6334
-call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp6329, i8 %.tmp6330, i8* %.tmp6335)
-br label %.if.end.6317
-.if.false.6317:
-%.tmp6336 = load %m307$.Node.type*, %m307$.Node.type** %mono.6305
-%.tmp6337 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6336, i32 0, i32 6
-%.tmp6338 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6337
-%.tmp6339 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6338, i32 0, i32 0
-%.tmp6340 = load i8*, i8** %.tmp6339
-%.tmp6342 = getelementptr [5 x i8], [5 x i8]*@.str6341, i32 0, i32 0
-%.tmp6343 = call i32(i8*,i8*) @strcmp(i8* %.tmp6340, i8* %.tmp6342)
-%.tmp6344 = icmp eq i32 %.tmp6343, 0
-br i1 %.tmp6344, label %.if.true.6345, label %.if.false.6345
-.if.true.6345:
-%.tmp6346 = load %m307$.Node.type*, %m307$.Node.type** %mono.6305
-%.tmp6347 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6346, i32 0, i32 6
-%.tmp6348 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6347
-%.tmp6349 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6348, i32 0, i32 1
-%.tmp6350 = load i8*, i8** %.tmp6349
-%.tmp6352 = getelementptr [5 x i8], [5 x i8]*@.str6351, i32 0, i32 0
-%.tmp6353 = call i32(i8*,i8*) @strcmp(i8* %.tmp6350, i8* %.tmp6352)
-%.tmp6354 = icmp ne i32 %.tmp6353, 0
-br i1 %.tmp6354, label %.if.true.6355, label %.if.false.6355
-.if.true.6355:
-%.tmp6356 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6357 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
-%.tmp6359 = getelementptr [42 x i8], [42 x i8]*@.str6358, i32 0, i32 0
-%.tmp6360 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp6356, %m307$.Node.type* %.tmp6357, i8* %.tmp6359)
-%.tmp6361 = load %m307$.Node.type*, %m307$.Node.type** %mono.6305
-%.tmp6362 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6361, i32 0, i32 6
-%.tmp6363 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6362
-%.tmp6364 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6363, i32 0, i32 1
-%.tmp6365 = load i8*, i8** %.tmp6364
-%.tmp6366 = call i32(i8*,...) @printf(i8* %.tmp6360, i8* %.tmp6365)
-%.tmp6367 = bitcast ptr null to %m1861$.AssignableInfo.type*
-ret %m1861$.AssignableInfo.type* %.tmp6367
-br label %.if.end.6355
-.if.false.6355:
-br label %.if.end.6355
-.if.end.6355:
-%.tmp6368 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
-%.tmp6369 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp6368)
-store %m1861$.AssignableInfo.type* %.tmp6369, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6370 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6371 = load i8, i8* @SCOPE_CONST
-%.tmp6373 = getelementptr [5 x i8], [5 x i8]*@.str6372, i32 0, i32 0
-call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp6370, i8 %.tmp6371, i8* %.tmp6373)
-%.tmp6374 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6375 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6374, i32 0, i32 3
-%.tmp6376 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-store %m1861$.Type.type* %.tmp6376, %m1861$.Type.type** %.tmp6375
-%.tmp6377 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6378 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6377, i32 0, i32 3
-%.tmp6379 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6378
-%.tmp6380 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6379, i32 0, i32 0
-%.tmp6382 = getelementptr [8 x i8], [8 x i8]*@.str6381, i32 0, i32 0
-store i8* %.tmp6382, i8** %.tmp6380
-br label %.if.end.6345
-.if.false.6345:
-%.tmp6383 = load %m307$.Node.type*, %m307$.Node.type** %mono.6305
-%.tmp6384 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6383, i32 0, i32 6
-%.tmp6385 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6384
-%.tmp6386 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6385, i32 0, i32 0
-%.tmp6387 = load i8*, i8** %.tmp6386
-%.tmp6389 = getelementptr [17 x i8], [17 x i8]*@.str6388, i32 0, i32 0
-%.tmp6390 = call i32(i8*,i8*) @strcmp(i8* %.tmp6387, i8* %.tmp6389)
-%.tmp6391 = icmp eq i32 %.tmp6390, 0
-br i1 %.tmp6391, label %.if.true.6392, label %.if.false.6392
-.if.true.6392:
-%.tmp6393 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
-%.tmp6394 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp6393)
-store %m1861$.AssignableInfo.type* %.tmp6394, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6395 = load %m307$.Node.type*, %m307$.Node.type** %mono.6305
-%.tmp6396 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6395, i32 0, i32 6
-%.tmp6397 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6396
-%.tmp6398 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6397, i32 0, i32 6
-%.tmp6399 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6398
-%.tmp6401 = getelementptr [12 x i8], [12 x i8]*@.str6400, i32 0, i32 0
-%.tmp6402 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp6399, i8* %.tmp6401)
-%dest.6403 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp6402, %m307$.Node.type** %dest.6403
-%.tmp6404 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6405 = load %m307$.Node.type*, %m307$.Node.type** %dest.6403
-%.tmp6406 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_addr.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp6404, %m307$.Node.type* %.tmp6405)
-%var_info.6407 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp6406, %m1861$.AssignableInfo.type** %var_info.6407
-%.tmp6408 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %var_info.6407
-%.tmp6409 = icmp eq %m1861$.AssignableInfo.type* %.tmp6408, null
-br i1 %.tmp6409, label %.if.true.6410, label %.if.false.6410
-.if.true.6410:
-%.tmp6411 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-ret %m1861$.AssignableInfo.type* %.tmp6411
-br label %.if.end.6410
-.if.false.6410:
-br label %.if.end.6410
-.if.end.6410:
-%.tmp6412 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6413 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %var_info.6407
-%.tmp6414 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6413, i32 0, i32 3
-%.tmp6415 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6414
-%.tmp6416 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp6412, %m1861$.Type.type* %.tmp6415)
-%var_type_repr.6417 = alloca i8*
-store i8* %.tmp6416, i8** %var_type_repr.6417
-%.tmp6418 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6419 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp6418, %m1861$.AssignableInfo.type* %.tmp6419)
-%.tmp6420 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6421 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6420, i32 0, i32 3
-%.tmp6422 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %var_info.6407
-%.tmp6423 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6422, i32 0, i32 3
-%.tmp6424 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6423
-store %m1861$.Type.type* %.tmp6424, %m1861$.Type.type** %.tmp6421
-%.tmp6426 = load %m307$.Node.type*, %m307$.Node.type** %mono.6305
-%.tmp6427 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6426, i32 0, i32 6
-%.tmp6428 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6427
-%.tmp6429 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6428, i32 0, i32 6
-%.tmp6430 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6429
-%ptr.6431 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp6430, %m307$.Node.type** %ptr.6431
-br label %.for.start.6425
-.for.start.6425:
-%.tmp6432 = load %m307$.Node.type*, %m307$.Node.type** %ptr.6431
-%.tmp6433 = load %m307$.Node.type*, %m307$.Node.type** %dest.6403
-%.tmp6434 = icmp ne %m307$.Node.type* %.tmp6432, %.tmp6433
-br i1 %.tmp6434, label %.for.continue.6425, label %.for.end.6425
-.for.continue.6425:
-%.tmp6435 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-%type.6436 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp6435, %m1861$.Type.type** %type.6436
-%.tmp6437 = load %m1861$.Type.type*, %m1861$.Type.type** %type.6436
-%.tmp6438 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6437, i32 0, i32 3
-%.tmp6439 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6440 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6439, i32 0, i32 3
-%.tmp6441 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6440
-store %m1861$.Type.type* %.tmp6441, %m1861$.Type.type** %.tmp6438
-%.tmp6442 = load %m1861$.Type.type*, %m1861$.Type.type** %type.6436
-%.tmp6443 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6442, i32 0, i32 0
-%.tmp6445 = getelementptr [4 x i8], [4 x i8]*@.str6444, i32 0, i32 0
-store i8* %.tmp6445, i8** %.tmp6443
-%.tmp6446 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6447 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6446, i32 0, i32 3
-%.tmp6448 = load %m1861$.Type.type*, %m1861$.Type.type** %type.6436
-store %m1861$.Type.type* %.tmp6448, %m1861$.Type.type** %.tmp6447
-%.tmp6449 = load %m307$.Node.type*, %m307$.Node.type** %ptr.6431
-%.tmp6450 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6449, i32 0, i32 7
-%.tmp6451 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6450
-store %m307$.Node.type* %.tmp6451, %m307$.Node.type** %ptr.6431
-br label %.for.start.6425
-.for.end.6425:
-%.tmp6452 = load %m307$.Node.type*, %m307$.Node.type** %mono.6305
-%.tmp6453 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6452, i32 0, i32 6
-%.tmp6454 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6453
-%.tmp6455 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6454, i32 0, i32 6
-%.tmp6456 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6455
-%.tmp6457 = load %m307$.Node.type*, %m307$.Node.type** %dest.6403
-%.tmp6458 = icmp ne %m307$.Node.type* %.tmp6456, %.tmp6457
-br i1 %.tmp6458, label %.if.true.6459, label %.if.false.6459
-.if.true.6459:
-%.tmp6460 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6461 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp6460, i32 0, i32 1
-%.tmp6462 = load %m0$.File.type*, %m0$.File.type** %.tmp6461
-%.tmp6464 = getelementptr [38 x i8], [38 x i8]*@.str6463, i32 0, i32 0
-%.tmp6465 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6466 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6465)
-%.tmp6467 = load i8*, i8** %var_type_repr.6417
-%.tmp6468 = load i8*, i8** %var_type_repr.6417
-%.tmp6469 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %var_info.6407
-%.tmp6470 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6469)
-%.tmp6471 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp6462, i8* %.tmp6464, i8* %.tmp6466, i8* %.tmp6467, i8* %.tmp6468, i8* %.tmp6470)
-br label %.if.end.6459
-.if.false.6459:
-%.tmp6472 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6473 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp6472, i32 0, i32 1
-%.tmp6474 = load %m0$.File.type*, %m0$.File.type** %.tmp6473
-%.tmp6476 = getelementptr [22 x i8], [22 x i8]*@.str6475, i32 0, i32 0
-%.tmp6477 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6478 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6477)
-%.tmp6479 = load i8*, i8** %var_type_repr.6417
-%.tmp6480 = load i8*, i8** %var_type_repr.6417
-%.tmp6481 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %var_info.6407
-%.tmp6482 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6481)
-%.tmp6483 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp6474, i8* %.tmp6476, i8* %.tmp6478, i8* %.tmp6479, i8* %.tmp6480, i8* %.tmp6482)
-br label %.if.end.6459
-.if.end.6459:
-br label %.if.end.6392
-.if.false.6392:
-%.tmp6484 = load %m307$.Node.type*, %m307$.Node.type** %mono.6305
-%.tmp6485 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6484, i32 0, i32 6
-%.tmp6486 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6485
-%.tmp6487 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6486, i32 0, i32 0
-%.tmp6488 = load i8*, i8** %.tmp6487
-%.tmp6490 = getelementptr [8 x i8], [8 x i8]*@.str6489, i32 0, i32 0
-%.tmp6491 = call i32(i8*,i8*) @strcmp(i8* %.tmp6488, i8* %.tmp6490)
-%.tmp6492 = icmp eq i32 %.tmp6491, 0
-br i1 %.tmp6492, label %.if.true.6493, label %.if.false.6493
-.if.true.6493:
-%.tmp6494 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
-%.tmp6495 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp6494)
-store %m1861$.AssignableInfo.type* %.tmp6495, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6496 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6497 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6496, i32 0, i32 3
-%.tmp6498 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-store %m1861$.Type.type* %.tmp6498, %m1861$.Type.type** %.tmp6497
-%.tmp6499 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
+%.tmp6481 = bitcast ptr null to %m1861$.AssignableInfo.type*
+%assignable_info.6482 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp6481, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6483 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
+%mono.6484 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp6483, %m307$.Node.type** %mono.6484
+%err_buf.6485 = alloca i8*
+store i8* null, i8** %err_buf.6485
+%buf.6486 = alloca i8*
+store i8* null, i8** %buf.6486
+%.tmp6487 = load %m307$.Node.type*, %m307$.Node.type** %mono.6484
+%.tmp6488 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6487, i32 0, i32 6
+%.tmp6489 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6488
+%.tmp6490 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6489, i32 0, i32 0
+%.tmp6491 = load i8*, i8** %.tmp6490
+%.tmp6493 = getelementptr [7 x i8], [7 x i8]*@.str6492, i32 0, i32 0
+%.tmp6494 = call i32(i8*,i8*) @strcmp(i8* %.tmp6491, i8* %.tmp6493)
+%.tmp6495 = icmp eq i32 %.tmp6494, 0
+br i1 %.tmp6495, label %.if.true.6496, label %.if.false.6496
+.if.true.6496:
+%.tmp6497 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
+%.tmp6498 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp6497)
+store %m1861$.AssignableInfo.type* %.tmp6498, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6499 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
 %.tmp6500 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6499, i32 0, i32 3
-%.tmp6501 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6500
-%.tmp6502 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6501, i32 0, i32 0
-%.tmp6504 = getelementptr [5 x i8], [5 x i8]*@.str6503, i32 0, i32 0
-store i8* %.tmp6504, i8** %.tmp6502
-%.tmp6505 = load %m307$.Node.type*, %m307$.Node.type** %mono.6305
-%.tmp6506 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6505, i32 0, i32 6
-%.tmp6507 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6506
-%.tmp6508 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6507, i32 0, i32 6
-%.tmp6509 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6508
-%.tmp6510 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6509, i32 0, i32 1
-%.tmp6511 = load i8*, i8** %.tmp6510
-%.tmp6513 = getelementptr [6 x i8], [6 x i8]*@.str6512, i32 0, i32 0
-%.tmp6514 = call i32(i8*,i8*) @strcmp(i8* %.tmp6511, i8* %.tmp6513)
-%.tmp6515 = icmp eq i32 %.tmp6514, 0
-br i1 %.tmp6515, label %.if.true.6516, label %.if.false.6516
-.if.true.6516:
-%.tmp6517 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6518 = load i8, i8* @SCOPE_CONST
-%.tmp6520 = getelementptr [2 x i8], [2 x i8]*@.str6519, i32 0, i32 0
-call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp6517, i8 %.tmp6518, i8* %.tmp6520)
-br label %.if.end.6516
-.if.false.6516:
-%.tmp6521 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6522 = load i8, i8* @SCOPE_CONST
-%.tmp6524 = getelementptr [2 x i8], [2 x i8]*@.str6523, i32 0, i32 0
-call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp6521, i8 %.tmp6522, i8* %.tmp6524)
-br label %.if.end.6516
-.if.end.6516:
-br label %.if.end.6493
-.if.false.6493:
-%.tmp6525 = load %m307$.Node.type*, %m307$.Node.type** %mono.6305
+%.tmp6501 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+store %m1861$.Type.type* %.tmp6501, %m1861$.Type.type** %.tmp6500
+%.tmp6502 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6503 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6502, i32 0, i32 3
+%.tmp6504 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6503
+%.tmp6505 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6504, i32 0, i32 0
+%.tmp6507 = getelementptr [4 x i8], [4 x i8]*@.str6506, i32 0, i32 0
+store i8* %.tmp6507, i8** %.tmp6505
+%.tmp6508 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6509 = load i8, i8* @SCOPE_CONST
+%.tmp6510 = load %m307$.Node.type*, %m307$.Node.type** %mono.6484
+%.tmp6511 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6510, i32 0, i32 6
+%.tmp6512 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6511
+%.tmp6513 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6512, i32 0, i32 1
+%.tmp6514 = load i8*, i8** %.tmp6513
+call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp6508, i8 %.tmp6509, i8* %.tmp6514)
+br label %.if.end.6496
+.if.false.6496:
+%.tmp6515 = load %m307$.Node.type*, %m307$.Node.type** %mono.6484
+%.tmp6516 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6515, i32 0, i32 6
+%.tmp6517 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6516
+%.tmp6518 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6517, i32 0, i32 0
+%.tmp6519 = load i8*, i8** %.tmp6518
+%.tmp6521 = getelementptr [5 x i8], [5 x i8]*@.str6520, i32 0, i32 0
+%.tmp6522 = call i32(i8*,i8*) @strcmp(i8* %.tmp6519, i8* %.tmp6521)
+%.tmp6523 = icmp eq i32 %.tmp6522, 0
+br i1 %.tmp6523, label %.if.true.6524, label %.if.false.6524
+.if.true.6524:
+%.tmp6525 = load %m307$.Node.type*, %m307$.Node.type** %mono.6484
 %.tmp6526 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6525, i32 0, i32 6
 %.tmp6527 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6526
-%.tmp6528 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6527, i32 0, i32 0
+%.tmp6528 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6527, i32 0, i32 1
 %.tmp6529 = load i8*, i8** %.tmp6528
-%.tmp6531 = getelementptr [8 x i8], [8 x i8]*@.str6530, i32 0, i32 0
+%.tmp6531 = getelementptr [5 x i8], [5 x i8]*@.str6530, i32 0, i32 0
 %.tmp6532 = call i32(i8*,i8*) @strcmp(i8* %.tmp6529, i8* %.tmp6531)
-%.tmp6533 = icmp eq i32 %.tmp6532, 0
+%.tmp6533 = icmp ne i32 %.tmp6532, 0
 br i1 %.tmp6533, label %.if.true.6534, label %.if.false.6534
 .if.true.6534:
 %.tmp6535 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6536 = load %m307$.Node.type*, %m307$.Node.type** %mono.6305
-%.tmp6537 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6536, i32 0, i32 6
-%.tmp6538 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6537
-%.tmp6539 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6538, i32 0, i32 6
-%.tmp6540 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6539
-%.tmp6541 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_fn_call.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp6535, %m307$.Node.type* %.tmp6540)
-store %m1861$.AssignableInfo.type* %.tmp6541, %m1861$.AssignableInfo.type** %assignable_info.6303
+%.tmp6536 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
+%.tmp6538 = getelementptr [42 x i8], [42 x i8]*@.str6537, i32 0, i32 0
+%.tmp6539 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp6535, %m307$.Node.type* %.tmp6536, i8* %.tmp6538)
+%.tmp6540 = load %m307$.Node.type*, %m307$.Node.type** %mono.6484
+%.tmp6541 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6540, i32 0, i32 6
+%.tmp6542 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6541
+%.tmp6543 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6542, i32 0, i32 1
+%.tmp6544 = load i8*, i8** %.tmp6543
+%.tmp6545 = call i32(i8*,...) @printf(i8* %.tmp6539, i8* %.tmp6544)
+%.tmp6546 = bitcast ptr null to %m1861$.AssignableInfo.type*
+ret %m1861$.AssignableInfo.type* %.tmp6546
 br label %.if.end.6534
 .if.false.6534:
-%.tmp6542 = load %m307$.Node.type*, %m307$.Node.type** %mono.6305
-%.tmp6543 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6542, i32 0, i32 6
-%.tmp6544 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6543
-%.tmp6545 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6544, i32 0, i32 0
-%.tmp6546 = load i8*, i8** %.tmp6545
-%.tmp6548 = getelementptr [7 x i8], [7 x i8]*@.str6547, i32 0, i32 0
-%.tmp6549 = call i32(i8*,i8*) @strcmp(i8* %.tmp6546, i8* %.tmp6548)
-%.tmp6550 = icmp eq i32 %.tmp6549, 0
-br i1 %.tmp6550, label %.if.true.6551, label %.if.false.6551
-.if.true.6551:
-%.tmp6552 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6553 = load %m307$.Node.type*, %m307$.Node.type** %mono.6305
-%.tmp6554 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6553, i32 0, i32 6
-%.tmp6555 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6554
-%.tmp6556 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6555, i32 0, i32 1
-%.tmp6557 = load i8*, i8** %.tmp6556
-%.tmp6558 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,i8*) @m1861$define_string.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.cp(%m1861$.CompilerCtx.type* %.tmp6552, i8* %.tmp6557)
-%string_info.6559 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp6558, %m1861$.AssignableInfo.type** %string_info.6559
-%.tmp6560 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
-%.tmp6561 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp6560)
-store %m1861$.AssignableInfo.type* %.tmp6561, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6562 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6563 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp6562, %m1861$.AssignableInfo.type* %.tmp6563)
-%.tmp6564 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6565 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %string_info.6559
-%.tmp6566 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6565, i32 0, i32 3
-%.tmp6567 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6566
-%.tmp6568 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp6564, %m1861$.Type.type* %.tmp6567)
-%str_tr.6569 = alloca i8*
-store i8* %.tmp6568, i8** %str_tr.6569
-%.tmp6570 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6571 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp6570, i32 0, i32 1
-%.tmp6572 = load %m0$.File.type*, %m0$.File.type** %.tmp6571
-%.tmp6574 = getelementptr [44 x i8], [44 x i8]*@.str6573, i32 0, i32 0
-%.tmp6575 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6576 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6575)
-%.tmp6577 = load i8*, i8** %str_tr.6569
-%.tmp6578 = load i8*, i8** %str_tr.6569
-%.tmp6579 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %string_info.6559
-%.tmp6580 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6579)
-%.tmp6581 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp6572, i8* %.tmp6574, i8* %.tmp6576, i8* %.tmp6577, i8* %.tmp6578, i8* %.tmp6580)
-%.tmp6582 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6583 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6582, i32 0, i32 3
-%.tmp6584 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-store %m1861$.Type.type* %.tmp6584, %m1861$.Type.type** %.tmp6583
-%.tmp6585 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6586 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6585, i32 0, i32 3
-%.tmp6587 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6586
-%.tmp6588 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6587, i32 0, i32 0
-%.tmp6590 = getelementptr [4 x i8], [4 x i8]*@.str6589, i32 0, i32 0
-store i8* %.tmp6590, i8** %.tmp6588
-%.tmp6591 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6592 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6591, i32 0, i32 3
-%.tmp6593 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6592
-%.tmp6594 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6593, i32 0, i32 3
-%.tmp6595 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-store %m1861$.Type.type* %.tmp6595, %m1861$.Type.type** %.tmp6594
-%.tmp6596 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6597 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6596, i32 0, i32 3
-%.tmp6598 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6597
-%.tmp6599 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6598, i32 0, i32 3
-%.tmp6600 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6599
-%.tmp6601 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6600, i32 0, i32 0
-%.tmp6603 = getelementptr [4 x i8], [4 x i8]*@.str6602, i32 0, i32 0
-store i8* %.tmp6603, i8** %.tmp6601
-br label %.if.end.6551
-.if.false.6551:
-%.tmp6604 = load %m307$.Node.type*, %m307$.Node.type** %mono.6305
-%.tmp6605 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6604, i32 0, i32 6
-%.tmp6606 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6605
-%.tmp6607 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6606, i32 0, i32 0
-%.tmp6608 = load i8*, i8** %.tmp6607
-%.tmp6610 = getelementptr [4 x i8], [4 x i8]*@.str6609, i32 0, i32 0
-%.tmp6611 = call i32(i8*,i8*) @strcmp(i8* %.tmp6608, i8* %.tmp6610)
-%.tmp6612 = icmp eq i32 %.tmp6611, 0
-br i1 %.tmp6612, label %.if.true.6613, label %.if.false.6613
-.if.true.6613:
-%.tmp6614 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
-%.tmp6615 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp6614)
-store %m1861$.AssignableInfo.type* %.tmp6615, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6616 = load %m307$.Node.type*, %m307$.Node.type** %mono.6305
-%.tmp6617 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6616, i32 0, i32 6
-%.tmp6618 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6617
-%.tmp6619 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6618, i32 0, i32 1
-%.tmp6620 = load i8*, i8** %.tmp6619
-%.tmp6621 = call i32(i8*) @strlen(i8* %.tmp6620)
-%chr_len.6622 = alloca i32
-store i32 %.tmp6621, i32* %chr_len.6622
-%.tmp6623 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6624 = load i8, i8* @SCOPE_CONST
-%.tmp6626 = getelementptr [2 x i8], [2 x i8]*@.str6625, i32 0, i32 0
-call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp6623, i8 %.tmp6624, i8* %.tmp6626)
-%.tmp6627 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6628 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6627, i32 0, i32 0
-%.tmp6629 = load %m307$.Node.type*, %m307$.Node.type** %mono.6305
-%.tmp6630 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6629, i32 0, i32 6
-%.tmp6631 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6630
-%.tmp6632 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6631, i32 0, i32 1
-%.tmp6633 = load i8*, i8** %.tmp6632
-%.tmp6634 = call i8*(i8*) @m2225$chr_to_llvm.cp.cp(i8* %.tmp6633)
-store i8* %.tmp6634, i8** %.tmp6628
-%.tmp6635 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6636 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6635, i32 0, i32 0
-%.tmp6637 = load i8*, i8** %.tmp6636
-%.tmp6638 = icmp eq i8* %.tmp6637, null
-br i1 %.tmp6638, label %.if.true.6639, label %.if.false.6639
-.if.true.6639:
-%.tmp6640 = getelementptr i8*, i8** %err_buf.6306, i32 0
-%.tmp6642 = getelementptr [22 x i8], [22 x i8]*@.str6641, i32 0, i32 0
-%.tmp6643 = load %m307$.Node.type*, %m307$.Node.type** %mono.6305
-%.tmp6644 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6643, i32 0, i32 6
-%.tmp6645 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6644
-%.tmp6646 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6645, i32 0, i32 1
-%.tmp6647 = load i8*, i8** %.tmp6646
-%.tmp6648 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp6640, i8* %.tmp6642, i8* %.tmp6647)
-%.tmp6649 = bitcast ptr null to %m1861$.AssignableInfo.type*
-ret %m1861$.AssignableInfo.type* %.tmp6649
-br label %.if.end.6639
-.if.false.6639:
-br label %.if.end.6639
-.if.end.6639:
-%.tmp6650 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6651 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6650, i32 0, i32 3
-%.tmp6652 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-store %m1861$.Type.type* %.tmp6652, %m1861$.Type.type** %.tmp6651
-%.tmp6653 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6654 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6653, i32 0, i32 3
-%.tmp6655 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6654
-%.tmp6656 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6655, i32 0, i32 0
-%.tmp6658 = getelementptr [4 x i8], [4 x i8]*@.str6657, i32 0, i32 0
-store i8* %.tmp6658, i8** %.tmp6656
-br label %.if.end.6613
-.if.false.6613:
-%.tmp6659 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6660 = load %m307$.Node.type*, %m307$.Node.type** %mono.6305
-%.tmp6662 = getelementptr [40 x i8], [40 x i8]*@.str6661, i32 0, i32 0
-%.tmp6663 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp6659, %m307$.Node.type* %.tmp6660, i8* %.tmp6662)
-%.tmp6664 = load %m307$.Node.type*, %m307$.Node.type** %mono.6305
-%.tmp6665 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6664, i32 0, i32 6
-%.tmp6666 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6665
-%.tmp6667 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6666, i32 0, i32 0
-%.tmp6668 = load i8*, i8** %.tmp6667
-%.tmp6669 = call i32(i8*,...) @printf(i8* %.tmp6663, i8* %.tmp6668)
-%.tmp6670 = bitcast ptr null to %m1861$.AssignableInfo.type*
-ret %m1861$.AssignableInfo.type* %.tmp6670
-br label %.if.end.6613
-.if.end.6613:
-br label %.if.end.6551
-.if.end.6551:
 br label %.if.end.6534
 .if.end.6534:
-br label %.if.end.6493
-.if.end.6493:
-br label %.if.end.6392
-.if.end.6392:
-br label %.if.end.6345
-.if.end.6345:
-br label %.if.end.6317
-.if.end.6317:
-%.tmp6671 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6672 = icmp eq %m1861$.AssignableInfo.type* %.tmp6671, null
-br i1 %.tmp6672, label %.if.true.6673, label %.if.false.6673
-.if.true.6673:
-%.tmp6674 = bitcast ptr null to %m1861$.AssignableInfo.type*
-ret %m1861$.AssignableInfo.type* %.tmp6674
-br label %.if.end.6673
-.if.false.6673:
-br label %.if.end.6673
-.if.end.6673:
-%.tmp6675 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6676 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6675, i32 0, i32 4
-%.tmp6677 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
-%.tmp6678 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6677, i32 0, i32 3
-%.tmp6679 = load i32, i32* %.tmp6678
-store i32 %.tmp6679, i32* %.tmp6676
-%.tmp6680 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6681 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6680, i32 0, i32 5
-%.tmp6682 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
-%.tmp6683 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6682, i32 0, i32 4
-%.tmp6684 = load i32, i32* %.tmp6683
-store i32 %.tmp6684, i32* %.tmp6681
-%.tmp6685 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6303
-%.tmp6686 = bitcast %m1861$.AssignableInfo.type* %.tmp6685 to %m1861$.AssignableInfo.type*
-ret %m1861$.AssignableInfo.type* %.tmp6686
+%.tmp6547 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
+%.tmp6548 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp6547)
+store %m1861$.AssignableInfo.type* %.tmp6548, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6549 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6550 = load i8, i8* @SCOPE_CONST
+%.tmp6552 = getelementptr [5 x i8], [5 x i8]*@.str6551, i32 0, i32 0
+call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp6549, i8 %.tmp6550, i8* %.tmp6552)
+%.tmp6553 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6554 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6553, i32 0, i32 3
+%.tmp6555 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+store %m1861$.Type.type* %.tmp6555, %m1861$.Type.type** %.tmp6554
+%.tmp6556 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6557 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6556, i32 0, i32 3
+%.tmp6558 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6557
+%.tmp6559 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6558, i32 0, i32 0
+%.tmp6561 = getelementptr [8 x i8], [8 x i8]*@.str6560, i32 0, i32 0
+store i8* %.tmp6561, i8** %.tmp6559
+br label %.if.end.6524
+.if.false.6524:
+%.tmp6562 = load %m307$.Node.type*, %m307$.Node.type** %mono.6484
+%.tmp6563 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6562, i32 0, i32 6
+%.tmp6564 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6563
+%.tmp6565 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6564, i32 0, i32 0
+%.tmp6566 = load i8*, i8** %.tmp6565
+%.tmp6568 = getelementptr [17 x i8], [17 x i8]*@.str6567, i32 0, i32 0
+%.tmp6569 = call i32(i8*,i8*) @strcmp(i8* %.tmp6566, i8* %.tmp6568)
+%.tmp6570 = icmp eq i32 %.tmp6569, 0
+br i1 %.tmp6570, label %.if.true.6571, label %.if.false.6571
+.if.true.6571:
+%.tmp6572 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
+%.tmp6573 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp6572)
+store %m1861$.AssignableInfo.type* %.tmp6573, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6574 = load %m307$.Node.type*, %m307$.Node.type** %mono.6484
+%.tmp6575 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6574, i32 0, i32 6
+%.tmp6576 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6575
+%.tmp6577 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6576, i32 0, i32 6
+%.tmp6578 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6577
+%.tmp6580 = getelementptr [12 x i8], [12 x i8]*@.str6579, i32 0, i32 0
+%.tmp6581 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp6578, i8* %.tmp6580)
+%dest.6582 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp6581, %m307$.Node.type** %dest.6582
+%.tmp6583 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6584 = load %m307$.Node.type*, %m307$.Node.type** %dest.6582
+%.tmp6585 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_addr.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp6583, %m307$.Node.type* %.tmp6584)
+%var_info.6586 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp6585, %m1861$.AssignableInfo.type** %var_info.6586
+%.tmp6587 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %var_info.6586
+%.tmp6588 = icmp eq %m1861$.AssignableInfo.type* %.tmp6587, null
+br i1 %.tmp6588, label %.if.true.6589, label %.if.false.6589
+.if.true.6589:
+%.tmp6590 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+ret %m1861$.AssignableInfo.type* %.tmp6590
+br label %.if.end.6589
+.if.false.6589:
+br label %.if.end.6589
+.if.end.6589:
+%.tmp6591 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6592 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %var_info.6586
+%.tmp6593 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6592, i32 0, i32 3
+%.tmp6594 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6593
+%.tmp6595 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp6591, %m1861$.Type.type* %.tmp6594)
+%var_type_repr.6596 = alloca i8*
+store i8* %.tmp6595, i8** %var_type_repr.6596
+%.tmp6597 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6598 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp6597, %m1861$.AssignableInfo.type* %.tmp6598)
+%.tmp6599 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6600 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6599, i32 0, i32 3
+%.tmp6601 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %var_info.6586
+%.tmp6602 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6601, i32 0, i32 3
+%.tmp6603 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6602
+store %m1861$.Type.type* %.tmp6603, %m1861$.Type.type** %.tmp6600
+%.tmp6605 = load %m307$.Node.type*, %m307$.Node.type** %mono.6484
+%.tmp6606 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6605, i32 0, i32 6
+%.tmp6607 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6606
+%.tmp6608 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6607, i32 0, i32 6
+%.tmp6609 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6608
+%ptr.6610 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp6609, %m307$.Node.type** %ptr.6610
+br label %.for.start.6604
+.for.start.6604:
+%.tmp6611 = load %m307$.Node.type*, %m307$.Node.type** %ptr.6610
+%.tmp6612 = load %m307$.Node.type*, %m307$.Node.type** %dest.6582
+%.tmp6613 = icmp ne %m307$.Node.type* %.tmp6611, %.tmp6612
+br i1 %.tmp6613, label %.for.continue.6604, label %.for.end.6604
+.for.continue.6604:
+%.tmp6614 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+%type.6615 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp6614, %m1861$.Type.type** %type.6615
+%.tmp6616 = load %m1861$.Type.type*, %m1861$.Type.type** %type.6615
+%.tmp6617 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6616, i32 0, i32 3
+%.tmp6618 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6619 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6618, i32 0, i32 3
+%.tmp6620 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6619
+store %m1861$.Type.type* %.tmp6620, %m1861$.Type.type** %.tmp6617
+%.tmp6621 = load %m1861$.Type.type*, %m1861$.Type.type** %type.6615
+%.tmp6622 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6621, i32 0, i32 0
+%.tmp6624 = getelementptr [4 x i8], [4 x i8]*@.str6623, i32 0, i32 0
+store i8* %.tmp6624, i8** %.tmp6622
+%.tmp6625 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6626 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6625, i32 0, i32 3
+%.tmp6627 = load %m1861$.Type.type*, %m1861$.Type.type** %type.6615
+store %m1861$.Type.type* %.tmp6627, %m1861$.Type.type** %.tmp6626
+%.tmp6628 = load %m307$.Node.type*, %m307$.Node.type** %ptr.6610
+%.tmp6629 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6628, i32 0, i32 7
+%.tmp6630 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6629
+store %m307$.Node.type* %.tmp6630, %m307$.Node.type** %ptr.6610
+br label %.for.start.6604
+.for.end.6604:
+%.tmp6631 = load %m307$.Node.type*, %m307$.Node.type** %mono.6484
+%.tmp6632 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6631, i32 0, i32 6
+%.tmp6633 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6632
+%.tmp6634 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6633, i32 0, i32 6
+%.tmp6635 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6634
+%.tmp6636 = load %m307$.Node.type*, %m307$.Node.type** %dest.6582
+%.tmp6637 = icmp ne %m307$.Node.type* %.tmp6635, %.tmp6636
+br i1 %.tmp6637, label %.if.true.6638, label %.if.false.6638
+.if.true.6638:
+%.tmp6639 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6640 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp6639, i32 0, i32 1
+%.tmp6641 = load %m0$.File.type*, %m0$.File.type** %.tmp6640
+%.tmp6643 = getelementptr [38 x i8], [38 x i8]*@.str6642, i32 0, i32 0
+%.tmp6644 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6645 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6644)
+%.tmp6646 = load i8*, i8** %var_type_repr.6596
+%.tmp6647 = load i8*, i8** %var_type_repr.6596
+%.tmp6648 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %var_info.6586
+%.tmp6649 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6648)
+%.tmp6650 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp6641, i8* %.tmp6643, i8* %.tmp6645, i8* %.tmp6646, i8* %.tmp6647, i8* %.tmp6649)
+br label %.if.end.6638
+.if.false.6638:
+%.tmp6651 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6652 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp6651, i32 0, i32 1
+%.tmp6653 = load %m0$.File.type*, %m0$.File.type** %.tmp6652
+%.tmp6655 = getelementptr [22 x i8], [22 x i8]*@.str6654, i32 0, i32 0
+%.tmp6656 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6657 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6656)
+%.tmp6658 = load i8*, i8** %var_type_repr.6596
+%.tmp6659 = load i8*, i8** %var_type_repr.6596
+%.tmp6660 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %var_info.6586
+%.tmp6661 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6660)
+%.tmp6662 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp6653, i8* %.tmp6655, i8* %.tmp6657, i8* %.tmp6658, i8* %.tmp6659, i8* %.tmp6661)
+br label %.if.end.6638
+.if.end.6638:
+br label %.if.end.6571
+.if.false.6571:
+%.tmp6663 = load %m307$.Node.type*, %m307$.Node.type** %mono.6484
+%.tmp6664 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6663, i32 0, i32 6
+%.tmp6665 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6664
+%.tmp6666 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6665, i32 0, i32 0
+%.tmp6667 = load i8*, i8** %.tmp6666
+%.tmp6669 = getelementptr [8 x i8], [8 x i8]*@.str6668, i32 0, i32 0
+%.tmp6670 = call i32(i8*,i8*) @strcmp(i8* %.tmp6667, i8* %.tmp6669)
+%.tmp6671 = icmp eq i32 %.tmp6670, 0
+br i1 %.tmp6671, label %.if.true.6672, label %.if.false.6672
+.if.true.6672:
+%.tmp6673 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
+%.tmp6674 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp6673)
+store %m1861$.AssignableInfo.type* %.tmp6674, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6675 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6676 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6675, i32 0, i32 3
+%.tmp6677 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+store %m1861$.Type.type* %.tmp6677, %m1861$.Type.type** %.tmp6676
+%.tmp6678 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6679 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6678, i32 0, i32 3
+%.tmp6680 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6679
+%.tmp6681 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6680, i32 0, i32 0
+%.tmp6683 = getelementptr [5 x i8], [5 x i8]*@.str6682, i32 0, i32 0
+store i8* %.tmp6683, i8** %.tmp6681
+%.tmp6684 = load %m307$.Node.type*, %m307$.Node.type** %mono.6484
+%.tmp6685 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6684, i32 0, i32 6
+%.tmp6686 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6685
+%.tmp6687 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6686, i32 0, i32 6
+%.tmp6688 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6687
+%.tmp6689 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6688, i32 0, i32 1
+%.tmp6690 = load i8*, i8** %.tmp6689
+%.tmp6692 = getelementptr [6 x i8], [6 x i8]*@.str6691, i32 0, i32 0
+%.tmp6693 = call i32(i8*,i8*) @strcmp(i8* %.tmp6690, i8* %.tmp6692)
+%.tmp6694 = icmp eq i32 %.tmp6693, 0
+br i1 %.tmp6694, label %.if.true.6695, label %.if.false.6695
+.if.true.6695:
+%.tmp6696 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6697 = load i8, i8* @SCOPE_CONST
+%.tmp6699 = getelementptr [2 x i8], [2 x i8]*@.str6698, i32 0, i32 0
+call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp6696, i8 %.tmp6697, i8* %.tmp6699)
+br label %.if.end.6695
+.if.false.6695:
+%.tmp6700 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6701 = load i8, i8* @SCOPE_CONST
+%.tmp6703 = getelementptr [2 x i8], [2 x i8]*@.str6702, i32 0, i32 0
+call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp6700, i8 %.tmp6701, i8* %.tmp6703)
+br label %.if.end.6695
+.if.end.6695:
+br label %.if.end.6672
+.if.false.6672:
+%.tmp6704 = load %m307$.Node.type*, %m307$.Node.type** %mono.6484
+%.tmp6705 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6704, i32 0, i32 6
+%.tmp6706 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6705
+%.tmp6707 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6706, i32 0, i32 0
+%.tmp6708 = load i8*, i8** %.tmp6707
+%.tmp6710 = getelementptr [8 x i8], [8 x i8]*@.str6709, i32 0, i32 0
+%.tmp6711 = call i32(i8*,i8*) @strcmp(i8* %.tmp6708, i8* %.tmp6710)
+%.tmp6712 = icmp eq i32 %.tmp6711, 0
+br i1 %.tmp6712, label %.if.true.6713, label %.if.false.6713
+.if.true.6713:
+%.tmp6714 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6715 = load %m307$.Node.type*, %m307$.Node.type** %mono.6484
+%.tmp6716 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6715, i32 0, i32 6
+%.tmp6717 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6716
+%.tmp6718 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6717, i32 0, i32 6
+%.tmp6719 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6718
+%.tmp6720 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$compile_fn_call.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp6714, %m307$.Node.type* %.tmp6719)
+store %m1861$.AssignableInfo.type* %.tmp6720, %m1861$.AssignableInfo.type** %assignable_info.6482
+br label %.if.end.6713
+.if.false.6713:
+%.tmp6721 = load %m307$.Node.type*, %m307$.Node.type** %mono.6484
+%.tmp6722 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6721, i32 0, i32 6
+%.tmp6723 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6722
+%.tmp6724 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6723, i32 0, i32 0
+%.tmp6725 = load i8*, i8** %.tmp6724
+%.tmp6727 = getelementptr [7 x i8], [7 x i8]*@.str6726, i32 0, i32 0
+%.tmp6728 = call i32(i8*,i8*) @strcmp(i8* %.tmp6725, i8* %.tmp6727)
+%.tmp6729 = icmp eq i32 %.tmp6728, 0
+br i1 %.tmp6729, label %.if.true.6730, label %.if.false.6730
+.if.true.6730:
+%.tmp6731 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6732 = load %m307$.Node.type*, %m307$.Node.type** %mono.6484
+%.tmp6733 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6732, i32 0, i32 6
+%.tmp6734 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6733
+%.tmp6735 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6734, i32 0, i32 1
+%.tmp6736 = load i8*, i8** %.tmp6735
+%.tmp6737 = call %m1861$.AssignableInfo.type*(%m1861$.CompilerCtx.type*,i8*) @m1861$define_string.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.cp(%m1861$.CompilerCtx.type* %.tmp6731, i8* %.tmp6736)
+%string_info.6738 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp6737, %m1861$.AssignableInfo.type** %string_info.6738
+%.tmp6739 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
+%.tmp6740 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp6739)
+store %m1861$.AssignableInfo.type* %.tmp6740, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6741 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6742 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+call void(%m1861$.CompilerCtx.type*,%m1861$.AssignableInfo.type*) @m1861$set_assignable_tmp_id.v.m1861$.CompilerCtx.typep.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp6741, %m1861$.AssignableInfo.type* %.tmp6742)
+%.tmp6743 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6744 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %string_info.6738
+%.tmp6745 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6744, i32 0, i32 3
+%.tmp6746 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6745
+%.tmp6747 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp6743, %m1861$.Type.type* %.tmp6746)
+%str_tr.6748 = alloca i8*
+store i8* %.tmp6747, i8** %str_tr.6748
+%.tmp6749 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6750 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp6749, i32 0, i32 1
+%.tmp6751 = load %m0$.File.type*, %m0$.File.type** %.tmp6750
+%.tmp6753 = getelementptr [44 x i8], [44 x i8]*@.str6752, i32 0, i32 0
+%.tmp6754 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6755 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6754)
+%.tmp6756 = load i8*, i8** %str_tr.6748
+%.tmp6757 = load i8*, i8** %str_tr.6748
+%.tmp6758 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %string_info.6738
+%.tmp6759 = call i8*(%m1861$.AssignableInfo.type*) @m1861$repr_assignable_id.cp.m1861$.AssignableInfo.typep(%m1861$.AssignableInfo.type* %.tmp6758)
+%.tmp6760 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp6751, i8* %.tmp6753, i8* %.tmp6755, i8* %.tmp6756, i8* %.tmp6757, i8* %.tmp6759)
+%.tmp6761 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6762 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6761, i32 0, i32 3
+%.tmp6763 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+store %m1861$.Type.type* %.tmp6763, %m1861$.Type.type** %.tmp6762
+%.tmp6764 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6765 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6764, i32 0, i32 3
+%.tmp6766 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6765
+%.tmp6767 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6766, i32 0, i32 0
+%.tmp6769 = getelementptr [4 x i8], [4 x i8]*@.str6768, i32 0, i32 0
+store i8* %.tmp6769, i8** %.tmp6767
+%.tmp6770 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6771 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6770, i32 0, i32 3
+%.tmp6772 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6771
+%.tmp6773 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6772, i32 0, i32 3
+%.tmp6774 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+store %m1861$.Type.type* %.tmp6774, %m1861$.Type.type** %.tmp6773
+%.tmp6775 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6776 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6775, i32 0, i32 3
+%.tmp6777 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6776
+%.tmp6778 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6777, i32 0, i32 3
+%.tmp6779 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6778
+%.tmp6780 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6779, i32 0, i32 0
+%.tmp6782 = getelementptr [4 x i8], [4 x i8]*@.str6781, i32 0, i32 0
+store i8* %.tmp6782, i8** %.tmp6780
+br label %.if.end.6730
+.if.false.6730:
+%.tmp6783 = load %m307$.Node.type*, %m307$.Node.type** %mono.6484
+%.tmp6784 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6783, i32 0, i32 6
+%.tmp6785 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6784
+%.tmp6786 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6785, i32 0, i32 0
+%.tmp6787 = load i8*, i8** %.tmp6786
+%.tmp6789 = getelementptr [4 x i8], [4 x i8]*@.str6788, i32 0, i32 0
+%.tmp6790 = call i32(i8*,i8*) @strcmp(i8* %.tmp6787, i8* %.tmp6789)
+%.tmp6791 = icmp eq i32 %.tmp6790, 0
+br i1 %.tmp6791, label %.if.true.6792, label %.if.false.6792
+.if.true.6792:
+%.tmp6793 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
+%.tmp6794 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp6793)
+store %m1861$.AssignableInfo.type* %.tmp6794, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6795 = load %m307$.Node.type*, %m307$.Node.type** %mono.6484
+%.tmp6796 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6795, i32 0, i32 6
+%.tmp6797 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6796
+%.tmp6798 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6797, i32 0, i32 1
+%.tmp6799 = load i8*, i8** %.tmp6798
+%.tmp6800 = call i32(i8*) @strlen(i8* %.tmp6799)
+%chr_len.6801 = alloca i32
+store i32 %.tmp6800, i32* %chr_len.6801
+%.tmp6802 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6803 = load i8, i8* @SCOPE_CONST
+%.tmp6805 = getelementptr [2 x i8], [2 x i8]*@.str6804, i32 0, i32 0
+call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp6802, i8 %.tmp6803, i8* %.tmp6805)
+%.tmp6806 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6807 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6806, i32 0, i32 0
+%.tmp6808 = load %m307$.Node.type*, %m307$.Node.type** %mono.6484
+%.tmp6809 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6808, i32 0, i32 6
+%.tmp6810 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6809
+%.tmp6811 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6810, i32 0, i32 1
+%.tmp6812 = load i8*, i8** %.tmp6811
+%.tmp6813 = call i8*(i8*) @m2225$chr_to_llvm.cp.cp(i8* %.tmp6812)
+store i8* %.tmp6813, i8** %.tmp6807
+%.tmp6814 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6815 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6814, i32 0, i32 0
+%.tmp6816 = load i8*, i8** %.tmp6815
+%.tmp6817 = icmp eq i8* %.tmp6816, null
+br i1 %.tmp6817, label %.if.true.6818, label %.if.false.6818
+.if.true.6818:
+%.tmp6819 = getelementptr i8*, i8** %err_buf.6485, i32 0
+%.tmp6821 = getelementptr [22 x i8], [22 x i8]*@.str6820, i32 0, i32 0
+%.tmp6822 = load %m307$.Node.type*, %m307$.Node.type** %mono.6484
+%.tmp6823 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6822, i32 0, i32 6
+%.tmp6824 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6823
+%.tmp6825 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6824, i32 0, i32 1
+%.tmp6826 = load i8*, i8** %.tmp6825
+%.tmp6827 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp6819, i8* %.tmp6821, i8* %.tmp6826)
+%.tmp6828 = bitcast ptr null to %m1861$.AssignableInfo.type*
+ret %m1861$.AssignableInfo.type* %.tmp6828
+br label %.if.end.6818
+.if.false.6818:
+br label %.if.end.6818
+.if.end.6818:
+%.tmp6829 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6830 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6829, i32 0, i32 3
+%.tmp6831 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+store %m1861$.Type.type* %.tmp6831, %m1861$.Type.type** %.tmp6830
+%.tmp6832 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6833 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6832, i32 0, i32 3
+%.tmp6834 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6833
+%.tmp6835 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6834, i32 0, i32 0
+%.tmp6837 = getelementptr [4 x i8], [4 x i8]*@.str6836, i32 0, i32 0
+store i8* %.tmp6837, i8** %.tmp6835
+br label %.if.end.6792
+.if.false.6792:
+%.tmp6838 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6839 = load %m307$.Node.type*, %m307$.Node.type** %mono.6484
+%.tmp6841 = getelementptr [40 x i8], [40 x i8]*@.str6840, i32 0, i32 0
+%.tmp6842 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp6838, %m307$.Node.type* %.tmp6839, i8* %.tmp6841)
+%.tmp6843 = load %m307$.Node.type*, %m307$.Node.type** %mono.6484
+%.tmp6844 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6843, i32 0, i32 6
+%.tmp6845 = load %m307$.Node.type*, %m307$.Node.type** %.tmp6844
+%.tmp6846 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6845, i32 0, i32 0
+%.tmp6847 = load i8*, i8** %.tmp6846
+%.tmp6848 = call i32(i8*,...) @printf(i8* %.tmp6842, i8* %.tmp6847)
+%.tmp6849 = bitcast ptr null to %m1861$.AssignableInfo.type*
+ret %m1861$.AssignableInfo.type* %.tmp6849
+br label %.if.end.6792
+.if.end.6792:
+br label %.if.end.6730
+.if.end.6730:
+br label %.if.end.6713
+.if.end.6713:
+br label %.if.end.6672
+.if.end.6672:
+br label %.if.end.6571
+.if.end.6571:
+br label %.if.end.6524
+.if.end.6524:
+br label %.if.end.6496
+.if.end.6496:
+%.tmp6850 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6851 = icmp eq %m1861$.AssignableInfo.type* %.tmp6850, null
+br i1 %.tmp6851, label %.if.true.6852, label %.if.false.6852
+.if.true.6852:
+%.tmp6853 = bitcast ptr null to %m1861$.AssignableInfo.type*
+ret %m1861$.AssignableInfo.type* %.tmp6853
+br label %.if.end.6852
+.if.false.6852:
+br label %.if.end.6852
+.if.end.6852:
+%.tmp6854 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6855 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6854, i32 0, i32 4
+%.tmp6856 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
+%.tmp6857 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6856, i32 0, i32 3
+%.tmp6858 = load i32, i32* %.tmp6857
+store i32 %.tmp6858, i32* %.tmp6855
+%.tmp6859 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6860 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6859, i32 0, i32 5
+%.tmp6861 = load %m307$.Node.type*, %m307$.Node.type** %curr_node
+%.tmp6862 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp6861, i32 0, i32 4
+%.tmp6863 = load i32, i32* %.tmp6862
+store i32 %.tmp6863, i32* %.tmp6860
+%.tmp6864 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %assignable_info.6482
+%.tmp6865 = bitcast %m1861$.AssignableInfo.type* %.tmp6864 to %m1861$.AssignableInfo.type*
+ret %m1861$.AssignableInfo.type* %.tmp6865
 }
 define i8* @m1861$type_abbr.cp.m1861$.Type.typep(%m1861$.Type.type* %.type.arg) {
 %type = alloca %m1861$.Type.type*
 store %m1861$.Type.type* %.type.arg, %m1861$.Type.type** %type
-%.tmp6687 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6688 = icmp ne %m1861$.Type.type* %.tmp6687, null
-%.tmp6690 = getelementptr [22 x i8], [22 x i8]*@.str6689, i32 0, i32 0
-call void(i1,i8*) @m2$assert.v.b.cp(i1 %.tmp6688, i8* %.tmp6690)
-%.tmp6691 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6692 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6691, i32 0, i32 0
-%.tmp6693 = load i8*, i8** %.tmp6692
-%.tmp6694 = icmp ne i8* %.tmp6693, null
-%.tmp6696 = getelementptr [59 x i8], [59 x i8]*@.str6695, i32 0, i32 0
-call void(i1,i8*) @m2$assert.v.b.cp(i1 %.tmp6694, i8* %.tmp6696)
-%.tmp6697 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6698 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6697, i32 0, i32 0
-%.tmp6699 = load i8*, i8** %.tmp6698
-%.tmp6701 = getelementptr [4 x i8], [4 x i8]*@.str6700, i32 0, i32 0
-%.tmp6702 = call i32(i8*,i8*) @strcmp(i8* %.tmp6699, i8* %.tmp6701)
-%.tmp6703 = icmp eq i32 %.tmp6702, 0
-br i1 %.tmp6703, label %.if.true.6704, label %.if.false.6704
-.if.true.6704:
-%.tmp6706 = getelementptr [2 x i8], [2 x i8]*@.str6705, i32 0, i32 0
-ret i8* %.tmp6706
-br label %.if.end.6704
-.if.false.6704:
-%.tmp6707 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6708 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6707, i32 0, i32 0
-%.tmp6709 = load i8*, i8** %.tmp6708
-%.tmp6711 = getelementptr [5 x i8], [5 x i8]*@.str6710, i32 0, i32 0
-%.tmp6712 = call i32(i8*,i8*) @strcmp(i8* %.tmp6709, i8* %.tmp6711)
-%.tmp6713 = icmp eq i32 %.tmp6712, 0
-br i1 %.tmp6713, label %.if.true.6714, label %.if.false.6714
-.if.true.6714:
-%.tmp6716 = getelementptr [2 x i8], [2 x i8]*@.str6715, i32 0, i32 0
-ret i8* %.tmp6716
-br label %.if.end.6714
-.if.false.6714:
-%.tmp6717 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6718 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6717, i32 0, i32 0
-%.tmp6719 = load i8*, i8** %.tmp6718
-%.tmp6721 = getelementptr [5 x i8], [5 x i8]*@.str6720, i32 0, i32 0
-%.tmp6722 = call i32(i8*,i8*) @strcmp(i8* %.tmp6719, i8* %.tmp6721)
-%.tmp6723 = icmp eq i32 %.tmp6722, 0
-br i1 %.tmp6723, label %.if.true.6724, label %.if.false.6724
-.if.true.6724:
-%.tmp6726 = getelementptr [2 x i8], [2 x i8]*@.str6725, i32 0, i32 0
-ret i8* %.tmp6726
-br label %.if.end.6724
-.if.false.6724:
-%.tmp6727 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6728 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6727, i32 0, i32 0
-%.tmp6729 = load i8*, i8** %.tmp6728
-%.tmp6731 = getelementptr [4 x i8], [4 x i8]*@.str6730, i32 0, i32 0
-%.tmp6732 = call i32(i8*,i8*) @strcmp(i8* %.tmp6729, i8* %.tmp6731)
-%.tmp6733 = icmp eq i32 %.tmp6732, 0
-br i1 %.tmp6733, label %.if.true.6734, label %.if.false.6734
-.if.true.6734:
-%.tmp6736 = getelementptr [2 x i8], [2 x i8]*@.str6735, i32 0, i32 0
-ret i8* %.tmp6736
-br label %.if.end.6734
-.if.false.6734:
-%.tmp6737 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6738 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6737, i32 0, i32 0
-%.tmp6739 = load i8*, i8** %.tmp6738
-%.tmp6741 = getelementptr [4 x i8], [4 x i8]*@.str6740, i32 0, i32 0
-%.tmp6742 = call i32(i8*,i8*) @strcmp(i8* %.tmp6739, i8* %.tmp6741)
-%.tmp6743 = icmp eq i32 %.tmp6742, 0
-br i1 %.tmp6743, label %.if.true.6744, label %.if.false.6744
-.if.true.6744:
-%buf.6745 = alloca i8*
-store i8* null, i8** %buf.6745
-%.tmp6746 = getelementptr i8*, i8** %buf.6745, i32 0
-%.tmp6748 = getelementptr [4 x i8], [4 x i8]*@.str6747, i32 0, i32 0
-%.tmp6749 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6750 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6749, i32 0, i32 3
-%.tmp6751 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6750
-%.tmp6752 = call i8*(%m1861$.Type.type*) @m1861$type_abbr.cp.m1861$.Type.typep(%m1861$.Type.type* %.tmp6751)
-%.tmp6753 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp6746, i8* %.tmp6748, i8* %.tmp6752)
-%.tmp6754 = load i8*, i8** %buf.6745
-ret i8* %.tmp6754
-br label %.if.end.6744
-.if.false.6744:
-%.tmp6755 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6756 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6755, i32 0, i32 0
-%.tmp6757 = load i8*, i8** %.tmp6756
-%.tmp6759 = getelementptr [10 x i8], [10 x i8]*@.str6758, i32 0, i32 0
-%.tmp6760 = call i32(i8*,i8*) @strcmp(i8* %.tmp6757, i8* %.tmp6759)
-%.tmp6761 = icmp eq i32 %.tmp6760, 0
-br i1 %.tmp6761, label %.if.true.6762, label %.if.false.6762
-.if.true.6762:
-%.tmp6763 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6764 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6763, i32 0, i32 2
-%.tmp6765 = load i8*, i8** %.tmp6764
-ret i8* %.tmp6765
-br label %.if.end.6762
-.if.false.6762:
-%.tmp6766 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6767 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6766, i32 0, i32 0
-%.tmp6768 = load i8*, i8** %.tmp6767
-%.tmp6770 = getelementptr [6 x i8], [6 x i8]*@.str6769, i32 0, i32 0
-%.tmp6771 = call i32(i8*,i8*) @strcmp(i8* %.tmp6768, i8* %.tmp6770)
-%.tmp6772 = icmp eq i32 %.tmp6771, 0
-br i1 %.tmp6772, label %.if.true.6773, label %.if.false.6773
-.if.true.6773:
-%.tmp6775 = getelementptr [2 x i8], [2 x i8]*@.str6774, i32 0, i32 0
-ret i8* %.tmp6775
-br label %.if.end.6773
-.if.false.6773:
-%.tmp6777 = getelementptr [44 x i8], [44 x i8]*@.str6776, i32 0, i32 0
-%.tmp6778 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6779 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6778, i32 0, i32 0
-%.tmp6780 = load i8*, i8** %.tmp6779
-%.tmp6781 = call i32(i8*,...) @printf(i8* %.tmp6777, i8* %.tmp6780)
-br label %.if.end.6773
-.if.end.6773:
-br label %.if.end.6762
-.if.end.6762:
-br label %.if.end.6744
-.if.end.6744:
-br label %.if.end.6734
-.if.end.6734:
-br label %.if.end.6724
-.if.end.6724:
-br label %.if.end.6714
-.if.end.6714:
-br label %.if.end.6704
-.if.end.6704:
-%.tmp6782 = bitcast ptr null to i8*
-ret i8* %.tmp6782
+%.tmp6866 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp6867 = icmp ne %m1861$.Type.type* %.tmp6866, null
+%.tmp6869 = getelementptr [22 x i8], [22 x i8]*@.str6868, i32 0, i32 0
+call void(i1,i8*) @m2$assert.v.b.cp(i1 %.tmp6867, i8* %.tmp6869)
+%.tmp6870 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp6871 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6870, i32 0, i32 0
+%.tmp6872 = load i8*, i8** %.tmp6871
+%.tmp6873 = icmp ne i8* %.tmp6872, null
+%.tmp6875 = getelementptr [59 x i8], [59 x i8]*@.str6874, i32 0, i32 0
+call void(i1,i8*) @m2$assert.v.b.cp(i1 %.tmp6873, i8* %.tmp6875)
+%.tmp6876 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp6877 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6876, i32 0, i32 0
+%.tmp6878 = load i8*, i8** %.tmp6877
+%.tmp6880 = getelementptr [4 x i8], [4 x i8]*@.str6879, i32 0, i32 0
+%.tmp6881 = call i32(i8*,i8*) @strcmp(i8* %.tmp6878, i8* %.tmp6880)
+%.tmp6882 = icmp eq i32 %.tmp6881, 0
+br i1 %.tmp6882, label %.if.true.6883, label %.if.false.6883
+.if.true.6883:
+%.tmp6885 = getelementptr [2 x i8], [2 x i8]*@.str6884, i32 0, i32 0
+ret i8* %.tmp6885
+br label %.if.end.6883
+.if.false.6883:
+%.tmp6886 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp6887 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6886, i32 0, i32 0
+%.tmp6888 = load i8*, i8** %.tmp6887
+%.tmp6890 = getelementptr [5 x i8], [5 x i8]*@.str6889, i32 0, i32 0
+%.tmp6891 = call i32(i8*,i8*) @strcmp(i8* %.tmp6888, i8* %.tmp6890)
+%.tmp6892 = icmp eq i32 %.tmp6891, 0
+br i1 %.tmp6892, label %.if.true.6893, label %.if.false.6893
+.if.true.6893:
+%.tmp6895 = getelementptr [2 x i8], [2 x i8]*@.str6894, i32 0, i32 0
+ret i8* %.tmp6895
+br label %.if.end.6893
+.if.false.6893:
+%.tmp6896 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp6897 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6896, i32 0, i32 0
+%.tmp6898 = load i8*, i8** %.tmp6897
+%.tmp6900 = getelementptr [5 x i8], [5 x i8]*@.str6899, i32 0, i32 0
+%.tmp6901 = call i32(i8*,i8*) @strcmp(i8* %.tmp6898, i8* %.tmp6900)
+%.tmp6902 = icmp eq i32 %.tmp6901, 0
+br i1 %.tmp6902, label %.if.true.6903, label %.if.false.6903
+.if.true.6903:
+%.tmp6905 = getelementptr [2 x i8], [2 x i8]*@.str6904, i32 0, i32 0
+ret i8* %.tmp6905
+br label %.if.end.6903
+.if.false.6903:
+%.tmp6906 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp6907 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6906, i32 0, i32 0
+%.tmp6908 = load i8*, i8** %.tmp6907
+%.tmp6910 = getelementptr [4 x i8], [4 x i8]*@.str6909, i32 0, i32 0
+%.tmp6911 = call i32(i8*,i8*) @strcmp(i8* %.tmp6908, i8* %.tmp6910)
+%.tmp6912 = icmp eq i32 %.tmp6911, 0
+br i1 %.tmp6912, label %.if.true.6913, label %.if.false.6913
+.if.true.6913:
+%.tmp6915 = getelementptr [2 x i8], [2 x i8]*@.str6914, i32 0, i32 0
+ret i8* %.tmp6915
+br label %.if.end.6913
+.if.false.6913:
+%.tmp6916 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp6917 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6916, i32 0, i32 0
+%.tmp6918 = load i8*, i8** %.tmp6917
+%.tmp6920 = getelementptr [4 x i8], [4 x i8]*@.str6919, i32 0, i32 0
+%.tmp6921 = call i32(i8*,i8*) @strcmp(i8* %.tmp6918, i8* %.tmp6920)
+%.tmp6922 = icmp eq i32 %.tmp6921, 0
+br i1 %.tmp6922, label %.if.true.6923, label %.if.false.6923
+.if.true.6923:
+%buf.6924 = alloca i8*
+store i8* null, i8** %buf.6924
+%.tmp6925 = getelementptr i8*, i8** %buf.6924, i32 0
+%.tmp6927 = getelementptr [4 x i8], [4 x i8]*@.str6926, i32 0, i32 0
+%.tmp6928 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp6929 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6928, i32 0, i32 3
+%.tmp6930 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6929
+%.tmp6931 = call i8*(%m1861$.Type.type*) @m1861$type_abbr.cp.m1861$.Type.typep(%m1861$.Type.type* %.tmp6930)
+%.tmp6932 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp6925, i8* %.tmp6927, i8* %.tmp6931)
+%.tmp6933 = load i8*, i8** %buf.6924
+ret i8* %.tmp6933
+br label %.if.end.6923
+.if.false.6923:
+%.tmp6934 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp6935 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6934, i32 0, i32 0
+%.tmp6936 = load i8*, i8** %.tmp6935
+%.tmp6938 = getelementptr [10 x i8], [10 x i8]*@.str6937, i32 0, i32 0
+%.tmp6939 = call i32(i8*,i8*) @strcmp(i8* %.tmp6936, i8* %.tmp6938)
+%.tmp6940 = icmp eq i32 %.tmp6939, 0
+br i1 %.tmp6940, label %.if.true.6941, label %.if.false.6941
+.if.true.6941:
+%.tmp6942 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp6943 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6942, i32 0, i32 2
+%.tmp6944 = load i8*, i8** %.tmp6943
+ret i8* %.tmp6944
+br label %.if.end.6941
+.if.false.6941:
+%.tmp6945 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp6946 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6945, i32 0, i32 0
+%.tmp6947 = load i8*, i8** %.tmp6946
+%.tmp6949 = getelementptr [6 x i8], [6 x i8]*@.str6948, i32 0, i32 0
+%.tmp6950 = call i32(i8*,i8*) @strcmp(i8* %.tmp6947, i8* %.tmp6949)
+%.tmp6951 = icmp eq i32 %.tmp6950, 0
+br i1 %.tmp6951, label %.if.true.6952, label %.if.false.6952
+.if.true.6952:
+%.tmp6954 = getelementptr [2 x i8], [2 x i8]*@.str6953, i32 0, i32 0
+ret i8* %.tmp6954
+br label %.if.end.6952
+.if.false.6952:
+%.tmp6956 = getelementptr [44 x i8], [44 x i8]*@.str6955, i32 0, i32 0
+%.tmp6957 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp6958 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6957, i32 0, i32 0
+%.tmp6959 = load i8*, i8** %.tmp6958
+%.tmp6960 = call i32(i8*,...) @printf(i8* %.tmp6956, i8* %.tmp6959)
+br label %.if.end.6952
+.if.end.6952:
+br label %.if.end.6941
+.if.end.6941:
+br label %.if.end.6923
+.if.end.6923:
+br label %.if.end.6913
+.if.end.6913:
+br label %.if.end.6903
+.if.end.6903:
+br label %.if.end.6893
+.if.end.6893:
+br label %.if.end.6883
+.if.end.6883:
+%.tmp6961 = bitcast ptr null to i8*
+ret i8* %.tmp6961
 }
 define %m1861$.AssignableInfo.type* @m1861$define_string.m1861$.AssignableInfo.typep.m1861$.CompilerCtx.typep.cp(%m1861$.CompilerCtx.type* %.ctx.arg, i8* %.text.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %text = alloca i8*
 store i8* %.text.arg, i8** %text
-%.tmp6783 = bitcast ptr null to %m307$.Node.type*
-%.tmp6784 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp6783)
-%info.6785 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp6784, %m1861$.AssignableInfo.type** %info.6785
-%tmp_buff.6786 = alloca i8*
-store i8* null, i8** %tmp_buff.6786
-%.tmp6787 = getelementptr i8*, i8** %tmp_buff.6786, i32 0
-%.tmp6789 = getelementptr [7 x i8], [7 x i8]*@.str6788, i32 0, i32 0
-%.tmp6790 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6791 = call i32(%m1861$.CompilerCtx.type*) @m1861$new_uid.i.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp6790)
-%.tmp6792 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp6787, i8* %.tmp6789, i32 %.tmp6791)
-%.tmp6793 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6785
-%.tmp6794 = load i8, i8* @SCOPE_GLOBAL
-%.tmp6795 = load i8*, i8** %tmp_buff.6786
-call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp6793, i8 %.tmp6794, i8* %.tmp6795)
-%.tmp6796 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* null, i32 1
-%.tmp6797 = ptrtoint %m1861$.GlobalName.type* %.tmp6796 to i32
-%.tmp6798 = call i8*(i32) @malloc(i32 %.tmp6797)
-%.tmp6799 = bitcast i8* %.tmp6798 to %m1861$.GlobalName.type*
-%global.6800 = alloca %m1861$.GlobalName.type*
-store %m1861$.GlobalName.type* %.tmp6799, %m1861$.GlobalName.type** %global.6800
-%.tmp6801 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %global.6800
-%.tmp6802 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp6801, i32 0, i32 0
-%.tmp6803 = load i8*, i8** %text
-%.tmp6804 = call i8*(i8*) @m2225$string_to_llvm.cp.cp(i8* %.tmp6803)
-store i8* %.tmp6804, i8** %.tmp6802
-%.tmp6805 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6785
-%.tmp6806 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6805, i32 0, i32 3
-%.tmp6807 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-store %m1861$.Type.type* %.tmp6807, %m1861$.Type.type** %.tmp6806
-%.tmp6808 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6785
-%.tmp6809 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6808, i32 0, i32 3
-%.tmp6810 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6809
-%.tmp6811 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6810, i32 0, i32 0
-%.tmp6813 = getelementptr [6 x i8], [6 x i8]*@.str6812, i32 0, i32 0
-store i8* %.tmp6813, i8** %.tmp6811
-%.tmp6814 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6785
-%.tmp6815 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6814, i32 0, i32 3
-%.tmp6816 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6815
-%.tmp6817 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6816, i32 0, i32 3
-%.tmp6818 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-store %m1861$.Type.type* %.tmp6818, %m1861$.Type.type** %.tmp6817
-%.tmp6819 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6785
-%.tmp6820 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6819, i32 0, i32 3
-%.tmp6821 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6820
-%.tmp6822 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6821, i32 0, i32 3
-%.tmp6823 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6822
-%.tmp6824 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6823, i32 0, i32 0
-%.tmp6826 = getelementptr [4 x i8], [4 x i8]*@.str6825, i32 0, i32 0
-store i8* %.tmp6826, i8** %.tmp6824
-%.tmp6827 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6785
-%.tmp6828 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6827, i32 0, i32 3
-%.tmp6829 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6828
-%.tmp6830 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6829, i32 0, i32 3
-%.tmp6831 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6830
-%.tmp6832 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6831, i32 0, i32 4
-%.tmp6833 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-store %m1861$.Type.type* %.tmp6833, %m1861$.Type.type** %.tmp6832
-%.tmp6834 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6785
-%.tmp6835 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6834, i32 0, i32 3
-%.tmp6836 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6835
-%.tmp6837 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6836, i32 0, i32 3
-%.tmp6838 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6837
-%.tmp6839 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6838, i32 0, i32 4
-%.tmp6840 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6839
-%.tmp6841 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6840, i32 0, i32 0
-%.tmp6842 = getelementptr i8*, i8** %.tmp6841, i32 0
-%.tmp6844 = getelementptr [3 x i8], [3 x i8]*@.str6843, i32 0, i32 0
-%.tmp6845 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %global.6800
-%.tmp6846 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp6845, i32 0, i32 0
-%.tmp6847 = load i8*, i8** %.tmp6846
-%.tmp6848 = call i32(i8*) @m2225$llvm_str_len.i.cp(i8* %.tmp6847)
-%.tmp6849 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp6842, i8* %.tmp6844, i32 %.tmp6848)
-%.tmp6850 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %global.6800
-%.tmp6851 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp6850, i32 0, i32 1
-%.tmp6853 = getelementptr [7 x i8], [7 x i8]*@.str6852, i32 0, i32 0
-store i8* %.tmp6853, i8** %.tmp6851
-%.tmp6854 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %global.6800
-%.tmp6855 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp6854, i32 0, i32 4
-store %m1861$.GlobalName.type* null, %m1861$.GlobalName.type** %.tmp6855
-%.tmp6856 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %global.6800
-%.tmp6857 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp6856, i32 0, i32 3
-%.tmp6858 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6785
-store %m1861$.AssignableInfo.type* %.tmp6858, %m1861$.AssignableInfo.type** %.tmp6857
-%.tmp6859 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %global.6800
-%.tmp6860 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp6859, i32 0, i32 2
-store i1 0, i1* %.tmp6860
-%.tmp6861 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6862 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %global.6800
-call void(%m1861$.CompilerCtx.type*,%m1861$.GlobalName.type*) @m1861$append_global.v.m1861$.CompilerCtx.typep.m1861$.GlobalName.typep(%m1861$.CompilerCtx.type* %.tmp6861, %m1861$.GlobalName.type* %.tmp6862)
-%.tmp6863 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6785
-ret %m1861$.AssignableInfo.type* %.tmp6863
+%.tmp6962 = bitcast ptr null to %m307$.Node.type*
+%.tmp6963 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp6962)
+%info.6964 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp6963, %m1861$.AssignableInfo.type** %info.6964
+%tmp_buff.6965 = alloca i8*
+store i8* null, i8** %tmp_buff.6965
+%.tmp6966 = getelementptr i8*, i8** %tmp_buff.6965, i32 0
+%.tmp6968 = getelementptr [7 x i8], [7 x i8]*@.str6967, i32 0, i32 0
+%.tmp6969 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp6970 = call i32(%m1861$.CompilerCtx.type*) @m1861$new_uid.i.m1861$.CompilerCtx.typep(%m1861$.CompilerCtx.type* %.tmp6969)
+%.tmp6971 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp6966, i8* %.tmp6968, i32 %.tmp6970)
+%.tmp6972 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6964
+%.tmp6973 = load i8, i8* @SCOPE_GLOBAL
+%.tmp6974 = load i8*, i8** %tmp_buff.6965
+call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp6972, i8 %.tmp6973, i8* %.tmp6974)
+%.tmp6975 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* null, i32 1
+%.tmp6976 = ptrtoint %m1861$.GlobalName.type* %.tmp6975 to i32
+%.tmp6977 = call i8*(i32) @malloc(i32 %.tmp6976)
+%.tmp6978 = bitcast i8* %.tmp6977 to %m1861$.GlobalName.type*
+%global.6979 = alloca %m1861$.GlobalName.type*
+store %m1861$.GlobalName.type* %.tmp6978, %m1861$.GlobalName.type** %global.6979
+%.tmp6980 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %global.6979
+%.tmp6981 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp6980, i32 0, i32 0
+%.tmp6982 = load i8*, i8** %text
+%.tmp6983 = call i8*(i8*) @m2225$string_to_llvm.cp.cp(i8* %.tmp6982)
+store i8* %.tmp6983, i8** %.tmp6981
+%.tmp6984 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6964
+%.tmp6985 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6984, i32 0, i32 3
+%.tmp6986 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+store %m1861$.Type.type* %.tmp6986, %m1861$.Type.type** %.tmp6985
+%.tmp6987 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6964
+%.tmp6988 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6987, i32 0, i32 3
+%.tmp6989 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6988
+%.tmp6990 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6989, i32 0, i32 0
+%.tmp6992 = getelementptr [6 x i8], [6 x i8]*@.str6991, i32 0, i32 0
+store i8* %.tmp6992, i8** %.tmp6990
+%.tmp6993 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6964
+%.tmp6994 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6993, i32 0, i32 3
+%.tmp6995 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6994
+%.tmp6996 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6995, i32 0, i32 3
+%.tmp6997 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+store %m1861$.Type.type* %.tmp6997, %m1861$.Type.type** %.tmp6996
+%.tmp6998 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6964
+%.tmp6999 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6998, i32 0, i32 3
+%.tmp7000 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6999
+%.tmp7001 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7000, i32 0, i32 3
+%.tmp7002 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7001
+%.tmp7003 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7002, i32 0, i32 0
+%.tmp7005 = getelementptr [4 x i8], [4 x i8]*@.str7004, i32 0, i32 0
+store i8* %.tmp7005, i8** %.tmp7003
+%.tmp7006 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6964
+%.tmp7007 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp7006, i32 0, i32 3
+%.tmp7008 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7007
+%.tmp7009 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7008, i32 0, i32 3
+%.tmp7010 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7009
+%.tmp7011 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7010, i32 0, i32 4
+%.tmp7012 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+store %m1861$.Type.type* %.tmp7012, %m1861$.Type.type** %.tmp7011
+%.tmp7013 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6964
+%.tmp7014 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp7013, i32 0, i32 3
+%.tmp7015 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7014
+%.tmp7016 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7015, i32 0, i32 3
+%.tmp7017 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7016
+%.tmp7018 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7017, i32 0, i32 4
+%.tmp7019 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7018
+%.tmp7020 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7019, i32 0, i32 0
+%.tmp7021 = getelementptr i8*, i8** %.tmp7020, i32 0
+%.tmp7023 = getelementptr [3 x i8], [3 x i8]*@.str7022, i32 0, i32 0
+%.tmp7024 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %global.6979
+%.tmp7025 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp7024, i32 0, i32 0
+%.tmp7026 = load i8*, i8** %.tmp7025
+%.tmp7027 = call i32(i8*) @m2225$llvm_str_len.i.cp(i8* %.tmp7026)
+%.tmp7028 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7021, i8* %.tmp7023, i32 %.tmp7027)
+%.tmp7029 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %global.6979
+%.tmp7030 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp7029, i32 0, i32 1
+%.tmp7032 = getelementptr [7 x i8], [7 x i8]*@.str7031, i32 0, i32 0
+store i8* %.tmp7032, i8** %.tmp7030
+%.tmp7033 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %global.6979
+%.tmp7034 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp7033, i32 0, i32 4
+store %m1861$.GlobalName.type* null, %m1861$.GlobalName.type** %.tmp7034
+%.tmp7035 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %global.6979
+%.tmp7036 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp7035, i32 0, i32 3
+%.tmp7037 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6964
+store %m1861$.AssignableInfo.type* %.tmp7037, %m1861$.AssignableInfo.type** %.tmp7036
+%.tmp7038 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %global.6979
+%.tmp7039 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp7038, i32 0, i32 2
+store i1 0, i1* %.tmp7039
+%.tmp7040 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7041 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %global.6979
+call void(%m1861$.CompilerCtx.type*,%m1861$.GlobalName.type*) @m1861$append_global.v.m1861$.CompilerCtx.typep.m1861$.GlobalName.typep(%m1861$.CompilerCtx.type* %.tmp7040, %m1861$.GlobalName.type* %.tmp7041)
+%.tmp7042 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6964
+ret %m1861$.AssignableInfo.type* %.tmp7042
 }
 define void @m1861$define_module.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp.cp(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.mod.arg, i8* %.as_name.arg, i8* %.abspath.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
@@ -9920,25 +10182,25 @@ store %m307$.Node.type* %.mod.arg, %m307$.Node.type** %mod
 store i8* %.as_name.arg, i8** %as_name
 %abspath = alloca i8*
 store i8* %.abspath.arg, i8** %abspath
-%.tmp6864 = load %m307$.Node.type*, %m307$.Node.type** %mod
-%.tmp6865 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp6864)
-%info.6866 = alloca %m1861$.AssignableInfo.type*
-store %m1861$.AssignableInfo.type* %.tmp6865, %m1861$.AssignableInfo.type** %info.6866
-%.tmp6867 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6866
-%.tmp6868 = load i8, i8* @SCOPE_CONST
-%.tmp6869 = load i8*, i8** %abspath
-call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp6867, i8 %.tmp6868, i8* %.tmp6869)
-%.tmp6870 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6866
-%.tmp6871 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6870, i32 0, i32 2
-%.tmp6873 = getelementptr [7 x i8], [7 x i8]*@.str6872, i32 0, i32 0
-store i8* %.tmp6873, i8** %.tmp6871
-%.tmp6874 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6866
-%.tmp6875 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp6874, i32 0, i32 3
-store %m1861$.Type.type* null, %m1861$.Type.type** %.tmp6875
-%.tmp6876 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6877 = load i8*, i8** %as_name
-%.tmp6878 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.6866
-call void(%m1861$.CompilerCtx.type*,i8*,%m1861$.AssignableInfo.type*) @m1861$define_assignable.v.m1861$.CompilerCtx.typep.cp.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp6876, i8* %.tmp6877, %m1861$.AssignableInfo.type* %.tmp6878)
+%.tmp7043 = load %m307$.Node.type*, %m307$.Node.type** %mod
+%.tmp7044 = call %m1861$.AssignableInfo.type*(%m307$.Node.type*) @m1861$new_assignable_info.m1861$.AssignableInfo.typep.m307$.Node.typep(%m307$.Node.type* %.tmp7043)
+%info.7045 = alloca %m1861$.AssignableInfo.type*
+store %m1861$.AssignableInfo.type* %.tmp7044, %m1861$.AssignableInfo.type** %info.7045
+%.tmp7046 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.7045
+%.tmp7047 = load i8, i8* @SCOPE_CONST
+%.tmp7048 = load i8*, i8** %abspath
+call void(%m1861$.AssignableInfo.type*,i8,i8*) @m1861$set_assignable_id.v.m1861$.AssignableInfo.typep.c.cp(%m1861$.AssignableInfo.type* %.tmp7046, i8 %.tmp7047, i8* %.tmp7048)
+%.tmp7049 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.7045
+%.tmp7050 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp7049, i32 0, i32 2
+%.tmp7052 = getelementptr [7 x i8], [7 x i8]*@.str7051, i32 0, i32 0
+store i8* %.tmp7052, i8** %.tmp7050
+%.tmp7053 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.7045
+%.tmp7054 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp7053, i32 0, i32 3
+store %m1861$.Type.type* null, %m1861$.Type.type** %.tmp7054
+%.tmp7055 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7056 = load i8*, i8** %as_name
+%.tmp7057 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %info.7045
+call void(%m1861$.CompilerCtx.type*,i8*,%m1861$.AssignableInfo.type*) @m1861$define_assignable.v.m1861$.CompilerCtx.typep.cp.m1861$.AssignableInfo.typep(%m1861$.CompilerCtx.type* %.tmp7055, i8* %.tmp7056, %m1861$.AssignableInfo.type* %.tmp7057)
 ret void
 }
 define void @m1861$append_global.v.m1861$.CompilerCtx.typep.m1861$.GlobalName.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.GlobalName.type* %.g.arg) {
@@ -9946,44 +10208,44 @@ define void @m1861$append_global.v.m1861$.CompilerCtx.typep.m1861$.GlobalName.ty
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %g = alloca %m1861$.GlobalName.type*
 store %m1861$.GlobalName.type* %.g.arg, %m1861$.GlobalName.type** %g
-%.tmp6879 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6880 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp6879, i32 0, i32 3
-%.tmp6881 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %.tmp6880
-%.tmp6882 = icmp eq %m1861$.GlobalName.type* %.tmp6881, null
-br i1 %.tmp6882, label %.if.true.6883, label %.if.false.6883
-.if.true.6883:
-%.tmp6884 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6885 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp6884, i32 0, i32 3
-%.tmp6886 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g
-store %m1861$.GlobalName.type* %.tmp6886, %m1861$.GlobalName.type** %.tmp6885
-br label %.if.end.6883
-.if.false.6883:
-%last_global.6887 = alloca %m1861$.GlobalName.type*
-store %m1861$.GlobalName.type* null, %m1861$.GlobalName.type** %last_global.6887
-%.tmp6889 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6890 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp6889, i32 0, i32 3
-%.tmp6891 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %.tmp6890
-store %m1861$.GlobalName.type* %.tmp6891, %m1861$.GlobalName.type** %last_global.6887
-br label %.for.start.6888
-.for.start.6888:
-%.tmp6892 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %last_global.6887
-%.tmp6893 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp6892, i32 0, i32 4
-%.tmp6894 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %.tmp6893
-%.tmp6895 = icmp ne %m1861$.GlobalName.type* %.tmp6894, null
-br i1 %.tmp6895, label %.for.continue.6888, label %.for.end.6888
-.for.continue.6888:
-%.tmp6896 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %last_global.6887
-%.tmp6897 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp6896, i32 0, i32 4
-%.tmp6898 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %.tmp6897
-store %m1861$.GlobalName.type* %.tmp6898, %m1861$.GlobalName.type** %last_global.6887
-br label %.for.start.6888
-.for.end.6888:
-%.tmp6899 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %last_global.6887
-%.tmp6900 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp6899, i32 0, i32 4
-%.tmp6901 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g
-store %m1861$.GlobalName.type* %.tmp6901, %m1861$.GlobalName.type** %.tmp6900
-br label %.if.end.6883
-.if.end.6883:
+%.tmp7058 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7059 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp7058, i32 0, i32 3
+%.tmp7060 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %.tmp7059
+%.tmp7061 = icmp eq %m1861$.GlobalName.type* %.tmp7060, null
+br i1 %.tmp7061, label %.if.true.7062, label %.if.false.7062
+.if.true.7062:
+%.tmp7063 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7064 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp7063, i32 0, i32 3
+%.tmp7065 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g
+store %m1861$.GlobalName.type* %.tmp7065, %m1861$.GlobalName.type** %.tmp7064
+br label %.if.end.7062
+.if.false.7062:
+%last_global.7066 = alloca %m1861$.GlobalName.type*
+store %m1861$.GlobalName.type* null, %m1861$.GlobalName.type** %last_global.7066
+%.tmp7068 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7069 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp7068, i32 0, i32 3
+%.tmp7070 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %.tmp7069
+store %m1861$.GlobalName.type* %.tmp7070, %m1861$.GlobalName.type** %last_global.7066
+br label %.for.start.7067
+.for.start.7067:
+%.tmp7071 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %last_global.7066
+%.tmp7072 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp7071, i32 0, i32 4
+%.tmp7073 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %.tmp7072
+%.tmp7074 = icmp ne %m1861$.GlobalName.type* %.tmp7073, null
+br i1 %.tmp7074, label %.for.continue.7067, label %.for.end.7067
+.for.continue.7067:
+%.tmp7075 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %last_global.7066
+%.tmp7076 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp7075, i32 0, i32 4
+%.tmp7077 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %.tmp7076
+store %m1861$.GlobalName.type* %.tmp7077, %m1861$.GlobalName.type** %last_global.7066
+br label %.for.start.7067
+.for.end.7067:
+%.tmp7078 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %last_global.7066
+%.tmp7079 = getelementptr %m1861$.GlobalName.type, %m1861$.GlobalName.type* %.tmp7078, i32 0, i32 4
+%.tmp7080 = load %m1861$.GlobalName.type*, %m1861$.GlobalName.type** %g
+store %m1861$.GlobalName.type* %.tmp7080, %m1861$.GlobalName.type** %.tmp7079
+br label %.if.end.7062
+.if.end.7062:
 ret void
 }
 define i8* @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.Type.type* %.type.arg) {
@@ -9991,1471 +10253,1485 @@ define i8* @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %type = alloca %m1861$.Type.type*
 store %m1861$.Type.type* %.type.arg, %m1861$.Type.type** %type
-%.tmp6902 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6903 = icmp eq %m1861$.Type.type* %.tmp6902, null
-br i1 %.tmp6903, label %.if.true.6904, label %.if.false.6904
-.if.true.6904:
-%.tmp6905 = load i1, i1* @DEBUG_INTERNALS
-br i1 %.tmp6905, label %.if.true.6906, label %.if.false.6906
-.if.true.6906:
-%.tmp6908 = getelementptr [44 x i8], [44 x i8]*@.str6907, i32 0, i32 0
-%.tmp6909 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6910 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp6909, i32 0, i32 6
-%.tmp6911 = load i8*, i8** %.tmp6910
-%.tmp6912 = call i32(i8*,...) @printf(i8* %.tmp6908, i8* %.tmp6911)
-br label %.if.end.6906
-.if.false.6906:
-br label %.if.end.6906
-.if.end.6906:
-%.tmp6914 = getelementptr [2 x i8], [2 x i8]*@.str6913, i32 0, i32 0
-ret i8* %.tmp6914
-br label %.if.end.6904
-.if.false.6904:
-br label %.if.end.6904
-.if.end.6904:
-%.tmp6915 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6916 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6915, i32 0, i32 0
-%.tmp6917 = load i8*, i8** %.tmp6916
-%.tmp6918 = icmp ne i8* %.tmp6917, null
-%.tmp6920 = getelementptr [59 x i8], [59 x i8]*@.str6919, i32 0, i32 0
-call void(i1,i8*) @m2$assert.v.b.cp(i1 %.tmp6918, i8* %.tmp6920)
-%buf.6921 = alloca i8*
-store i8* null, i8** %buf.6921
-%.tmp6922 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6923 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6922, i32 0, i32 0
-%.tmp6924 = load i8*, i8** %.tmp6923
-%.tmp6926 = getelementptr [4 x i8], [4 x i8]*@.str6925, i32 0, i32 0
-%.tmp6927 = call i32(i8*,i8*) @strcmp(i8* %.tmp6924, i8* %.tmp6926)
-%.tmp6928 = icmp eq i32 %.tmp6927, 0
-br i1 %.tmp6928, label %.if.true.6929, label %.if.false.6929
-.if.true.6929:
-%.tmp6931 = getelementptr [4 x i8], [4 x i8]*@.str6930, i32 0, i32 0
-ret i8* %.tmp6931
-br label %.if.end.6929
-.if.false.6929:
-%.tmp6932 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6933 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6932, i32 0, i32 0
-%.tmp6934 = load i8*, i8** %.tmp6933
-%.tmp6936 = getelementptr [5 x i8], [5 x i8]*@.str6935, i32 0, i32 0
-%.tmp6937 = call i32(i8*,i8*) @strcmp(i8* %.tmp6934, i8* %.tmp6936)
-%.tmp6938 = icmp eq i32 %.tmp6937, 0
-br i1 %.tmp6938, label %.if.true.6939, label %.if.false.6939
-.if.true.6939:
-%.tmp6941 = getelementptr [5 x i8], [5 x i8]*@.str6940, i32 0, i32 0
-ret i8* %.tmp6941
-br label %.if.end.6939
-.if.false.6939:
-%.tmp6942 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6943 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6942, i32 0, i32 0
-%.tmp6944 = load i8*, i8** %.tmp6943
-%.tmp6946 = getelementptr [5 x i8], [5 x i8]*@.str6945, i32 0, i32 0
-%.tmp6947 = call i32(i8*,i8*) @strcmp(i8* %.tmp6944, i8* %.tmp6946)
-%.tmp6948 = icmp eq i32 %.tmp6947, 0
-br i1 %.tmp6948, label %.if.true.6949, label %.if.false.6949
-.if.true.6949:
-%.tmp6951 = getelementptr [3 x i8], [3 x i8]*@.str6950, i32 0, i32 0
-ret i8* %.tmp6951
-br label %.if.end.6949
-.if.false.6949:
-%.tmp6952 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6953 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6952, i32 0, i32 0
-%.tmp6954 = load i8*, i8** %.tmp6953
-%.tmp6956 = getelementptr [8 x i8], [8 x i8]*@.str6955, i32 0, i32 0
-%.tmp6957 = call i32(i8*,i8*) @strcmp(i8* %.tmp6954, i8* %.tmp6956)
-%.tmp6958 = icmp eq i32 %.tmp6957, 0
-br i1 %.tmp6958, label %.if.true.6959, label %.if.false.6959
-.if.true.6959:
-%.tmp6961 = getelementptr [4 x i8], [4 x i8]*@.str6960, i32 0, i32 0
-ret i8* %.tmp6961
-br label %.if.end.6959
-.if.false.6959:
-%.tmp6962 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6963 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6962, i32 0, i32 0
-%.tmp6964 = load i8*, i8** %.tmp6963
-%.tmp6966 = getelementptr [4 x i8], [4 x i8]*@.str6965, i32 0, i32 0
-%.tmp6967 = call i32(i8*,i8*) @strcmp(i8* %.tmp6964, i8* %.tmp6966)
-%.tmp6968 = icmp eq i32 %.tmp6967, 0
-br i1 %.tmp6968, label %.if.true.6969, label %.if.false.6969
-.if.true.6969:
-%.tmp6971 = getelementptr [3 x i8], [3 x i8]*@.str6970, i32 0, i32 0
-ret i8* %.tmp6971
-br label %.if.end.6969
-.if.false.6969:
-%.tmp6972 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6973 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6972, i32 0, i32 0
-%.tmp6974 = load i8*, i8** %.tmp6973
-%.tmp6976 = getelementptr [9 x i8], [9 x i8]*@.str6975, i32 0, i32 0
-%.tmp6977 = call i32(i8*,i8*) @strcmp(i8* %.tmp6974, i8* %.tmp6976)
-%.tmp6978 = icmp eq i32 %.tmp6977, 0
-br i1 %.tmp6978, label %.if.true.6979, label %.if.false.6979
-.if.true.6979:
-%.tmp6980 = getelementptr i8*, i8** %buf.6921, i32 0
-%.tmp6982 = getelementptr [4 x i8], [4 x i8]*@.str6981, i32 0, i32 0
-%.tmp6983 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp6984 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6985 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6984, i32 0, i32 3
-%.tmp6986 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6985
-%.tmp6987 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp6983, %m1861$.Type.type* %.tmp6986)
-%.tmp6988 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp6980, i8* %.tmp6982, i8* %.tmp6987)
-%.tmp6990 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp6991 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6990, i32 0, i32 3
-%.tmp6992 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6991
-%.tmp6993 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6992, i32 0, i32 4
-%.tmp6994 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp6993
-%p.6995 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp6994, %m1861$.Type.type** %p.6995
-br label %.for.start.6989
-.for.start.6989:
-%.tmp6996 = load %m1861$.Type.type*, %m1861$.Type.type** %p.6995
-%.tmp6997 = icmp ne %m1861$.Type.type* %.tmp6996, null
-br i1 %.tmp6997, label %.for.continue.6989, label %.for.end.6989
-.for.continue.6989:
-%.tmp6998 = load %m1861$.Type.type*, %m1861$.Type.type** %p.6995
-%.tmp6999 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp7000 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp6999, i32 0, i32 3
-%.tmp7001 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7000
-%.tmp7002 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7001, i32 0, i32 4
-%.tmp7003 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7002
-%.tmp7004 = icmp ne %m1861$.Type.type* %.tmp6998, %.tmp7003
-br i1 %.tmp7004, label %.if.true.7005, label %.if.false.7005
-.if.true.7005:
-%.tmp7006 = getelementptr i8*, i8** %buf.6921, i32 0
-%.tmp7008 = getelementptr [4 x i8], [4 x i8]*@.str7007, i32 0, i32 0
-%.tmp7009 = load i8*, i8** %buf.6921
-%.tmp7010 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7006, i8* %.tmp7008, i8* %.tmp7009)
-br label %.if.end.7005
-.if.false.7005:
-br label %.if.end.7005
-.if.end.7005:
-%.tmp7011 = getelementptr i8*, i8** %buf.6921, i32 0
-%.tmp7013 = getelementptr [5 x i8], [5 x i8]*@.str7012, i32 0, i32 0
-%.tmp7014 = load i8*, i8** %buf.6921
-%.tmp7015 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp7016 = load %m1861$.Type.type*, %m1861$.Type.type** %p.6995
-%.tmp7017 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp7015, %m1861$.Type.type* %.tmp7016)
-%.tmp7018 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7011, i8* %.tmp7013, i8* %.tmp7014, i8* %.tmp7017)
-%.tmp7019 = load %m1861$.Type.type*, %m1861$.Type.type** %p.6995
-%.tmp7020 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7019, i32 0, i32 4
-%.tmp7021 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7020
-store %m1861$.Type.type* %.tmp7021, %m1861$.Type.type** %p.6995
-br label %.for.start.6989
-.for.end.6989:
-%.tmp7022 = getelementptr i8*, i8** %buf.6921, i32 0
-%.tmp7024 = getelementptr [4 x i8], [4 x i8]*@.str7023, i32 0, i32 0
-%.tmp7025 = load i8*, i8** %buf.6921
-%.tmp7026 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7022, i8* %.tmp7024, i8* %.tmp7025)
-%.tmp7027 = load i8*, i8** %buf.6921
-ret i8* %.tmp7027
-br label %.if.end.6979
-.if.false.6979:
-%.tmp7028 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp7029 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7028, i32 0, i32 0
-%.tmp7030 = load i8*, i8** %.tmp7029
-%.tmp7032 = getelementptr [4 x i8], [4 x i8]*@.str7031, i32 0, i32 0
-%.tmp7033 = call i32(i8*,i8*) @strcmp(i8* %.tmp7030, i8* %.tmp7032)
-%.tmp7034 = icmp eq i32 %.tmp7033, 0
-br i1 %.tmp7034, label %.if.true.7035, label %.if.false.7035
-.if.true.7035:
-%.tmp7036 = getelementptr i8*, i8** %buf.6921, i32 0
-%.tmp7038 = getelementptr [4 x i8], [4 x i8]*@.str7037, i32 0, i32 0
-%.tmp7039 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp7040 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp7041 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7040, i32 0, i32 3
-%.tmp7042 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7041
-%.tmp7043 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp7039, %m1861$.Type.type* %.tmp7042)
-%.tmp7044 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7036, i8* %.tmp7038, i8* %.tmp7043)
-%.tmp7045 = load i8*, i8** %buf.6921
-ret i8* %.tmp7045
-br label %.if.end.7035
-.if.false.7035:
-%.tmp7046 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp7047 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7046, i32 0, i32 0
-%.tmp7048 = load i8*, i8** %.tmp7047
-%.tmp7050 = getelementptr [7 x i8], [7 x i8]*@.str7049, i32 0, i32 0
-%.tmp7051 = call i32(i8*,i8*) @strcmp(i8* %.tmp7048, i8* %.tmp7050)
-%.tmp7052 = icmp eq i32 %.tmp7051, 0
-br i1 %.tmp7052, label %.if.true.7053, label %.if.false.7053
-.if.true.7053:
-%.tmp7054 = getelementptr i8*, i8** %buf.6921, i32 0
-%.tmp7056 = getelementptr [2 x i8], [2 x i8]*@.str7055, i32 0, i32 0
-%.tmp7057 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7054, i8* %.tmp7056)
-%.tmp7059 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp7060 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7059, i32 0, i32 3
-%.tmp7061 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7060
-%t.7062 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp7061, %m1861$.Type.type** %t.7062
-br label %.for.start.7058
-.for.start.7058:
-%.tmp7063 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7062
-%.tmp7064 = icmp ne %m1861$.Type.type* %.tmp7063, null
-br i1 %.tmp7064, label %.for.continue.7058, label %.for.end.7058
-.for.continue.7058:
-%.tmp7065 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7062
-%.tmp7066 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp7067 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7066, i32 0, i32 3
-%.tmp7068 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7067
-%.tmp7069 = icmp ne %m1861$.Type.type* %.tmp7065, %.tmp7068
-br i1 %.tmp7069, label %.if.true.7070, label %.if.false.7070
-.if.true.7070:
-%.tmp7071 = getelementptr i8*, i8** %buf.6921, i32 0
-%.tmp7073 = getelementptr [4 x i8], [4 x i8]*@.str7072, i32 0, i32 0
-%.tmp7074 = load i8*, i8** %buf.6921
-%.tmp7075 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7071, i8* %.tmp7073, i8* %.tmp7074)
-br label %.if.end.7070
-.if.false.7070:
-br label %.if.end.7070
-.if.end.7070:
-%.tmp7076 = getelementptr i8*, i8** %buf.6921, i32 0
-%.tmp7078 = getelementptr [5 x i8], [5 x i8]*@.str7077, i32 0, i32 0
-%.tmp7079 = load i8*, i8** %buf.6921
-%.tmp7080 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp7081 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7062
-%.tmp7082 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp7080, %m1861$.Type.type* %.tmp7081)
-%.tmp7083 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7076, i8* %.tmp7078, i8* %.tmp7079, i8* %.tmp7082)
-%.tmp7084 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7062
-%.tmp7085 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7084, i32 0, i32 4
-%.tmp7086 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7085
-store %m1861$.Type.type* %.tmp7086, %m1861$.Type.type** %t.7062
-br label %.for.start.7058
-.for.end.7058:
-%.tmp7087 = getelementptr i8*, i8** %buf.6921, i32 0
-%.tmp7089 = getelementptr [4 x i8], [4 x i8]*@.str7088, i32 0, i32 0
-%.tmp7090 = load i8*, i8** %buf.6921
-%.tmp7091 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7087, i8* %.tmp7089, i8* %.tmp7090)
-%.tmp7092 = load i8*, i8** %buf.6921
-ret i8* %.tmp7092
-br label %.if.end.7053
-.if.false.7053:
-%.tmp7093 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp7094 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7093, i32 0, i32 0
-%.tmp7095 = load i8*, i8** %.tmp7094
-%.tmp7097 = getelementptr [6 x i8], [6 x i8]*@.str7096, i32 0, i32 0
-%.tmp7098 = call i32(i8*,i8*) @strcmp(i8* %.tmp7095, i8* %.tmp7097)
-%.tmp7099 = icmp eq i32 %.tmp7098, 0
-br i1 %.tmp7099, label %.if.true.7100, label %.if.false.7100
-.if.true.7100:
-%.tmp7101 = getelementptr i8*, i8** %buf.6921, i32 0
-%.tmp7103 = getelementptr [10 x i8], [10 x i8]*@.str7102, i32 0, i32 0
-%.tmp7104 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp7105 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7104, i32 0, i32 3
-%.tmp7106 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7105
-%.tmp7107 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7106, i32 0, i32 4
-%.tmp7108 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7107
-%.tmp7109 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7108, i32 0, i32 0
-%.tmp7110 = load i8*, i8** %.tmp7109
-%.tmp7111 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp7112 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp7113 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7112, i32 0, i32 3
-%.tmp7114 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7113
-%.tmp7115 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp7111, %m1861$.Type.type* %.tmp7114)
-%.tmp7116 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7101, i8* %.tmp7103, i8* %.tmp7110, i8* %.tmp7115)
-%.tmp7117 = load i8*, i8** %buf.6921
-ret i8* %.tmp7117
-br label %.if.end.7100
-.if.false.7100:
-%.tmp7118 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp7119 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7118, i32 0, i32 0
-%.tmp7120 = load i8*, i8** %.tmp7119
-%.tmp7122 = getelementptr [10 x i8], [10 x i8]*@.str7121, i32 0, i32 0
-%.tmp7123 = call i32(i8*,i8*) @strcmp(i8* %.tmp7120, i8* %.tmp7122)
-%.tmp7124 = icmp eq i32 %.tmp7123, 0
-br i1 %.tmp7124, label %.if.true.7125, label %.if.false.7125
-.if.true.7125:
-%.tmp7126 = getelementptr i8*, i8** %buf.6921, i32 0
-%.tmp7128 = getelementptr [5 x i8], [5 x i8]*@.str7127, i32 0, i32 0
-%.tmp7129 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp7130 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7129, i32 0, i32 2
-%.tmp7131 = load i8*, i8** %.tmp7130
-%.tmp7132 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7126, i8* %.tmp7128, i8* %.tmp7131)
-%.tmp7133 = load i8*, i8** %buf.6921
-ret i8* %.tmp7133
-br label %.if.end.7125
-.if.false.7125:
-%.tmp7134 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp7135 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7134, i32 0, i32 0
-%.tmp7136 = load i8*, i8** %.tmp7135
-%.tmp7138 = getelementptr [7 x i8], [7 x i8]*@.str7137, i32 0, i32 0
-%.tmp7139 = call i32(i8*,i8*) @strcmp(i8* %.tmp7136, i8* %.tmp7138)
-%.tmp7140 = icmp eq i32 %.tmp7139, 0
-br i1 %.tmp7140, label %.if.true.7141, label %.if.false.7141
-.if.true.7141:
-%.tmp7143 = getelementptr [4 x i8], [4 x i8]*@.str7142, i32 0, i32 0
-ret i8* %.tmp7143
-br label %.if.end.7141
-.if.false.7141:
-%.tmp7144 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp7145 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7144, i32 0, i32 0
-%.tmp7146 = load i8*, i8** %.tmp7145
-%.tmp7148 = getelementptr [6 x i8], [6 x i8]*@.str7147, i32 0, i32 0
-%.tmp7149 = call i32(i8*,i8*) @strcmp(i8* %.tmp7146, i8* %.tmp7148)
-%.tmp7150 = icmp eq i32 %.tmp7149, 0
-br i1 %.tmp7150, label %.if.true.7151, label %.if.false.7151
-.if.true.7151:
-br label %.if.end.7151
-.if.false.7151:
-%.tmp7153 = getelementptr [58 x i8], [58 x i8]*@.str7152, i32 0, i32 0
-%.tmp7154 = load %m1861$.Type.type*, %m1861$.Type.type** %type
-%.tmp7155 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7154, i32 0, i32 0
-%.tmp7156 = load i8*, i8** %.tmp7155
-%.tmp7157 = call i32(i8*,...) @printf(i8* %.tmp7153, i8* %.tmp7156)
-br label %.if.end.7151
-.if.end.7151:
-br label %.if.end.7141
-.if.end.7141:
-br label %.if.end.7125
-.if.end.7125:
-br label %.if.end.7100
-.if.end.7100:
-br label %.if.end.7053
-.if.end.7053:
-br label %.if.end.7035
-.if.end.7035:
-br label %.if.end.6979
-.if.end.6979:
-br label %.if.end.6969
-.if.end.6969:
-br label %.if.end.6959
-.if.end.6959:
-br label %.if.end.6949
-.if.end.6949:
-br label %.if.end.6939
-.if.end.6939:
-br label %.if.end.6929
-.if.end.6929:
-%.tmp7158 = bitcast ptr null to i8*
-ret i8* %.tmp7158
+%.tmp7081 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7082 = icmp eq %m1861$.Type.type* %.tmp7081, null
+br i1 %.tmp7082, label %.if.true.7083, label %.if.false.7083
+.if.true.7083:
+%.tmp7084 = load i1, i1* @DEBUG_INTERNALS
+br i1 %.tmp7084, label %.if.true.7085, label %.if.false.7085
+.if.true.7085:
+%.tmp7087 = getelementptr [44 x i8], [44 x i8]*@.str7086, i32 0, i32 0
+%.tmp7088 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7089 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp7088, i32 0, i32 6
+%.tmp7090 = load i8*, i8** %.tmp7089
+%.tmp7091 = call i32(i8*,...) @printf(i8* %.tmp7087, i8* %.tmp7090)
+br label %.if.end.7085
+.if.false.7085:
+br label %.if.end.7085
+.if.end.7085:
+%.tmp7093 = getelementptr [2 x i8], [2 x i8]*@.str7092, i32 0, i32 0
+ret i8* %.tmp7093
+br label %.if.end.7083
+.if.false.7083:
+br label %.if.end.7083
+.if.end.7083:
+%.tmp7094 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7095 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7094, i32 0, i32 0
+%.tmp7096 = load i8*, i8** %.tmp7095
+%.tmp7097 = icmp ne i8* %.tmp7096, null
+%.tmp7099 = getelementptr [59 x i8], [59 x i8]*@.str7098, i32 0, i32 0
+call void(i1,i8*) @m2$assert.v.b.cp(i1 %.tmp7097, i8* %.tmp7099)
+%buf.7100 = alloca i8*
+store i8* null, i8** %buf.7100
+%.tmp7101 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7102 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7101, i32 0, i32 0
+%.tmp7103 = load i8*, i8** %.tmp7102
+%.tmp7105 = getelementptr [4 x i8], [4 x i8]*@.str7104, i32 0, i32 0
+%.tmp7106 = call i32(i8*,i8*) @strcmp(i8* %.tmp7103, i8* %.tmp7105)
+%.tmp7107 = icmp eq i32 %.tmp7106, 0
+br i1 %.tmp7107, label %.if.true.7108, label %.if.false.7108
+.if.true.7108:
+%.tmp7110 = getelementptr [4 x i8], [4 x i8]*@.str7109, i32 0, i32 0
+ret i8* %.tmp7110
+br label %.if.end.7108
+.if.false.7108:
+%.tmp7111 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7112 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7111, i32 0, i32 0
+%.tmp7113 = load i8*, i8** %.tmp7112
+%.tmp7115 = getelementptr [5 x i8], [5 x i8]*@.str7114, i32 0, i32 0
+%.tmp7116 = call i32(i8*,i8*) @strcmp(i8* %.tmp7113, i8* %.tmp7115)
+%.tmp7117 = icmp eq i32 %.tmp7116, 0
+br i1 %.tmp7117, label %.if.true.7118, label %.if.false.7118
+.if.true.7118:
+%.tmp7120 = getelementptr [5 x i8], [5 x i8]*@.str7119, i32 0, i32 0
+ret i8* %.tmp7120
+br label %.if.end.7118
+.if.false.7118:
+%.tmp7121 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7122 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7121, i32 0, i32 0
+%.tmp7123 = load i8*, i8** %.tmp7122
+%.tmp7125 = getelementptr [5 x i8], [5 x i8]*@.str7124, i32 0, i32 0
+%.tmp7126 = call i32(i8*,i8*) @strcmp(i8* %.tmp7123, i8* %.tmp7125)
+%.tmp7127 = icmp eq i32 %.tmp7126, 0
+br i1 %.tmp7127, label %.if.true.7128, label %.if.false.7128
+.if.true.7128:
+%.tmp7130 = getelementptr [3 x i8], [3 x i8]*@.str7129, i32 0, i32 0
+ret i8* %.tmp7130
+br label %.if.end.7128
+.if.false.7128:
+%.tmp7131 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7132 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7131, i32 0, i32 0
+%.tmp7133 = load i8*, i8** %.tmp7132
+%.tmp7135 = getelementptr [8 x i8], [8 x i8]*@.str7134, i32 0, i32 0
+%.tmp7136 = call i32(i8*,i8*) @strcmp(i8* %.tmp7133, i8* %.tmp7135)
+%.tmp7137 = icmp eq i32 %.tmp7136, 0
+br i1 %.tmp7137, label %.if.true.7138, label %.if.false.7138
+.if.true.7138:
+%.tmp7140 = getelementptr [4 x i8], [4 x i8]*@.str7139, i32 0, i32 0
+ret i8* %.tmp7140
+br label %.if.end.7138
+.if.false.7138:
+%.tmp7141 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7142 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7141, i32 0, i32 0
+%.tmp7143 = load i8*, i8** %.tmp7142
+%.tmp7145 = getelementptr [4 x i8], [4 x i8]*@.str7144, i32 0, i32 0
+%.tmp7146 = call i32(i8*,i8*) @strcmp(i8* %.tmp7143, i8* %.tmp7145)
+%.tmp7147 = icmp eq i32 %.tmp7146, 0
+br i1 %.tmp7147, label %.if.true.7148, label %.if.false.7148
+.if.true.7148:
+%.tmp7150 = getelementptr [3 x i8], [3 x i8]*@.str7149, i32 0, i32 0
+ret i8* %.tmp7150
+br label %.if.end.7148
+.if.false.7148:
+%.tmp7151 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7152 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7151, i32 0, i32 0
+%.tmp7153 = load i8*, i8** %.tmp7152
+%.tmp7155 = getelementptr [9 x i8], [9 x i8]*@.str7154, i32 0, i32 0
+%.tmp7156 = call i32(i8*,i8*) @strcmp(i8* %.tmp7153, i8* %.tmp7155)
+%.tmp7157 = icmp eq i32 %.tmp7156, 0
+br i1 %.tmp7157, label %.if.true.7158, label %.if.false.7158
+.if.true.7158:
+%.tmp7159 = getelementptr i8*, i8** %buf.7100, i32 0
+%.tmp7161 = getelementptr [4 x i8], [4 x i8]*@.str7160, i32 0, i32 0
+%.tmp7162 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7163 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7164 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7163, i32 0, i32 3
+%.tmp7165 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7164
+%.tmp7166 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp7162, %m1861$.Type.type* %.tmp7165)
+%.tmp7167 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7159, i8* %.tmp7161, i8* %.tmp7166)
+%.tmp7169 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7170 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7169, i32 0, i32 3
+%.tmp7171 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7170
+%.tmp7172 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7171, i32 0, i32 4
+%.tmp7173 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7172
+%p.7174 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp7173, %m1861$.Type.type** %p.7174
+br label %.for.start.7168
+.for.start.7168:
+%.tmp7175 = load %m1861$.Type.type*, %m1861$.Type.type** %p.7174
+%.tmp7176 = icmp ne %m1861$.Type.type* %.tmp7175, null
+br i1 %.tmp7176, label %.for.continue.7168, label %.for.end.7168
+.for.continue.7168:
+%.tmp7177 = load %m1861$.Type.type*, %m1861$.Type.type** %p.7174
+%.tmp7178 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7179 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7178, i32 0, i32 3
+%.tmp7180 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7179
+%.tmp7181 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7180, i32 0, i32 4
+%.tmp7182 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7181
+%.tmp7183 = icmp ne %m1861$.Type.type* %.tmp7177, %.tmp7182
+br i1 %.tmp7183, label %.if.true.7184, label %.if.false.7184
+.if.true.7184:
+%.tmp7185 = getelementptr i8*, i8** %buf.7100, i32 0
+%.tmp7187 = getelementptr [4 x i8], [4 x i8]*@.str7186, i32 0, i32 0
+%.tmp7188 = load i8*, i8** %buf.7100
+%.tmp7189 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7185, i8* %.tmp7187, i8* %.tmp7188)
+br label %.if.end.7184
+.if.false.7184:
+br label %.if.end.7184
+.if.end.7184:
+%.tmp7190 = getelementptr i8*, i8** %buf.7100, i32 0
+%.tmp7192 = getelementptr [5 x i8], [5 x i8]*@.str7191, i32 0, i32 0
+%.tmp7193 = load i8*, i8** %buf.7100
+%.tmp7194 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7195 = load %m1861$.Type.type*, %m1861$.Type.type** %p.7174
+%.tmp7196 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp7194, %m1861$.Type.type* %.tmp7195)
+%.tmp7197 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7190, i8* %.tmp7192, i8* %.tmp7193, i8* %.tmp7196)
+%.tmp7198 = load %m1861$.Type.type*, %m1861$.Type.type** %p.7174
+%.tmp7199 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7198, i32 0, i32 4
+%.tmp7200 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7199
+store %m1861$.Type.type* %.tmp7200, %m1861$.Type.type** %p.7174
+br label %.for.start.7168
+.for.end.7168:
+%.tmp7201 = getelementptr i8*, i8** %buf.7100, i32 0
+%.tmp7203 = getelementptr [4 x i8], [4 x i8]*@.str7202, i32 0, i32 0
+%.tmp7204 = load i8*, i8** %buf.7100
+%.tmp7205 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7201, i8* %.tmp7203, i8* %.tmp7204)
+%.tmp7206 = load i8*, i8** %buf.7100
+ret i8* %.tmp7206
+br label %.if.end.7158
+.if.false.7158:
+%.tmp7207 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7208 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7207, i32 0, i32 0
+%.tmp7209 = load i8*, i8** %.tmp7208
+%.tmp7211 = getelementptr [4 x i8], [4 x i8]*@.str7210, i32 0, i32 0
+%.tmp7212 = call i32(i8*,i8*) @strcmp(i8* %.tmp7209, i8* %.tmp7211)
+%.tmp7213 = icmp eq i32 %.tmp7212, 0
+br i1 %.tmp7213, label %.if.true.7214, label %.if.false.7214
+.if.true.7214:
+%.tmp7215 = getelementptr i8*, i8** %buf.7100, i32 0
+%.tmp7217 = getelementptr [4 x i8], [4 x i8]*@.str7216, i32 0, i32 0
+%.tmp7218 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7219 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7220 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7219, i32 0, i32 3
+%.tmp7221 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7220
+%.tmp7222 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp7218, %m1861$.Type.type* %.tmp7221)
+%.tmp7223 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7215, i8* %.tmp7217, i8* %.tmp7222)
+%.tmp7224 = load i8*, i8** %buf.7100
+ret i8* %.tmp7224
+br label %.if.end.7214
+.if.false.7214:
+%.tmp7225 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7226 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7225, i32 0, i32 0
+%.tmp7227 = load i8*, i8** %.tmp7226
+%.tmp7229 = getelementptr [7 x i8], [7 x i8]*@.str7228, i32 0, i32 0
+%.tmp7230 = call i32(i8*,i8*) @strcmp(i8* %.tmp7227, i8* %.tmp7229)
+%.tmp7231 = icmp eq i32 %.tmp7230, 0
+br i1 %.tmp7231, label %.if.true.7232, label %.if.false.7232
+.if.true.7232:
+%.tmp7233 = getelementptr i8*, i8** %buf.7100, i32 0
+%.tmp7235 = getelementptr [2 x i8], [2 x i8]*@.str7234, i32 0, i32 0
+%.tmp7236 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7233, i8* %.tmp7235)
+%.tmp7238 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7239 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7238, i32 0, i32 3
+%.tmp7240 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7239
+%t.7241 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp7240, %m1861$.Type.type** %t.7241
+br label %.for.start.7237
+.for.start.7237:
+%.tmp7242 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7241
+%.tmp7243 = icmp ne %m1861$.Type.type* %.tmp7242, null
+br i1 %.tmp7243, label %.for.continue.7237, label %.for.end.7237
+.for.continue.7237:
+%.tmp7244 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7241
+%.tmp7245 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7246 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7245, i32 0, i32 3
+%.tmp7247 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7246
+%.tmp7248 = icmp ne %m1861$.Type.type* %.tmp7244, %.tmp7247
+br i1 %.tmp7248, label %.if.true.7249, label %.if.false.7249
+.if.true.7249:
+%.tmp7250 = getelementptr i8*, i8** %buf.7100, i32 0
+%.tmp7252 = getelementptr [4 x i8], [4 x i8]*@.str7251, i32 0, i32 0
+%.tmp7253 = load i8*, i8** %buf.7100
+%.tmp7254 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7250, i8* %.tmp7252, i8* %.tmp7253)
+br label %.if.end.7249
+.if.false.7249:
+br label %.if.end.7249
+.if.end.7249:
+%.tmp7255 = getelementptr i8*, i8** %buf.7100, i32 0
+%.tmp7257 = getelementptr [5 x i8], [5 x i8]*@.str7256, i32 0, i32 0
+%.tmp7258 = load i8*, i8** %buf.7100
+%.tmp7259 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7260 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7241
+%.tmp7261 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp7259, %m1861$.Type.type* %.tmp7260)
+%.tmp7262 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7255, i8* %.tmp7257, i8* %.tmp7258, i8* %.tmp7261)
+%.tmp7263 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7241
+%.tmp7264 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7263, i32 0, i32 4
+%.tmp7265 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7264
+store %m1861$.Type.type* %.tmp7265, %m1861$.Type.type** %t.7241
+br label %.for.start.7237
+.for.end.7237:
+%.tmp7266 = getelementptr i8*, i8** %buf.7100, i32 0
+%.tmp7268 = getelementptr [4 x i8], [4 x i8]*@.str7267, i32 0, i32 0
+%.tmp7269 = load i8*, i8** %buf.7100
+%.tmp7270 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7266, i8* %.tmp7268, i8* %.tmp7269)
+%.tmp7271 = load i8*, i8** %buf.7100
+ret i8* %.tmp7271
+br label %.if.end.7232
+.if.false.7232:
+%.tmp7272 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7273 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7272, i32 0, i32 0
+%.tmp7274 = load i8*, i8** %.tmp7273
+%.tmp7276 = getelementptr [6 x i8], [6 x i8]*@.str7275, i32 0, i32 0
+%.tmp7277 = call i32(i8*,i8*) @strcmp(i8* %.tmp7274, i8* %.tmp7276)
+%.tmp7278 = icmp eq i32 %.tmp7277, 0
+br i1 %.tmp7278, label %.if.true.7279, label %.if.false.7279
+.if.true.7279:
+%.tmp7280 = getelementptr i8*, i8** %buf.7100, i32 0
+%.tmp7282 = getelementptr [10 x i8], [10 x i8]*@.str7281, i32 0, i32 0
+%.tmp7283 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7284 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7283, i32 0, i32 3
+%.tmp7285 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7284
+%.tmp7286 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7285, i32 0, i32 4
+%.tmp7287 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7286
+%.tmp7288 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7287, i32 0, i32 0
+%.tmp7289 = load i8*, i8** %.tmp7288
+%.tmp7290 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7291 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7292 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7291, i32 0, i32 3
+%.tmp7293 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7292
+%.tmp7294 = call i8*(%m1861$.CompilerCtx.type*,%m1861$.Type.type*) @m1861$type_repr.cp.m1861$.CompilerCtx.typep.m1861$.Type.typep(%m1861$.CompilerCtx.type* %.tmp7290, %m1861$.Type.type* %.tmp7293)
+%.tmp7295 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7280, i8* %.tmp7282, i8* %.tmp7289, i8* %.tmp7294)
+%.tmp7296 = load i8*, i8** %buf.7100
+ret i8* %.tmp7296
+br label %.if.end.7279
+.if.false.7279:
+%.tmp7297 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7298 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7297, i32 0, i32 0
+%.tmp7299 = load i8*, i8** %.tmp7298
+%.tmp7301 = getelementptr [10 x i8], [10 x i8]*@.str7300, i32 0, i32 0
+%.tmp7302 = call i32(i8*,i8*) @strcmp(i8* %.tmp7299, i8* %.tmp7301)
+%.tmp7303 = icmp eq i32 %.tmp7302, 0
+br i1 %.tmp7303, label %.if.true.7304, label %.if.false.7304
+.if.true.7304:
+%.tmp7305 = getelementptr i8*, i8** %buf.7100, i32 0
+%.tmp7307 = getelementptr [5 x i8], [5 x i8]*@.str7306, i32 0, i32 0
+%.tmp7308 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7309 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7308, i32 0, i32 2
+%.tmp7310 = load i8*, i8** %.tmp7309
+%.tmp7311 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7305, i8* %.tmp7307, i8* %.tmp7310)
+%.tmp7312 = load i8*, i8** %buf.7100
+ret i8* %.tmp7312
+br label %.if.end.7304
+.if.false.7304:
+%.tmp7313 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7314 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7313, i32 0, i32 0
+%.tmp7315 = load i8*, i8** %.tmp7314
+%.tmp7317 = getelementptr [7 x i8], [7 x i8]*@.str7316, i32 0, i32 0
+%.tmp7318 = call i32(i8*,i8*) @strcmp(i8* %.tmp7315, i8* %.tmp7317)
+%.tmp7319 = icmp eq i32 %.tmp7318, 0
+br i1 %.tmp7319, label %.if.true.7320, label %.if.false.7320
+.if.true.7320:
+%.tmp7322 = getelementptr [4 x i8], [4 x i8]*@.str7321, i32 0, i32 0
+ret i8* %.tmp7322
+br label %.if.end.7320
+.if.false.7320:
+%.tmp7323 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7324 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7323, i32 0, i32 0
+%.tmp7325 = load i8*, i8** %.tmp7324
+%.tmp7327 = getelementptr [6 x i8], [6 x i8]*@.str7326, i32 0, i32 0
+%.tmp7328 = call i32(i8*,i8*) @strcmp(i8* %.tmp7325, i8* %.tmp7327)
+%.tmp7329 = icmp eq i32 %.tmp7328, 0
+br i1 %.tmp7329, label %.if.true.7330, label %.if.false.7330
+.if.true.7330:
+br label %.if.end.7330
+.if.false.7330:
+%.tmp7332 = getelementptr [58 x i8], [58 x i8]*@.str7331, i32 0, i32 0
+%.tmp7333 = load %m1861$.Type.type*, %m1861$.Type.type** %type
+%.tmp7334 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7333, i32 0, i32 0
+%.tmp7335 = load i8*, i8** %.tmp7334
+%.tmp7336 = call i32(i8*,...) @printf(i8* %.tmp7332, i8* %.tmp7335)
+br label %.if.end.7330
+.if.end.7330:
+br label %.if.end.7320
+.if.end.7320:
+br label %.if.end.7304
+.if.end.7304:
+br label %.if.end.7279
+.if.end.7279:
+br label %.if.end.7232
+.if.end.7232:
+br label %.if.end.7214
+.if.end.7214:
+br label %.if.end.7158
+.if.end.7158:
+br label %.if.end.7148
+.if.end.7148:
+br label %.if.end.7138
+.if.end.7138:
+br label %.if.end.7128
+.if.end.7128:
+br label %.if.end.7118
+.if.end.7118:
+br label %.if.end.7108
+.if.end.7108:
+%.tmp7337 = bitcast ptr null to i8*
+ret i8* %.tmp7337
 }
 define void @m1861$append_error.v.m1861$.CompilerCtx.typep.m751$.Error.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m751$.Error.type* %.e.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %e = alloca %m751$.Error.type*
 store %m751$.Error.type* %.e.arg, %m751$.Error.type** %e
-%.tmp7159 = getelementptr %m1861$.ErrorList.type, %m1861$.ErrorList.type* null, i32 1
-%.tmp7160 = ptrtoint %m1861$.ErrorList.type* %.tmp7159 to i32
-%.tmp7161 = call i8*(i32) @malloc(i32 %.tmp7160)
-%.tmp7162 = bitcast i8* %.tmp7161 to %m1861$.ErrorList.type*
-%new_err.7163 = alloca %m1861$.ErrorList.type*
-store %m1861$.ErrorList.type* %.tmp7162, %m1861$.ErrorList.type** %new_err.7163
-%.tmp7164 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %new_err.7163
-%.tmp7165 = getelementptr %m1861$.ErrorList.type, %m1861$.ErrorList.type* %.tmp7164, i32 0, i32 0
-%.tmp7166 = load %m751$.Error.type*, %m751$.Error.type** %e
-store %m751$.Error.type* %.tmp7166, %m751$.Error.type** %.tmp7165
-%.tmp7167 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %new_err.7163
-%.tmp7168 = getelementptr %m1861$.ErrorList.type, %m1861$.ErrorList.type* %.tmp7167, i32 0, i32 1
-store %m1861$.ErrorList.type* null, %m1861$.ErrorList.type** %.tmp7168
-%.tmp7169 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp7170 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp7169, i32 0, i32 2
-%.tmp7171 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %.tmp7170
-%.tmp7172 = icmp eq %m1861$.ErrorList.type* %.tmp7171, null
-br i1 %.tmp7172, label %.if.true.7173, label %.if.false.7173
-.if.true.7173:
-%.tmp7174 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp7175 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp7174, i32 0, i32 2
-%.tmp7176 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %new_err.7163
-store %m1861$.ErrorList.type* %.tmp7176, %m1861$.ErrorList.type** %.tmp7175
+%.tmp7338 = getelementptr %m1861$.ErrorList.type, %m1861$.ErrorList.type* null, i32 1
+%.tmp7339 = ptrtoint %m1861$.ErrorList.type* %.tmp7338 to i32
+%.tmp7340 = call i8*(i32) @malloc(i32 %.tmp7339)
+%.tmp7341 = bitcast i8* %.tmp7340 to %m1861$.ErrorList.type*
+%new_err.7342 = alloca %m1861$.ErrorList.type*
+store %m1861$.ErrorList.type* %.tmp7341, %m1861$.ErrorList.type** %new_err.7342
+%.tmp7343 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %new_err.7342
+%.tmp7344 = getelementptr %m1861$.ErrorList.type, %m1861$.ErrorList.type* %.tmp7343, i32 0, i32 2
+store i1 0, i1* %.tmp7344
+%.tmp7345 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %new_err.7342
+%.tmp7346 = getelementptr %m1861$.ErrorList.type, %m1861$.ErrorList.type* %.tmp7345, i32 0, i32 0
+%.tmp7347 = load %m751$.Error.type*, %m751$.Error.type** %e
+store %m751$.Error.type* %.tmp7347, %m751$.Error.type** %.tmp7346
+%.tmp7348 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %new_err.7342
+%.tmp7349 = getelementptr %m1861$.ErrorList.type, %m1861$.ErrorList.type* %.tmp7348, i32 0, i32 1
+store %m1861$.ErrorList.type* null, %m1861$.ErrorList.type** %.tmp7349
+%.tmp7350 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7351 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp7350, i32 0, i32 2
+%.tmp7352 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %.tmp7351
+%.tmp7353 = icmp eq %m1861$.ErrorList.type* %.tmp7352, null
+br i1 %.tmp7353, label %.if.true.7354, label %.if.false.7354
+.if.true.7354:
+%.tmp7355 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7356 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp7355, i32 0, i32 2
+%.tmp7357 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %new_err.7342
+store %m1861$.ErrorList.type* %.tmp7357, %m1861$.ErrorList.type** %.tmp7356
 ret void
-br label %.if.end.7173
-.if.false.7173:
-br label %.if.end.7173
-.if.end.7173:
-%last.7177 = alloca %m1861$.ErrorList.type*
-store %m1861$.ErrorList.type* null, %m1861$.ErrorList.type** %last.7177
-%.tmp7179 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp7180 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp7179, i32 0, i32 2
-%.tmp7181 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %.tmp7180
-store %m1861$.ErrorList.type* %.tmp7181, %m1861$.ErrorList.type** %last.7177
-br label %.for.start.7178
-.for.start.7178:
-%.tmp7182 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %last.7177
-%.tmp7183 = getelementptr %m1861$.ErrorList.type, %m1861$.ErrorList.type* %.tmp7182, i32 0, i32 1
-%.tmp7184 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %.tmp7183
-%.tmp7185 = icmp ne %m1861$.ErrorList.type* %.tmp7184, null
-br i1 %.tmp7185, label %.for.continue.7178, label %.for.end.7178
-.for.continue.7178:
-%.tmp7186 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %last.7177
-%.tmp7187 = getelementptr %m1861$.ErrorList.type, %m1861$.ErrorList.type* %.tmp7186, i32 0, i32 1
-%.tmp7188 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %.tmp7187
-store %m1861$.ErrorList.type* %.tmp7188, %m1861$.ErrorList.type** %last.7177
-br label %.for.start.7178
-.for.end.7178:
-%.tmp7189 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %last.7177
-%.tmp7190 = getelementptr %m1861$.ErrorList.type, %m1861$.ErrorList.type* %.tmp7189, i32 0, i32 1
-%.tmp7191 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %new_err.7163
-store %m1861$.ErrorList.type* %.tmp7191, %m1861$.ErrorList.type** %.tmp7190
+br label %.if.end.7354
+.if.false.7354:
+br label %.if.end.7354
+.if.end.7354:
+%last.7358 = alloca %m1861$.ErrorList.type*
+store %m1861$.ErrorList.type* null, %m1861$.ErrorList.type** %last.7358
+%.tmp7360 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7361 = getelementptr %m1861$.CompilerCtx.type, %m1861$.CompilerCtx.type* %.tmp7360, i32 0, i32 2
+%.tmp7362 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %.tmp7361
+store %m1861$.ErrorList.type* %.tmp7362, %m1861$.ErrorList.type** %last.7358
+br label %.for.start.7359
+.for.start.7359:
+%.tmp7363 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %last.7358
+%.tmp7364 = getelementptr %m1861$.ErrorList.type, %m1861$.ErrorList.type* %.tmp7363, i32 0, i32 1
+%.tmp7365 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %.tmp7364
+%.tmp7366 = icmp ne %m1861$.ErrorList.type* %.tmp7365, null
+br i1 %.tmp7366, label %.for.continue.7359, label %.for.end.7359
+.for.continue.7359:
+%.tmp7367 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %last.7358
+%.tmp7368 = getelementptr %m1861$.ErrorList.type, %m1861$.ErrorList.type* %.tmp7367, i32 0, i32 1
+%.tmp7369 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %.tmp7368
+store %m1861$.ErrorList.type* %.tmp7369, %m1861$.ErrorList.type** %last.7358
+br label %.for.start.7359
+.for.end.7359:
+%.tmp7370 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %last.7358
+%.tmp7371 = getelementptr %m1861$.ErrorList.type, %m1861$.ErrorList.type* %.tmp7370, i32 0, i32 1
+%.tmp7372 = load %m1861$.ErrorList.type*, %m1861$.ErrorList.type** %new_err.7342
+store %m1861$.ErrorList.type* %.tmp7372, %m1861$.ErrorList.type** %.tmp7371
 ret void
 }
 define i8* @m1861$syn_function_name.cp.m307$.Node.typep(%m307$.Node.type* %.stmt.arg) {
 %stmt = alloca %m307$.Node.type*
 store %m307$.Node.type* %.stmt.arg, %m307$.Node.type** %stmt
-%.tmp7192 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp7193 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7192, i32 0, i32 6
-%.tmp7194 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7193
-%.tmp7195 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7194, i32 0, i32 7
-%.tmp7196 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7195
-%.tmp7197 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7196, i32 0, i32 1
-%.tmp7198 = load i8*, i8** %.tmp7197
-ret i8* %.tmp7198
+%.tmp7373 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp7374 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7373, i32 0, i32 6
+%.tmp7375 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7374
+%.tmp7376 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7375, i32 0, i32 7
+%.tmp7377 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7376
+%.tmp7378 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7377, i32 0, i32 1
+%.tmp7379 = load i8*, i8** %.tmp7378
+ret i8* %.tmp7379
 }
 define %m307$.Node.type* @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.node.arg, i8* %.type.arg) {
 %node = alloca %m307$.Node.type*
 store %m307$.Node.type* %.node.arg, %m307$.Node.type** %node
 %type = alloca i8*
 store i8* %.type.arg, i8** %type
-%.tmp7200 = load %m307$.Node.type*, %m307$.Node.type** %node
-%n.7201 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp7200, %m307$.Node.type** %n.7201
-br label %.for.start.7199
-.for.start.7199:
-%.tmp7202 = load %m307$.Node.type*, %m307$.Node.type** %n.7201
-%.tmp7203 = icmp ne %m307$.Node.type* %.tmp7202, null
-br i1 %.tmp7203, label %.for.continue.7199, label %.for.end.7199
-.for.continue.7199:
-%.tmp7204 = load %m307$.Node.type*, %m307$.Node.type** %n.7201
-%.tmp7205 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7204, i32 0, i32 0
-%.tmp7206 = load i8*, i8** %.tmp7205
-%.tmp7207 = load i8*, i8** %type
-%.tmp7208 = call i32(i8*,i8*) @strcmp(i8* %.tmp7206, i8* %.tmp7207)
-%.tmp7209 = icmp eq i32 %.tmp7208, 0
-br i1 %.tmp7209, label %.if.true.7210, label %.if.false.7210
-.if.true.7210:
-%.tmp7211 = load %m307$.Node.type*, %m307$.Node.type** %n.7201
-ret %m307$.Node.type* %.tmp7211
-br label %.if.end.7210
-.if.false.7210:
-br label %.if.end.7210
-.if.end.7210:
-%.tmp7212 = load %m307$.Node.type*, %m307$.Node.type** %n.7201
-%.tmp7213 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7212, i32 0, i32 7
-%.tmp7214 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7213
-store %m307$.Node.type* %.tmp7214, %m307$.Node.type** %n.7201
-br label %.for.start.7199
-.for.end.7199:
-%.tmp7215 = bitcast ptr null to %m307$.Node.type*
-ret %m307$.Node.type* %.tmp7215
+%.tmp7381 = load %m307$.Node.type*, %m307$.Node.type** %node
+%n.7382 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp7381, %m307$.Node.type** %n.7382
+br label %.for.start.7380
+.for.start.7380:
+%.tmp7383 = load %m307$.Node.type*, %m307$.Node.type** %n.7382
+%.tmp7384 = icmp ne %m307$.Node.type* %.tmp7383, null
+br i1 %.tmp7384, label %.for.continue.7380, label %.for.end.7380
+.for.continue.7380:
+%.tmp7385 = load %m307$.Node.type*, %m307$.Node.type** %n.7382
+%.tmp7386 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7385, i32 0, i32 0
+%.tmp7387 = load i8*, i8** %.tmp7386
+%.tmp7388 = load i8*, i8** %type
+%.tmp7389 = call i32(i8*,i8*) @strcmp(i8* %.tmp7387, i8* %.tmp7388)
+%.tmp7390 = icmp eq i32 %.tmp7389, 0
+br i1 %.tmp7390, label %.if.true.7391, label %.if.false.7391
+.if.true.7391:
+%.tmp7392 = load %m307$.Node.type*, %m307$.Node.type** %n.7382
+ret %m307$.Node.type* %.tmp7392
+br label %.if.end.7391
+.if.false.7391:
+br label %.if.end.7391
+.if.end.7391:
+%.tmp7393 = load %m307$.Node.type*, %m307$.Node.type** %n.7382
+%.tmp7394 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7393, i32 0, i32 7
+%.tmp7395 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7394
+store %m307$.Node.type* %.tmp7395, %m307$.Node.type** %n.7382
+br label %.for.start.7380
+.for.end.7380:
+%.tmp7396 = bitcast ptr null to %m307$.Node.type*
+ret %m307$.Node.type* %.tmp7396
 }
 define %m1861$.Type.type* @m1861$syn_function_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.stmt.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %stmt = alloca %m307$.Node.type*
 store %m307$.Node.type* %.stmt.arg, %m307$.Node.type** %stmt
-%.tmp7216 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-%function_type.7217 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp7216, %m1861$.Type.type** %function_type.7217
-%.tmp7218 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp7219 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp7220 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7219, i32 0, i32 6
-%.tmp7221 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7220
-%.tmp7222 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$node_to_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp7218, %m307$.Node.type* %.tmp7221)
-%return_value_type.7223 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp7222, %m1861$.Type.type** %return_value_type.7223
-%.tmp7224 = load %m1861$.Type.type*, %m1861$.Type.type** %function_type.7217
-%.tmp7225 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7224, i32 0, i32 0
-%.tmp7227 = getelementptr [9 x i8], [9 x i8]*@.str7226, i32 0, i32 0
-store i8* %.tmp7227, i8** %.tmp7225
-%.tmp7228 = load %m1861$.Type.type*, %m1861$.Type.type** %function_type.7217
-%.tmp7229 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7228, i32 0, i32 3
-%.tmp7230 = load %m1861$.Type.type*, %m1861$.Type.type** %return_value_type.7223
-store %m1861$.Type.type* %.tmp7230, %m1861$.Type.type** %.tmp7229
-%.tmp7231 = load %m1861$.Type.type*, %m1861$.Type.type** %return_value_type.7223
-%last_type.7232 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp7231, %m1861$.Type.type** %last_type.7232
-%.tmp7233 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp7234 = call %m307$.Node.type*(%m307$.Node.type*) @m1861$syn_function_params.m307$.Node.typep.m307$.Node.typep(%m307$.Node.type* %.tmp7233)
-%params.7235 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp7234, %m307$.Node.type** %params.7235
-%.tmp7237 = load %m307$.Node.type*, %m307$.Node.type** %params.7235
-%param_ptr.7238 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp7237, %m307$.Node.type** %param_ptr.7238
-br label %.for.start.7236
-.for.start.7236:
-%.tmp7239 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.7238
-%.tmp7240 = icmp ne %m307$.Node.type* %.tmp7239, null
-br i1 %.tmp7240, label %.for.continue.7236, label %.for.end.7236
-.for.continue.7236:
-%.tmp7241 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.7238
-%.tmp7242 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7241, i32 0, i32 0
-%.tmp7243 = load i8*, i8** %.tmp7242
-%.tmp7245 = getelementptr [5 x i8], [5 x i8]*@.str7244, i32 0, i32 0
-%.tmp7246 = call i32(i8*,i8*) @strcmp(i8* %.tmp7243, i8* %.tmp7245)
-%.tmp7247 = icmp eq i32 %.tmp7246, 0
-br i1 %.tmp7247, label %.if.true.7248, label %.if.false.7248
-.if.true.7248:
-%.tmp7249 = load %m1861$.Type.type*, %m1861$.Type.type** %last_type.7232
-%.tmp7250 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7249, i32 0, i32 4
-%.tmp7251 = load %m1861$.Type.type*, %m1861$.Type.type** %last_type.7232
-%.tmp7252 = call %m1861$.Type.type*(%m1861$.Type.type*) @m1861$type_clone.m1861$.Type.typep.m1861$.Type.typep(%m1861$.Type.type* %.tmp7251)
-store %m1861$.Type.type* %.tmp7252, %m1861$.Type.type** %.tmp7250
-%.tmp7253 = load %m1861$.Type.type*, %m1861$.Type.type** %last_type.7232
-%.tmp7254 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7253, i32 0, i32 4
-%.tmp7255 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7254
-%.tmp7256 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7255, i32 0, i32 4
-store %m1861$.Type.type* null, %m1861$.Type.type** %.tmp7256
-%.tmp7257 = load %m1861$.Type.type*, %m1861$.Type.type** %last_type.7232
-%.tmp7258 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7257, i32 0, i32 4
-%.tmp7259 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7258
-store %m1861$.Type.type* %.tmp7259, %m1861$.Type.type** %last_type.7232
-%.tmp7260 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.7238
-%.tmp7261 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7260, i32 0, i32 7
-%.tmp7262 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7261
-%.tmp7263 = icmp ne %m307$.Node.type* %.tmp7262, null
-br i1 %.tmp7263, label %.if.true.7264, label %.if.false.7264
-.if.true.7264:
-%.tmp7265 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.7238
-%.tmp7266 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7265, i32 0, i32 7
-%.tmp7267 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7266
-store %m307$.Node.type* %.tmp7267, %m307$.Node.type** %param_ptr.7238
-br label %.if.end.7264
-.if.false.7264:
-br label %.if.end.7264
-.if.end.7264:
-%.tmp7268 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.7238
-%.tmp7269 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7268, i32 0, i32 7
-%.tmp7270 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7269
-%.tmp7271 = icmp ne %m307$.Node.type* %.tmp7270, null
-br i1 %.tmp7271, label %.if.true.7272, label %.if.false.7272
-.if.true.7272:
-%.tmp7273 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.7238
-%.tmp7274 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7273, i32 0, i32 7
-%.tmp7275 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7274
-store %m307$.Node.type* %.tmp7275, %m307$.Node.type** %param_ptr.7238
-br label %.if.end.7272
-.if.false.7272:
-store %m307$.Node.type* null, %m307$.Node.type** %param_ptr.7238
-br label %.if.end.7272
-.if.end.7272:
-br label %.if.end.7248
-.if.false.7248:
-%.tmp7276 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp7277 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.7238
-%.tmp7278 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7277, i32 0, i32 6
-%.tmp7279 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7278
-%.tmp7280 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$node_to_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp7276, %m307$.Node.type* %.tmp7279)
-%param_type.7281 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp7280, %m1861$.Type.type** %param_type.7281
-%.tmp7282 = load %m1861$.Type.type*, %m1861$.Type.type** %last_type.7232
-%.tmp7283 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7282, i32 0, i32 4
-%.tmp7284 = load %m1861$.Type.type*, %m1861$.Type.type** %param_type.7281
-store %m1861$.Type.type* %.tmp7284, %m1861$.Type.type** %.tmp7283
-%.tmp7285 = load %m1861$.Type.type*, %m1861$.Type.type** %param_type.7281
-store %m1861$.Type.type* %.tmp7285, %m1861$.Type.type** %last_type.7232
-%.tmp7286 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.7238
-%.tmp7287 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7286, i32 0, i32 7
-%.tmp7288 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7287
-store %m307$.Node.type* %.tmp7288, %m307$.Node.type** %param_ptr.7238
-%.tmp7289 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.7238
-%.tmp7290 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7289, i32 0, i32 7
-%.tmp7291 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7290
-%.tmp7292 = icmp ne %m307$.Node.type* %.tmp7291, null
-br i1 %.tmp7292, label %.if.true.7293, label %.if.false.7293
-.if.true.7293:
-%.tmp7294 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.7238
-%.tmp7295 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7294, i32 0, i32 7
-%.tmp7296 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7295
-%.tmp7297 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7296, i32 0, i32 7
-%.tmp7298 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7297
-store %m307$.Node.type* %.tmp7298, %m307$.Node.type** %param_ptr.7238
-br label %.if.end.7293
-.if.false.7293:
-store %m307$.Node.type* null, %m307$.Node.type** %param_ptr.7238
-br label %.if.end.7293
-.if.end.7293:
-br label %.if.end.7248
-.if.end.7248:
-br label %.for.start.7236
-.for.end.7236:
-%.tmp7299 = load %m1861$.Type.type*, %m1861$.Type.type** %function_type.7217
-ret %m1861$.Type.type* %.tmp7299
+%.tmp7397 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+%function_type.7398 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp7397, %m1861$.Type.type** %function_type.7398
+%.tmp7399 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7400 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp7401 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7400, i32 0, i32 6
+%.tmp7402 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7401
+%.tmp7403 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$node_to_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp7399, %m307$.Node.type* %.tmp7402)
+%return_value_type.7404 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp7403, %m1861$.Type.type** %return_value_type.7404
+%.tmp7405 = load %m1861$.Type.type*, %m1861$.Type.type** %function_type.7398
+%.tmp7406 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7405, i32 0, i32 0
+%.tmp7408 = getelementptr [9 x i8], [9 x i8]*@.str7407, i32 0, i32 0
+store i8* %.tmp7408, i8** %.tmp7406
+%.tmp7409 = load %m1861$.Type.type*, %m1861$.Type.type** %function_type.7398
+%.tmp7410 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7409, i32 0, i32 3
+%.tmp7411 = load %m1861$.Type.type*, %m1861$.Type.type** %return_value_type.7404
+store %m1861$.Type.type* %.tmp7411, %m1861$.Type.type** %.tmp7410
+%.tmp7412 = load %m1861$.Type.type*, %m1861$.Type.type** %return_value_type.7404
+%last_type.7413 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp7412, %m1861$.Type.type** %last_type.7413
+%.tmp7414 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp7415 = call %m307$.Node.type*(%m307$.Node.type*) @m1861$syn_function_params.m307$.Node.typep.m307$.Node.typep(%m307$.Node.type* %.tmp7414)
+%params.7416 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp7415, %m307$.Node.type** %params.7416
+%.tmp7418 = load %m307$.Node.type*, %m307$.Node.type** %params.7416
+%param_ptr.7419 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp7418, %m307$.Node.type** %param_ptr.7419
+br label %.for.start.7417
+.for.start.7417:
+%.tmp7420 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.7419
+%.tmp7421 = icmp ne %m307$.Node.type* %.tmp7420, null
+br i1 %.tmp7421, label %.for.continue.7417, label %.for.end.7417
+.for.continue.7417:
+%.tmp7422 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.7419
+%.tmp7423 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7422, i32 0, i32 0
+%.tmp7424 = load i8*, i8** %.tmp7423
+%.tmp7426 = getelementptr [5 x i8], [5 x i8]*@.str7425, i32 0, i32 0
+%.tmp7427 = call i32(i8*,i8*) @strcmp(i8* %.tmp7424, i8* %.tmp7426)
+%.tmp7428 = icmp eq i32 %.tmp7427, 0
+br i1 %.tmp7428, label %.if.true.7429, label %.if.false.7429
+.if.true.7429:
+%.tmp7430 = load %m1861$.Type.type*, %m1861$.Type.type** %last_type.7413
+%.tmp7431 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7430, i32 0, i32 4
+%.tmp7432 = load %m1861$.Type.type*, %m1861$.Type.type** %last_type.7413
+%.tmp7433 = call %m1861$.Type.type*(%m1861$.Type.type*) @m1861$type_clone.m1861$.Type.typep.m1861$.Type.typep(%m1861$.Type.type* %.tmp7432)
+store %m1861$.Type.type* %.tmp7433, %m1861$.Type.type** %.tmp7431
+%.tmp7434 = load %m1861$.Type.type*, %m1861$.Type.type** %last_type.7413
+%.tmp7435 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7434, i32 0, i32 4
+%.tmp7436 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7435
+%.tmp7437 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7436, i32 0, i32 4
+store %m1861$.Type.type* null, %m1861$.Type.type** %.tmp7437
+%.tmp7438 = load %m1861$.Type.type*, %m1861$.Type.type** %last_type.7413
+%.tmp7439 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7438, i32 0, i32 4
+%.tmp7440 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7439
+store %m1861$.Type.type* %.tmp7440, %m1861$.Type.type** %last_type.7413
+%.tmp7441 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.7419
+%.tmp7442 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7441, i32 0, i32 7
+%.tmp7443 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7442
+%.tmp7444 = icmp ne %m307$.Node.type* %.tmp7443, null
+br i1 %.tmp7444, label %.if.true.7445, label %.if.false.7445
+.if.true.7445:
+%.tmp7446 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.7419
+%.tmp7447 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7446, i32 0, i32 7
+%.tmp7448 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7447
+store %m307$.Node.type* %.tmp7448, %m307$.Node.type** %param_ptr.7419
+br label %.if.end.7445
+.if.false.7445:
+br label %.if.end.7445
+.if.end.7445:
+%.tmp7449 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.7419
+%.tmp7450 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7449, i32 0, i32 7
+%.tmp7451 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7450
+%.tmp7452 = icmp ne %m307$.Node.type* %.tmp7451, null
+br i1 %.tmp7452, label %.if.true.7453, label %.if.false.7453
+.if.true.7453:
+%.tmp7454 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.7419
+%.tmp7455 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7454, i32 0, i32 7
+%.tmp7456 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7455
+store %m307$.Node.type* %.tmp7456, %m307$.Node.type** %param_ptr.7419
+br label %.if.end.7453
+.if.false.7453:
+store %m307$.Node.type* null, %m307$.Node.type** %param_ptr.7419
+br label %.if.end.7453
+.if.end.7453:
+br label %.if.end.7429
+.if.false.7429:
+%.tmp7457 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7458 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.7419
+%.tmp7459 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7458, i32 0, i32 6
+%.tmp7460 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7459
+%.tmp7461 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$node_to_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp7457, %m307$.Node.type* %.tmp7460)
+%param_type.7462 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp7461, %m1861$.Type.type** %param_type.7462
+%.tmp7463 = load %m1861$.Type.type*, %m1861$.Type.type** %last_type.7413
+%.tmp7464 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7463, i32 0, i32 4
+%.tmp7465 = load %m1861$.Type.type*, %m1861$.Type.type** %param_type.7462
+store %m1861$.Type.type* %.tmp7465, %m1861$.Type.type** %.tmp7464
+%.tmp7466 = load %m1861$.Type.type*, %m1861$.Type.type** %param_type.7462
+store %m1861$.Type.type* %.tmp7466, %m1861$.Type.type** %last_type.7413
+%.tmp7467 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.7419
+%.tmp7468 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7467, i32 0, i32 7
+%.tmp7469 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7468
+store %m307$.Node.type* %.tmp7469, %m307$.Node.type** %param_ptr.7419
+%.tmp7470 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.7419
+%.tmp7471 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7470, i32 0, i32 7
+%.tmp7472 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7471
+%.tmp7473 = icmp ne %m307$.Node.type* %.tmp7472, null
+br i1 %.tmp7473, label %.if.true.7474, label %.if.false.7474
+.if.true.7474:
+%.tmp7475 = load %m307$.Node.type*, %m307$.Node.type** %param_ptr.7419
+%.tmp7476 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7475, i32 0, i32 7
+%.tmp7477 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7476
+%.tmp7478 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7477, i32 0, i32 7
+%.tmp7479 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7478
+store %m307$.Node.type* %.tmp7479, %m307$.Node.type** %param_ptr.7419
+br label %.if.end.7474
+.if.false.7474:
+store %m307$.Node.type* null, %m307$.Node.type** %param_ptr.7419
+br label %.if.end.7474
+.if.end.7474:
+br label %.if.end.7429
+.if.end.7429:
+br label %.for.start.7417
+.for.end.7417:
+%.tmp7480 = load %m1861$.Type.type*, %m1861$.Type.type** %function_type.7398
+ret %m1861$.Type.type* %.tmp7480
 }
 define %m307$.Node.type* @m1861$syn_function_params.m307$.Node.typep.m307$.Node.typep(%m307$.Node.type* %.stmt.arg) {
 %stmt = alloca %m307$.Node.type*
 store %m307$.Node.type* %.stmt.arg, %m307$.Node.type** %stmt
-%.tmp7300 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp7302 = getelementptr [10 x i8], [10 x i8]*@.str7301, i32 0, i32 0
-%.tmp7303 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp7300, i8* %.tmp7302)
-%params.7304 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp7303, %m307$.Node.type** %params.7304
-%.tmp7305 = load %m307$.Node.type*, %m307$.Node.type** %params.7304
-%.tmp7306 = icmp eq %m307$.Node.type* %.tmp7305, null
-br i1 %.tmp7306, label %.if.true.7307, label %.if.false.7307
-.if.true.7307:
-%.tmp7308 = bitcast ptr null to %m307$.Node.type*
-ret %m307$.Node.type* %.tmp7308
-br label %.if.end.7307
-.if.false.7307:
-br label %.if.end.7307
-.if.end.7307:
-%.tmp7309 = load %m307$.Node.type*, %m307$.Node.type** %params.7304
-%.tmp7310 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7309, i32 0, i32 6
-%.tmp7311 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7310
-ret %m307$.Node.type* %.tmp7311
+%.tmp7481 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp7483 = getelementptr [10 x i8], [10 x i8]*@.str7482, i32 0, i32 0
+%.tmp7484 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp7481, i8* %.tmp7483)
+%params.7485 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp7484, %m307$.Node.type** %params.7485
+%.tmp7486 = load %m307$.Node.type*, %m307$.Node.type** %params.7485
+%.tmp7487 = icmp eq %m307$.Node.type* %.tmp7486, null
+br i1 %.tmp7487, label %.if.true.7488, label %.if.false.7488
+.if.true.7488:
+%.tmp7489 = bitcast ptr null to %m307$.Node.type*
+ret %m307$.Node.type* %.tmp7489
+br label %.if.end.7488
+.if.false.7488:
+br label %.if.end.7488
+.if.end.7488:
+%.tmp7490 = load %m307$.Node.type*, %m307$.Node.type** %params.7485
+%.tmp7491 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7490, i32 0, i32 6
+%.tmp7492 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7491
+ret %m307$.Node.type* %.tmp7492
 }
 define %m1861$.Type.type* @m1861$node_to_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.ctx.arg, %m307$.Node.type* %.stmt.arg) {
 %ctx = alloca %m1861$.CompilerCtx.type*
 store %m1861$.CompilerCtx.type* %.ctx.arg, %m1861$.CompilerCtx.type** %ctx
 %stmt = alloca %m307$.Node.type*
 store %m307$.Node.type* %.stmt.arg, %m307$.Node.type** %stmt
-%.tmp7312 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-%t.7313 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp7312, %m1861$.Type.type** %t.7313
-%.tmp7314 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp7315 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7314, i32 0, i32 0
-%.tmp7316 = load i8*, i8** %.tmp7315
-%.tmp7318 = getelementptr [10 x i8], [10 x i8]*@.str7317, i32 0, i32 0
-%.tmp7319 = call i32(i8*,i8*) @strcmp(i8* %.tmp7316, i8* %.tmp7318)
-%.tmp7320 = icmp eq i32 %.tmp7319, 0
-br i1 %.tmp7320, label %.if.true.7321, label %.if.false.7321
-.if.true.7321:
-%.tmp7322 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7313
-%.tmp7323 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7322, i32 0, i32 0
-%.tmp7325 = getelementptr [7 x i8], [7 x i8]*@.str7324, i32 0, i32 0
-store i8* %.tmp7325, i8** %.tmp7323
-%.tmp7326 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7313
-%.tmp7327 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7326, i32 0, i32 1
-store i8* null, i8** %.tmp7327
-%.tmp7328 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp7329 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7328, i32 0, i32 6
-%.tmp7330 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7329
-%.tmp7332 = getelementptr [5 x i8], [5 x i8]*@.str7331, i32 0, i32 0
-%.tmp7333 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp7330, i8* %.tmp7332)
-%curr_type.7334 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp7333, %m307$.Node.type** %curr_type.7334
-%.tmp7335 = load %m307$.Node.type*, %m307$.Node.type** %curr_type.7334
-%.tmp7336 = icmp ne %m307$.Node.type* %.tmp7335, null
-br i1 %.tmp7336, label %.if.true.7337, label %.if.false.7337
-.if.true.7337:
-%.tmp7338 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7313
-%.tmp7339 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7338, i32 0, i32 3
-%.tmp7340 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp7341 = load %m307$.Node.type*, %m307$.Node.type** %curr_type.7334
-%.tmp7342 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7341, i32 0, i32 6
-%.tmp7343 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7342
-%.tmp7344 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$node_to_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp7340, %m307$.Node.type* %.tmp7343)
-store %m1861$.Type.type* %.tmp7344, %m1861$.Type.type** %.tmp7339
-%.tmp7345 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7313
-%.tmp7346 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7345, i32 0, i32 3
-%.tmp7347 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7346
-%.tmp7348 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7347, i32 0, i32 1
-%.tmp7349 = load %m307$.Node.type*, %m307$.Node.type** %curr_type.7334
-%.tmp7350 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7349, i32 0, i32 7
-%.tmp7351 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7350
-%.tmp7352 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7351, i32 0, i32 1
-%.tmp7353 = load i8*, i8** %.tmp7352
-store i8* %.tmp7353, i8** %.tmp7348
-%.tmp7354 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7313
-%.tmp7355 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7354, i32 0, i32 3
-%.tmp7356 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7355
-%curr_t.7357 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp7356, %m1861$.Type.type** %curr_t.7357
-%.tmp7359 = load %m307$.Node.type*, %m307$.Node.type** %curr_type.7334
-%.tmp7360 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7359, i32 0, i32 7
-%.tmp7361 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7360
-%.tmp7363 = getelementptr [5 x i8], [5 x i8]*@.str7362, i32 0, i32 0
-%.tmp7364 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp7361, i8* %.tmp7363)
-store %m307$.Node.type* %.tmp7364, %m307$.Node.type** %curr_type.7334
-br label %.for.start.7358
-.for.start.7358:
-%.tmp7365 = load %m307$.Node.type*, %m307$.Node.type** %curr_type.7334
-%.tmp7366 = icmp ne %m307$.Node.type* %.tmp7365, null
-br i1 %.tmp7366, label %.for.continue.7358, label %.for.end.7358
-.for.continue.7358:
-%.tmp7367 = load %m1861$.Type.type*, %m1861$.Type.type** %curr_t.7357
-%.tmp7368 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7367, i32 0, i32 4
-%.tmp7369 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp7370 = load %m307$.Node.type*, %m307$.Node.type** %curr_type.7334
-%.tmp7371 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7370, i32 0, i32 6
-%.tmp7372 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7371
-%.tmp7373 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$node_to_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp7369, %m307$.Node.type* %.tmp7372)
-store %m1861$.Type.type* %.tmp7373, %m1861$.Type.type** %.tmp7368
-%.tmp7374 = load %m1861$.Type.type*, %m1861$.Type.type** %curr_t.7357
-%.tmp7375 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7374, i32 0, i32 4
-%.tmp7376 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7375
-%.tmp7377 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7376, i32 0, i32 1
-%.tmp7378 = load %m307$.Node.type*, %m307$.Node.type** %curr_type.7334
-%.tmp7379 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7378, i32 0, i32 7
-%.tmp7380 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7379
-%.tmp7381 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7380, i32 0, i32 1
-%.tmp7382 = load i8*, i8** %.tmp7381
-store i8* %.tmp7382, i8** %.tmp7377
-%.tmp7383 = load %m1861$.Type.type*, %m1861$.Type.type** %curr_t.7357
-%.tmp7384 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7383, i32 0, i32 4
-%.tmp7385 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7384
-store %m1861$.Type.type* %.tmp7385, %m1861$.Type.type** %curr_t.7357
-%.tmp7386 = load %m307$.Node.type*, %m307$.Node.type** %curr_type.7334
-%.tmp7387 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7386, i32 0, i32 7
-%.tmp7388 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7387
-%.tmp7390 = getelementptr [5 x i8], [5 x i8]*@.str7389, i32 0, i32 0
-%.tmp7391 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp7388, i8* %.tmp7390)
-store %m307$.Node.type* %.tmp7391, %m307$.Node.type** %curr_type.7334
-br label %.for.start.7358
-.for.end.7358:
-br label %.if.end.7337
-.if.false.7337:
-br label %.if.end.7337
-.if.end.7337:
-br label %.if.end.7321
-.if.false.7321:
-%.tmp7392 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp7393 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7392, i32 0, i32 0
-%.tmp7394 = load i8*, i8** %.tmp7393
-%.tmp7396 = getelementptr [12 x i8], [12 x i8]*@.str7395, i32 0, i32 0
-%.tmp7397 = call i32(i8*,i8*) @strcmp(i8* %.tmp7394, i8* %.tmp7396)
-%.tmp7398 = icmp eq i32 %.tmp7397, 0
-br i1 %.tmp7398, label %.if.true.7399, label %.if.false.7399
-.if.true.7399:
-%err_msg.7400 = alloca i8*
-store i8* null, i8** %err_msg.7400
-%.tmp7401 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp7402 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp7403 = call %m1861$.ScopeItem.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$find_defined.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp7401, %m307$.Node.type* %.tmp7402)
-%base.7404 = alloca %m1861$.ScopeItem.type*
-store %m1861$.ScopeItem.type* %.tmp7403, %m1861$.ScopeItem.type** %base.7404
-%.tmp7405 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %base.7404
-%.tmp7406 = icmp eq %m1861$.ScopeItem.type* %.tmp7405, null
-br i1 %.tmp7406, label %.if.true.7407, label %.if.false.7407
-.if.true.7407:
-%.tmp7408 = getelementptr i8*, i8** %err_msg.7400, i32 0
-%.tmp7410 = getelementptr [37 x i8], [37 x i8]*@.str7409, i32 0, i32 0
-%.tmp7411 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp7412 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7411, i32 0, i32 6
-%.tmp7413 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7412
-%.tmp7414 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7413, i32 0, i32 1
-%.tmp7415 = load i8*, i8** %.tmp7414
-%.tmp7416 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7408, i8* %.tmp7410, i8* %.tmp7415)
-%.tmp7417 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp7418 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp7419 = load i8*, i8** %err_msg.7400
-call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp7417, %m307$.Node.type* %.tmp7418, i8* %.tmp7419)
-%.tmp7420 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7313
-%.tmp7421 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7420, i32 0, i32 0
-%.tmp7423 = getelementptr [6 x i8], [6 x i8]*@.str7422, i32 0, i32 0
-store i8* %.tmp7423, i8** %.tmp7421
-%.tmp7424 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7313
-ret %m1861$.Type.type* %.tmp7424
-br label %.if.end.7407
-.if.false.7407:
-br label %.if.end.7407
-.if.end.7407:
-%.tmp7425 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7313
-%.tmp7426 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7425, i32 0, i32 0
-%.tmp7428 = getelementptr [10 x i8], [10 x i8]*@.str7427, i32 0, i32 0
-store i8* %.tmp7428, i8** %.tmp7426
-%.tmp7429 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7313
-%.tmp7430 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7429, i32 0, i32 1
-%.tmp7431 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %base.7404
-%.tmp7432 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp7431, i32 0, i32 0
-%.tmp7433 = load i8*, i8** %.tmp7432
-store i8* %.tmp7433, i8** %.tmp7430
-%.tmp7434 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7313
-%.tmp7435 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7434, i32 0, i32 2
-%.tmp7436 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %base.7404
-%.tmp7437 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp7436, i32 0, i32 1
-%.tmp7438 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %.tmp7437
-%.tmp7439 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp7438, i32 0, i32 0
-%.tmp7440 = load i8*, i8** %.tmp7439
-store i8* %.tmp7440, i8** %.tmp7435
-%.tmp7441 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7313
-%.tmp7442 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7441, i32 0, i32 3
-%.tmp7443 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %base.7404
-%.tmp7444 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp7443, i32 0, i32 1
-%.tmp7445 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %.tmp7444
-%.tmp7446 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp7445, i32 0, i32 3
-%.tmp7447 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7446
-store %m1861$.Type.type* %.tmp7447, %m1861$.Type.type** %.tmp7442
-br label %.if.end.7399
-.if.false.7399:
-%.tmp7448 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp7449 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7448, i32 0, i32 1
-%.tmp7450 = load i8*, i8** %.tmp7449
-%.tmp7452 = getelementptr [4 x i8], [4 x i8]*@.str7451, i32 0, i32 0
-%.tmp7453 = call i32(i8*,i8*) @strcmp(i8* %.tmp7450, i8* %.tmp7452)
-%.tmp7454 = icmp eq i32 %.tmp7453, 0
-br i1 %.tmp7454, label %.if.true.7455, label %.if.false.7455
-.if.true.7455:
-%.tmp7456 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7313
-%.tmp7457 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7456, i32 0, i32 0
-%.tmp7459 = getelementptr [4 x i8], [4 x i8]*@.str7458, i32 0, i32 0
-store i8* %.tmp7459, i8** %.tmp7457
-%.tmp7460 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7313
-%.tmp7461 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7460, i32 0, i32 3
-%.tmp7462 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-store %m1861$.Type.type* %.tmp7462, %m1861$.Type.type** %.tmp7461
-%.tmp7463 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7313
-%.tmp7464 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7463, i32 0, i32 3
-%.tmp7465 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7464
-%.tmp7466 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7465, i32 0, i32 0
-%.tmp7468 = getelementptr [4 x i8], [4 x i8]*@.str7467, i32 0, i32 0
-store i8* %.tmp7468, i8** %.tmp7466
-br label %.if.end.7455
-.if.false.7455:
-%.tmp7469 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp7470 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7469, i32 0, i32 0
-%.tmp7471 = load i8*, i8** %.tmp7470
-%.tmp7473 = getelementptr [5 x i8], [5 x i8]*@.str7472, i32 0, i32 0
-%.tmp7474 = call i32(i8*,i8*) @strcmp(i8* %.tmp7471, i8* %.tmp7473)
-%.tmp7475 = icmp eq i32 %.tmp7474, 0
-br i1 %.tmp7475, label %.if.true.7476, label %.if.false.7476
-.if.true.7476:
-%.tmp7477 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7313
-%.tmp7478 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7477, i32 0, i32 0
-%.tmp7479 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp7480 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7479, i32 0, i32 1
-%.tmp7481 = load i8*, i8** %.tmp7480
-store i8* %.tmp7481, i8** %.tmp7478
-br label %.if.end.7476
-.if.false.7476:
-%.tmp7482 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp7483 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7482, i32 0, i32 1
-%.tmp7484 = load i8*, i8** %.tmp7483
-%.tmp7486 = getelementptr [4 x i8], [4 x i8]*@.str7485, i32 0, i32 0
-%.tmp7487 = call i32(i8*,i8*) @strcmp(i8* %.tmp7484, i8* %.tmp7486)
-%.tmp7488 = icmp eq i32 %.tmp7487, 0
-br i1 %.tmp7488, label %.if.true.7489, label %.if.false.7489
-.if.true.7489:
-%.tmp7490 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7313
-%.tmp7491 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7490, i32 0, i32 0
-%.tmp7493 = getelementptr [7 x i8], [7 x i8]*@.str7492, i32 0, i32 0
-store i8* %.tmp7493, i8** %.tmp7491
-br label %.if.end.7489
-.if.false.7489:
-%.tmp7494 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7493 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+%t.7494 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp7493, %m1861$.Type.type** %t.7494
 %.tmp7495 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp7497 = getelementptr [54 x i8], [54 x i8]*@.str7496, i32 0, i32 0
-%.tmp7498 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp7494, %m307$.Node.type* %.tmp7495, i8* %.tmp7497)
-%.tmp7499 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp7500 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7499, i32 0, i32 0
-%.tmp7501 = load i8*, i8** %.tmp7500
-%.tmp7502 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp7503 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7502, i32 0, i32 1
-%.tmp7504 = load i8*, i8** %.tmp7503
-%.tmp7505 = call i32(i8*,...) @printf(i8* %.tmp7498, i8* %.tmp7501, i8* %.tmp7504)
-%.tmp7506 = bitcast ptr null to %m1861$.Type.type*
-ret %m1861$.Type.type* %.tmp7506
-br label %.if.end.7489
-.if.end.7489:
-br label %.if.end.7476
-.if.end.7476:
-br label %.if.end.7455
-.if.end.7455:
-br label %.if.end.7399
-.if.end.7399:
-br label %.if.end.7321
-.if.end.7321:
-%.tmp7508 = load %m307$.Node.type*, %m307$.Node.type** %stmt
-%.tmp7509 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7508, i32 0, i32 7
-%.tmp7510 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7509
-%ptr.7511 = alloca %m307$.Node.type*
-store %m307$.Node.type* %.tmp7510, %m307$.Node.type** %ptr.7511
-br label %.for.start.7507
-.for.start.7507:
-%.tmp7512 = load %m307$.Node.type*, %m307$.Node.type** %ptr.7511
-%.tmp7513 = icmp ne %m307$.Node.type* %.tmp7512, null
-br i1 %.tmp7513, label %.for.continue.7507, label %.for.end.7507
-.for.continue.7507:
-%.tmp7514 = load %m307$.Node.type*, %m307$.Node.type** %ptr.7511
-%.tmp7515 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7514, i32 0, i32 1
-%.tmp7516 = load i8*, i8** %.tmp7515
-%.tmp7518 = getelementptr [2 x i8], [2 x i8]*@.str7517, i32 0, i32 0
-%.tmp7519 = call i32(i8*,i8*) @strcmp(i8* %.tmp7516, i8* %.tmp7518)
-%.tmp7520 = icmp eq i32 %.tmp7519, 0
-br i1 %.tmp7520, label %.if.true.7521, label %.if.false.7521
-.if.true.7521:
-%.tmp7522 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-%pt.7523 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp7522, %m1861$.Type.type** %pt.7523
-%.tmp7524 = load %m1861$.Type.type*, %m1861$.Type.type** %pt.7523
-%.tmp7525 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7524, i32 0, i32 0
-%.tmp7527 = getelementptr [4 x i8], [4 x i8]*@.str7526, i32 0, i32 0
-store i8* %.tmp7527, i8** %.tmp7525
-%.tmp7528 = load %m1861$.Type.type*, %m1861$.Type.type** %pt.7523
-%.tmp7529 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7528, i32 0, i32 3
-%.tmp7530 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7313
-store %m1861$.Type.type* %.tmp7530, %m1861$.Type.type** %.tmp7529
-%.tmp7531 = load %m1861$.Type.type*, %m1861$.Type.type** %pt.7523
-store %m1861$.Type.type* %.tmp7531, %m1861$.Type.type** %t.7313
-br label %.if.end.7521
-.if.false.7521:
-%.tmp7532 = load %m307$.Node.type*, %m307$.Node.type** %ptr.7511
+%.tmp7496 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7495, i32 0, i32 0
+%.tmp7497 = load i8*, i8** %.tmp7496
+%.tmp7499 = getelementptr [10 x i8], [10 x i8]*@.str7498, i32 0, i32 0
+%.tmp7500 = call i32(i8*,i8*) @strcmp(i8* %.tmp7497, i8* %.tmp7499)
+%.tmp7501 = icmp eq i32 %.tmp7500, 0
+br i1 %.tmp7501, label %.if.true.7502, label %.if.false.7502
+.if.true.7502:
+%.tmp7503 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7494
+%.tmp7504 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7503, i32 0, i32 0
+%.tmp7506 = getelementptr [7 x i8], [7 x i8]*@.str7505, i32 0, i32 0
+store i8* %.tmp7506, i8** %.tmp7504
+%.tmp7507 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7494
+%.tmp7508 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7507, i32 0, i32 1
+store i8* null, i8** %.tmp7508
+%.tmp7509 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp7510 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7509, i32 0, i32 6
+%.tmp7511 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7510
+%.tmp7513 = getelementptr [5 x i8], [5 x i8]*@.str7512, i32 0, i32 0
+%.tmp7514 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp7511, i8* %.tmp7513)
+%curr_type.7515 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp7514, %m307$.Node.type** %curr_type.7515
+%.tmp7516 = load %m307$.Node.type*, %m307$.Node.type** %curr_type.7515
+%.tmp7517 = icmp ne %m307$.Node.type* %.tmp7516, null
+br i1 %.tmp7517, label %.if.true.7518, label %.if.false.7518
+.if.true.7518:
+%.tmp7519 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7494
+%.tmp7520 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7519, i32 0, i32 3
+%.tmp7521 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7522 = load %m307$.Node.type*, %m307$.Node.type** %curr_type.7515
+%.tmp7523 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7522, i32 0, i32 6
+%.tmp7524 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7523
+%.tmp7525 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$node_to_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp7521, %m307$.Node.type* %.tmp7524)
+store %m1861$.Type.type* %.tmp7525, %m1861$.Type.type** %.tmp7520
+%.tmp7526 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7494
+%.tmp7527 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7526, i32 0, i32 3
+%.tmp7528 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7527
+%.tmp7529 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7528, i32 0, i32 1
+%.tmp7530 = load %m307$.Node.type*, %m307$.Node.type** %curr_type.7515
+%.tmp7531 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7530, i32 0, i32 7
+%.tmp7532 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7531
 %.tmp7533 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7532, i32 0, i32 1
 %.tmp7534 = load i8*, i8** %.tmp7533
-%.tmp7536 = getelementptr [2 x i8], [2 x i8]*@.str7535, i32 0, i32 0
-%.tmp7537 = call i32(i8*,i8*) @strcmp(i8* %.tmp7534, i8* %.tmp7536)
-%.tmp7538 = icmp eq i32 %.tmp7537, 0
-br i1 %.tmp7538, label %.if.true.7539, label %.if.false.7539
-.if.true.7539:
-%.tmp7540 = load %m307$.Node.type*, %m307$.Node.type** %ptr.7511
+store i8* %.tmp7534, i8** %.tmp7529
+%.tmp7535 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7494
+%.tmp7536 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7535, i32 0, i32 3
+%.tmp7537 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7536
+%curr_t.7538 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp7537, %m1861$.Type.type** %curr_t.7538
+%.tmp7540 = load %m307$.Node.type*, %m307$.Node.type** %curr_type.7515
 %.tmp7541 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7540, i32 0, i32 7
 %.tmp7542 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7541
-%.tmp7543 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7542, i32 0, i32 1
-%.tmp7544 = load i8*, i8** %.tmp7543
-%.tmp7546 = getelementptr [2 x i8], [2 x i8]*@.str7545, i32 0, i32 0
-%.tmp7547 = call i32(i8*,i8*) @strcmp(i8* %.tmp7544, i8* %.tmp7546)
-%.tmp7548 = icmp eq i32 %.tmp7547, 0
-br i1 %.tmp7548, label %.if.true.7549, label %.if.false.7549
-.if.true.7549:
-%.tmp7550 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-%slice_type.7551 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp7550, %m1861$.Type.type** %slice_type.7551
-%.tmp7552 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_type.7551
-%.tmp7553 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7552, i32 0, i32 0
-%.tmp7555 = getelementptr [7 x i8], [7 x i8]*@.str7554, i32 0, i32 0
-store i8* %.tmp7555, i8** %.tmp7553
-%.tmp7556 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-%slice_c_array.7557 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp7556, %m1861$.Type.type** %slice_c_array.7557
-%.tmp7558 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_c_array.7557
-%.tmp7559 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7558, i32 0, i32 0
-%.tmp7561 = getelementptr [4 x i8], [4 x i8]*@.str7560, i32 0, i32 0
-store i8* %.tmp7561, i8** %.tmp7559
-%.tmp7562 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_c_array.7557
-%.tmp7563 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7562, i32 0, i32 1
-%.tmp7565 = getelementptr [6 x i8], [6 x i8]*@.str7564, i32 0, i32 0
-store i8* %.tmp7565, i8** %.tmp7563
-%.tmp7566 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_c_array.7557
-%.tmp7567 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7566, i32 0, i32 3
-%.tmp7568 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7313
-store %m1861$.Type.type* %.tmp7568, %m1861$.Type.type** %.tmp7567
-%.tmp7569 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_type.7551
-%.tmp7570 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7569, i32 0, i32 3
-%.tmp7571 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_c_array.7557
-store %m1861$.Type.type* %.tmp7571, %m1861$.Type.type** %.tmp7570
-%.tmp7572 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-%slice_len.7573 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp7572, %m1861$.Type.type** %slice_len.7573
-%.tmp7574 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_len.7573
-%.tmp7575 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7574, i32 0, i32 0
-%.tmp7577 = getelementptr [4 x i8], [4 x i8]*@.str7576, i32 0, i32 0
-store i8* %.tmp7577, i8** %.tmp7575
-%.tmp7578 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_len.7573
-%.tmp7579 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7578, i32 0, i32 1
-%.tmp7581 = getelementptr [4 x i8], [4 x i8]*@.str7580, i32 0, i32 0
-store i8* %.tmp7581, i8** %.tmp7579
-%.tmp7582 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_c_array.7557
-%.tmp7583 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7582, i32 0, i32 4
-%.tmp7584 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_len.7573
-store %m1861$.Type.type* %.tmp7584, %m1861$.Type.type** %.tmp7583
-%.tmp7585 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
-%slice_cap.7586 = alloca %m1861$.Type.type*
-store %m1861$.Type.type* %.tmp7585, %m1861$.Type.type** %slice_cap.7586
-%.tmp7587 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_cap.7586
-%.tmp7588 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7587, i32 0, i32 0
-%.tmp7590 = getelementptr [4 x i8], [4 x i8]*@.str7589, i32 0, i32 0
-store i8* %.tmp7590, i8** %.tmp7588
-%.tmp7591 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_cap.7586
-%.tmp7592 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7591, i32 0, i32 1
-%.tmp7594 = getelementptr [4 x i8], [4 x i8]*@.str7593, i32 0, i32 0
-store i8* %.tmp7594, i8** %.tmp7592
-%.tmp7595 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_len.7573
-%.tmp7596 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7595, i32 0, i32 4
-%.tmp7597 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_cap.7586
-store %m1861$.Type.type* %.tmp7597, %m1861$.Type.type** %.tmp7596
-%.tmp7598 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_type.7551
-store %m1861$.Type.type* %.tmp7598, %m1861$.Type.type** %t.7313
-%.tmp7599 = load %m307$.Node.type*, %m307$.Node.type** %ptr.7511
-%.tmp7600 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7599, i32 0, i32 7
-%.tmp7601 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7600
-store %m307$.Node.type* %.tmp7601, %m307$.Node.type** %ptr.7511
-br label %.if.end.7549
-.if.false.7549:
-br label %.if.end.7549
-.if.end.7549:
-br label %.if.end.7539
-.if.false.7539:
-%.tmp7602 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
-%.tmp7603 = load %m307$.Node.type*, %m307$.Node.type** %ptr.7511
-%.tmp7605 = getelementptr [49 x i8], [49 x i8]*@.str7604, i32 0, i32 0
-%.tmp7606 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp7602, %m307$.Node.type* %.tmp7603, i8* %.tmp7605)
-%.tmp7607 = load %m307$.Node.type*, %m307$.Node.type** %ptr.7511
-%.tmp7608 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7607, i32 0, i32 1
-%.tmp7609 = load i8*, i8** %.tmp7608
-%.tmp7610 = call i32(i8*,...) @printf(i8* %.tmp7606, i8* %.tmp7609)
-%.tmp7611 = bitcast ptr null to %m1861$.Type.type*
-ret %m1861$.Type.type* %.tmp7611
-br label %.if.end.7539
-.if.end.7539:
-br label %.if.end.7521
-.if.end.7521:
-%.tmp7612 = load %m307$.Node.type*, %m307$.Node.type** %ptr.7511
-%.tmp7613 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7612, i32 0, i32 7
-%.tmp7614 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7613
-store %m307$.Node.type* %.tmp7614, %m307$.Node.type** %ptr.7511
-br label %.for.start.7507
-.for.end.7507:
-%.tmp7615 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7313
-ret %m1861$.Type.type* %.tmp7615
+%.tmp7544 = getelementptr [5 x i8], [5 x i8]*@.str7543, i32 0, i32 0
+%.tmp7545 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp7542, i8* %.tmp7544)
+store %m307$.Node.type* %.tmp7545, %m307$.Node.type** %curr_type.7515
+br label %.for.start.7539
+.for.start.7539:
+%.tmp7546 = load %m307$.Node.type*, %m307$.Node.type** %curr_type.7515
+%.tmp7547 = icmp ne %m307$.Node.type* %.tmp7546, null
+br i1 %.tmp7547, label %.for.continue.7539, label %.for.end.7539
+.for.continue.7539:
+%.tmp7548 = load %m1861$.Type.type*, %m1861$.Type.type** %curr_t.7538
+%.tmp7549 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7548, i32 0, i32 4
+%.tmp7550 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7551 = load %m307$.Node.type*, %m307$.Node.type** %curr_type.7515
+%.tmp7552 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7551, i32 0, i32 6
+%.tmp7553 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7552
+%.tmp7554 = call %m1861$.Type.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$node_to_type.m1861$.Type.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp7550, %m307$.Node.type* %.tmp7553)
+store %m1861$.Type.type* %.tmp7554, %m1861$.Type.type** %.tmp7549
+%.tmp7555 = load %m1861$.Type.type*, %m1861$.Type.type** %curr_t.7538
+%.tmp7556 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7555, i32 0, i32 4
+%.tmp7557 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7556
+%.tmp7558 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7557, i32 0, i32 1
+%.tmp7559 = load %m307$.Node.type*, %m307$.Node.type** %curr_type.7515
+%.tmp7560 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7559, i32 0, i32 7
+%.tmp7561 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7560
+%.tmp7562 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7561, i32 0, i32 1
+%.tmp7563 = load i8*, i8** %.tmp7562
+store i8* %.tmp7563, i8** %.tmp7558
+%.tmp7564 = load %m1861$.Type.type*, %m1861$.Type.type** %curr_t.7538
+%.tmp7565 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7564, i32 0, i32 4
+%.tmp7566 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7565
+store %m1861$.Type.type* %.tmp7566, %m1861$.Type.type** %curr_t.7538
+%.tmp7567 = load %m307$.Node.type*, %m307$.Node.type** %curr_type.7515
+%.tmp7568 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7567, i32 0, i32 7
+%.tmp7569 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7568
+%.tmp7571 = getelementptr [5 x i8], [5 x i8]*@.str7570, i32 0, i32 0
+%.tmp7572 = call %m307$.Node.type*(%m307$.Node.type*,i8*) @m1861$skip_to_type.m307$.Node.typep.m307$.Node.typep.cp(%m307$.Node.type* %.tmp7569, i8* %.tmp7571)
+store %m307$.Node.type* %.tmp7572, %m307$.Node.type** %curr_type.7515
+br label %.for.start.7539
+.for.end.7539:
+br label %.if.end.7518
+.if.false.7518:
+br label %.if.end.7518
+.if.end.7518:
+br label %.if.end.7502
+.if.false.7502:
+%.tmp7573 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp7574 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7573, i32 0, i32 0
+%.tmp7575 = load i8*, i8** %.tmp7574
+%.tmp7577 = getelementptr [12 x i8], [12 x i8]*@.str7576, i32 0, i32 0
+%.tmp7578 = call i32(i8*,i8*) @strcmp(i8* %.tmp7575, i8* %.tmp7577)
+%.tmp7579 = icmp eq i32 %.tmp7578, 0
+br i1 %.tmp7579, label %.if.true.7580, label %.if.false.7580
+.if.true.7580:
+%err_msg.7581 = alloca i8*
+store i8* null, i8** %err_msg.7581
+%.tmp7582 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7583 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp7584 = call %m1861$.ScopeItem.type*(%m1861$.CompilerCtx.type*,%m307$.Node.type*) @m1861$find_defined.m1861$.ScopeItem.typep.m1861$.CompilerCtx.typep.m307$.Node.typep(%m1861$.CompilerCtx.type* %.tmp7582, %m307$.Node.type* %.tmp7583)
+%base.7585 = alloca %m1861$.ScopeItem.type*
+store %m1861$.ScopeItem.type* %.tmp7584, %m1861$.ScopeItem.type** %base.7585
+%.tmp7586 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %base.7585
+%.tmp7587 = icmp eq %m1861$.ScopeItem.type* %.tmp7586, null
+br i1 %.tmp7587, label %.if.true.7588, label %.if.false.7588
+.if.true.7588:
+%.tmp7589 = getelementptr i8*, i8** %err_msg.7581, i32 0
+%.tmp7591 = getelementptr [37 x i8], [37 x i8]*@.str7590, i32 0, i32 0
+%.tmp7592 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp7593 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7592, i32 0, i32 6
+%.tmp7594 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7593
+%.tmp7595 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7594, i32 0, i32 1
+%.tmp7596 = load i8*, i8** %.tmp7595
+%.tmp7597 = call i32(i8**,i8*,...) @asprintf(i8** %.tmp7589, i8* %.tmp7591, i8* %.tmp7596)
+%.tmp7598 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7599 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp7600 = load i8*, i8** %err_msg.7581
+call void(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$new_error.v.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp7598, %m307$.Node.type* %.tmp7599, i8* %.tmp7600)
+%.tmp7601 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7494
+%.tmp7602 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7601, i32 0, i32 0
+%.tmp7604 = getelementptr [6 x i8], [6 x i8]*@.str7603, i32 0, i32 0
+store i8* %.tmp7604, i8** %.tmp7602
+%.tmp7605 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7494
+ret %m1861$.Type.type* %.tmp7605
+br label %.if.end.7588
+.if.false.7588:
+br label %.if.end.7588
+.if.end.7588:
+%.tmp7606 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7494
+%.tmp7607 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7606, i32 0, i32 0
+%.tmp7609 = getelementptr [10 x i8], [10 x i8]*@.str7608, i32 0, i32 0
+store i8* %.tmp7609, i8** %.tmp7607
+%.tmp7610 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7494
+%.tmp7611 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7610, i32 0, i32 1
+%.tmp7612 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %base.7585
+%.tmp7613 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp7612, i32 0, i32 0
+%.tmp7614 = load i8*, i8** %.tmp7613
+store i8* %.tmp7614, i8** %.tmp7611
+%.tmp7615 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7494
+%.tmp7616 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7615, i32 0, i32 2
+%.tmp7617 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %base.7585
+%.tmp7618 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp7617, i32 0, i32 1
+%.tmp7619 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %.tmp7618
+%.tmp7620 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp7619, i32 0, i32 0
+%.tmp7621 = load i8*, i8** %.tmp7620
+store i8* %.tmp7621, i8** %.tmp7616
+%.tmp7622 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7494
+%.tmp7623 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7622, i32 0, i32 3
+%.tmp7624 = load %m1861$.ScopeItem.type*, %m1861$.ScopeItem.type** %base.7585
+%.tmp7625 = getelementptr %m1861$.ScopeItem.type, %m1861$.ScopeItem.type* %.tmp7624, i32 0, i32 1
+%.tmp7626 = load %m1861$.AssignableInfo.type*, %m1861$.AssignableInfo.type** %.tmp7625
+%.tmp7627 = getelementptr %m1861$.AssignableInfo.type, %m1861$.AssignableInfo.type* %.tmp7626, i32 0, i32 3
+%.tmp7628 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7627
+store %m1861$.Type.type* %.tmp7628, %m1861$.Type.type** %.tmp7623
+br label %.if.end.7580
+.if.false.7580:
+%.tmp7629 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp7630 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7629, i32 0, i32 1
+%.tmp7631 = load i8*, i8** %.tmp7630
+%.tmp7633 = getelementptr [4 x i8], [4 x i8]*@.str7632, i32 0, i32 0
+%.tmp7634 = call i32(i8*,i8*) @strcmp(i8* %.tmp7631, i8* %.tmp7633)
+%.tmp7635 = icmp eq i32 %.tmp7634, 0
+br i1 %.tmp7635, label %.if.true.7636, label %.if.false.7636
+.if.true.7636:
+%.tmp7637 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7494
+%.tmp7638 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7637, i32 0, i32 0
+%.tmp7640 = getelementptr [4 x i8], [4 x i8]*@.str7639, i32 0, i32 0
+store i8* %.tmp7640, i8** %.tmp7638
+%.tmp7641 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7494
+%.tmp7642 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7641, i32 0, i32 3
+%.tmp7643 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+store %m1861$.Type.type* %.tmp7643, %m1861$.Type.type** %.tmp7642
+%.tmp7644 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7494
+%.tmp7645 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7644, i32 0, i32 3
+%.tmp7646 = load %m1861$.Type.type*, %m1861$.Type.type** %.tmp7645
+%.tmp7647 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7646, i32 0, i32 0
+%.tmp7649 = getelementptr [4 x i8], [4 x i8]*@.str7648, i32 0, i32 0
+store i8* %.tmp7649, i8** %.tmp7647
+br label %.if.end.7636
+.if.false.7636:
+%.tmp7650 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp7651 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7650, i32 0, i32 0
+%.tmp7652 = load i8*, i8** %.tmp7651
+%.tmp7654 = getelementptr [5 x i8], [5 x i8]*@.str7653, i32 0, i32 0
+%.tmp7655 = call i32(i8*,i8*) @strcmp(i8* %.tmp7652, i8* %.tmp7654)
+%.tmp7656 = icmp eq i32 %.tmp7655, 0
+br i1 %.tmp7656, label %.if.true.7657, label %.if.false.7657
+.if.true.7657:
+%.tmp7658 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7494
+%.tmp7659 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7658, i32 0, i32 0
+%.tmp7660 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp7661 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7660, i32 0, i32 1
+%.tmp7662 = load i8*, i8** %.tmp7661
+store i8* %.tmp7662, i8** %.tmp7659
+br label %.if.end.7657
+.if.false.7657:
+%.tmp7663 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp7664 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7663, i32 0, i32 1
+%.tmp7665 = load i8*, i8** %.tmp7664
+%.tmp7667 = getelementptr [4 x i8], [4 x i8]*@.str7666, i32 0, i32 0
+%.tmp7668 = call i32(i8*,i8*) @strcmp(i8* %.tmp7665, i8* %.tmp7667)
+%.tmp7669 = icmp eq i32 %.tmp7668, 0
+br i1 %.tmp7669, label %.if.true.7670, label %.if.false.7670
+.if.true.7670:
+%.tmp7671 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7494
+%.tmp7672 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7671, i32 0, i32 0
+%.tmp7674 = getelementptr [7 x i8], [7 x i8]*@.str7673, i32 0, i32 0
+store i8* %.tmp7674, i8** %.tmp7672
+br label %.if.end.7670
+.if.false.7670:
+%.tmp7675 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7676 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp7678 = getelementptr [54 x i8], [54 x i8]*@.str7677, i32 0, i32 0
+%.tmp7679 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp7675, %m307$.Node.type* %.tmp7676, i8* %.tmp7678)
+%.tmp7680 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp7681 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7680, i32 0, i32 0
+%.tmp7682 = load i8*, i8** %.tmp7681
+%.tmp7683 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp7684 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7683, i32 0, i32 1
+%.tmp7685 = load i8*, i8** %.tmp7684
+%.tmp7686 = call i32(i8*,...) @printf(i8* %.tmp7679, i8* %.tmp7682, i8* %.tmp7685)
+%.tmp7687 = bitcast ptr null to %m1861$.Type.type*
+ret %m1861$.Type.type* %.tmp7687
+br label %.if.end.7670
+.if.end.7670:
+br label %.if.end.7657
+.if.end.7657:
+br label %.if.end.7636
+.if.end.7636:
+br label %.if.end.7580
+.if.end.7580:
+br label %.if.end.7502
+.if.end.7502:
+%.tmp7689 = load %m307$.Node.type*, %m307$.Node.type** %stmt
+%.tmp7690 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7689, i32 0, i32 7
+%.tmp7691 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7690
+%ptr.7692 = alloca %m307$.Node.type*
+store %m307$.Node.type* %.tmp7691, %m307$.Node.type** %ptr.7692
+br label %.for.start.7688
+.for.start.7688:
+%.tmp7693 = load %m307$.Node.type*, %m307$.Node.type** %ptr.7692
+%.tmp7694 = icmp ne %m307$.Node.type* %.tmp7693, null
+br i1 %.tmp7694, label %.for.continue.7688, label %.for.end.7688
+.for.continue.7688:
+%.tmp7695 = load %m307$.Node.type*, %m307$.Node.type** %ptr.7692
+%.tmp7696 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7695, i32 0, i32 1
+%.tmp7697 = load i8*, i8** %.tmp7696
+%.tmp7699 = getelementptr [2 x i8], [2 x i8]*@.str7698, i32 0, i32 0
+%.tmp7700 = call i32(i8*,i8*) @strcmp(i8* %.tmp7697, i8* %.tmp7699)
+%.tmp7701 = icmp eq i32 %.tmp7700, 0
+br i1 %.tmp7701, label %.if.true.7702, label %.if.false.7702
+.if.true.7702:
+%.tmp7703 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+%pt.7704 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp7703, %m1861$.Type.type** %pt.7704
+%.tmp7705 = load %m1861$.Type.type*, %m1861$.Type.type** %pt.7704
+%.tmp7706 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7705, i32 0, i32 0
+%.tmp7708 = getelementptr [4 x i8], [4 x i8]*@.str7707, i32 0, i32 0
+store i8* %.tmp7708, i8** %.tmp7706
+%.tmp7709 = load %m1861$.Type.type*, %m1861$.Type.type** %pt.7704
+%.tmp7710 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7709, i32 0, i32 3
+%.tmp7711 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7494
+store %m1861$.Type.type* %.tmp7711, %m1861$.Type.type** %.tmp7710
+%.tmp7712 = load %m1861$.Type.type*, %m1861$.Type.type** %pt.7704
+store %m1861$.Type.type* %.tmp7712, %m1861$.Type.type** %t.7494
+br label %.if.end.7702
+.if.false.7702:
+%.tmp7713 = load %m307$.Node.type*, %m307$.Node.type** %ptr.7692
+%.tmp7714 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7713, i32 0, i32 1
+%.tmp7715 = load i8*, i8** %.tmp7714
+%.tmp7717 = getelementptr [2 x i8], [2 x i8]*@.str7716, i32 0, i32 0
+%.tmp7718 = call i32(i8*,i8*) @strcmp(i8* %.tmp7715, i8* %.tmp7717)
+%.tmp7719 = icmp eq i32 %.tmp7718, 0
+br i1 %.tmp7719, label %.if.true.7720, label %.if.false.7720
+.if.true.7720:
+%.tmp7721 = load %m307$.Node.type*, %m307$.Node.type** %ptr.7692
+%.tmp7722 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7721, i32 0, i32 7
+%.tmp7723 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7722
+%.tmp7724 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7723, i32 0, i32 1
+%.tmp7725 = load i8*, i8** %.tmp7724
+%.tmp7727 = getelementptr [2 x i8], [2 x i8]*@.str7726, i32 0, i32 0
+%.tmp7728 = call i32(i8*,i8*) @strcmp(i8* %.tmp7725, i8* %.tmp7727)
+%.tmp7729 = icmp eq i32 %.tmp7728, 0
+br i1 %.tmp7729, label %.if.true.7730, label %.if.false.7730
+.if.true.7730:
+%.tmp7731 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+%slice_type.7732 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp7731, %m1861$.Type.type** %slice_type.7732
+%.tmp7733 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_type.7732
+%.tmp7734 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7733, i32 0, i32 0
+%.tmp7736 = getelementptr [7 x i8], [7 x i8]*@.str7735, i32 0, i32 0
+store i8* %.tmp7736, i8** %.tmp7734
+%.tmp7737 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+%slice_c_array.7738 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp7737, %m1861$.Type.type** %slice_c_array.7738
+%.tmp7739 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_c_array.7738
+%.tmp7740 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7739, i32 0, i32 0
+%.tmp7742 = getelementptr [4 x i8], [4 x i8]*@.str7741, i32 0, i32 0
+store i8* %.tmp7742, i8** %.tmp7740
+%.tmp7743 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_c_array.7738
+%.tmp7744 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7743, i32 0, i32 1
+%.tmp7746 = getelementptr [6 x i8], [6 x i8]*@.str7745, i32 0, i32 0
+store i8* %.tmp7746, i8** %.tmp7744
+%.tmp7747 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_c_array.7738
+%.tmp7748 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7747, i32 0, i32 3
+%.tmp7749 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7494
+store %m1861$.Type.type* %.tmp7749, %m1861$.Type.type** %.tmp7748
+%.tmp7750 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_type.7732
+%.tmp7751 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7750, i32 0, i32 3
+%.tmp7752 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_c_array.7738
+store %m1861$.Type.type* %.tmp7752, %m1861$.Type.type** %.tmp7751
+%.tmp7753 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+%slice_len.7754 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp7753, %m1861$.Type.type** %slice_len.7754
+%.tmp7755 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_len.7754
+%.tmp7756 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7755, i32 0, i32 0
+%.tmp7758 = getelementptr [4 x i8], [4 x i8]*@.str7757, i32 0, i32 0
+store i8* %.tmp7758, i8** %.tmp7756
+%.tmp7759 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_len.7754
+%.tmp7760 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7759, i32 0, i32 1
+%.tmp7762 = getelementptr [4 x i8], [4 x i8]*@.str7761, i32 0, i32 0
+store i8* %.tmp7762, i8** %.tmp7760
+%.tmp7763 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_c_array.7738
+%.tmp7764 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7763, i32 0, i32 4
+%.tmp7765 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_len.7754
+store %m1861$.Type.type* %.tmp7765, %m1861$.Type.type** %.tmp7764
+%.tmp7766 = call %m1861$.Type.type*() @m1861$new_type.m1861$.Type.typep()
+%slice_cap.7767 = alloca %m1861$.Type.type*
+store %m1861$.Type.type* %.tmp7766, %m1861$.Type.type** %slice_cap.7767
+%.tmp7768 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_cap.7767
+%.tmp7769 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7768, i32 0, i32 0
+%.tmp7771 = getelementptr [4 x i8], [4 x i8]*@.str7770, i32 0, i32 0
+store i8* %.tmp7771, i8** %.tmp7769
+%.tmp7772 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_cap.7767
+%.tmp7773 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7772, i32 0, i32 1
+%.tmp7775 = getelementptr [4 x i8], [4 x i8]*@.str7774, i32 0, i32 0
+store i8* %.tmp7775, i8** %.tmp7773
+%.tmp7776 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_len.7754
+%.tmp7777 = getelementptr %m1861$.Type.type, %m1861$.Type.type* %.tmp7776, i32 0, i32 4
+%.tmp7778 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_cap.7767
+store %m1861$.Type.type* %.tmp7778, %m1861$.Type.type** %.tmp7777
+%.tmp7779 = load %m1861$.Type.type*, %m1861$.Type.type** %slice_type.7732
+store %m1861$.Type.type* %.tmp7779, %m1861$.Type.type** %t.7494
+%.tmp7780 = load %m307$.Node.type*, %m307$.Node.type** %ptr.7692
+%.tmp7781 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7780, i32 0, i32 7
+%.tmp7782 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7781
+store %m307$.Node.type* %.tmp7782, %m307$.Node.type** %ptr.7692
+br label %.if.end.7730
+.if.false.7730:
+br label %.if.end.7730
+.if.end.7730:
+br label %.if.end.7720
+.if.false.7720:
+%.tmp7783 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %ctx
+%.tmp7784 = load %m307$.Node.type*, %m307$.Node.type** %ptr.7692
+%.tmp7786 = getelementptr [49 x i8], [49 x i8]*@.str7785, i32 0, i32 0
+%.tmp7787 = call i8*(%m1861$.CompilerCtx.type*,%m307$.Node.type*,i8*) @m1861$err_tmpl.cp.m1861$.CompilerCtx.typep.m307$.Node.typep.cp(%m1861$.CompilerCtx.type* %.tmp7783, %m307$.Node.type* %.tmp7784, i8* %.tmp7786)
+%.tmp7788 = load %m307$.Node.type*, %m307$.Node.type** %ptr.7692
+%.tmp7789 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7788, i32 0, i32 1
+%.tmp7790 = load i8*, i8** %.tmp7789
+%.tmp7791 = call i32(i8*,...) @printf(i8* %.tmp7787, i8* %.tmp7790)
+%.tmp7792 = bitcast ptr null to %m1861$.Type.type*
+ret %m1861$.Type.type* %.tmp7792
+br label %.if.end.7720
+.if.end.7720:
+br label %.if.end.7702
+.if.end.7702:
+%.tmp7793 = load %m307$.Node.type*, %m307$.Node.type** %ptr.7692
+%.tmp7794 = getelementptr %m307$.Node.type, %m307$.Node.type* %.tmp7793, i32 0, i32 7
+%.tmp7795 = load %m307$.Node.type*, %m307$.Node.type** %.tmp7794
+store %m307$.Node.type* %.tmp7795, %m307$.Node.type** %ptr.7692
+br label %.for.start.7688
+.for.end.7688:
+%.tmp7796 = load %m1861$.Type.type*, %m1861$.Type.type** %t.7494
+ret %m1861$.Type.type* %.tmp7796
 }
-@.str2654 = constant [5 x i8] c"%s{\0A\00"
-@.str2658 = constant [21 x i8] c"%s  container: \22%s\22\0A\00"
-@.str2665 = constant [16 x i8] c"%s  info: \22%s\22\0A\00"
-@.str2672 = constant [16 x i8] c"%s  repr: \22%s\22\0A\00"
-@.str2684 = constant [16 x i8] c"%s  of: (null)\0A\00"
-@.str2688 = constant [10 x i8] c"%s  of: \0A\00"
-@.str2702 = constant [18 x i8] c"%s  next: (null)\0A\00"
-@.str2706 = constant [12 x i8] c"%s  next: \0A\00"
-@.str2715 = constant [5 x i8] c"%s}\0A\00"
-@.str2775 = constant [5 x i8] c"%c%s\00"
-@.str2787 = constant [7 x i8] c".tmp%d\00"
-@.str2868 = constant [1 x i8] c"\00"
-@.str2910 = constant [61 x i8] c":coffee-error: 'pop_scope' called when module.scopes is null\00"
-@.str2947 = constant [6 x i8] c"start\00"
-@.str3000 = constant [6 x i8] c"start\00"
-@.str3006 = constant [7 x i8] c"global\00"
-@.str3017 = constant [13 x i8] c"head_comment\00"
-@.str3056 = constant [7 x i8] c"string\00"
-@.str3065 = constant [21 x i8] c"%s = constant %s %s\0A\00"
-@.str3098 = constant [5 x i8] c"%s%s\00"
-@.str3106 = constant [9 x i8] c"function\00"
-@.str3112 = constant [5 x i8] c"main\00"
-@.str3127 = constant [6 x i8] c"%s.%s\00"
-@.str3148 = constant [3 x i8] c"NL\00"
-@.str3156 = constant [7 x i8] c"global\00"
-@.str3164 = constant [11 x i8] c"assignable\00"
-@.str3195 = constant [9 x i8] c"variable\00"
-@.str3206 = constant [21 x i8] c"%s = constant %s %s\0A\00"
-@.str3221 = constant [10 x i8] c"typealias\00"
-@.str3243 = constant [11 x i8] c"%s.%s.type\00"
-@.str3255 = constant [10 x i8] c"typealias\00"
-@.str3276 = constant [5 x i8] c"type\00"
-@.str3306 = constant [14 x i8] c"%s = type %s\0A\00"
-@.str3319 = constant [7 x i8] c"extern\00"
-@.str3337 = constant [7 x i8] c"extern\00"
-@.str3377 = constant [15 x i8] c"declare %s %s(\00"
-@.str3409 = constant [3 x i8] c", \00"
-@.str3415 = constant [3 x i8] c"%s\00"
-@.str3427 = constant [3 x i8] c")\0A\00"
-@.str3438 = constant [9 x i8] c"function\00"
-@.str3447 = constant [9 x i8] c"function\00"
-@.str3485 = constant [14 x i8] c"define %s %s(\00"
-@.str3514 = constant [3 x i8] c", \00"
-@.str3520 = constant [5 x i8] c"type\00"
-@.str3536 = constant [13 x i8] c"%s %%.%s.arg\00"
-@.str3551 = constant [5 x i8] c") {\0A\00"
-@.str3555 = constant [9 x i8] c"function\00"
-@.str3564 = constant [6 x i8] c"block\00"
-@.str3585 = constant [3 x i8] c"NL\00"
-@.str3592 = constant [9 x i8] c"OPERATOR\00"
-@.str3611 = constant [7 x i8] c"return\00"
-@.str3621 = constant [5 x i8] c"void\00"
-@.str3628 = constant [21 x i8] c"missing return value\00"
-@.str3633 = constant [10 x i8] c"ret void\0A\00"
-@.str3639 = constant [3 x i8] c"}\0A\00"
-@.str3645 = constant [7 x i8] c"import\00"
-@.str3696 = constant [1 x i8] c"\00"
-@.str3702 = constant [6 x i8] c"%s.bn\00"
-@.str3707 = constant [9 x i8] c"%s/%s.bn\00"
-@.str3719 = constant [60 x i8] c"Unable to import '%s' no such file or directory. (%s/%s.bn)\00"
-@.str3780 = constant [5 x i8] c"m%d$\00"
-@.str3830 = constant [40 x i8] c"statement of type %s is not implemented\00"
-@.str3839 = constant [31 x i8] c":coffee-error: (%s: %d:%d) %s\0A\00"
-@.str3871 = constant [9 x i8] c"variable\00"
-@.str3876 = constant [5 x i8] c"type\00"
-@.str3908 = constant [16 x i8] c"%s = alloca %s\0A\00"
-@.str3920 = constant [28 x i8] c"store %s %%.%s.arg, %s* %s\0A\00"
-@.str3932 = constant [6 x i8] c"block\00"
-@.str3946 = constant [11 x i8] c"expression\00"
-@.str3974 = constant [7 x i8] c"sizeof\00"
-@.str3980 = constant [8 x i8] c"fn_args\00"
-@.str3987 = constant [11 x i8] c"assignable\00"
-@.str4015 = constant [4 x i8] c"int\00"
-@.str4028 = constant [46 x i8] c"%%.tmp%d = getelementptr %s, %s* null, i32 1\0A\00"
-@.str4037 = constant [35 x i8] c"%s = ptrtoint %s* %%.tmp%d to i32\0A\00"
-@.str4048 = constant [4 x i8] c"len\00"
-@.str4054 = constant [8 x i8] c"fn_args\00"
-@.str4061 = constant [11 x i8] c"assignable\00"
-@.str4075 = constant [12 x i8] c"destination\00"
-@.str4086 = constant [6 x i8] c"WTF!\0A\00"
-@.str4110 = constant [4 x i8] c"int\00"
-@.str4120 = constant [51 x i8] c"%%.tmp%d = getelementptr %s, %s* %s, i32 0, i32 1\0A\00"
-@.str4131 = constant [28 x i8] c"%s = load %s, %s* %%.tmp%d\0A\00"
-@.str4167 = constant [35 x i8] c"unable to compile function address\00"
-@.str4173 = constant [8 x i8] c"fn_args\00"
-@.str4177 = constant [1 x i8] c"\00"
-@.str4187 = constant [11 x i8] c"assignable\00"
-@.str4201 = constant [5 x i8] c"%s, \00"
-@.str4219 = constant [8 x i8] c"%s%s %s\00"
-@.str4234 = constant [11 x i8] c"assignable\00"
-@.str4244 = constant [5 x i8] c"void\00"
-@.str4252 = constant [16 x i8] c"call %s %s(%s)\0A\00"
-@.str4284 = constant [21 x i8] c"%s = call %s %s(%s)\0A\00"
-@.str4310 = constant [7 x i8] c"return\00"
-@.str4322 = constant [3 x i8] c"NL\00"
-@.str4340 = constant [11 x i8] c"ret %s %s\0A\00"
-@.str4353 = constant [10 x i8] c"ret void\0A\00"
-@.str4357 = constant [3 x i8] c"NL\00"
-@.str4363 = constant [8 x i8] c"fn_call\00"
-@.str4374 = constant [12 x i8] c"declaration\00"
-@.str4383 = constant [11 x i8] c"assignment\00"
-@.str4391 = constant [11 x i8] c"assignable\00"
-@.str4422 = constant [4 x i8] c"ptr\00"
-@.str4431 = constant [21 x i8] c"store %s %s, %s* %s\0A\00"
-@.str4441 = constant [9 x i8] c"if_block\00"
-@.str4449 = constant [9 x i8] c"for_loop\00"
-@.str4457 = constant [8 x i8] c"keyword\00"
-@.str4475 = constant [6 x i8] c"break\00"
-@.str4489 = constant [4 x i8] c"for\00"
-@.str4497 = constant [15 x i8] c"br label %%%s\0A\00"
-@.str4511 = constant [48 x i8] c"'break' keyword used outside of 'for' statement\00"
-@.str4518 = constant [9 x i8] c"continue\00"
-@.str4532 = constant [4 x i8] c"for\00"
-@.str4540 = constant [15 x i8] c"br label %%%s\0A\00"
-@.str4554 = constant [48 x i8] c"'break' keyword used outside of 'for' statement\00"
-@.str4558 = constant [29 x i8] c"Keyword '%s' not implemented\00"
-@.str4569 = constant [34 x i8] c"unable to compile expression '%s'\00"
-@.str4588 = constant [14 x i8] c".for.start.%d\00"
-@.str4593 = constant [12 x i8] c".for.end.%d\00"
-@.str4598 = constant [4 x i8] c"for\00"
-@.str4605 = constant [12 x i8] c"declaration\00"
-@.str4616 = constant [11 x i8] c"assignment\00"
-@.str4626 = constant [9 x i8] c"OPERATOR\00"
-@.str4633 = constant [66 x i8] c"unable to compile statement of type %s in for loop init condition\00"
-@.str4644 = constant [26 x i8] c"br label %%.for.start.%d\0A\00"
-@.str4651 = constant [16 x i8] c".for.start.%d:\0A\00"
-@.str4658 = constant [9 x i8] c"OPERATOR\00"
-@.str4669 = constant [9 x i8] c"OPERATOR\00"
-@.str4676 = constant [39 x i8] c"Expecting boolean condition, found ';'\00"
-@.str4685 = constant [48 x i8] c"br %s %s, label %%.for.continue.%d, label %%%s\0A\00"
-@.str4700 = constant [19 x i8] c".for.continue.%d:\0A\00"
-@.str4707 = constant [9 x i8] c"OPERATOR\00"
-@.str4716 = constant [6 x i8] c"block\00"
-@.str4731 = constant [15 x i8] c"br label %%%s\0A\00"
-@.str4738 = constant [5 x i8] c"%s:\0A\00"
-@.str4752 = constant [5 x i8] c"type\00"
-@.str4767 = constant [11 x i8] c"assignable\00"
-@.str4782 = constant [9 x i8] c"variable\00"
-@.str4787 = constant [5 x i8] c"WORD\00"
-@.str4796 = constant [31 x i8] c"unable to get declaration name\00"
-@.str4816 = constant [43 x i8] c"Name '%s' is already defined in this scope\00"
-@.str4828 = constant [6 x i8] c"%s.%d\00"
-@.str4885 = constant [49 x i8] c"cannot assign type '%s' to variable of type '%s'\00"
-@.str4901 = constant [16 x i8] c"%s = alloca %s\0A\00"
-@.str4913 = constant [21 x i8] c"store %s %s, %s* %s\0A\00"
-@.str4954 = constant [4 x i8] c"int\00"
-@.str4961 = constant [4 x i8] c"chr\00"
-@.str4969 = constant [5 x i8] c"bool\00"
-@.str4978 = constant [21 x i8] c"store %s %d, %s* %s\0A\00"
-@.str4987 = constant [4 x i8] c"ptr\00"
-@.str4995 = constant [21 x i8] c"store %s %s, %s* %s\0A\00"
-@.str4998 = constant [5 x i8] c"null\00"
-@.str5006 = constant [7 x i8] c"struct\00"
-@.str5027 = constant [46 x i8] c"%s = getelementptr %s, %s* %s, i32 0, i32 %d\0A\00"
-@.str5047 = constant [10 x i8] c"typealias\00"
-@.str5070 = constant [46 x i8] c"%s = getelementptr %s, %s* %s, i32 0, i32 %d\0A\00"
-@.str5089 = constant [44 x i8] c"Default type not existent for type: %s (%s)\00"
-@.str5106 = constant [11 x i8] c"assignable\00"
-@.str5123 = constant [53 x i8] c"br %s %s, label %%.if.true.%d, label %%.if.false.%d\0A\00"
-@.str5138 = constant [14 x i8] c".if.true.%d:\0A\00"
-@.str5145 = constant [6 x i8] c"block\00"
-@.str5154 = constant [23 x i8] c"br label %%.if.end.%d\0A\00"
-@.str5161 = constant [15 x i8] c".if.false.%d:\0A\00"
-@.str5168 = constant [11 x i8] c"elif_block\00"
-@.str5180 = constant [11 x i8] c"else_block\00"
-@.str5190 = constant [6 x i8] c"block\00"
-@.str5200 = constant [23 x i8] c"br label %%.if.end.%d\0A\00"
-@.str5207 = constant [13 x i8] c".if.end.%d:\0A\00"
-@.str5228 = constant [61 x i8] c"Programming error, unable to create new error from null node\00"
-@.str5237 = constant [82 x i8] c":coffee-error: 'define_assignable' could not be called if context scopes are null\00"
-@.str5291 = constant [31 x i8] c"Name %s not found in module %s\00"
-@.str5312 = constant [7 x i8] c"module\00"
-@.str5365 = constant [77 x i8] c":coffee-error: 'find_defined' could not be called if context scopes are null\00"
-@.str5402 = constant [54 x i8] c"cannot call 'get_dotted_name' on null assignable info\00"
-@.str5410 = constant [9 x i8] c"function\00"
-@.str5417 = constant [7 x i8] c"extern\00"
-@.str5429 = constant [46 x i8] c"cannot get attribute %s from function type %s\00"
-@.str5450 = constant [9 x i8] c"variable\00"
-@.str5472 = constant [4 x i8] c"ptr\00"
-@.str5491 = constant [23 x i8] c"%s = load %s*, %s* %s\0A\00"
-@.str5515 = constant [10 x i8] c"typealias\00"
-@.str5526 = constant [7 x i8] c"struct\00"
-@.str5532 = constant [48 x i8] c"cannot get attribute %s from non struct type %s\00"
-@.str5584 = constant [34 x i8] c"field %s not defined in struct %s\00"
-@.str5605 = constant [9 x i8] c"variable\00"
-@.str5616 = constant [46 x i8] c"%s = getelementptr %s, %s* %s, i32 0, i32 %d\0A\00"
-@.str5637 = constant [9 x i8] c"variable\00"
-@.str5645 = constant [43 x i8] c"`get_dotted_name` does not handle type: %s\00"
-@.str5659 = constant [12 x i8] c"destination\00"
-@.str5664 = constant [92 x i8] c":coffee-error: 'compile_addr' could only be called on destinations for now. (called on %s)\0A\00"
-@.str5692 = constant [41 x i8] c"name '%s' was not declared in this scope\00"
-@.str5711 = constant [7 x i8] c"module\00"
-@.str5733 = constant [31 x i8] c"name '%s' is not defined in %s\00"
-@.str5804 = constant [28 x i8] c"%%.tmp%d = load %s, %s* %s\0A\00"
-@.str5825 = constant [35 x i8] c"Unable to get address for type: %s\00"
-@.str5849 = constant [44 x i8] c"%s = getelementptr %s, %s* %%.tmp%d, %s %s\0A\00"
-@.str5872 = constant [16 x i8] c"mono_assignable\00"
-@.str5898 = constant [5 x i8] c"cast\00"
-@.str5908 = constant [5 x i8] c"type\00"
-@.str5933 = constant [8 x i8] c"bitcast\00"
-@.str5941 = constant [4 x i8] c"ptr\00"
-@.str5948 = constant [4 x i8] c"ptr\00"
-@.str5967 = constant [4 x i8] c"i%d\00"
-@.str5972 = constant [4 x i8] c"i%d\00"
-@.str5980 = constant [5 x i8] c"sext\00"
-@.str5982 = constant [6 x i8] c"trunc\00"
-@.str5987 = constant [21 x i8] c"%s = %s %s %s to %s\0A\00"
-@.str6007 = constant [16 x i8] c"mono_assignable\00"
-@.str6069 = constant [19 x i8] c"%s = %s %s %s, %s\0A\00"
-@.str6092 = constant [31 x i8] c"called 'operator_op' with null\00"
-@.str6099 = constant [2 x i8] c"+\00"
-@.str6104 = constant [4 x i8] c"add\00"
-@.str6109 = constant [2 x i8] c"-\00"
-@.str6114 = constant [4 x i8] c"sub\00"
-@.str6119 = constant [2 x i8] c"*\00"
-@.str6124 = constant [4 x i8] c"mul\00"
-@.str6129 = constant [2 x i8] c"/\00"
-@.str6134 = constant [5 x i8] c"sdiv\00"
-@.str6139 = constant [3 x i8] c"==\00"
-@.str6144 = constant [8 x i8] c"icmp eq\00"
-@.str6149 = constant [3 x i8] c"!=\00"
-@.str6154 = constant [8 x i8] c"icmp ne\00"
-@.str6159 = constant [2 x i8] c">\00"
-@.str6164 = constant [9 x i8] c"icmp sgt\00"
-@.str6169 = constant [2 x i8] c"<\00"
-@.str6174 = constant [9 x i8] c"icmp slt\00"
-@.str6179 = constant [2 x i8] c"&\00"
-@.str6184 = constant [4 x i8] c"and\00"
-@.str6189 = constant [2 x i8] c"|\00"
-@.str6194 = constant [3 x i8] c"or\00"
-@.str6199 = constant [3 x i8] c">=\00"
-@.str6204 = constant [9 x i8] c"icmp sge\00"
-@.str6209 = constant [3 x i8] c"<=\00"
-@.str6214 = constant [9 x i8] c"icmp sle\00"
-@.str6218 = constant [30 x i8] c"operator '%s' not implemented\00"
-@.str6225 = constant [4 x i8] c"add\00"
-@.str6232 = constant [3 x i8] c"==\00"
-@.str6239 = constant [3 x i8] c"!=\00"
-@.str6247 = constant [2 x i8] c"|\00"
-@.str6255 = constant [2 x i8] c"&\00"
-@.str6263 = constant [2 x i8] c">\00"
-@.str6271 = constant [2 x i8] c"<\00"
-@.str6279 = constant [3 x i8] c">=\00"
-@.str6287 = constant [3 x i8] c"<=\00"
-@.str6295 = constant [5 x i8] c"bool\00"
-@.str6299 = constant [4 x i8] c"int\00"
-@.str6313 = constant [7 x i8] c"NUMBER\00"
-@.str6327 = constant [4 x i8] c"int\00"
-@.str6341 = constant [5 x i8] c"WORD\00"
-@.str6351 = constant [5 x i8] c"null\00"
-@.str6358 = constant [42 x i8] c"unable to interpret %s as mono_assignable\00"
-@.str6372 = constant [5 x i8] c"null\00"
-@.str6381 = constant [8 x i8] c"nullptr\00"
-@.str6388 = constant [17 x i8] c"addr_destination\00"
-@.str6400 = constant [12 x i8] c"destination\00"
-@.str6444 = constant [4 x i8] c"ptr\00"
-@.str6463 = constant [38 x i8] c"%s = getelementptr %s, %s* %s, i32 0\0A\00"
-@.str6475 = constant [22 x i8] c"%s = load %s, %s* %s\0A\00"
-@.str6489 = constant [8 x i8] c"boolean\00"
-@.str6503 = constant [5 x i8] c"bool\00"
-@.str6512 = constant [6 x i8] c"false\00"
-@.str6519 = constant [2 x i8] c"0\00"
-@.str6523 = constant [2 x i8] c"1\00"
-@.str6530 = constant [8 x i8] c"fn_call\00"
-@.str6547 = constant [7 x i8] c"STRING\00"
-@.str6573 = constant [44 x i8] c"%s = getelementptr %s, %s*%s, i32 0, i32 0\0A\00"
-@.str6589 = constant [4 x i8] c"ptr\00"
-@.str6602 = constant [4 x i8] c"chr\00"
-@.str6609 = constant [4 x i8] c"CHR\00"
-@.str6625 = constant [2 x i8] c"0\00"
-@.str6641 = constant [22 x i8] c"Invalid character: %s\00"
-@.str6657 = constant [4 x i8] c"chr\00"
-@.str6661 = constant [40 x i8] c"unable to compile assignable of type %s\00"
-@.str6689 = constant [22 x i8] c"called 'abbr' on null\00"
-@.str6695 = constant [59 x i8] c"called 'type_abbr' with malformed type, container is null.\00"
-@.str6700 = constant [4 x i8] c"int\00"
-@.str6705 = constant [2 x i8] c"i\00"
-@.str6710 = constant [5 x i8] c"bool\00"
-@.str6715 = constant [2 x i8] c"b\00"
-@.str6720 = constant [5 x i8] c"void\00"
-@.str6725 = constant [2 x i8] c"v\00"
-@.str6730 = constant [4 x i8] c"chr\00"
-@.str6735 = constant [2 x i8] c"c\00"
-@.str6740 = constant [4 x i8] c"ptr\00"
-@.str6747 = constant [4 x i8] c"%sp\00"
-@.str6758 = constant [10 x i8] c"typealias\00"
-@.str6769 = constant [6 x i8] c"error\00"
-@.str6774 = constant [2 x i8] c"?\00"
-@.str6776 = constant [44 x i8] c":coffee-error: unable to abbreviate type %s\00"
-@.str6788 = constant [7 x i8] c".str%d\00"
-@.str6812 = constant [6 x i8] c"array\00"
-@.str6825 = constant [4 x i8] c"chr\00"
-@.str6843 = constant [3 x i8] c"%d\00"
-@.str6852 = constant [7 x i8] c"string\00"
-@.str6872 = constant [7 x i8] c"module\00"
-@.str6907 = constant [44 x i8] c":panic: %s called 'type_repr' on null type\0A\00"
-@.str6913 = constant [2 x i8] c"?\00"
-@.str6919 = constant [59 x i8] c"called 'type_repr' with malformed type, container is null.\00"
-@.str6925 = constant [4 x i8] c"int\00"
-@.str6930 = constant [4 x i8] c"i32\00"
-@.str6935 = constant [5 x i8] c"void\00"
-@.str6940 = constant [5 x i8] c"void\00"
-@.str6945 = constant [5 x i8] c"bool\00"
-@.str6950 = constant [3 x i8] c"i1\00"
-@.str6955 = constant [8 x i8] c"nullptr\00"
-@.str6960 = constant [4 x i8] c"ptr\00"
-@.str6965 = constant [4 x i8] c"chr\00"
-@.str6970 = constant [3 x i8] c"i8\00"
-@.str6975 = constant [9 x i8] c"function\00"
-@.str6981 = constant [4 x i8] c"%s(\00"
-@.str7007 = constant [4 x i8] c"%s,\00"
-@.str7012 = constant [5 x i8] c"%s%s\00"
-@.str7023 = constant [4 x i8] c"%s)\00"
-@.str7031 = constant [4 x i8] c"ptr\00"
-@.str7037 = constant [4 x i8] c"%s*\00"
-@.str7049 = constant [7 x i8] c"struct\00"
-@.str7055 = constant [2 x i8] c"{\00"
-@.str7072 = constant [4 x i8] c"%s,\00"
-@.str7077 = constant [5 x i8] c"%s%s\00"
-@.str7088 = constant [4 x i8] c"%s}\00"
-@.str7096 = constant [6 x i8] c"array\00"
-@.str7102 = constant [10 x i8] c"[%s x %s]\00"
-@.str7121 = constant [10 x i8] c"typealias\00"
-@.str7127 = constant [5 x i8] c"%%%s\00"
-@.str7137 = constant [7 x i8] c"vararg\00"
-@.str7142 = constant [4 x i8] c"...\00"
-@.str7147 = constant [6 x i8] c"error\00"
-@.str7152 = constant [58 x i8] c":coffee-error: 'type_repr' not implemented for type '%s'\0A\00"
-@.str7226 = constant [9 x i8] c"function\00"
-@.str7244 = constant [5 x i8] c"WORD\00"
-@.str7301 = constant [10 x i8] c"fn_params\00"
-@.str7317 = constant [10 x i8] c"structdef\00"
-@.str7324 = constant [7 x i8] c"struct\00"
-@.str7331 = constant [5 x i8] c"type\00"
-@.str7362 = constant [5 x i8] c"type\00"
-@.str7389 = constant [5 x i8] c"type\00"
-@.str7395 = constant [12 x i8] c"dotted_name\00"
-@.str7409 = constant [37 x i8] c"Name %s is not defined in this scope\00"
-@.str7422 = constant [6 x i8] c"error\00"
-@.str7427 = constant [10 x i8] c"typealias\00"
-@.str7451 = constant [4 x i8] c"str\00"
-@.str7458 = constant [4 x i8] c"ptr\00"
-@.str7467 = constant [4 x i8] c"chr\00"
-@.str7472 = constant [5 x i8] c"WORD\00"
-@.str7485 = constant [4 x i8] c"...\00"
-@.str7492 = constant [7 x i8] c"vararg\00"
-@.str7496 = constant [54 x i8] c"unable to convert statement of type '%s' to type (%s)\00"
-@.str7517 = constant [2 x i8] c"*\00"
-@.str7526 = constant [4 x i8] c"ptr\00"
-@.str7535 = constant [2 x i8] c"[\00"
-@.str7545 = constant [2 x i8] c"]\00"
-@.str7554 = constant [7 x i8] c"struct\00"
-@.str7560 = constant [4 x i8] c"ptr\00"
-@.str7564 = constant [6 x i8] c"c_arr\00"
-@.str7576 = constant [4 x i8] c"int\00"
-@.str7580 = constant [4 x i8] c"len\00"
-@.str7589 = constant [4 x i8] c"int\00"
-@.str7593 = constant [4 x i8] c"cap\00"
-@.str7604 = constant [49 x i8] c"Unable to parse token '%s' after type definition\00"
+@.str2657 = constant [5 x i8] c"%s{\0A\00"
+@.str2661 = constant [21 x i8] c"%s  container: \22%s\22\0A\00"
+@.str2668 = constant [16 x i8] c"%s  info: \22%s\22\0A\00"
+@.str2675 = constant [16 x i8] c"%s  repr: \22%s\22\0A\00"
+@.str2687 = constant [16 x i8] c"%s  of: (null)\0A\00"
+@.str2691 = constant [10 x i8] c"%s  of: \0A\00"
+@.str2705 = constant [18 x i8] c"%s  next: (null)\0A\00"
+@.str2709 = constant [12 x i8] c"%s  next: \0A\00"
+@.str2718 = constant [5 x i8] c"%s}\0A\00"
+@.str2778 = constant [5 x i8] c"%c%s\00"
+@.str2790 = constant [7 x i8] c".tmp%d\00"
+@.str2871 = constant [1 x i8] c"\00"
+@.str2913 = constant [61 x i8] c":coffee-error: 'pop_scope' called when module.scopes is null\00"
+@.str2950 = constant [6 x i8] c"start\00"
+@.str3003 = constant [6 x i8] c"start\00"
+@.str3009 = constant [7 x i8] c"global\00"
+@.str3020 = constant [13 x i8] c"head_comment\00"
+@.str3059 = constant [7 x i8] c"string\00"
+@.str3068 = constant [21 x i8] c"%s = constant %s %s\0A\00"
+@.str3101 = constant [5 x i8] c"%s%s\00"
+@.str3109 = constant [9 x i8] c"function\00"
+@.str3115 = constant [5 x i8] c"main\00"
+@.str3130 = constant [6 x i8] c"%s.%s\00"
+@.str3151 = constant [3 x i8] c"NL\00"
+@.str3159 = constant [7 x i8] c"global\00"
+@.str3167 = constant [11 x i8] c"assignable\00"
+@.str3198 = constant [9 x i8] c"variable\00"
+@.str3209 = constant [21 x i8] c"%s = constant %s %s\0A\00"
+@.str3224 = constant [10 x i8] c"typealias\00"
+@.str3246 = constant [11 x i8] c"%s.%s.type\00"
+@.str3258 = constant [10 x i8] c"typealias\00"
+@.str3279 = constant [5 x i8] c"type\00"
+@.str3309 = constant [14 x i8] c"%s = type %s\0A\00"
+@.str3322 = constant [7 x i8] c"extern\00"
+@.str3340 = constant [7 x i8] c"extern\00"
+@.str3380 = constant [15 x i8] c"declare %s %s(\00"
+@.str3412 = constant [3 x i8] c", \00"
+@.str3418 = constant [3 x i8] c"%s\00"
+@.str3430 = constant [3 x i8] c")\0A\00"
+@.str3441 = constant [9 x i8] c"function\00"
+@.str3450 = constant [9 x i8] c"function\00"
+@.str3488 = constant [14 x i8] c"define %s %s(\00"
+@.str3517 = constant [3 x i8] c", \00"
+@.str3523 = constant [5 x i8] c"type\00"
+@.str3539 = constant [13 x i8] c"%s %%.%s.arg\00"
+@.str3554 = constant [5 x i8] c") {\0A\00"
+@.str3558 = constant [9 x i8] c"function\00"
+@.str3567 = constant [6 x i8] c"block\00"
+@.str3588 = constant [3 x i8] c"NL\00"
+@.str3595 = constant [9 x i8] c"OPERATOR\00"
+@.str3614 = constant [7 x i8] c"return\00"
+@.str3624 = constant [5 x i8] c"void\00"
+@.str3631 = constant [21 x i8] c"missing return value\00"
+@.str3636 = constant [10 x i8] c"ret void\0A\00"
+@.str3642 = constant [3 x i8] c"}\0A\00"
+@.str3648 = constant [7 x i8] c"import\00"
+@.str3699 = constant [1 x i8] c"\00"
+@.str3705 = constant [6 x i8] c"%s.bn\00"
+@.str3710 = constant [9 x i8] c"%s/%s.bn\00"
+@.str3722 = constant [60 x i8] c"Unable to import '%s' no such file or directory. (%s/%s.bn)\00"
+@.str3783 = constant [5 x i8] c"m%d$\00"
+@.str3833 = constant [40 x i8] c"statement of type %s is not implemented\00"
+@.str3842 = constant [31 x i8] c":coffee-error: (%s: %d:%d) %s\0A\00"
+@.str3874 = constant [9 x i8] c"variable\00"
+@.str3879 = constant [5 x i8] c"type\00"
+@.str3911 = constant [16 x i8] c"%s = alloca %s\0A\00"
+@.str3923 = constant [28 x i8] c"store %s %%.%s.arg, %s* %s\0A\00"
+@.str3935 = constant [6 x i8] c"block\00"
+@.str3949 = constant [11 x i8] c"expression\00"
+@.str3971 = constant [7 x i8] c"struct\00"
+@.str3976 = constant [7 x i8] c"WhAT!\0A\00"
+@.str4016 = constant [52 x i8] c"%%.tmp%d = getelementptr %s, %s* %s, i32 0, i32 %d\0A\00"
+@.str4028 = constant [28 x i8] c"%s = load %s, %s* %%.tmp%d\0A\00"
+@.str4054 = constant [7 x i8] c"struct\00"
+@.str4059 = constant [7 x i8] c"WhAT!\0A\00"
+@.str4090 = constant [52 x i8] c"%%.tmp%d = getelementptr %s, %s* %s, i32 0, i32 %d\0A\00"
+@.str4102 = constant [18 x i8] c"store %s, %s* %s\0A\00"
+@.str4127 = constant [7 x i8] c"sizeof\00"
+@.str4133 = constant [8 x i8] c"fn_args\00"
+@.str4140 = constant [11 x i8] c"assignable\00"
+@.str4168 = constant [4 x i8] c"int\00"
+@.str4181 = constant [46 x i8] c"%%.tmp%d = getelementptr %s, %s* null, i32 1\0A\00"
+@.str4190 = constant [35 x i8] c"%s = ptrtoint %s* %%.tmp%d to i32\0A\00"
+@.str4201 = constant [7 x i8] c"append\00"
+@.str4207 = constant [8 x i8] c"fn_args\00"
+@.str4214 = constant [11 x i8] c"assignable\00"
+@.str4221 = constant [11 x i8] c"assignable\00"
+@.str4245 = constant [5 x i8] c".b%d\00"
+@.str4278 = constant [4 x i8] c"len\00"
+@.str4284 = constant [8 x i8] c"fn_args\00"
+@.str4291 = constant [11 x i8] c"assignable\00"
+@.str4317 = constant [35 x i8] c"unable to compile function address\00"
+@.str4323 = constant [8 x i8] c"fn_args\00"
+@.str4327 = constant [1 x i8] c"\00"
+@.str4337 = constant [11 x i8] c"assignable\00"
+@.str4351 = constant [5 x i8] c"%s, \00"
+@.str4369 = constant [8 x i8] c"%s%s %s\00"
+@.str4384 = constant [11 x i8] c"assignable\00"
+@.str4394 = constant [5 x i8] c"void\00"
+@.str4402 = constant [16 x i8] c"call %s %s(%s)\0A\00"
+@.str4434 = constant [21 x i8] c"%s = call %s %s(%s)\0A\00"
+@.str4460 = constant [7 x i8] c"return\00"
+@.str4472 = constant [3 x i8] c"NL\00"
+@.str4490 = constant [11 x i8] c"ret %s %s\0A\00"
+@.str4503 = constant [10 x i8] c"ret void\0A\00"
+@.str4507 = constant [3 x i8] c"NL\00"
+@.str4513 = constant [8 x i8] c"fn_call\00"
+@.str4524 = constant [12 x i8] c"declaration\00"
+@.str4533 = constant [11 x i8] c"assignment\00"
+@.str4541 = constant [11 x i8] c"assignable\00"
+@.str4572 = constant [4 x i8] c"ptr\00"
+@.str4581 = constant [21 x i8] c"store %s %s, %s* %s\0A\00"
+@.str4591 = constant [9 x i8] c"if_block\00"
+@.str4599 = constant [9 x i8] c"for_loop\00"
+@.str4607 = constant [8 x i8] c"keyword\00"
+@.str4625 = constant [6 x i8] c"break\00"
+@.str4639 = constant [4 x i8] c"for\00"
+@.str4647 = constant [15 x i8] c"br label %%%s\0A\00"
+@.str4661 = constant [48 x i8] c"'break' keyword used outside of 'for' statement\00"
+@.str4668 = constant [9 x i8] c"continue\00"
+@.str4682 = constant [4 x i8] c"for\00"
+@.str4690 = constant [15 x i8] c"br label %%%s\0A\00"
+@.str4704 = constant [48 x i8] c"'break' keyword used outside of 'for' statement\00"
+@.str4708 = constant [29 x i8] c"Keyword '%s' not implemented\00"
+@.str4719 = constant [34 x i8] c"unable to compile expression '%s'\00"
+@.str4738 = constant [14 x i8] c".for.start.%d\00"
+@.str4743 = constant [12 x i8] c".for.end.%d\00"
+@.str4748 = constant [4 x i8] c"for\00"
+@.str4755 = constant [12 x i8] c"declaration\00"
+@.str4766 = constant [11 x i8] c"assignment\00"
+@.str4776 = constant [9 x i8] c"OPERATOR\00"
+@.str4783 = constant [66 x i8] c"unable to compile statement of type %s in for loop init condition\00"
+@.str4794 = constant [26 x i8] c"br label %%.for.start.%d\0A\00"
+@.str4801 = constant [16 x i8] c".for.start.%d:\0A\00"
+@.str4808 = constant [9 x i8] c"OPERATOR\00"
+@.str4819 = constant [9 x i8] c"OPERATOR\00"
+@.str4826 = constant [39 x i8] c"Expecting boolean condition, found ';'\00"
+@.str4835 = constant [48 x i8] c"br %s %s, label %%.for.continue.%d, label %%%s\0A\00"
+@.str4850 = constant [19 x i8] c".for.continue.%d:\0A\00"
+@.str4857 = constant [9 x i8] c"OPERATOR\00"
+@.str4866 = constant [6 x i8] c"block\00"
+@.str4881 = constant [15 x i8] c"br label %%%s\0A\00"
+@.str4888 = constant [5 x i8] c"%s:\0A\00"
+@.str4902 = constant [5 x i8] c"type\00"
+@.str4917 = constant [11 x i8] c"assignable\00"
+@.str4932 = constant [9 x i8] c"variable\00"
+@.str4937 = constant [5 x i8] c"WORD\00"
+@.str4946 = constant [31 x i8] c"unable to get declaration name\00"
+@.str4966 = constant [43 x i8] c"Name '%s' is already defined in this scope\00"
+@.str4978 = constant [6 x i8] c"%s.%d\00"
+@.str5035 = constant [49 x i8] c"cannot assign type '%s' to variable of type '%s'\00"
+@.str5051 = constant [16 x i8] c"%s = alloca %s\0A\00"
+@.str5063 = constant [21 x i8] c"store %s %s, %s* %s\0A\00"
+@.str5104 = constant [4 x i8] c"int\00"
+@.str5111 = constant [4 x i8] c"chr\00"
+@.str5119 = constant [5 x i8] c"bool\00"
+@.str5128 = constant [21 x i8] c"store %s %d, %s* %s\0A\00"
+@.str5137 = constant [4 x i8] c"ptr\00"
+@.str5145 = constant [21 x i8] c"store %s %s, %s* %s\0A\00"
+@.str5148 = constant [5 x i8] c"null\00"
+@.str5156 = constant [7 x i8] c"struct\00"
+@.str5177 = constant [46 x i8] c"%s = getelementptr %s, %s* %s, i32 0, i32 %d\0A\00"
+@.str5197 = constant [10 x i8] c"typealias\00"
+@.str5220 = constant [46 x i8] c"%s = getelementptr %s, %s* %s, i32 0, i32 %d\0A\00"
+@.str5239 = constant [44 x i8] c"Default type not existent for type: %s (%s)\00"
+@.str5256 = constant [11 x i8] c"assignable\00"
+@.str5273 = constant [53 x i8] c"br %s %s, label %%.if.true.%d, label %%.if.false.%d\0A\00"
+@.str5288 = constant [14 x i8] c".if.true.%d:\0A\00"
+@.str5295 = constant [6 x i8] c"block\00"
+@.str5304 = constant [23 x i8] c"br label %%.if.end.%d\0A\00"
+@.str5311 = constant [15 x i8] c".if.false.%d:\0A\00"
+@.str5318 = constant [11 x i8] c"elif_block\00"
+@.str5330 = constant [11 x i8] c"else_block\00"
+@.str5340 = constant [6 x i8] c"block\00"
+@.str5350 = constant [23 x i8] c"br label %%.if.end.%d\0A\00"
+@.str5357 = constant [13 x i8] c".if.end.%d:\0A\00"
+@.str5378 = constant [61 x i8] c"Programming error, unable to create new error from null node\00"
+@.str5387 = constant [82 x i8] c":coffee-error: 'define_assignable' could not be called if context scopes are null\00"
+@.str5441 = constant [31 x i8] c"Name %s not found in module %s\00"
+@.str5462 = constant [7 x i8] c"module\00"
+@.str5515 = constant [77 x i8] c":coffee-error: 'find_defined' could not be called if context scopes are null\00"
+@.str5552 = constant [54 x i8] c"cannot call 'get_dotted_name' on null assignable info\00"
+@.str5560 = constant [9 x i8] c"function\00"
+@.str5567 = constant [7 x i8] c"extern\00"
+@.str5579 = constant [46 x i8] c"cannot get attribute %s from function type %s\00"
+@.str5600 = constant [9 x i8] c"variable\00"
+@.str5622 = constant [4 x i8] c"ptr\00"
+@.str5641 = constant [23 x i8] c"%s = load %s*, %s* %s\0A\00"
+@.str5665 = constant [10 x i8] c"typealias\00"
+@.str5676 = constant [7 x i8] c"struct\00"
+@.str5682 = constant [48 x i8] c"cannot get attribute %s from non struct type %s\00"
+@.str5734 = constant [34 x i8] c"field %s not defined in struct %s\00"
+@.str5755 = constant [9 x i8] c"variable\00"
+@.str5766 = constant [46 x i8] c"%s = getelementptr %s, %s* %s, i32 0, i32 %d\0A\00"
+@.str5787 = constant [9 x i8] c"variable\00"
+@.str5795 = constant [43 x i8] c"`get_dotted_name` does not handle type: %s\00"
+@.str5809 = constant [17 x i8] c"addr_destination\00"
+@.str5816 = constant [16 x i8] c"mono_assignable\00"
+@.str5824 = constant [11 x i8] c"assignable\00"
+@.str5838 = constant [12 x i8] c"destination\00"
+@.str5843 = constant [92 x i8] c":coffee-error: 'compile_addr' could only be called on destinations for now. (called on %s)\0A\00"
+@.str5871 = constant [41 x i8] c"name '%s' was not declared in this scope\00"
+@.str5890 = constant [7 x i8] c"module\00"
+@.str5912 = constant [31 x i8] c"name '%s' is not defined in %s\00"
+@.str5983 = constant [28 x i8] c"%%.tmp%d = load %s, %s* %s\0A\00"
+@.str6004 = constant [35 x i8] c"Unable to get address for type: %s\00"
+@.str6028 = constant [44 x i8] c"%s = getelementptr %s, %s* %%.tmp%d, %s %s\0A\00"
+@.str6051 = constant [16 x i8] c"mono_assignable\00"
+@.str6077 = constant [5 x i8] c"cast\00"
+@.str6087 = constant [5 x i8] c"type\00"
+@.str6112 = constant [8 x i8] c"bitcast\00"
+@.str6120 = constant [4 x i8] c"ptr\00"
+@.str6127 = constant [4 x i8] c"ptr\00"
+@.str6146 = constant [4 x i8] c"i%d\00"
+@.str6151 = constant [4 x i8] c"i%d\00"
+@.str6159 = constant [5 x i8] c"sext\00"
+@.str6161 = constant [6 x i8] c"trunc\00"
+@.str6166 = constant [21 x i8] c"%s = %s %s %s to %s\0A\00"
+@.str6186 = constant [16 x i8] c"mono_assignable\00"
+@.str6248 = constant [19 x i8] c"%s = %s %s %s, %s\0A\00"
+@.str6271 = constant [31 x i8] c"called 'operator_op' with null\00"
+@.str6278 = constant [2 x i8] c"+\00"
+@.str6283 = constant [4 x i8] c"add\00"
+@.str6288 = constant [2 x i8] c"-\00"
+@.str6293 = constant [4 x i8] c"sub\00"
+@.str6298 = constant [2 x i8] c"*\00"
+@.str6303 = constant [4 x i8] c"mul\00"
+@.str6308 = constant [2 x i8] c"/\00"
+@.str6313 = constant [5 x i8] c"sdiv\00"
+@.str6318 = constant [3 x i8] c"==\00"
+@.str6323 = constant [8 x i8] c"icmp eq\00"
+@.str6328 = constant [3 x i8] c"!=\00"
+@.str6333 = constant [8 x i8] c"icmp ne\00"
+@.str6338 = constant [2 x i8] c">\00"
+@.str6343 = constant [9 x i8] c"icmp sgt\00"
+@.str6348 = constant [2 x i8] c"<\00"
+@.str6353 = constant [9 x i8] c"icmp slt\00"
+@.str6358 = constant [2 x i8] c"&\00"
+@.str6363 = constant [4 x i8] c"and\00"
+@.str6368 = constant [2 x i8] c"|\00"
+@.str6373 = constant [3 x i8] c"or\00"
+@.str6378 = constant [3 x i8] c">=\00"
+@.str6383 = constant [9 x i8] c"icmp sge\00"
+@.str6388 = constant [3 x i8] c"<=\00"
+@.str6393 = constant [9 x i8] c"icmp sle\00"
+@.str6397 = constant [30 x i8] c"operator '%s' not implemented\00"
+@.str6404 = constant [4 x i8] c"add\00"
+@.str6411 = constant [3 x i8] c"==\00"
+@.str6418 = constant [3 x i8] c"!=\00"
+@.str6426 = constant [2 x i8] c"|\00"
+@.str6434 = constant [2 x i8] c"&\00"
+@.str6442 = constant [2 x i8] c">\00"
+@.str6450 = constant [2 x i8] c"<\00"
+@.str6458 = constant [3 x i8] c">=\00"
+@.str6466 = constant [3 x i8] c"<=\00"
+@.str6474 = constant [5 x i8] c"bool\00"
+@.str6478 = constant [4 x i8] c"int\00"
+@.str6492 = constant [7 x i8] c"NUMBER\00"
+@.str6506 = constant [4 x i8] c"int\00"
+@.str6520 = constant [5 x i8] c"WORD\00"
+@.str6530 = constant [5 x i8] c"null\00"
+@.str6537 = constant [42 x i8] c"unable to interpret %s as mono_assignable\00"
+@.str6551 = constant [5 x i8] c"null\00"
+@.str6560 = constant [8 x i8] c"nullptr\00"
+@.str6567 = constant [17 x i8] c"addr_destination\00"
+@.str6579 = constant [12 x i8] c"destination\00"
+@.str6623 = constant [4 x i8] c"ptr\00"
+@.str6642 = constant [38 x i8] c"%s = getelementptr %s, %s* %s, i32 0\0A\00"
+@.str6654 = constant [22 x i8] c"%s = load %s, %s* %s\0A\00"
+@.str6668 = constant [8 x i8] c"boolean\00"
+@.str6682 = constant [5 x i8] c"bool\00"
+@.str6691 = constant [6 x i8] c"false\00"
+@.str6698 = constant [2 x i8] c"0\00"
+@.str6702 = constant [2 x i8] c"1\00"
+@.str6709 = constant [8 x i8] c"fn_call\00"
+@.str6726 = constant [7 x i8] c"STRING\00"
+@.str6752 = constant [44 x i8] c"%s = getelementptr %s, %s*%s, i32 0, i32 0\0A\00"
+@.str6768 = constant [4 x i8] c"ptr\00"
+@.str6781 = constant [4 x i8] c"chr\00"
+@.str6788 = constant [4 x i8] c"CHR\00"
+@.str6804 = constant [2 x i8] c"0\00"
+@.str6820 = constant [22 x i8] c"Invalid character: %s\00"
+@.str6836 = constant [4 x i8] c"chr\00"
+@.str6840 = constant [40 x i8] c"unable to compile assignable of type %s\00"
+@.str6868 = constant [22 x i8] c"called 'abbr' on null\00"
+@.str6874 = constant [59 x i8] c"called 'type_abbr' with malformed type, container is null.\00"
+@.str6879 = constant [4 x i8] c"int\00"
+@.str6884 = constant [2 x i8] c"i\00"
+@.str6889 = constant [5 x i8] c"bool\00"
+@.str6894 = constant [2 x i8] c"b\00"
+@.str6899 = constant [5 x i8] c"void\00"
+@.str6904 = constant [2 x i8] c"v\00"
+@.str6909 = constant [4 x i8] c"chr\00"
+@.str6914 = constant [2 x i8] c"c\00"
+@.str6919 = constant [4 x i8] c"ptr\00"
+@.str6926 = constant [4 x i8] c"%sp\00"
+@.str6937 = constant [10 x i8] c"typealias\00"
+@.str6948 = constant [6 x i8] c"error\00"
+@.str6953 = constant [2 x i8] c"?\00"
+@.str6955 = constant [44 x i8] c":coffee-error: unable to abbreviate type %s\00"
+@.str6967 = constant [7 x i8] c".str%d\00"
+@.str6991 = constant [6 x i8] c"array\00"
+@.str7004 = constant [4 x i8] c"chr\00"
+@.str7022 = constant [3 x i8] c"%d\00"
+@.str7031 = constant [7 x i8] c"string\00"
+@.str7051 = constant [7 x i8] c"module\00"
+@.str7086 = constant [44 x i8] c":panic: %s called 'type_repr' on null type\0A\00"
+@.str7092 = constant [2 x i8] c"?\00"
+@.str7098 = constant [59 x i8] c"called 'type_repr' with malformed type, container is null.\00"
+@.str7104 = constant [4 x i8] c"int\00"
+@.str7109 = constant [4 x i8] c"i32\00"
+@.str7114 = constant [5 x i8] c"void\00"
+@.str7119 = constant [5 x i8] c"void\00"
+@.str7124 = constant [5 x i8] c"bool\00"
+@.str7129 = constant [3 x i8] c"i1\00"
+@.str7134 = constant [8 x i8] c"nullptr\00"
+@.str7139 = constant [4 x i8] c"ptr\00"
+@.str7144 = constant [4 x i8] c"chr\00"
+@.str7149 = constant [3 x i8] c"i8\00"
+@.str7154 = constant [9 x i8] c"function\00"
+@.str7160 = constant [4 x i8] c"%s(\00"
+@.str7186 = constant [4 x i8] c"%s,\00"
+@.str7191 = constant [5 x i8] c"%s%s\00"
+@.str7202 = constant [4 x i8] c"%s)\00"
+@.str7210 = constant [4 x i8] c"ptr\00"
+@.str7216 = constant [4 x i8] c"%s*\00"
+@.str7228 = constant [7 x i8] c"struct\00"
+@.str7234 = constant [2 x i8] c"{\00"
+@.str7251 = constant [4 x i8] c"%s,\00"
+@.str7256 = constant [5 x i8] c"%s%s\00"
+@.str7267 = constant [4 x i8] c"%s}\00"
+@.str7275 = constant [6 x i8] c"array\00"
+@.str7281 = constant [10 x i8] c"[%s x %s]\00"
+@.str7300 = constant [10 x i8] c"typealias\00"
+@.str7306 = constant [5 x i8] c"%%%s\00"
+@.str7316 = constant [7 x i8] c"vararg\00"
+@.str7321 = constant [4 x i8] c"...\00"
+@.str7326 = constant [6 x i8] c"error\00"
+@.str7331 = constant [58 x i8] c":coffee-error: 'type_repr' not implemented for type '%s'\0A\00"
+@.str7407 = constant [9 x i8] c"function\00"
+@.str7425 = constant [5 x i8] c"WORD\00"
+@.str7482 = constant [10 x i8] c"fn_params\00"
+@.str7498 = constant [10 x i8] c"structdef\00"
+@.str7505 = constant [7 x i8] c"struct\00"
+@.str7512 = constant [5 x i8] c"type\00"
+@.str7543 = constant [5 x i8] c"type\00"
+@.str7570 = constant [5 x i8] c"type\00"
+@.str7576 = constant [12 x i8] c"dotted_name\00"
+@.str7590 = constant [37 x i8] c"Name %s is not defined in this scope\00"
+@.str7603 = constant [6 x i8] c"error\00"
+@.str7608 = constant [10 x i8] c"typealias\00"
+@.str7632 = constant [4 x i8] c"str\00"
+@.str7639 = constant [4 x i8] c"ptr\00"
+@.str7648 = constant [4 x i8] c"chr\00"
+@.str7653 = constant [5 x i8] c"WORD\00"
+@.str7666 = constant [4 x i8] c"...\00"
+@.str7673 = constant [7 x i8] c"vararg\00"
+@.str7677 = constant [54 x i8] c"unable to convert statement of type '%s' to type (%s)\00"
+@.str7698 = constant [2 x i8] c"*\00"
+@.str7707 = constant [4 x i8] c"ptr\00"
+@.str7716 = constant [2 x i8] c"[\00"
+@.str7726 = constant [2 x i8] c"]\00"
+@.str7735 = constant [7 x i8] c"struct\00"
+@.str7741 = constant [4 x i8] c"ptr\00"
+@.str7745 = constant [6 x i8] c"c_arr\00"
+@.str7757 = constant [4 x i8] c"int\00"
+@.str7761 = constant [4 x i8] c"len\00"
+@.str7770 = constant [4 x i8] c"int\00"
+@.str7774 = constant [4 x i8] c"cap\00"
+@.str7785 = constant [49 x i8] c"Unable to parse token '%s' after type definition\00"
 define i32 @main(i32 %.argc.arg, i8** %.argv.arg) {
 %argc = alloca i32
 store i32 %.argc.arg, i32* %argc
 %argv = alloca i8**
 store i8** %.argv.arg, i8*** %argv
-%.tmp7616 = load i32, i32* %argc
-%.tmp7617 = load i8**, i8*** %argv
-call void(i32,i8**) @check_args.v.i.cpp(i32 %.tmp7616, i8** %.tmp7617)
-%.tmp7618 = load i32, i32* @STDERR
-%.tmp7620 = getelementptr [2 x i8], [2 x i8]*@.str7619, i32 0, i32 0
-%.tmp7621 = call %m0$.File.type*(i32,i8*) @fdopen(i32 %.tmp7618, i8* %.tmp7620)
-%stderr.7622 = alloca %m0$.File.type*
-store %m0$.File.type* %.tmp7621, %m0$.File.type** %stderr.7622
-%.tmp7623 = load i8**, i8*** %argv
-%.tmp7624 = getelementptr i8*, i8** %.tmp7623, i32 1
-%.tmp7625 = load i8*, i8** %.tmp7624
-%filename.7626 = alloca i8*
-store i8* %.tmp7625, i8** %filename.7626
-%.tmp7627 = call %m0$.File.type*() @tmpfile()
-%llvm_code.7628 = alloca %m0$.File.type*
-store %m0$.File.type* %.tmp7627, %m0$.File.type** %llvm_code.7628
-%.tmp7629 = load %m0$.File.type*, %m0$.File.type** %llvm_code.7628
-%.tmp7630 = load i8*, i8** %filename.7626
-%.tmp7631 = call %m1861$.CompilerCtx.type*(%m0$.File.type*,i8*) @m1861$new_context.m1861$.CompilerCtx.typep.m0$.File.typep.cp(%m0$.File.type* %.tmp7629, i8* %.tmp7630)
-%compiler_ctx.7632 = alloca %m1861$.CompilerCtx.type*
-store %m1861$.CompilerCtx.type* %.tmp7631, %m1861$.CompilerCtx.type** %compiler_ctx.7632
-%.tmp7633 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %compiler_ctx.7632
-%.tmp7634 = load i8*, i8** %filename.7626
-%.tmp7635 = call i1(%m1861$.CompilerCtx.type*,i8*) @m1861$compile_file.b.m1861$.CompilerCtx.typep.cp(%m1861$.CompilerCtx.type* %.tmp7633, i8* %.tmp7634)
-br i1 %.tmp7635, label %.if.true.7636, label %.if.false.7636
-.if.true.7636:
-%.tmp7637 = load %m0$.File.type*, %m0$.File.type** %stderr.7622
-%.tmp7639 = getelementptr [34 x i8], [34 x i8]*@.str7638, i32 0, i32 0
-%.tmp7640 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp7637, i8* %.tmp7639)
+%.tmp7797 = load i32, i32* %argc
+%.tmp7798 = load i8**, i8*** %argv
+call void(i32,i8**) @check_args.v.i.cpp(i32 %.tmp7797, i8** %.tmp7798)
+%.tmp7799 = load i32, i32* @STDERR
+%.tmp7801 = getelementptr [2 x i8], [2 x i8]*@.str7800, i32 0, i32 0
+%.tmp7802 = call %m0$.File.type*(i32,i8*) @fdopen(i32 %.tmp7799, i8* %.tmp7801)
+%stderr.7803 = alloca %m0$.File.type*
+store %m0$.File.type* %.tmp7802, %m0$.File.type** %stderr.7803
+%.tmp7804 = load i8**, i8*** %argv
+%.tmp7805 = getelementptr i8*, i8** %.tmp7804, i32 1
+%.tmp7806 = load i8*, i8** %.tmp7805
+%filename.7807 = alloca i8*
+store i8* %.tmp7806, i8** %filename.7807
+%.tmp7808 = call %m0$.File.type*() @tmpfile()
+%llvm_code.7809 = alloca %m0$.File.type*
+store %m0$.File.type* %.tmp7808, %m0$.File.type** %llvm_code.7809
+%.tmp7810 = load %m0$.File.type*, %m0$.File.type** %llvm_code.7809
+%.tmp7811 = load i8*, i8** %filename.7807
+%.tmp7812 = call %m1861$.CompilerCtx.type*(%m0$.File.type*,i8*) @m1861$new_context.m1861$.CompilerCtx.typep.m0$.File.typep.cp(%m0$.File.type* %.tmp7810, i8* %.tmp7811)
+%compiler_ctx.7813 = alloca %m1861$.CompilerCtx.type*
+store %m1861$.CompilerCtx.type* %.tmp7812, %m1861$.CompilerCtx.type** %compiler_ctx.7813
+%.tmp7814 = load %m1861$.CompilerCtx.type*, %m1861$.CompilerCtx.type** %compiler_ctx.7813
+%.tmp7815 = load i8*, i8** %filename.7807
+%.tmp7816 = call i1(%m1861$.CompilerCtx.type*,i8*) @m1861$compile_file.b.m1861$.CompilerCtx.typep.cp(%m1861$.CompilerCtx.type* %.tmp7814, i8* %.tmp7815)
+br i1 %.tmp7816, label %.if.true.7817, label %.if.false.7817
+.if.true.7817:
+%.tmp7818 = load %m0$.File.type*, %m0$.File.type** %stderr.7803
+%.tmp7820 = getelementptr [34 x i8], [34 x i8]*@.str7819, i32 0, i32 0
+%.tmp7821 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp7818, i8* %.tmp7820)
 ret i32 1
-br label %.if.end.7636
-.if.false.7636:
-br label %.if.end.7636
-.if.end.7636:
-%.tmp7641 = load %m0$.File.type*, %m0$.File.type** %llvm_code.7628
-%.tmp7642 = call i32(%m0$.File.type*) @fflush(%m0$.File.type* %.tmp7641)
-%.tmp7643 = load %m0$.File.type*, %m0$.File.type** %llvm_code.7628
-%.tmp7644 = call i32(%m0$.File.type*) @ftell(%m0$.File.type* %.tmp7643)
-%llvm_code_size.7645 = alloca i32
-store i32 %.tmp7644, i32* %llvm_code_size.7645
-%.tmp7646 = load %m0$.File.type*, %m0$.File.type** %llvm_code.7628
-call void(%m0$.File.type*) @rewind(%m0$.File.type* %.tmp7646)
-%.tmp7648 = getelementptr [30 x i8], [30 x i8]*@.str7647, i32 0, i32 0
-%.tmp7650 = getelementptr [2 x i8], [2 x i8]*@.str7649, i32 0, i32 0
-%.tmp7651 = call %m0$.File.type*(i8*,i8*) @popen(i8* %.tmp7648, i8* %.tmp7650)
-%proc.7652 = alloca %m0$.File.type*
-store %m0$.File.type* %.tmp7651, %m0$.File.type** %proc.7652
-%.tmp7653 = load %m0$.File.type*, %m0$.File.type** %proc.7652
-%.tmp7654 = call i32(%m0$.File.type*) @fileno(%m0$.File.type* %.tmp7653)
-%.tmp7655 = load %m0$.File.type*, %m0$.File.type** %llvm_code.7628
-%.tmp7656 = call i32(%m0$.File.type*) @fileno(%m0$.File.type* %.tmp7655)
-call void(i32,i32) @m1$copy.v.i.i(i32 %.tmp7654, i32 %.tmp7656)
-%.tmp7657 = load %m0$.File.type*, %m0$.File.type** %proc.7652
-%.tmp7658 = icmp eq %m0$.File.type* %.tmp7657, null
-br i1 %.tmp7658, label %.if.true.7659, label %.if.false.7659
-.if.true.7659:
-%.tmp7660 = load %m0$.File.type*, %m0$.File.type** %stderr.7622
-%.tmp7662 = getelementptr [28 x i8], [28 x i8]*@.str7661, i32 0, i32 0
-%.tmp7663 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp7660, i8* %.tmp7662)
+br label %.if.end.7817
+.if.false.7817:
+br label %.if.end.7817
+.if.end.7817:
+%.tmp7822 = load %m0$.File.type*, %m0$.File.type** %llvm_code.7809
+%.tmp7823 = call i32(%m0$.File.type*) @fflush(%m0$.File.type* %.tmp7822)
+%.tmp7824 = load %m0$.File.type*, %m0$.File.type** %llvm_code.7809
+%.tmp7825 = call i32(%m0$.File.type*) @ftell(%m0$.File.type* %.tmp7824)
+%llvm_code_size.7826 = alloca i32
+store i32 %.tmp7825, i32* %llvm_code_size.7826
+%.tmp7827 = load %m0$.File.type*, %m0$.File.type** %llvm_code.7809
+call void(%m0$.File.type*) @rewind(%m0$.File.type* %.tmp7827)
+%.tmp7829 = getelementptr [30 x i8], [30 x i8]*@.str7828, i32 0, i32 0
+%.tmp7831 = getelementptr [2 x i8], [2 x i8]*@.str7830, i32 0, i32 0
+%.tmp7832 = call %m0$.File.type*(i8*,i8*) @popen(i8* %.tmp7829, i8* %.tmp7831)
+%proc.7833 = alloca %m0$.File.type*
+store %m0$.File.type* %.tmp7832, %m0$.File.type** %proc.7833
+%.tmp7834 = load %m0$.File.type*, %m0$.File.type** %proc.7833
+%.tmp7835 = call i32(%m0$.File.type*) @fileno(%m0$.File.type* %.tmp7834)
+%.tmp7836 = load %m0$.File.type*, %m0$.File.type** %llvm_code.7809
+%.tmp7837 = call i32(%m0$.File.type*) @fileno(%m0$.File.type* %.tmp7836)
+call void(i32,i32) @m1$copy.v.i.i(i32 %.tmp7835, i32 %.tmp7837)
+%.tmp7838 = load %m0$.File.type*, %m0$.File.type** %proc.7833
+%.tmp7839 = icmp eq %m0$.File.type* %.tmp7838, null
+br i1 %.tmp7839, label %.if.true.7840, label %.if.false.7840
+.if.true.7840:
+%.tmp7841 = load %m0$.File.type*, %m0$.File.type** %stderr.7803
+%.tmp7843 = getelementptr [28 x i8], [28 x i8]*@.str7842, i32 0, i32 0
+%.tmp7844 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp7841, i8* %.tmp7843)
 ret i32 0
-br label %.if.end.7659
-.if.false.7659:
-br label %.if.end.7659
-.if.end.7659:
-%.tmp7664 = load %m0$.File.type*, %m0$.File.type** %proc.7652
-%.tmp7665 = call i32(%m0$.File.type*) @pclose(%m0$.File.type* %.tmp7664)
-%.tmp7666 = icmp ne i32 %.tmp7665, 0
-br i1 %.tmp7666, label %.if.true.7667, label %.if.false.7667
-.if.true.7667:
-%.tmp7668 = load %m0$.File.type*, %m0$.File.type** %stderr.7622
-%.tmp7670 = getelementptr [24 x i8], [24 x i8]*@.str7669, i32 0, i32 0
-%.tmp7671 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp7668, i8* %.tmp7670)
+br label %.if.end.7840
+.if.false.7840:
+br label %.if.end.7840
+.if.end.7840:
+%.tmp7845 = load %m0$.File.type*, %m0$.File.type** %proc.7833
+%.tmp7846 = call i32(%m0$.File.type*) @pclose(%m0$.File.type* %.tmp7845)
+%.tmp7847 = icmp ne i32 %.tmp7846, 0
+br i1 %.tmp7847, label %.if.true.7848, label %.if.false.7848
+.if.true.7848:
+%.tmp7849 = load %m0$.File.type*, %m0$.File.type** %stderr.7803
+%.tmp7851 = getelementptr [24 x i8], [24 x i8]*@.str7850, i32 0, i32 0
+%.tmp7852 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp7849, i8* %.tmp7851)
 ret i32 0
-br label %.if.end.7667
-.if.false.7667:
-br label %.if.end.7667
-.if.end.7667:
-%.tmp7673 = getelementptr [17 x i8], [17 x i8]*@.str7672, i32 0, i32 0
-%.tmp7675 = getelementptr [2 x i8], [2 x i8]*@.str7674, i32 0, i32 0
-%.tmp7676 = call %m0$.File.type*(i8*,i8*) @popen(i8* %.tmp7673, i8* %.tmp7675)
-%gcc_proc.7677 = alloca %m0$.File.type*
-store %m0$.File.type* %.tmp7676, %m0$.File.type** %gcc_proc.7677
-%.tmp7678 = load %m0$.File.type*, %m0$.File.type** %gcc_proc.7677
-%.tmp7679 = icmp eq %m0$.File.type* %.tmp7678, null
-br i1 %.tmp7679, label %.if.true.7680, label %.if.false.7680
-.if.true.7680:
-%.tmp7681 = load %m0$.File.type*, %m0$.File.type** %stderr.7622
-%.tmp7683 = getelementptr [28 x i8], [28 x i8]*@.str7682, i32 0, i32 0
-%.tmp7684 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp7681, i8* %.tmp7683)
+br label %.if.end.7848
+.if.false.7848:
+br label %.if.end.7848
+.if.end.7848:
+%.tmp7854 = getelementptr [17 x i8], [17 x i8]*@.str7853, i32 0, i32 0
+%.tmp7856 = getelementptr [2 x i8], [2 x i8]*@.str7855, i32 0, i32 0
+%.tmp7857 = call %m0$.File.type*(i8*,i8*) @popen(i8* %.tmp7854, i8* %.tmp7856)
+%gcc_proc.7858 = alloca %m0$.File.type*
+store %m0$.File.type* %.tmp7857, %m0$.File.type** %gcc_proc.7858
+%.tmp7859 = load %m0$.File.type*, %m0$.File.type** %gcc_proc.7858
+%.tmp7860 = icmp eq %m0$.File.type* %.tmp7859, null
+br i1 %.tmp7860, label %.if.true.7861, label %.if.false.7861
+.if.true.7861:
+%.tmp7862 = load %m0$.File.type*, %m0$.File.type** %stderr.7803
+%.tmp7864 = getelementptr [28 x i8], [28 x i8]*@.str7863, i32 0, i32 0
+%.tmp7865 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp7862, i8* %.tmp7864)
 ret i32 0
-br label %.if.end.7680
-.if.false.7680:
-br label %.if.end.7680
-.if.end.7680:
-%.tmp7685 = load %m0$.File.type*, %m0$.File.type** %proc.7652
-%.tmp7686 = call i32(%m0$.File.type*) @pclose(%m0$.File.type* %.tmp7685)
-%.tmp7687 = icmp ne i32 %.tmp7686, 0
-br i1 %.tmp7687, label %.if.true.7688, label %.if.false.7688
-.if.true.7688:
-%.tmp7689 = load %m0$.File.type*, %m0$.File.type** %stderr.7622
-%.tmp7691 = getelementptr [23 x i8], [23 x i8]*@.str7690, i32 0, i32 0
-%.tmp7692 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp7689, i8* %.tmp7691)
-br label %.if.end.7688
-.if.false.7688:
-%.tmp7694 = getelementptr [32 x i8], [32 x i8]*@.str7693, i32 0, i32 0
-%.tmp7695 = load i8*, i8** %filename.7626
-%.tmp7696 = call i32(i8*,...) @printf(i8* %.tmp7694, i8* %.tmp7695)
-br label %.if.end.7688
-.if.end.7688:
+br label %.if.end.7861
+.if.false.7861:
+br label %.if.end.7861
+.if.end.7861:
+%.tmp7866 = load %m0$.File.type*, %m0$.File.type** %proc.7833
+%.tmp7867 = call i32(%m0$.File.type*) @pclose(%m0$.File.type* %.tmp7866)
+%.tmp7868 = icmp ne i32 %.tmp7867, 0
+br i1 %.tmp7868, label %.if.true.7869, label %.if.false.7869
+.if.true.7869:
+%.tmp7870 = load %m0$.File.type*, %m0$.File.type** %stderr.7803
+%.tmp7872 = getelementptr [23 x i8], [23 x i8]*@.str7871, i32 0, i32 0
+%.tmp7873 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp7870, i8* %.tmp7872)
+br label %.if.end.7869
+.if.false.7869:
+%.tmp7875 = getelementptr [32 x i8], [32 x i8]*@.str7874, i32 0, i32 0
+%.tmp7876 = load i8*, i8** %filename.7807
+%.tmp7877 = call i32(i8*,...) @printf(i8* %.tmp7875, i8* %.tmp7876)
+br label %.if.end.7869
+.if.end.7869:
 ret i32 0
 }
 define void @check_args.v.i.cpp(i32 %.argc.arg, i8** %.argv.arg) {
@@ -11463,53 +11739,53 @@ define void @check_args.v.i.cpp(i32 %.argc.arg, i8** %.argv.arg) {
 store i32 %.argc.arg, i32* %argc
 %argv = alloca i8**
 store i8** %.argv.arg, i8*** %argv
-%.tmp7697 = load i32, i32* %argc
-%.tmp7698 = icmp eq i32 %.tmp7697, 2
-br i1 %.tmp7698, label %.if.true.7699, label %.if.false.7699
-.if.true.7699:
+%.tmp7878 = load i32, i32* %argc
+%.tmp7879 = icmp eq i32 %.tmp7878, 2
+br i1 %.tmp7879, label %.if.true.7880, label %.if.false.7880
+.if.true.7880:
 ret void
-br label %.if.end.7699
-.if.false.7699:
-br label %.if.end.7699
-.if.end.7699:
-%.tmp7701 = getelementptr [21 x i8], [21 x i8]*@.str7700, i32 0, i32 0
-%tmpl.7702 = alloca i8*
-store i8* %.tmp7701, i8** %tmpl.7702
-%.tmp7703 = load i8**, i8*** %argv
-%.tmp7704 = getelementptr i8*, i8** %.tmp7703, i32 0
-%.tmp7705 = load i8*, i8** %.tmp7704
-%.tmp7706 = call i32(i8*) @strlen(i8* %.tmp7705)
-%.tmp7707 = load i8*, i8** %tmpl.7702
-%.tmp7708 = call i32(i8*) @strlen(i8* %.tmp7707)
-%.tmp7709 = add i32 %.tmp7706, %.tmp7708
-%len_filename.7710 = alloca i32
-store i32 %.tmp7709, i32* %len_filename.7710
-%.tmp7711 = load i32, i32* %len_filename.7710
-%.tmp7712 = call i8*(i32) @malloc(i32 %.tmp7711)
-%buf.7713 = alloca i8*
-store i8* %.tmp7712, i8** %buf.7713
-%.tmp7714 = load i8*, i8** %buf.7713
-%.tmp7715 = load i8*, i8** %tmpl.7702
-%.tmp7716 = load i8**, i8*** %argv
-%.tmp7717 = getelementptr i8*, i8** %.tmp7716, i32 0
-%.tmp7718 = load i8*, i8** %.tmp7717
-%.tmp7719 = call i32(i8*,i8*,...) @sprintf(i8* %.tmp7714, i8* %.tmp7715, i8* %.tmp7718)
-%.tmp7720 = load i8*, i8** %buf.7713
-%.tmp7721 = call i32(i8*) @puts(i8* %.tmp7720)
-%.tmp7722 = load i8*, i8** %buf.7713
-call void(i8*) @free(i8* %.tmp7722)
+br label %.if.end.7880
+.if.false.7880:
+br label %.if.end.7880
+.if.end.7880:
+%.tmp7882 = getelementptr [21 x i8], [21 x i8]*@.str7881, i32 0, i32 0
+%tmpl.7883 = alloca i8*
+store i8* %.tmp7882, i8** %tmpl.7883
+%.tmp7884 = load i8**, i8*** %argv
+%.tmp7885 = getelementptr i8*, i8** %.tmp7884, i32 0
+%.tmp7886 = load i8*, i8** %.tmp7885
+%.tmp7887 = call i32(i8*) @strlen(i8* %.tmp7886)
+%.tmp7888 = load i8*, i8** %tmpl.7883
+%.tmp7889 = call i32(i8*) @strlen(i8* %.tmp7888)
+%.tmp7890 = add i32 %.tmp7887, %.tmp7889
+%len_filename.7891 = alloca i32
+store i32 %.tmp7890, i32* %len_filename.7891
+%.tmp7892 = load i32, i32* %len_filename.7891
+%.tmp7893 = call i8*(i32) @malloc(i32 %.tmp7892)
+%buf.7894 = alloca i8*
+store i8* %.tmp7893, i8** %buf.7894
+%.tmp7895 = load i8*, i8** %buf.7894
+%.tmp7896 = load i8*, i8** %tmpl.7883
+%.tmp7897 = load i8**, i8*** %argv
+%.tmp7898 = getelementptr i8*, i8** %.tmp7897, i32 0
+%.tmp7899 = load i8*, i8** %.tmp7898
+%.tmp7900 = call i32(i8*,i8*,...) @sprintf(i8* %.tmp7895, i8* %.tmp7896, i8* %.tmp7899)
+%.tmp7901 = load i8*, i8** %buf.7894
+%.tmp7902 = call i32(i8*) @puts(i8* %.tmp7901)
+%.tmp7903 = load i8*, i8** %buf.7894
+call void(i8*) @free(i8* %.tmp7903)
 call void(i32) @exit(i32 1)
 ret void
 }
-@.str7619 = constant [2 x i8] c"w\00"
-@.str7638 = constant [34 x i8] c"Compilation to llvm interrupted.\0A\00"
-@.str7647 = constant [30 x i8] c"tee debug.ll | llc - -o out.s\00"
-@.str7649 = constant [2 x i8] c"w\00"
-@.str7661 = constant [28 x i8] c"unable to spawn subprocess\0A\00"
-@.str7669 = constant [24 x i8] c"error on llc execution\0A\00"
-@.str7672 = constant [17 x i8] c"gcc out.s -o out\00"
-@.str7674 = constant [2 x i8] c"w\00"
-@.str7682 = constant [28 x i8] c"unable to spawn subprocess\0A\00"
-@.str7690 = constant [23 x i8] c"error on gcc execution\00"
-@.str7693 = constant [32 x i8] c"File %s compiled successfully!\0A\00"
-@.str7700 = constant [21 x i8] c"Usage: %s <filename>\00"
+@.str7800 = constant [2 x i8] c"w\00"
+@.str7819 = constant [34 x i8] c"Compilation to llvm interrupted.\0A\00"
+@.str7828 = constant [30 x i8] c"tee debug.ll | llc - -o out.s\00"
+@.str7830 = constant [2 x i8] c"w\00"
+@.str7842 = constant [28 x i8] c"unable to spawn subprocess\0A\00"
+@.str7850 = constant [24 x i8] c"error on llc execution\0A\00"
+@.str7853 = constant [17 x i8] c"gcc out.s -o out\00"
+@.str7855 = constant [2 x i8] c"w\00"
+@.str7863 = constant [28 x i8] c"unable to spawn subprocess\0A\00"
+@.str7871 = constant [23 x i8] c"error on gcc execution\00"
+@.str7874 = constant [32 x i8] c"File %s compiled successfully!\0A\00"
+@.str7881 = constant [21 x i8] c"Usage: %s <filename>\00"
