@@ -1,5 +1,6 @@
 define void @t.v() {
 %j = alloca i32*
 store i32* null, i32** %j
+store i32* null, i32** %j
 ret void
 }

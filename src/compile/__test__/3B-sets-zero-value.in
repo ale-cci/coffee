@@ -1,0 +1,16 @@
+alias T = struct {
+    int e,
+}
+
+void fn() {
+    int a
+    chr b
+    int* c
+    struct {
+        int a,
+        chr b,
+        int* c,
+    } d
+
+    T e
+}

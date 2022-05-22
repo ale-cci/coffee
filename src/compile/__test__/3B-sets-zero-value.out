@@ -1,0 +1,20 @@
+%.T.type = type {i32}
+define void @fn.v() {
+%a = alloca i32
+store i32 0, i32* %a
+%b = alloca i8
+store i8 0, i8* %b
+%c = alloca i32*
+store i32* null, i32** %c
+%d = alloca {i32,i8,i32*}
+%.tmp0 = getelementptr {i32,i8,i32*}, {i32,i8,i32*}* %d, i32 0, i32 0
+store i32 0, i32* %.tmp0
+%.tmp1 = getelementptr {i32,i8,i32*}, {i32,i8,i32*}* %d, i32 0, i32 1
+store i8 0, i8* %.tmp1
+%.tmp2 = getelementptr {i32,i8,i32*}, {i32,i8,i32*}* %d, i32 0, i32 2
+store i32* null, i32** %.tmp2
+%e = alloca %.T.type
+%.tmp3 = getelementptr %.T.type, %.T.type* %e, i32 0, i32 0
+store i32 0, i32* %.tmp3
+ret void
+}

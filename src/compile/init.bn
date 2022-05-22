@@ -850,8 +850,52 @@ AssignableInfo* compile_declaration(CompilerCtx* ctx, parser.Node* stmt) {
     io.fprintf(ctx.ir, "%s = alloca %s\n", repr_assignable_id(info), var_type_repr)
     if a_info != null {
         io.fprintf(ctx.ir, "store %s %s, %s* %s\n", type_repr(ctx, a_info.type), repr_assignable_id(a_info), var_type_repr, repr_assignable_id(info))
+    } else {
+        -- auto-initialization of type
+        compile_zero_value(ctx, stmt, info)
     }
     return info
+}
+
+void compile_zero_value(CompilerCtx* ctx, parser.Node* stmt, AssignableInfo* info) {
+    if info.type == null {
+        return
+    }
+    t_repr := type_repr(ctx, info.type)
+    id := repr_assignable_id(info)
+    field_id := 0
+    Type* field
+    AssignableInfo* field_info
+
+    t := info.type
+    if string.strcmp(t.container, "int") == 0 | string.strcmp(t.container, "chr") == 0 {
+        io.fprintf(ctx.ir, "store %s %d, %s* %s\n", t_repr, 0, t_repr, id)
+    } elif string.strcmp(t.container, "ptr") == 0 {
+        io.fprintf(ctx.ir, "store %s %s, %s* %s\n", t_repr, "null", t_repr, id)
+    } elif string.strcmp(t.container, "struct") == 0 {
+        for field = t.of; field != null; field = field.next {
+            field_info = new_assignable_info(stmt)
+            set_assignable_tmp_id(ctx, field_info)
+            field_info.type = field
+
+            io.fprintf(ctx.ir, "%s = getelementptr %s, %s* %s, i32 0, i32 %d\n", repr_assignable_id(field_info), t_repr, t_repr, id, field_id)
+            compile_zero_value(ctx, stmt, field_info)
+            field_id = field_id + 1
+        }
+    } elif string.strcmp(t.container, "typealias") == 0 {
+        for field = t.of.of; field != null; field = field.next {
+            field_info = new_assignable_info(stmt)
+            set_assignable_tmp_id(ctx, field_info)
+            field_info.type = field
+
+            io.fprintf(ctx.ir, "%s = getelementptr %s, %s* %s, i32 0, i32 %d\n", repr_assignable_id(field_info), t_repr, t_repr, id, field_id)
+            compile_zero_value(ctx, stmt, field_info)
+            field_id = field_id + 1
+        }
+    } else {
+        io.printf(err_tmpl(ctx, stmt, "Default type not existent for type: %s (%s)"), info.type.container, type_repr(ctx, info.type))
+        return
+    }
 }
 
 void compile_if_block(CompilerCtx* ctx, parser.Node* stmt) {
