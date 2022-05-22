@@ -20,8 +20,8 @@ chr* string_to_llvm(chr* text) {
     -- ignore start and end quotes for string length calculation
     for i := 1; i < str_len -1; i = i + 1 {
         -- append character to string
-        if dest_string.idx == dest_string.size -4 {
-            dest_string.buf = sys.realloc(dest_string.buf, dest_string.size * 2)
+        if dest_string.idx == dest_string.size -5 {
+            dest_string.buf = sys.realloc(dest_string.buf, dest_string.size * 2 + 1)
         }
 
         if text[i] == '"' {

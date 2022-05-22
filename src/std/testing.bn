@@ -102,6 +102,15 @@ void assert_true(T* t, chr* label, bool val) {
     }
 }
 
+void assert_false(T* t, chr* label, bool val) {
+    t.test_no = t.test_no + 1
+    if val == true {
+        fail(t)
+        io.fprintf(t.out, "value %s is not false\n", label)
+    }
+}
+
+
 void assert_equal_str(T* t, chr* expect, got) {
     t.test_no = t.test_no + 1
     if got == null {

@@ -11,13 +11,20 @@ case $1 in
         set -e
         TEST_EXE="./coffee_test"
         "$COFFEE_EXE" main.bn && mv out "${TEST_EXE}"
-        [[ ! -z "$DEBUG_COFFEE" ]] && cp "$TEST_EXE" "${TEST_EXE}.bck"
+        [[ ! -z "$COFFEE_DEBUG" ]] && cp "$TEST_EXE" "${TEST_EXE}.bck"
         find . -name '*.test.bn' -exec sh -c "echo && ${TEST_EXE} {} && ./out " \;
         ./coffee_test main.bn
         rm -rf ./out "${TEST_EXE}"
         ;;
 
 
+    apple-build)
+        "$COFFEE_EXE" main.bn && mv ./out "./coffee_test"
+        "./coffee_test" "$2"
+        llc debug.ll -o debug.s
+        clang -fsanitize=address -g -Wall -Wextra ./debug.s -o debug
+        lldb ./debug --one-line "run"
+        ;;
 
     test:watch)
         echo "Watchig for file changes..."

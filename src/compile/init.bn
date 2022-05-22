@@ -194,6 +194,7 @@ alias CompilerCtx = struct {
     io.File* ir,
     ErrorList* errors,
     GlobalName* globals,
+    parser.Rule** grammar,
     int counter,
     ModuleLookup* modules,
     chr* current_module,
@@ -232,6 +233,14 @@ CompilerCtx* new_context(io.File* fd, str filename) {
     ctx.globals = null
     ctx.current_module = filename
 
+    grammar_file := ioutil.str_as_file(syntax.grammar())
+    if grammar_file == null {
+        return (CompilerCtx*) null
+    }
+    grammar_ctx := parser.new_context(grammar_file)
+    io.fclose(grammar_file)
+    ctx.grammar = parser.parse_grammar(grammar_ctx)
+
     ctx.modules = (ModuleLookup*) sys.malloc(ModuleLookup_size)
     ctx.modules.abspath = filename -- TODO: add initial filename here
     ctx.modules.scopes = null
@@ -260,28 +269,37 @@ void pop_scope(CompilerCtx* ctx) {
 }
 
 
-bool compile_file(CompilerCtx* ctx, str filepath) {
+bool compile_file(CompilerCtx* ctx, parser.Node* stmt, str filepath) {
     grammar_file := ioutil.str_as_file(syntax.grammar())
     if grammar_file == null {
         return false
     }
-    grammar_ctx := parser.new_context(grammar_file)
-    grammar := parser.parse_grammar(grammar_ctx)
-    sys.free((chr*) grammar_ctx)
 
     int input_fd = io.open(filepath, io.O_RDONLY)
+    if input_fd <= 0 {
+        chr* err_msg
+        io.asprintf(&err_msg, "Unable to open file: '%s'", stmt)
+        new_error(ctx, stmt, err_msg)
+        return false
+    }
 
     p := peeker.new(input_fd)
     p.filename = filepath
 
     tokens := lexer.tokenize(p, false)
-    ast := parser.ast(grammar, "start", tokens)
+    ast := parser.ast(ctx.grammar, "start", tokens)
+
+    if ast.err != null {
+        append_error(ctx, ast.err)
+    }
     return compile(ctx, ast.node)
 }
 
 
 bool compile(CompilerCtx* ctx, parser.Node* ast) {
-    compile_ast(ctx, ast)
+    if ctx.errors == null {
+        compile_ast(ctx, ast)
+    }
     has_errors := ctx.errors != null
     for err := ctx.errors; err != null; err = err.next {
         if err.reported == false {
@@ -496,7 +514,8 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
             -- check if last instruction is a return stmt
             -- otherwise add implicit void return
             -- or signal an error
-            for ci := fn_block.children; ci.next != null; ci = ci.next {
+            ci := skip_to_type(fn_block.children, "expressions")
+            for ci = ci.children; ci != null; ci = ci.next {
                 if string.strcmp(ci.type, "NL") != 0 & string.strcmp(ci.type, "OPERATOR") != 0 {
                     last_valid_instruction = ci
                 }
@@ -577,7 +596,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
 
                 curr_mod := ctx.current_module
                 ctx.current_module = mod.abspath
-                compile_file(ctx, mod.abspath)
+                compile_file(ctx, stmt, mod.abspath)
                 ctx.current_module = curr_mod
             } else {
                 define_module(ctx, stmt, asname, mod.abspath)
@@ -624,8 +643,9 @@ void compile_fn_params(CompilerCtx* ctx, parser.Node* fn_params) {
 void compile_block(CompilerCtx* ctx, parser.Node* stmt) {
     push_scope(ctx, "block", (chr*) null, (chr*) null)
     -- parse only expressions
-    for b := stmt.children; b != null ; b = b.next {
-        if string.strcmp(b.type, "expression") == 0 {
+    exprs := skip_to_type(stmt.children, "expressions")
+    if exprs != null {
+        for b := exprs.children; b != null ; b = b.next {
             compile_expression(ctx, b.children)
         }
     }

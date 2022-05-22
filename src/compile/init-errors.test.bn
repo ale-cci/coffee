@@ -26,6 +26,9 @@ int main() {
     testing.setup(t, "test_fails_if_variable_is_redefined")
     testing.run(t, test_fails_if_variable_is_redefined(t))
 
+    testing.setup(t, "test_respects_lexer_errors")
+    testing.run(t, test_respects_lexer_errors(t))
+
     testing.cleanup(t)
     return 0
 }
@@ -85,6 +88,12 @@ void fn() {
 }
 
 
+int test_respects_lexer_errors(testing.T* t) {
+    ctx := compile.new_context(io.tmpfile(), "./compile/__test__/test-dir/file-with-errors")
+    has_error := compile.compile_file(ctx, (parser.Node*) null, "./compile/__test__/test-dir/file-with-errors.bn")
+    testing.assert_true(t, "compilation error", has_error)
+    return 0
+}
 
 compile.CompilerCtx* compile_str(str file_content) {
     filename := ""
@@ -101,9 +110,9 @@ compile.CompilerCtx* compile_str(str file_content) {
     p.filename = filename
     tokens := lexer.tokenize(p, false)
     ast := parser.ast(grammar, "start", tokens)
-
     ctx := compile.new_context(io.tmpfile(), filename)
     compile.compile_ast(ctx, ast.node)
+    io.fclose(ctx.ir)
 
     return ctx
 }

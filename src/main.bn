@@ -20,7 +20,7 @@ int main(int argc, str* argv) {
 
     llvm_code := io.tmpfile()
     compiler_ctx := compile.new_context(llvm_code, filename)
-    if compile.compile_file(compiler_ctx, filename) {
+    if compile.compile_file(compiler_ctx, (parser.Node*) null, filename) {
         io.fprintf(stderr, "Compilation to llvm interrupted.\0A")
         return 1
     }

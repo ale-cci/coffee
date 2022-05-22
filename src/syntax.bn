@@ -63,7 +63,9 @@ keyword: ("break" | "continue")
 
 expression: ( if_block | return | keyword | for_loop | assignment | fn_call | declaration | NL )
 
-block: "{" NL (expression)* ("}")
+expressions: (expression)*
+
+block: "{" NL expressions ("}")
 
 for_loop: "for" (declaration | assignment)? (";") (assignable)? (";") (assignment)? block
 `
