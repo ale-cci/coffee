@@ -413,3 +413,4 @@ int test_fully_compares_words_by_value(testing.T* t) {
     testing.assert_not_null(t, (chr*) result.err)
     return 0
 }
+

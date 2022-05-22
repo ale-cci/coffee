@@ -1,0 +1,6 @@
+void fn() {
+    for ; true ; {
+        continue
+        break
+    }
+}

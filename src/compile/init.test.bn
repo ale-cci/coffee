@@ -72,6 +72,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/39-cast-int-to-chr"))
     testing.run(t, testfile(t, "./compile/__test__/3A-slices-implementation"))
     testing.run(t, testfile(t, "./compile/__test__/3B-sets-zero-value"))
+    testing.run(t, testfile(t, "./compile/__test__/3C-break-continue-control-structures"))
 
     testing.cleanup(t)
     return 0

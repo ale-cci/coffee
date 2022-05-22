@@ -59,7 +59,9 @@ fn_args: assignable ( "," assignable )*
 
 fn_call: (destination "(") (fn_args)? (")")
 
-expression: ( if_block | return | for_loop | assignment | fn_call | declaration | NL )
+keyword: ("break" | "continue")
+
+expression: ( if_block | return | keyword | for_loop | assignment | fn_call | declaration | NL )
 
 block: "{" NL (expression)* ("}")
 

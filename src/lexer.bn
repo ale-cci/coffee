@@ -92,6 +92,9 @@ Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
             for idx = 0 ; string.is_digit(c); c = peeker.read(p) {
                 buf[idx] = c
                 idx = idx + 1
+                if idx >= max_token_size {
+                    io.printf("%s: %d %d (%d, %d) [%c]\n", p.filename, ctx.line, ctx.char_of_line, idx, max_token_size, c)
+                }
                 sys.assert(idx < max_token_size, "digit too large")
             }
             buf[idx] = '\x00'
@@ -104,6 +107,9 @@ Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
             for idx = 0 ; string.is_letter(c) | string.is_digit(c) | c == '_'; c = peeker.read(p) {
                 buf[idx] = c
                 idx = idx + 1
+                if idx >= max_token_size {
+                    io.printf("%s: %d %d (%d, %d)\n", p.filename, ctx.line, ctx.char_of_line, idx, max_token_size)
+                }
                 sys.assert(idx < max_token_size, "digit too large")
             }
             buf[idx] = '\x00'

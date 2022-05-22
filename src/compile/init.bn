@@ -17,6 +17,7 @@ bool DEBUG_INTERNALS=false
 alias ErrorList = struct {
     errors.Error* err,
     ErrorList* next,
+    bool reported,
 }
 
 alias Type = struct {
@@ -172,6 +173,9 @@ alias GlobalName = struct {
 alias Scope = struct {
     chr* filename,
     ScopeItem* item,
+    chr* type,
+    chr* begin_id, 
+    chr* end_id,
     Scope* prev,
 }
 
@@ -236,12 +240,15 @@ CompilerCtx* new_context(io.File* fd, str filename) {
     return (CompilerCtx*) ctx
 }
 
-void push_scope(CompilerCtx* ctx) {
+void push_scope(CompilerCtx* ctx, chr* type, begin_id, end_id) {
     s := (Scope*) sys.malloc(sizeof(Scope))
 
     m := get_current_module(ctx)
     s.prev = m.scopes
     s.item = null
+    s.type = type
+    s.begin_id = begin_id
+    s.end_id = end_id
     m.scopes = s
 }
 void pop_scope(CompilerCtx* ctx) {
@@ -273,25 +280,7 @@ bool compile_file(CompilerCtx* ctx, str filepath) {
 
 
 bool compile(CompilerCtx* ctx, parser.Node* ast) {
-    if string.strcmp(ast.type, "start") != 0 {
-        return false
-    }
-
-    -- push global context scope
-    push_scope(ctx)
-
-    start := ast.children
-    if string.strcmp(start.type, "head_comment") == 0 {
-        start = start.next
-    }
-    -- todo: pre-parse 'extern', 'function', 'globals'
-    for stmt := start; stmt != null; stmt = stmt.next {
-        compile_statement(ctx, stmt.children, true)
-    }
-
-    for s := start; s != null; s = s.next {
-        compile_statement(ctx, s.children, false)
-    }
+    compile_ast(ctx, ast)
     has_errors := ctx.errors != null
     for err := ctx.errors; err != null; err = err.next {
         errors.report(err.err)
@@ -305,6 +294,28 @@ bool compile(CompilerCtx* ctx, parser.Node* ast) {
 
     -- TODO: free errors
     return has_errors
+}
+
+void compile_ast(CompilerCtx* ctx, parser.Node* ast) {
+    if string.strcmp(ast.type, "start") != 0 {
+        return
+    }
+
+    -- push global context scope
+    push_scope(ctx, "global", (chr*) null, (chr*) null)
+
+    start := ast.children
+    if string.strcmp(start.type, "head_comment") == 0 {
+        start = start.next
+    }
+    -- todo: pre-parse 'extern', 'function', 'globals'
+    for stmt := start; stmt != null; stmt = stmt.next {
+        compile_statement(ctx, stmt.children, true)
+    }
+
+    for s := start; s != null; s = s.next {
+        compile_statement(ctx, s.children, false)
+    }
 }
 
 void compile_global(CompilerCtx* ctx, GlobalName* g) {
@@ -468,7 +479,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
             }
             -- build function parameters string
             io.fprintf(ctx.ir, ") {\n")
-            push_scope(ctx)
+            push_scope(ctx, "function", (chr*) null, (chr*) null)
             compile_fn_params(ctx, params)
 
             fn_block := skip_to_type(stmt.children, "block")
@@ -607,7 +618,7 @@ void compile_fn_params(CompilerCtx* ctx, parser.Node* fn_params) {
 
 
 void compile_block(CompilerCtx* ctx, parser.Node* stmt) {
-    push_scope(ctx)
+    push_scope(ctx, "block", (chr*) null, (chr*) null)
     -- parse only expressions
     for b := stmt.children; b != null ; b = b.next {
         if string.strcmp(b.type, "expression") == 0 {
@@ -748,6 +759,27 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
         compile_if_block(ctx, stmt)
     } elif string.strcmp(expr_type, "for_loop") == 0 {
         compile_for_loop(ctx, stmt)
+    } elif string.strcmp(expr_type, "keyword") == 0 {
+        mod := get_current_module(ctx)
+        found := false
+        s := mod.scopes
+        if string.strcmp(stmt.children.value, "break") == 0 {
+            for ; s != null & found == false ; s = s.prev {
+                if string.strcmp(s.type, "for") == 0 {
+                    found = true
+                    io.fprintf(ctx.ir, "br label %%%s\n", s.end_id)
+                }
+            }
+        } elif string.strcmp(stmt.children.value, "continue") == 0 {
+            for ; s != null & found == false ; s = s.prev {
+                if string.strcmp(s.type, "for") == 0 {
+                    found = true
+                    io.fprintf(ctx.ir, "br label %%%s\n", s.begin_id)
+                }
+            }
+        } else {
+            io.printf(err_tmpl(ctx, stmt, "Keyword '%s' not implemented"), stmt.children.value)
+        }
     } else {
         io.printf(err_tmpl(ctx, stmt, "unable to compile expression '%s'"), expr_type)
     }
@@ -756,6 +788,13 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
 void compile_for_loop(CompilerCtx* ctx, parser.Node* stmt) {
     for_id := new_uid(ctx)
     init_stmt := stmt.children.next
+    chr* begin_lbl = (chr*) null
+    chr* end_lbl = (chr*) null
+
+    io.asprintf(&begin_lbl, ".for.start.%d", for_id)
+    io.asprintf(&end_lbl, ".for.end.%d", for_id)
+
+    push_scope(ctx, "for", begin_lbl, end_lbl)
 
     if string.strcmp(init_stmt.type, "declaration") == 0 {
         compile_declaration(ctx, init_stmt)
@@ -766,6 +805,7 @@ void compile_for_loop(CompilerCtx* ctx, parser.Node* stmt) {
     } else {
         -- coffee error
         io.printf(err_tmpl(ctx, init_stmt, "unable to compile statement of type %s in for loop init condition"), init_stmt.type)
+        pop_scope(ctx)
         return
     }
 
@@ -775,8 +815,12 @@ void compile_for_loop(CompilerCtx* ctx, parser.Node* stmt) {
     -- check for 'for' condition
     fst_colon := skip_to_type(stmt.children, "OPERATOR")
     condition := fst_colon.next
+    if string.strcmp(condition.type, "OPERATOR") == 0 {
+        new_error(ctx, condition, "Expecting boolean condition, found ';'")
+        return
+    }
     condition_info := compile_assignable(ctx, condition)
-    io.fprintf(ctx.ir, "br %s %s, label %%.for.continue.%d, label %%.for.end.%d\n", type_repr(ctx, condition_info.type), repr_assignable_id(condition_info), for_id, for_id)
+    io.fprintf(ctx.ir, "br %s %s, label %%.for.continue.%d, label %%%s\n", type_repr(ctx, condition_info.type), repr_assignable_id(condition_info), for_id, end_lbl)
 
     io.fprintf(ctx.ir, ".for.continue.%d:\n", for_id)
 
@@ -788,14 +832,16 @@ void compile_for_loop(CompilerCtx* ctx, parser.Node* stmt) {
     for_body := skip_to_type(snd_colon, "block")
     compile_block(ctx, for_body)
 
+
     -- compile increment statement only if it exists
     if increment != for_body {
         compile_expression(ctx, increment)
     }
 
     -- execute for increment before next loop
-    io.fprintf(ctx.ir, "br label %%.for.start.%d\n", for_id)
-    io.fprintf(ctx.ir, ".for.end.%d:\n", for_id)
+    io.fprintf(ctx.ir, "br label %%%s\n", begin_lbl)
+    io.fprintf(ctx.ir, "%s:\n", end_lbl)
+    pop_scope(ctx)
 }
 
 AssignableInfo* compile_declaration(CompilerCtx* ctx, parser.Node* stmt) {
@@ -1173,6 +1219,9 @@ alias StackHead = struct {
 }
 
 AssignableInfo* compile_assignable(CompilerCtx* ctx, parser.Node* curr_node) {
+    if curr_node.children == null {
+        io.printf("hello: %s %s?\n", curr_node.type, curr_node.value)
+    }
     assignable_start := skip_to_type(curr_node.children, "mono_assignable")
     operator_stack := sy.sy_algorithm(assignable_start)
 
@@ -1536,7 +1585,9 @@ void append_error(CompilerCtx* ctx, errors.Error* e) {
         return
     }
 
-    for last := ctx.errors; last.next != null ; last = last.next {
+
+    ErrorList* last
+    for last = ctx.errors; last.next != null ; last = last.next {
     }
 
     last.next = new_err

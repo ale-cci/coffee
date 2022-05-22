@@ -1,0 +1,58 @@
+import "./init" as compile
+import "../std/testing" as testing
+import "../std/string" as string
+import "../std/io" as io
+import "../std/ioutil" as ioutil
+import "../std/sys" as sys
+import "../parser" as parser
+import "../peeker" as peeker
+import "../lexer" as lexer
+import "../errors" as errors
+import "../syntax" as syntax
+
+
+int main() {
+    t := testing.init("compile/init-errors.test.bn")
+
+    testing.setup(t, "test_signals_missing_for_condition")
+    testing.run(t, test_signals_missing_for_condition(t))
+
+    testing.cleanup(t)
+    return 0
+}
+
+
+int test_signals_missing_for_condition(testing.T* t) {
+    ctx := compile_str(`
+void fn() {
+    for ;; {
+    }
+}
+`)
+    testing.assert_not_null(t, (chr*) ctx.errors)
+
+    return 0
+}
+
+
+compile.CompilerCtx* compile_str(str file_content) {
+    filename := ""
+
+    grammar_file := ioutil.str_as_file(syntax.grammar())
+    if grammar_file == null {
+        return (compile.CompilerCtx*) null
+    }
+    grammar_ctx := parser.new_context(grammar_file)
+    grammar := parser.parse_grammar(grammar_ctx)
+    fd := ioutil.str_as_file(file_content)
+
+    p := peeker.new(io.fileno(fd))
+    p.filename = filename
+    tokens := lexer.tokenize(p, false)
+    ast := parser.ast(grammar, "start", tokens)
+
+    ctx := compile.new_context(io.tmpfile(), filename)
+    compile.compile_ast(ctx, ast.node)
+
+    return ctx
+}
