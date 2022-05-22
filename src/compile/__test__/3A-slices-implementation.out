@@ -6,5 +6,9 @@ store i32* null, i32** %.tmp1
 store i32 0, i32* %.tmp2
 %.tmp3 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 2
 store i32 0, i32* %.tmp3
+%.tmp4 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 1
+%.tmp5 = load i32, i32* %.tmp4
+%t_len.6 = alloca i32
+store i32 %.tmp5, i32* %t_len.6
 ret void
 }
