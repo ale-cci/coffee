@@ -1,12 +1,12 @@
 define void @f.v() {
 br i1 1, label %.if.true.0, label %.if.false.0
 .if.true.0:
-%t = alloca i32
-store i32 0, i32* %t
+%t.1 = alloca i32
+store i32 0, i32* %t.1
 br label %.if.end.0
 .if.false.0:
-%t = alloca i32
-store i32 0, i32* %t
+%t.2 = alloca i32
+store i32 0, i32* %t.2
 br label %.if.end.0
 .if.end.0:
 ret void

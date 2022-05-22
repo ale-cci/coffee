@@ -1,7 +1,7 @@
 define void @fn.v() {
 %.tmp1 = getelementptr [6 x i8], [6 x i8]*@.str0, i32 0, i32 0
-%t = alloca i8*
-store i8* %.tmp1, i8** %t
+%t.2 = alloca i8*
+store i8* %.tmp1, i8** %t.2
 ret void
 }
 @.str0 = constant [6 x i8] c"te\22st\00"

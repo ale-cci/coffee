@@ -2,7 +2,7 @@
 define void @fn.v() {
 %.tmp0 = getelementptr %.T.type, %.T.type* null, i32 1
 %.tmp1 = ptrtoint %.T.type* %.tmp0 to i32
-%j = alloca i32
-store i32 %.tmp1, i32* %j
+%j.2 = alloca i32
+store i32 %.tmp1, i32* %j.2
 ret void
 }

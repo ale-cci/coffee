@@ -1,7 +1,7 @@
 define void @fn.v() {
-%a = alloca i8
-store i8 97, i8* %a
-%b = alloca i8
-store i8 18, i8* %b
+%a.0 = alloca i8
+store i8 97, i8* %a.0
+%b.1 = alloca i8
+store i8 18, i8* %b.1
 ret void
 }

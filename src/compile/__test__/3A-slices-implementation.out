@@ -1,10 +1,10 @@
 define void @fn.v() {
-%t = alloca {i32*,i32,i32}
-%.tmp0 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t, i32 0, i32 0
-store i32* null, i32** %.tmp0
-%.tmp1 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t, i32 0, i32 1
-store i32 0, i32* %.tmp1
-%.tmp2 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t, i32 0, i32 2
+%t.0 = alloca {i32*,i32,i32}
+%.tmp1 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 0
+store i32* null, i32** %.tmp1
+%.tmp2 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 1
 store i32 0, i32* %.tmp2
+%.tmp3 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 2
+store i32 0, i32* %.tmp3
 ret void
 }

@@ -1,9 +1,9 @@
 define void @f.v() {
-%t = alloca i32
-store i32 0, i32* %t
-store i32 3, i32* %t
-%.tmp0 = load i32, i32* %t
-%k = alloca i32
-store i32 %.tmp0, i32* %k
+%t.0 = alloca i32
+store i32 0, i32* %t.0
+store i32 3, i32* %t.0
+%.tmp1 = load i32, i32* %t.0
+%k.2 = alloca i32
+store i32 %.tmp1, i32* %k.2
 ret void
 }

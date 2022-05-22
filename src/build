@@ -13,6 +13,7 @@ case $1 in
         "$COFFEE_EXE" main.bn && mv out "${TEST_EXE}"
         [[ ! -z "$DEBUG_COFFEE" ]] && cp "$TEST_EXE" "${TEST_EXE}.bck"
         find . -name '*.test.bn' -exec sh -c "echo && ${TEST_EXE} {} && ./out " \;
+        ./coffee_test main.bn
         rm -rf ./out "${TEST_EXE}"
         ;;
 

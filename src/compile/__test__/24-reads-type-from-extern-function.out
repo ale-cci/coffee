@@ -1,7 +1,7 @@
 declare i8* @malloc()
 define void @alloc.v() {
 %.tmp0 = call i8*() @malloc()
-%test = alloca i8*
-store i8* %.tmp0, i8** %test
+%test.1 = alloca i8*
+store i8* %.tmp0, i8** %test.1
 ret void
 }

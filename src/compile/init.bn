@@ -743,8 +743,6 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
         assignable = skip_to_type(stmt.children, "assignable")
         dest := compile_addr(ctx, stmt.children)
         if dest == null {
-            io.asprintf(&err_msg, "%s was not declared in this scope", stmt.children.children.children.value)
-            new_error(ctx, stmt, err_msg)
             return
         }
         a_info = compile_assignable(ctx, assignable)
@@ -877,7 +875,9 @@ AssignableInfo* compile_declaration(CompilerCtx* ctx, parser.Node* stmt) {
         return (AssignableInfo*) null
     }
 
-    set_assignable_id(info, SCOPE_LOCAL, var_name.value)
+    chr* var_id
+    io.asprintf(&var_id, "%s.%d", var_name.value, new_uid(ctx))
+    set_assignable_id(info, SCOPE_LOCAL, var_id)
 
     if decl_type != null {
         info.type = decl_type
@@ -1165,7 +1165,7 @@ AssignableInfo* compile_addr(CompilerCtx* ctx, parser.Node* stmt) {
     scope_info := find_defined_str(ctx, ctx.current_module, assignable_name.children.value)
     if scope_info == null {
         -- error! name is not defined
-        io.asprintf(&err_msg, "name '%s' is not defined", assignable_name.children.value)
+        io.asprintf(&err_msg, "name '%s' was not declared in this scope", assignable_name.children.value)
         new_error(ctx, assignable_name, err_msg)
         return (AssignableInfo*) null
     }

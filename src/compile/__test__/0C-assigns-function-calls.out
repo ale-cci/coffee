@@ -3,7 +3,7 @@ ret i32 4
 }
 define void @fn.v() {
 %.tmp0 = call i32() @call.i()
-%t = alloca i32
-store i32 %.tmp0, i32* %t
+%t.1 = alloca i32
+store i32 %.tmp0, i32* %t.1
 ret void
 }

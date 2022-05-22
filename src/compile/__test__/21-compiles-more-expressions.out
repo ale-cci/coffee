@@ -4,12 +4,12 @@ define void @f.v() {
 %.tmp2 = icmp sgt i32 3, 2
 %.tmp3 = and i1 %.tmp1, %.tmp2
 %.tmp4 = or i1 %.tmp0, %.tmp3
-%t = alloca i1
-store i1 %.tmp4, i1* %t
-%.tmp5 = icmp sge i32 4, 2
-%.tmp6 = icmp sle i32 2, 4
-%.tmp7 = or i1 %.tmp5, %.tmp6
-%j = alloca i1
-store i1 %.tmp7, i1* %j
+%t.5 = alloca i1
+store i1 %.tmp4, i1* %t.5
+%.tmp6 = icmp sge i32 4, 2
+%.tmp7 = icmp sle i32 2, 4
+%.tmp8 = or i1 %.tmp6, %.tmp7
+%j.9 = alloca i1
+store i1 %.tmp8, i1* %j.9
 ret void
 }

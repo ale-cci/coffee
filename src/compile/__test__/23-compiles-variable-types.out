@@ -12,8 +12,8 @@ br i1 %.tmp4, label %.for.continue.0, label %.for.end.0
 %.tmp5 = load i8*, i8** %string
 %.tmp6 = getelementptr i8, i8* %.tmp5, i32 0
 %.tmp7 = load i8, i8* %.tmp6
-%c = alloca i8
-store i8 %.tmp7, i8* %c
+%c.8 = alloca i8
+store i8 %.tmp7, i8* %c.8
 br label %.for.start.0
 .for.end.0:
 ret void

@@ -1,7 +1,7 @@
 define void @f.v.b(i1 %.j.arg) {
 %j = alloca i1
 store i1 %.j.arg, i1* %j
-%t = alloca i1
-store i1 0, i1* %t
+%t.0 = alloca i1
+store i1 0, i1* %t.0
 ret void
 }
