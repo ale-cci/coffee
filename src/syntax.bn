@@ -67,6 +67,6 @@ expressions: (expression)*
 
 block: "{" NL expressions ("}")
 
-for_loop: "for" (declaration | assignment)? (";") (assignable)? (";") (assignment)? block
+for_loop: "for" (declaration | assignment)? (";") (assignable)? (";") (assignment)? block (else_block)?
 `
 }

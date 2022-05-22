@@ -53,6 +53,7 @@ Token* push_token(ParseCtx* c, str type, value) {
 }
 
 
+
 -- takes a peeker in input, returns the sequence of tokens
 -- depending on the first character, start parsing a
 -- specific token.
@@ -136,25 +137,25 @@ Token* tokenize(peeker.PeekerInfo* p, bool keep_comments) {
             c = peeker.read(p)
         } elif c == '-' {
             c = peeker.read(p)
-            if c == '-' {
-                -- if next token is a '-' start parsing a comment
-                -- start parsing a comment block
-                buf = sys.malloc(max_token_size)
-                buf[0] = '-'
-                for idx = 1; c != '\n' & c != '\x00' ; c = peeker.read(p) {
-                    buf[idx] = c
-                    idx = idx + 1
-                }
-                buf[idx] = '\x00'
-
-                if keep_comments {
-                    push_token(ctx, "COMMENT", buf)
-                } else {
-                    sys.free((chr*) buf)
-                }
-
-            } else {
+            if c != '-' {
                 push_token(ctx, "OPERATOR", "-")
+                continue
+            }
+
+            -- if next token is a '-' start parsing a comment
+            -- start parsing a comment block
+            buf = sys.malloc(max_token_size)
+            buf[0] = '-'
+            for idx = 1; c != '\n' & c != '\x00' ; c = peeker.read(p) {
+                buf[idx] = c
+                idx = idx + 1
+            }
+            buf[idx] = '\x00'
+
+            if keep_comments {
+                push_token(ctx, "COMMENT", buf)
+            } else {
+                sys.free((chr*) buf)
             }
         } else {
             -- check for operator

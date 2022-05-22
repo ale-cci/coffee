@@ -919,16 +919,23 @@ void compile_for_loop(CompilerCtx* ctx, parser.Node* stmt) {
         return
     }
     condition_info := compile_assignable(ctx, condition)
-    io.fprintf(ctx.ir, "br %s %s, label %%.for.continue.%d, label %%%s\n", type_repr(ctx, condition_info.type), repr_assignable_id(condition_info), for_id, end_lbl)
+    snd_colon := skip_to_type(fst_colon.next, "OPERATOR")
+    for_body := skip_to_type(snd_colon, "block")
+    else_block := skip_to_type(for_body, "else_block")
+
+    on_end := end_lbl
+    if else_block != null {
+        io.asprintf(&on_end, ".for.else.%d", for_id)
+    }
+
+    io.fprintf(ctx.ir, "br %s %s, label %%.for.continue.%d, label %%%s\n", type_repr(ctx, condition_info.type), repr_assignable_id(condition_info), for_id, on_end)
 
     io.fprintf(ctx.ir, ".for.continue.%d:\n", for_id)
 
     -- compile body
 
-    snd_colon := skip_to_type(fst_colon.next, "OPERATOR")
     increment := snd_colon.next
 
-    for_body := skip_to_type(snd_colon, "block")
     compile_block(ctx, for_body)
 
 
@@ -939,6 +946,13 @@ void compile_for_loop(CompilerCtx* ctx, parser.Node* stmt) {
 
     -- execute for increment before next loop
     io.fprintf(ctx.ir, "br label %%%s\n", begin_lbl)
+    -- compile else
+    if else_block != null {
+        io.fprintf(ctx.ir, ".for.else.%d:\n", for_id)
+        block := skip_to_type(else_block.children, "block")
+        compile_block(ctx, block)
+        io.fprintf(ctx.ir, "br label %%%s\n", end_lbl)
+    }
     io.fprintf(ctx.ir, "%s:\n", end_lbl)
     pop_scope(ctx)
 }
