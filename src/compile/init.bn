@@ -1447,6 +1447,8 @@ str operator_op(CompilerCtx* ctx, parser.Node* op) {
         return "icmp sge"
     } elif string.strcmp(op.value, "<=") == 0 {
         return "icmp sle"
+    } elif string.strcmp(op.value, "%") == 0 {
+        return "srem"
     } else {
         io.printf(err_tmpl(ctx, op, "operator '%s' not implemented"), op.value)
     }

@@ -25,7 +25,7 @@ boolean: ("true" | "false")
 
 addr_destination: ("&")* (destination)
 
-operator: ( "+" | "/" | "==" | "!=" | "|" | "&" | "<=" | ">=" | "<" | ">" | "*" | "-" )
+operator: ( "+" | "/" | "==" | "!=" | "|" | "&" | "<=" | ">=" | "<" | ">" | "*" | "-" | "%")
 
 mono_assignable: ( fn_call | boolean | "null" | addr_destination | NUMBER | CHR | STRING  )
 
