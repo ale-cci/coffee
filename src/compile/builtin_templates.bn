@@ -51,7 +51,7 @@ br label %%%1$s.if.end.9
 %%%1$s.tmp24 = load i32, i32* %%%1$s.tmp23
 %%%1$s.tmp25 = load %4$s*, %4$s** %%%1$s.tmp22
 %%%1$s.tmp26 = getelementptr %4$s, %4$s* %%%1$s.tmp25, i32 %%%1$s.tmp24
-store i8 %5$s, %4$s* %%%1$s.tmp26
+store %4$s %5$s, %4$s* %%%1$s.tmp26
 %%%1$s.tmp27 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 1
 %%%1$s.tmp28 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 1
 %%%1$s.tmp29 = load i32, i32* %%%1$s.tmp28

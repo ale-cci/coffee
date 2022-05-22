@@ -1308,8 +1308,23 @@ AssignableInfo* compile_addr(CompilerCtx* ctx, parser.Node* stmt) {
         index := addr.next
         index_info := compile_assignable(ctx, index)
 
-        base_type := type_repr(ctx, base.type)
         index_type := type_repr(ctx, index_info.type)
+
+        -- automatically get correct index from slice
+        if base.type.info != null {
+            if string.strcmp(base.type.info , "slice") == 0 {
+                new_base := new_assignable_info(curr_node)
+                set_assignable_tmp_id(ctx, new_base)
+
+                io.fprintf(ctx.ir, "%s = getelementptr %s, %s* %s, i32 0, i32 0\n", repr_assignable_id(new_base), type_repr(ctx, base.type), type_repr(ctx, base.type), repr_assignable_id(base))
+
+                new_base.type = type_clone(base.type.of)
+                new_base.type.next = null
+                base = new_base
+            }
+        }
+
+        base_type := type_repr(ctx, base.type)
 
         tmp_id := new_uid(ctx)
         io.fprintf(ctx.ir, "%%.tmp%d = load %s, %s* %s\n", tmp_id, base_type, base_type, repr_assignable_id(base))
@@ -1582,10 +1597,16 @@ str type_abbr(Type* type) {
         return buf
     } elif string.strcmp(type.container, "typealias") == 0 {
         return type.repr
+    } elif string.strcmp(type.container, "struct") == 0 {
+        chr* buf = "s"
+        for t := type.of; t != null; t = t.next {
+            io.asprintf(&buf, "%s%s", buf, type_abbr(t))
+        }
+        return buf
     } elif string.strcmp(type.container, "error") == 0 {
         return "?"
     } else {
-        io.printf(":coffee-error: unable to abbreviate type %s", type.container)
+        io.printf(":coffee-error: unable to abbreviate type %s\n", type.container)
     }
     return (chr*) null
 }
@@ -1842,6 +1863,7 @@ Type* node_to_type(CompilerCtx* ctx, parser.Node* stmt) {
             if string.strcmp(ptr.next.value, "]") == 0 {
                 slice_type := new_type()
                 slice_type.container = "struct"
+                slice_type.info = "slice"
 
                 slice_c_array := new_type()
                 slice_c_array.container = "ptr"

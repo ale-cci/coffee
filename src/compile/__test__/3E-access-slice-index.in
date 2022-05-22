@@ -1,0 +1,3 @@
+int fn(int[] s) {
+    return s[1]
+}

@@ -42,7 +42,7 @@ br label %.b8.if.end.9
 %.b8.tmp24 = load i32, i32* %.b8.tmp23
 %.b8.tmp25 = load i32*, i32** %.b8.tmp22
 %.b8.tmp26 = getelementptr i32, i32* %.b8.tmp25, i32 %.b8.tmp24
-store i8 3, i32* %.b8.tmp26
+store i32 3, i32* %.b8.tmp26
 %.b8.tmp27 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 1
 %.b8.tmp28 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 1
 %.b8.tmp29 = load i32, i32* %.b8.tmp28

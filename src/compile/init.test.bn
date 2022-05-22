@@ -74,6 +74,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/3B-sets-zero-value"))
     testing.run(t, testfile(t, "./compile/__test__/3C-break-continue-control-structures"))
     testing.run(t, testfile(t, "./compile/__test__/3D-add-operator-modulo"))
+    testing.run(t, testfile(t, "./compile/__test__/3E-access-slice-index"))
 
     testing.cleanup(t)
     return 0
