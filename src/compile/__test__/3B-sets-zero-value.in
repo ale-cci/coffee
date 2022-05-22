@@ -13,4 +13,6 @@ void fn() {
     } d
 
     T e
+
+    bool f
 }

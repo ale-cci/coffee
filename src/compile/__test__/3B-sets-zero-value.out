@@ -16,5 +16,7 @@ store i32* null, i32** %.tmp2
 %e = alloca %.T.type
 %.tmp3 = getelementptr %.T.type, %.T.type* %e, i32 0, i32 0
 store i32 0, i32* %.tmp3
+%f = alloca i1
+store i1 0, i1* %f
 ret void
 }

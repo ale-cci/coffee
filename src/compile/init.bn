@@ -868,7 +868,7 @@ void compile_zero_value(CompilerCtx* ctx, parser.Node* stmt, AssignableInfo* inf
     AssignableInfo* field_info
 
     t := info.type
-    if string.strcmp(t.container, "int") == 0 | string.strcmp(t.container, "chr") == 0 {
+    if string.strcmp(t.container, "int") == 0 | string.strcmp(t.container, "chr") == 0 | string.strcmp(t.container, "bool") == 0 {
         io.fprintf(ctx.ir, "store %s %d, %s* %s\n", t_repr, 0, t_repr, id)
     } elif string.strcmp(t.container, "ptr") == 0 {
         io.fprintf(ctx.ir, "store %s %s, %s* %s\n", t_repr, "null", t_repr, id)
