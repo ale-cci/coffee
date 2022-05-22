@@ -283,7 +283,10 @@ bool compile(CompilerCtx* ctx, parser.Node* ast) {
     compile_ast(ctx, ast)
     has_errors := ctx.errors != null
     for err := ctx.errors; err != null; err = err.next {
-        errors.report(err.err)
+        if err.reported == false {
+            errors.report(err.err)
+            err.reported = true
+        }
     }
 
 
