@@ -125,7 +125,7 @@ void assert_not_null(T* t, chr* ptr) {
     t.test_no = t.test_no + 1
     if ptr == null {
         fail(t)
-        io.fprintf(t.out, "expected pointer, got: (null)")
+        io.fprintf(t.out, "expected pointer, got: (null)\n")
     }
 }
 

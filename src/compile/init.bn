@@ -770,12 +770,18 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
                     io.fprintf(ctx.ir, "br label %%%s\n", s.end_id)
                 }
             }
+            if found == false {
+                new_error(ctx, stmt, "'break' keyword used outside of 'for' statement")
+            }
         } elif string.strcmp(stmt.children.value, "continue") == 0 {
             for ; s != null & found == false ; s = s.prev {
                 if string.strcmp(s.type, "for") == 0 {
                     found = true
                     io.fprintf(ctx.ir, "br label %%%s\n", s.begin_id)
                 }
+            }
+            if found == false {
+                new_error(ctx, stmt, "'break' keyword used outside of 'for' statement")
             }
         } else {
             io.printf(err_tmpl(ctx, stmt, "Keyword '%s' not implemented"), stmt.children.value)
@@ -1101,17 +1107,14 @@ AssignableInfo* get_dotted_name(CompilerCtx* ctx, parser.Node* dot_name_ptr, Ass
         field_name := dot_name_ptr.next.next.value
 
         -- struct
-        quit := false
         field_id := 0
         found_field := (Type*) null
 
         -- here, from a struct i'm extracting the value of the field.
-        for field := struct_info.of; quit == false; field = field.next {
-            if field == null {
-                quit = true
-            } elif string.strcmp(field.info, field_name) == 0 {
-                quit = true
+        for field := struct_info.of; field != null; field = field.next {
+            if string.strcmp(field.info, field_name) == 0 {
                 found_field = field
+                break
             } else {
                 field_id = field_id + 1
             }

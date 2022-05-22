@@ -11,7 +11,7 @@ case $1 in
         set -e
         TEST_EXE="./coffee_test"
         "$COFFEE_EXE" main.bn && mv out "${TEST_EXE}"
-        cp "$TEST_EXE" "${TEST_EXE}.bck"
+        [[ ! -z "$DEBUG_COFFEE" ]] && cp "$TEST_EXE" "${TEST_EXE}.bck"
         find . -name '*.test.bn' -exec sh -c "echo && ${TEST_EXE} {} && ./out " \;
         rm -rf ./out "${TEST_EXE}"
         ;;

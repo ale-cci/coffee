@@ -17,6 +17,12 @@ int main() {
     testing.setup(t, "test_signals_missing_for_condition")
     testing.run(t, test_signals_missing_for_condition(t))
 
+    testing.setup(t, "test_error_if_break_is_used_in_non_for_context")
+    testing.run(t, test_error_if_break_is_used_in_non_for_context(t))
+
+    testing.setup(t, "test_error_if_continue_is_used_in_non_for_context")
+    testing.run(t, test_error_if_continue_is_used_in_non_for_context(t))
+
     testing.cleanup(t)
     return 0
 }
@@ -27,6 +33,30 @@ int test_signals_missing_for_condition(testing.T* t) {
 void fn() {
     for ;; {
     }
+}
+`)
+    testing.assert_not_null(t, (chr*) ctx.errors)
+
+    return 0
+}
+
+
+int test_error_if_break_is_used_in_non_for_context(testing.T* t) {
+    ctx := compile_str(`
+void fn() {
+    break
+}
+`)
+    testing.assert_not_null(t, (chr*) ctx.errors)
+
+    return 0
+}
+
+
+int test_error_if_continue_is_used_in_non_for_context(testing.T* t) {
+    ctx := compile_str(`
+void fn() {
+    continue
 }
 `)
     testing.assert_not_null(t, (chr*) ctx.errors)
