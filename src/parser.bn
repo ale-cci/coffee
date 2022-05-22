@@ -19,7 +19,6 @@ alias Query = struct {
 
     Query* next,
 }
-int Query_size = 24 -- 2 * sys.ptr_size + 1
 
 
 alias Matcher = struct {
@@ -40,13 +39,11 @@ alias Matcher = struct {
     Matcher* alternative,
     Matcher* next,
 }
-int Matcher_size = 32
 
 alias Rule = struct {
     chr*      name,
     Matcher*  matcher,
 }
-int Rule_size = 16 -- matcher size + 1
 
 
 -- parsing context, it's used to keep track of the current token being
@@ -55,11 +52,10 @@ int Rule_size = 16 -- matcher size + 1
 alias ParsingContext = struct {
     lexer.Token* current_token,
 }
-int ParsingContext_size = 8
 
 
 ParsingContext* new_context(io.File* f) {
-    ParsingContext* ctx = (ParsingContext*) sys.malloc(ParsingContext_size)
+    ParsingContext* ctx = (ParsingContext*) sys.malloc(sizeof(ParsingContext))
 
     fd := io.fileno(f)
     p := peeker.new(fd)
@@ -72,7 +68,7 @@ ParsingContext* new_context(io.File* f) {
 
 -- matcher constructor
 Matcher* new_matcher() {
-    Matcher* m = (Matcher*) sys.malloc(Matcher_size)
+    Matcher* m = (Matcher*) sys.malloc(sizeof(Matcher))
     m.times = '1'
     m.alternative = null
     m.next = null
@@ -156,16 +152,12 @@ Matcher* parse_simple_matcher(ParsingContext* ctx) {
         ptr = ptr.next
     }
 
-    if Query_size > 0 {
-        m.querys = (Query*) sys.malloc(Query_size)
-    } else {
-        m.querys = null
-    }
+    m.querys = (Query*) sys.malloc(sizeof(Query))
 
     q := m.querys
     for i := 0; i < count; i = i + 1 {
         if i > 0 {
-            q.next = (Query*) sys.malloc(Query_size)
+            q.next = (Query*) sys.malloc(sizeof(Query))
             q = q.next
         }
 
@@ -205,7 +197,7 @@ Rule* parse_rule(ParsingContext* ctx) {
     }
     ctx.current_token = ctx.current_token.next
 
-    Rule* rule = (Rule*) sys.malloc(Rule_size)
+    Rule* rule = (Rule*) sys.malloc(sizeof(Rule))
     rule.name = rule_name
 
 
@@ -253,10 +245,9 @@ alias Node = struct {
     Node* children,
     Node* next,      -- required for a list of child nodes
 }
-int Node_size = 56
 
 Node* new_node(lexer.Token* t, chr* type, chr* value) {
-    node := (Node*) sys.malloc(Node_size)
+    node := (Node*) sys.malloc(sizeof(Node))
     node.type = type
     node.value = value
     node.line = t.line
@@ -327,7 +318,6 @@ alias ParseResult = struct {
     errors.Error* err,
     Node* node,
 }
-int ParseResult_size = 16 -- sys.ptr_size * 2
 
 
 -- mutates base node, assigning to it the parsed results
@@ -474,7 +464,7 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
 
 -- start parsing the list of tokens by applying a specific rule
 ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
-    res := (ParseResult*) sys.malloc(ParseResult_size)
+    res := (ParseResult*) sys.malloc(sizeof(ParseResult))
     res.err = null
     res.node = new_node(c.current_token, rule.name, (chr*) null)
     start_match := c.current_token

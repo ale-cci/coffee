@@ -72,7 +72,7 @@ parser.ParseResult* match_rule(chr* rule_name, chr* program) {
 
 
 parser.Node* new_node(chr* type, value, int line, char_of_line, parser.Node* next, children) {
-    parser.Node* n = (parser.Node*) sys.malloc(parser.Node_size)
+    parser.Node* n = (parser.Node*) sys.malloc(sizeof(parser.Node))
     n.type = type
     n.value = value
     n.next = next
