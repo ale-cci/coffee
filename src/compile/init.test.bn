@@ -70,6 +70,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/37-compiles-simple-type-alias"))
     testing.run(t, testfile(t, "./compile/__test__/38-casts-chr-to-int"))
     testing.run(t, testfile(t, "./compile/__test__/39-cast-int-to-chr"))
+    testing.run(t, testfile(t, "./compile/__test__/3A-slices-implementation"))
 
     testing.cleanup(t)
     return 0

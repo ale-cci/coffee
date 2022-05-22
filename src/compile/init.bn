@@ -1610,13 +1610,49 @@ Type* node_to_type(CompilerCtx* ctx, parser.Node* stmt) {
         t.container = "vararg"
     } else {
         io.printf(err_tmpl(ctx, stmt, "unable to convert statement of type '%s' to type (%s)"), stmt.type, stmt.value)
+        return (Type*) null
     }
 
     for ptr := stmt.next; ptr != null; ptr = ptr.next {
-        pt := new_type()
-        pt.container = "ptr"
-        pt.of = t
-        t = pt
+        if string.strcmp(ptr.value, "*") == 0 {
+            -- pointer type
+            pt := new_type()
+            pt.container = "ptr"
+            pt.of = t
+            t = pt
+        } elif string.strcmp(ptr.value, "[") == 0 {
+            -- array type
+            if string.strcmp(ptr.next.value, "]") == 0 {
+                slice_type := new_type()
+                slice_type.container = "struct"
+
+                slice_c_array := new_type()
+                slice_c_array.container = "ptr"
+                slice_c_array.info = "c_arr"
+                slice_c_array.of = t
+                slice_type.of = slice_c_array
+
+                slice_len := new_type()
+                slice_len.container = "int"
+                slice_len.info = "len"
+                slice_c_array.next = slice_len
+
+                slice_cap := new_type()
+                slice_cap.container = "int"
+                slice_cap.info = "cap"
+                slice_len.next = slice_cap
+
+                t = slice_type
+                ptr = ptr.next
+            } else {
+                -- TODO
+            }
+        } else {
+            -- error: unable to parse this thing after type
+            -- TODO: report it and quit since it's a compiler internal error
+            io.printf(err_tmpl(ctx, ptr, "Unable to parse token '%s' after type definition"), ptr.value)
+            return (Type*) null
+        }
     }
 
     return t
