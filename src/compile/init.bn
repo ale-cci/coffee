@@ -875,6 +875,14 @@ AssignableInfo* compile_declaration(CompilerCtx* ctx, parser.Node* stmt) {
         return (AssignableInfo*) null
     }
 
+    mod := get_current_module(ctx)
+    if find_defined_here(ctx, mod.scopes, var_name.value) != null {
+        chr* err_buf
+        io.asprintf(&err_buf, "Name '%s' is already defined in this scope", var_name.value)
+        new_error(ctx, stmt, err_buf)
+        return (AssignableInfo*) null
+    }
+
     chr* var_id
     io.asprintf(&var_id, "%s.%d", var_name.value, new_uid(ctx))
     set_assignable_id(info, SCOPE_LOCAL, var_id)
@@ -1041,16 +1049,29 @@ ScopeItem* find_defined_in(CompilerCtx* ctx, str module, parser.Node* dotted_nam
     return found
 }
 
+ScopeItem* find_defined_here(CompilerCtx* ctx, Scope* s, str name) {
+    if s == null {
+        return (ScopeItem*) null
+    }
+
+    for item := s.item; item != null; item = item.next {
+        if string.strcmp(item.name, name) == 0 {
+            return item
+        }
+    }
+    return (ScopeItem*) null
+}
+
+
 ScopeItem* find_defined_str(CompilerCtx* ctx, str module, str assignable_name) {
     mod := get_module(ctx, module)
     sys.assert(mod.scopes != null, ":coffee-error: 'find_defined' could not be called if context scopes are null")
 
 
     for s := mod.scopes; s != null; s = s.prev {
-        for item := s.item; item != null; item = item.next {
-            if string.strcmp(item.name, assignable_name) == 0 {
-                return item
-            }
+        item := find_defined_here(ctx, s, assignable_name)
+        if item != null {
+            return item
         }
     }
 

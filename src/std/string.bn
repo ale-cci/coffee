@@ -61,3 +61,5 @@ extern chr* strcpy(chr* dest, chr* src)
 extern chr* strncpy(chr* dest, chr* src, int n)
 
 extern chr toupper(chr c)
+
+extern chr* strstr(chr* haystack, chr* needle)
