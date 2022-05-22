@@ -1,0 +1,90 @@
+import "../std/sys" as sys
+import "../std/io" as io
+import "../syntax" as syntax
+import "../parser" as parser
+import "../std/string" as string
+import "../peeker" as peeker
+import "../lexer" as lexer
+import "../std/ioutil" as ioutil
+
+import "../parser.debug" as parser_debug
+import "../errors" as errors
+import "./shunting_yard" as sy
+import "./llvm" as llvm
+
+
+AssignableInfo* compile_builtin(CompilerCtx* ctx, parser.Node* stmt) {
+    dotted := stmt.children.children
+    if dotted.next != null {
+        return (AssignableInfo*) null
+    }
+
+    if string.strcmp(dotted.value, "sizeof") == 0 {
+        args := skip_to_type(stmt, "fn_args")
+        value := skip_to_type(args.children, "assignable")
+        value = value.children.children.children.children
+        tmp_id := new_uid(ctx)
+
+        info := new_assignable_info(stmt)
+        set_assignable_tmp_id(ctx, info)
+
+        info.type = new_type()
+        info.type.container = "int"
+
+        inspected_type := node_to_type(ctx, value)
+        type_as_str := type_repr(ctx, inspected_type)
+
+        io.fprintf(ctx.ir, "%%.tmp%d = getelementptr %s, %s* null, i32 1\n", tmp_id, type_as_str, type_as_str)
+        io.fprintf(ctx.ir, "%s = ptrtoint %s* %%.tmp%d to i32\n", repr_assignable_id(info), type_as_str, tmp_id)
+
+
+        return info
+    } elif string.strcmp(dotted.value, "append") == 0 {
+        args := skip_to_type(stmt, "fn_args")
+
+        info := new_assignable_info(stmt)
+        set_assignable_tmp_id(ctx, info)
+
+        io.fprintf(ctx.ir, `%1$s.tmp0 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %1$st.0, i32 0, i32 1
+%1$s.tmp1 = load i32, i32* %1$s.tmp0
+%1$s.tmp2 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %1$st.0, i32 0, i32 2
+%1$s.tmp3 = load i32, i32* %1$s.tmp2
+%1$s.tmp4 = icmp sge i32 %1$s.tmp1, %1$s.tmp3
+br i1 %1$s.tmp4, label %1$s.if.true.12, label %1$s.if.end.12
+.if.true.12:
+%1$s.tmp6 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %1$st.0, i32 0, i32 2
+%1$s.tmp7 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %1$st.0, i32 0, i32 2
+%1$s.tmp8 = load i32, i32* %1$s.tmp7
+%1$s.tmp9 = mul i32 2, %1$s.tmp8
+%1$s.tmp10 = add i32 %1$s.tmp9, 1
+store i32 %1$s.tmp10, i32* %1$s.tmp6
+%1$s.tmp11 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %1$st.0, i32 0, i32 0
+%1$s.tmp12 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %1$st.0, i32 0, i32 0
+%1$s.tmp13 = load i32*, i32** %1$s.tmp12
+%1$s.tmp14 = bitcast i32* %1$s.tmp13 to i8*
+%1$s.tmp15 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %1$st.0, i32 0, i32 2
+%1$s.tmp16 = load i32, i32* %1$s.tmp15
+%1$s.tmp17 = call i8*(i8*,i32) @realloc(i8* %1$s.tmp14, i32 %1$s.tmp16)
+store i8* %1$s.tmp17, i32** %1$s.tmp11
+br label %1$s.if.end.12
+.if.end.12:
+%1$s.tmp18 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %1$st.0, i32 0, i32 0
+%1$s.tmp19 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %1$st.0, i32 0, i32 1
+%1$s.tmp20 = load i32, i32* %1$s.tmp19
+%1$s.tmp21 = load i32*, i32** %1$s.tmp18
+%1$s.tmp22 = getelementptr i32, i32* %1$s.tmp21, i32 %1$s.tmp20
+store i32 3, i32* %1$s.tmp22
+%1$s.tmp23 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %1$st.0, i32 0, i32 1
+%1$s.tmp24 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %1$st.0, i32 0, i32 1`, "%.b0", "asdf")
+
+        -- info.type = slice_dest.type
+        return info
+    } elif string.strcmp(dotted.value, "len") == 0 {
+        args := skip_to_type(stmt, "fn_args")
+        value := skip_to_type(args.children, "assignable")
+
+        return get_struct_attr(ctx, value, 1)
+    }
+
+    return (AssignableInfo*) null
+}

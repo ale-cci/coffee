@@ -1,4 +1,5 @@
 void fn() {
     int[] t
     t_len := len(t)
+    t = append(t, 3)
 }

@@ -10,5 +10,45 @@ store i32 0, i32* %.tmp3
 %.tmp5 = load i32, i32* %.tmp4
 %t_len.6 = alloca i32
 store i32 %.tmp5, i32* %t_len.6
+%.b8.tmp0 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 1
+%.b8.tmp1 = load i32, i32* %.b8.tmp0
+%.b8.tmp2 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 2
+%.b8.tmp3 = load i32, i32* %.b8.tmp2
+%.b8.tmp4 = icmp sge i32 %.b8.tmp1, %.b8.tmp3
+br i1 %.b8.tmp4, label %.b8.if.true.9, label %.b8.if.end.9
+.b8.if.true.9:
+%.b8.tmp6 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 2
+%.b8.tmp7 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 2
+%.b8.tmp8 = load i32, i32* %.b8.tmp7
+%.b8.tmp9 = mul i32 %.b8.tmp8, 2
+%.b8.tmp10 = add i32 %.b8.tmp9, 1
+store i32 %.b8.tmp10, i32* %.b8.tmp6
+%.b8.tmp11 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 0
+%.b8.tmp12 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 0
+%.b8.tmp13 = load i32*, i32** %.b8.tmp12
+%.b8.tmp14 = bitcast i32* %.b8.tmp13 to i8*
+%.b8.tmp15 = getelementptr i32, i32* null, i32 1
+%.b8.tmp16 = ptrtoint i32* %.b8.tmp15 to i32
+%.b8.tmp17 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 2
+%.b8.tmp18 = load i32, i32* %.b8.tmp17
+%.b8.tmp19 = mul i32 %.b8.tmp16, %.b8.tmp18
+%.b8.tmp20 = call i8*(i8*,i32) @realloc(i8* %.b8.tmp14, i32 %.b8.tmp19)
+%.b8.tmp21 = bitcast i8* %.b8.tmp20 to i32*
+store i32* %.b8.tmp21, i32** %.b8.tmp11
+br label %.b8.if.end.9
+.b8.if.end.9:
+%.b8.tmp22 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 0
+%.b8.tmp23 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 1
+%.b8.tmp24 = load i32, i32* %.b8.tmp23
+%.b8.tmp25 = load i32*, i32** %.b8.tmp22
+%.b8.tmp26 = getelementptr i32, i32* %.b8.tmp25, i32 %.b8.tmp24
+store i8 3, i32* %.b8.tmp26
+%.b8.tmp27 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 1
+%.b8.tmp28 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 1
+%.b8.tmp29 = load i32, i32* %.b8.tmp28
+%.b8.tmp30 = add i32 %.b8.tmp29, 1
+store i32 %.b8.tmp30, i32* %.b8.tmp27
+%.tmp7 = load {i32*,i32,i32}, {i32*,i32,i32}* %t.0
+store {i32*,i32,i32} %.tmp7, {i32*,i32,i32}* %t.0
 ret void
 }

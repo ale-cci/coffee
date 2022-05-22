@@ -1,0 +1,61 @@
+-- requires those 6 arguments:
+-- 1. builtin prefix
+-- 2. array type
+-- 3. array id
+-- 4. assigned type
+-- 5. assigned id
+-- 6. destination id
+--
+-- Has the following behaviour:
+-- {
+--   T[] t
+--   if t.len >= t.cap {
+--       t.cap = t.cap * 2 + 1
+--       t.c_arr = (T*) realloc((chr*) t.c_arr, sizeof(T) * t.cap)
+--   }
+--   t.c_arr[t.len] = '3'
+--   t.len = t.len + 1
+--
+--   j := t
+-- }
+str append_tmpl() {
+    return `%%%1$s.tmp0 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 1
+%%%1$s.tmp1 = load i32, i32* %%%1$s.tmp0
+%%%1$s.tmp2 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 2
+%%%1$s.tmp3 = load i32, i32* %%%1$s.tmp2
+%%%1$s.tmp4 = icmp sge i32 %%%1$s.tmp1, %%%1$s.tmp3
+br i1 %%%1$s.tmp4, label %%%1$s.if.true.9, label %%%1$s.if.end.9
+%1$s.if.true.9:
+%%%1$s.tmp6 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 2
+%%%1$s.tmp7 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 2
+%%%1$s.tmp8 = load i32, i32* %%%1$s.tmp7
+%%%1$s.tmp9 = mul i32 %%%1$s.tmp8, 2
+%%%1$s.tmp10 = add i32 %%%1$s.tmp9, 1
+store i32 %%%1$s.tmp10, i32* %%%1$s.tmp6
+%%%1$s.tmp11 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 0
+%%%1$s.tmp12 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 0
+%%%1$s.tmp13 = load %4$s*, %4$s** %%%1$s.tmp12
+%%%1$s.tmp14 = bitcast %4$s* %%%1$s.tmp13 to i8*
+%%%1$s.tmp15 = getelementptr %4$s, %4$s* null, i32 1
+%%%1$s.tmp16 = ptrtoint %4$s* %%%1$s.tmp15 to i32
+%%%1$s.tmp17 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 2
+%%%1$s.tmp18 = load i32, i32* %%%1$s.tmp17
+%%%1$s.tmp19 = mul i32 %%%1$s.tmp16, %%%1$s.tmp18
+%%%1$s.tmp20 = call i8*(i8*,i32) @realloc(i8* %%%1$s.tmp14, i32 %%%1$s.tmp19)
+%%%1$s.tmp21 = bitcast i8* %%%1$s.tmp20 to %4$s*
+store %4$s* %%%1$s.tmp21, %4$s** %%%1$s.tmp11
+br label %%%1$s.if.end.9
+%1$s.if.end.9:
+%%%1$s.tmp22 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 0
+%%%1$s.tmp23 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 1
+%%%1$s.tmp24 = load i32, i32* %%%1$s.tmp23
+%%%1$s.tmp25 = load %4$s*, %4$s** %%%1$s.tmp22
+%%%1$s.tmp26 = getelementptr %4$s, %4$s* %%%1$s.tmp25, i32 %%%1$s.tmp24
+store i8 %5$s, %4$s* %%%1$s.tmp26
+%%%1$s.tmp27 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 1
+%%%1$s.tmp28 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 1
+%%%1$s.tmp29 = load i32, i32* %%%1$s.tmp28
+%%%1$s.tmp30 = add i32 %%%1$s.tmp29, 1
+store i32 %%%1$s.tmp30, i32* %%%1$s.tmp27
+%6$s = load %2$s, %2$s* %3$s\n`
+}
