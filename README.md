@@ -4,9 +4,11 @@
 I don't have the time to do it right the first time, but surely i have the
 time to do it twice.
 
+
 ```
-#!/usr/bin/env coffee
-import "std/io" as io
+-- Example of hello world:
+-- re-use external functions delcared in libc
+extern int printf(str template, ...args)
 
 -- this is a comment
 int main() {
@@ -21,8 +23,8 @@ int main() {
 
 #### Getting started
 ###### Dependencies:
- - llvm version 13+ (requires llc executable to be in "$PATH")
- - a C compiler
+ - llvm (requires llc executable to be in "$PATH")
+ - gcc
 
 ```shell
 $ bash install.sh
@@ -36,18 +38,18 @@ Hello from coffee!
 
 
 #### Documentation
-waiting for a better way to host it, [here](./docs) you could find the documentation
+Waiting for a better way to host it, [here](./docs) you could find the documentation
 for this language.
 
-If you find something not easy to understand, please let me know or open an issue,
-i would really appreciate it.
+If you find something hard to understand, please let me know or open an issue on github.
+I would really appreciate it.
 
 
 ### Scope of this project:
 I've pretty high standards, and i'm still too new on the field to know if all
 of these are doable, but there they are:
 
-- self hosting language
+- self hosted language
 
 - clojure support
 

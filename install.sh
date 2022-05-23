@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Script for system-wide coffee installation
-COFFEE_ROOT=${COFFEE_ROOT:-$HOME/.coffee}
+export COFFEE_ROOT=${COFFEE_ROOT:-$HOME/.coffee}
 ROOT=$(dirname $0)
 SRC_DIR="$ROOT/src/"
 
@@ -15,7 +15,8 @@ install-lib() {
     pushd "$SRC_DIR" >/dev/null
     # Cleanup std directory
     rm -rf "${COFFEE_ROOT}/lib/"*
-    find std -name '*.bn' -not -name '*.test.bn' -exec cp --parents {} "${COFFEE_ROOT}/lib/" \;
+    find std -name '*.bn' -not -name '*.test.bn' \
+        -exec bash -c 'mkdir -p $(dirname "${COFFEE_ROOT}/lib/{}") && cp "{}" "${COFFEE_ROOT}/lib/{}"' \;
     popd >/dev/null
     return 0
 }

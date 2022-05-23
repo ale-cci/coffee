@@ -571,13 +571,15 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
             trimmed_path[mod_name_len -2] = '\x00'
 
             mod_abspath := resolve_import_path(ctx, stmt, trimmed_path)
-            mod_abspath = sys.realpath(mod_abspath, sys.malloc(4096))
+            relpath := sys.realpath(mod_abspath, sys.malloc(4096))
 
-            if mod_abspath == null {
-                io.asprintf(&err_buf, "Unable to import '%s' no such file or directory. (%s)", mod_name, trimmed_path)
+            if relpath == null {
+                io.asprintf(&err_buf, "Unable to import '%s' no such file or directory. (%s)", mod_name, mod_abspath)
                 new_error(ctx, stmt, err_buf)
                 return
             }
+            mod_abspath = relpath
+
 
             -- define module lookup if not found
             ModuleLookup* m
