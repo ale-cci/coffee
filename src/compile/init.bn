@@ -135,7 +135,7 @@ alias ScopeItem = struct {
 alias GlobalName = struct {
     chr* identifier,
 
-    chr* global_type, -- string, typealias, module
+    chr* global_type, -- string, module
     bool compiled,
     AssignableInfo* info,
     GlobalName* next,
@@ -291,6 +291,7 @@ bool compile(CompilerCtx* ctx, parser.Node* ast) {
 
 void compile_ast(CompilerCtx* ctx, parser.Node* ast) {
     if string.strcmp(ast.type, "start") != 0 {
+        new_error(ctx, ast, "Expecting 'start' expression")
         return
     }
 
@@ -372,7 +373,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
         info.name_type = "variable"
 
         if shallow == true {
-            define_assignable(ctx, global_name, info)
+            define_assignable(ctx, stmt, global_name, info)
         } else {
             io.fprintf(ctx.ir, "%s = constant %s %s\n", repr_assignable_id(info), type_repr(ctx, info.type), repr_assignable_id(a_info))
         }
@@ -392,7 +393,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
             info.char_of_line = stmt.char_of_line
             info.type = new_type()
 
-            define_assignable(ctx, type_name, info)
+            define_assignable(ctx, stmt, type_name, info)
 
             type_decl := skip_to_type(stmt.children, "type")
             type_struct := node_to_type(ctx, type_decl.children)
@@ -431,7 +432,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
             io.fprintf(ctx.ir, ")\n")
             sys.free((chr*) return_type)
         } else {
-            define_assignable(ctx, fn_name, info)
+            define_assignable(ctx, stmt, fn_name, info)
         }
 
     } elif string.strcmp(stmt.type, "function") == 0 {
@@ -445,7 +446,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
         set_assignable_id(info, SCOPE_GLOBAL, tmp_buff)
 
         if shallow == true {
-            define_assignable(ctx, name, info)
+            define_assignable(ctx, stmt, name, info)
         } else {
 
             -- copy defined function return type
@@ -516,15 +517,27 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
             mod_name := stmt.children.next.value
             mod_abspath := ctx.current_module
 
+            -- dirname to where import files from
             dirname := sys.dirname(mod_abspath)
 
             mod_name_len := string.strlen(mod_name)
+
+            -- remove apices from string
             trimmed_name := sys.malloc(mod_name_len -1)
             for i := 1 ; i < mod_name_len - 1; i = i + 1 {
                 trimmed_name[i - 1] = mod_name[i]
             }
             trimmed_name[mod_name_len -2] = '\x00'
+
+            if trimmed_name[0] == '/' {
+                -- has tried to do an absolute import
+                io.asprintf(&err_buf, "Imports %s must not start with '/' character.", trimmed_name)
+                new_error(ctx, stmt, err_buf)
+                return
+            }
+
             if string.strcmp(dirname, "") == 0 {
+                --
                 io.asprintf(&mod_abspath, "%s.bn", trimmed_name)
             } else {
                 io.asprintf(&mod_abspath, "%s/%s.bn", dirname, trimmed_name)
@@ -601,7 +614,7 @@ void compile_fn_params(CompilerCtx* ctx, parser.Node* fn_params) {
 
         param_info_tr := type_repr(ctx, param_info.type)
         io.fprintf(ctx.ir, "%s = alloca %s\n", repr_assignable_id(param_info), param_info_tr)
-        define_assignable(ctx, var_name, param_info)
+        define_assignable(ctx, param_ptr, var_name, param_info)
         io.fprintf(ctx.ir, "store %s %%.%s.arg, %s* %s\n", param_info_tr, var_name, param_info_tr, repr_assignable_id(param_info))
         param_ptr = param_ptr.next
     }
@@ -981,7 +994,7 @@ AssignableInfo* compile_declaration(CompilerCtx* ctx, parser.Node* stmt) {
             new_error(ctx, stmt, err_msg)
         }
     }
-    define_assignable(ctx, var_name.value, info)
+    define_assignable(ctx, stmt, var_name.value, info)
 
     io.fprintf(ctx.ir, "%s = alloca %s\n", repr_assignable_id(info), var_type_repr)
     if a_info != null {
@@ -1075,30 +1088,39 @@ void new_error(CompilerCtx* ctx, parser.Node* curr_node, str msg) {
     }
 }
 
+
 -- binds the assignable to a given name in the current scope
-void define_assignable(CompilerCtx* ctx, str name, AssignableInfo* info) {
+void define_assignable(CompilerCtx* ctx, parser.Node* stmt, str name, AssignableInfo* info) {
     mod := get_current_module(ctx)
     sys.assert(mod.scopes != null, ":coffee-error: 'define_assignable' could not be called if context scopes are null")
     current_scope := mod.scopes
-
-    -- check that assignable is not defined on this context
-    -- for item := current_scope.item; item != null; item = item.next {
-    -- }
 
     newitem := (ScopeItem*) sys.malloc(sizeof(ScopeItem))
     newitem.name = name
     newitem.info = info
     newitem.next = null
 
+
     if current_scope.item == null {
         current_scope.item = newitem
         return
     }
 
+
     last_item := current_scope.item
-    for ; last_item.next != null; last_item = last_item.next {
+
+    if string.strcmp(last_item.name, name) == 0 {
+         new_error(ctx, stmt, "Name already defined")
     }
-    last_item.next = newitem
+
+    for ; last_item.next != null; last_item = last_item.next {
+        if string.strcmp(last_item.name, name) == 0 {
+             new_error(ctx, stmt, "Name already defined")
+            break
+        }
+    } else {
+        last_item.next = newitem
+    }
 }
 
 ScopeItem* find_defined_in(CompilerCtx* ctx, str module, parser.Node* dotted_name) {
@@ -1623,7 +1645,7 @@ void define_module(CompilerCtx* ctx, parser.Node* mod, str as_name, abspath) {
     info.name_type = "module"
     info.type = null
 
-    define_assignable(ctx, as_name, info)
+    define_assignable(ctx, mod, as_name, info)
 }
 
 void append_global(CompilerCtx* ctx, GlobalName* g) {

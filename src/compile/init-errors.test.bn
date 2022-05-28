@@ -29,6 +29,12 @@ int main() {
     testing.setup(t, "test_respects_lexer_errors")
     testing.run(t, test_respects_lexer_errors(t))
 
+    testing.setup(t, "test_prevent_inclusion_from_files_from_root_fs")
+    testing.run(t, test_prevent_inclusion_from_files_from_root_fs(t))
+
+    testing.setup(t, "test_prevent_definitions_of_functions_with_same_name")
+    testing.run(t, test_prevent_definitions_of_functions_with_same_name(t))
+
     testing.cleanup(t)
     return 0
 }
@@ -87,6 +93,30 @@ void fn() {
     return 0
 }
 
+int test_prevent_inclusion_from_files_from_root_fs(testing.T* t) {
+    ctx := compile_str(`
+import "/etc/shadow" as x
+`)
+    testing.assert_not_null(t, (chr*) ctx.errors)
+    if ctx.errors != null {
+        testing.assert_contains_str(t, ctx.errors.err.message, "must not start with '/'")
+    }
+    return 0
+}
+
+int test_prevent_definitions_of_functions_with_same_name(testing.T* t) {
+    ctx := compile_str(`
+void fnx() {
+}
+void fnx() {
+}`)
+    testing.assert_not_null(t, (chr*) ctx.errors)
+    if ctx.errors != null {
+        testing.assert_contains_str(t, ctx.errors.err.message, "already defined")
+    }
+    return 0
+}
+
 
 int test_respects_lexer_errors(testing.T* t) {
     ctx := compile.new_context(io.tmpfile(), "./compile/__test__/test-dir/file-with-errors")
@@ -94,6 +124,7 @@ int test_respects_lexer_errors(testing.T* t) {
     testing.assert_true(t, "compilation error", has_error)
     return 0
 }
+
 
 compile.CompilerCtx* compile_str(str file_content) {
     filename := ""
@@ -111,7 +142,12 @@ compile.CompilerCtx* compile_str(str file_content) {
     tokens := lexer.tokenize(p, false)
     ast := parser.ast(grammar, "start", tokens)
     ctx := compile.new_context(io.tmpfile(), filename)
-    compile.compile_ast(ctx, ast.node)
+
+    if ast.err != null {
+        compile.append_error(ctx, ast.err)
+    } else {
+        compile.compile_ast(ctx, ast.node)
+    }
     io.fclose(ctx.ir)
 
     return ctx
