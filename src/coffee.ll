@@ -11676,12 +11676,12 @@ br label %.if.end.8234
 .if.false.8234:
 br label %.if.end.8234
 .if.end.8234:
-%.tmp8240 = getelementptr [17 x i8], [17 x i8]*@.str8239, i32 0, i32 0
+%.tmp8240 = getelementptr [16 x i8], [16 x i8]*@.str8239, i32 0, i32 0
 %.tmp8242 = getelementptr [2 x i8], [2 x i8]*@.str8241, i32 0, i32 0
 %.tmp8243 = call %m0$.File.type*(i8*,i8*) @popen(i8* %.tmp8240, i8* %.tmp8242)
-%gcc_proc.8244 = alloca %m0$.File.type*
-store %m0$.File.type* %.tmp8243, %m0$.File.type** %gcc_proc.8244
-%.tmp8245 = load %m0$.File.type*, %m0$.File.type** %gcc_proc.8244
+%cc_proc.8244 = alloca %m0$.File.type*
+store %m0$.File.type* %.tmp8243, %m0$.File.type** %cc_proc.8244
+%.tmp8245 = load %m0$.File.type*, %m0$.File.type** %cc_proc.8244
 %.tmp8246 = icmp eq %m0$.File.type* %.tmp8245, null
 br i1 %.tmp8246, label %.if.true.8247, label %.if.false.8247
 .if.true.8247:
@@ -11699,7 +11699,7 @@ br label %.if.end.8247
 br i1 %.tmp8254, label %.if.true.8255, label %.if.false.8255
 .if.true.8255:
 %.tmp8256 = load %m0$.File.type*, %m0$.File.type** %stderr.8188
-%.tmp8258 = getelementptr [23 x i8], [23 x i8]*@.str8257, i32 0, i32 0
+%.tmp8258 = getelementptr [22 x i8], [22 x i8]*@.str8257, i32 0, i32 0
 %.tmp8259 = call i32(%m0$.File.type*,i8*,...) @fprintf(%m0$.File.type* %.tmp8256, i8* %.tmp8258)
 br label %.if.end.8255
 .if.false.8255:
@@ -12364,9 +12364,9 @@ store i32 %%%1$s.tmp30, i32* %%%1$s.tmp27
 @.str8216 = constant [2 x i8] c"w\00"
 @.str8228 = constant [28 x i8] c"unable to spawn subprocess\0A\00"
 @.str8236 = constant [24 x i8] c"error on llc execution\0A\00"
-@.str8239 = constant [17 x i8] c"gcc out.s -o out\00"
+@.str8239 = constant [16 x i8] c"cc out.s -o out\00"
 @.str8241 = constant [2 x i8] c"w\00"
 @.str8249 = constant [28 x i8] c"unable to spawn subprocess\0A\00"
-@.str8257 = constant [23 x i8] c"error on gcc execution\00"
+@.str8257 = constant [22 x i8] c"error on cc execution\00"
 @.str8260 = constant [32 x i8] c"File %s compiled successfully!\0A\00"
 @.str8267 = constant [21 x i8] c"Usage: %s <filename>\00"

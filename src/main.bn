@@ -44,13 +44,13 @@ int main(int argc, str* argv) {
         return 0
     }
 
-    gcc_proc := sys.popen("gcc out.s -o out", "w")
-    if gcc_proc == null {
+    cc_proc := sys.popen("cc out.s -o out", "w")
+    if cc_proc == null {
         io.fprintf(stderr, "unable to spawn subprocess\n")
         return 0
     }
     if sys.pclose(proc) != 0 {
-        io.fprintf(stderr, "error on gcc execution")
+        io.fprintf(stderr, "error on cc execution")
     } else {
         io.printf("File %s compiled successfully!\0A", filename)
     }
