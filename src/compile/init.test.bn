@@ -109,7 +109,6 @@ int test_resolves_standard_imports(testing.T* t) {
     parser.Node node
     got := compile.resolve_import_path(ctx, &node, "std/io")
 
-    -- TODO: get home directory
     root := compile.get_root()
     expect := ""
     io.asprintf(&expect, "%s/lib/std/io.bn", root)

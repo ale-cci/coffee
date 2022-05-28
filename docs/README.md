@@ -29,21 +29,21 @@ You can find more examples [here](../samples).
 - [types](./types.md)
 - [loops](./loops.md)
 - [variables](./variables.md)
+- [arrays](./arrays.md)
 
 
 #### Implemented operators
 `+ - = < > == | & * / != >= <=`
 
 ## In progress
-- [ ] standard library import
 - [ ] Create a documentation page: `https://docs.readthedocs.io/en/stable/tutorial/`
-- [ ] zero value initialization (`https://go.dev/ref/spec#The_zero_value`)
-- [ ] slices
+- [ ] slices casting (to array ptr and back), pop, square bracket operator ([:-1])
 
 ## TODOs:
 - [ ] lexer better error reporting
 - [ ] first class functions
 - [ ] keyword argument: `int fd = io.open(file: "something", mode: 0)`
+- [ ] paramater expansion `something(...x)`
 - [ ] Unions
 - [ ] clojures
 - [ ] something like va\_args
@@ -51,3 +51,6 @@ You can find more examples [here](../samples).
 - [ ] enums
 - [ ] interfaces
 - [ ] tracebacks
+
+- [x] standard library import
+- [ ] zero value initialization (`https://go.dev/ref/spec#The_zero_value`)
