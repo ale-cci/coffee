@@ -175,7 +175,7 @@ alias Scope = struct {
     chr* filename,
     ScopeItem* item,
     chr* type,
-    chr* begin_id, 
+    chr* begin_id,
     chr* end_id,
     Scope* prev,
 }
