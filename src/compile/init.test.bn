@@ -78,6 +78,9 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/3F-for-else"))
     testing.run(t, testfile(t, "./compile/__test__/40-test-weak-global"))
 
+
+    testing.setup(t, "test_resolves_standard_imports")
+    testing.run(t, test_resolves_standard_imports(t))
     testing.cleanup(t)
     return 0
 }
@@ -99,6 +102,20 @@ chr* read_testfile(str filename, str ext) {
     content := ioutil.readall(fd)
     io.fclose(f)
     return content
+}
+
+int test_resolves_standard_imports(testing.T* t) {
+    ctx := compile.new_context((io.File*) null, "")
+    parser.Node node
+    got := compile.resolve_import_path(ctx, &node, "std/io")
+
+    -- TODO: get home directory
+    root := compile.get_root()
+    expect := ""
+    io.asprintf(&expect, "%s/lib/std/io.bn", root)
+    testing.assert_equal_str(t, got, expect)
+
+    return 0
 }
 
 -- reads content of input file

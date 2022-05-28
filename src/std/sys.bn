@@ -78,3 +78,14 @@ extern chr* getcwd(chr* buf, int size)
 extern chr* realpath(chr* filename, chr* resolved_name)
 
 extern chr* getenv(chr* name)
+
+alias Passwd = struct {
+    chr* pw_name,
+    int pw_uid,
+    int pw_gid,
+    chr* pw_dir,
+    chr* pw_shell,
+}
+
+extern int getuid()
+extern Passwd* getpwuid(int uid)

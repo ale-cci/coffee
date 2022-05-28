@@ -46,6 +46,15 @@ Type* type_clone(Type* t) {
     return clone
 }
 
+str get_root() {
+    project_root := sys.getenv("COFFEE_ROOT")
+    if project_root == null {
+        home := sys.getenv("HOME")
+        io.asprintf(&project_root, "%s/.coffee", home)
+    }
+    return project_root
+}
+
 Type* new_type() {
     type := (Type*) sys.malloc(sizeof(Type))
     type.info = null
@@ -543,37 +552,20 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
             -- 1. get file cwd
             -- check if module is already imported in module lookup
             mod_name := stmt.children.next.value
-            mod_abspath := ctx.current_module
-
-            -- dirname to where import files from
-            dirname := sys.dirname(mod_abspath)
-
             mod_name_len := string.strlen(mod_name)
 
             -- remove apices from string
-            trimmed_name := sys.malloc(mod_name_len -1)
+            trimmed_path := sys.malloc(mod_name_len -1)
             for i := 1 ; i < mod_name_len - 1; i = i + 1 {
-                trimmed_name[i - 1] = mod_name[i]
+                trimmed_path[i - 1] = mod_name[i]
             }
-            trimmed_name[mod_name_len -2] = '\x00'
+            trimmed_path[mod_name_len -2] = '\x00'
 
-            if trimmed_name[0] == '/' {
-                -- has tried to do an absolute import
-                io.asprintf(&err_buf, "Imports %s must not start with '/' character.", trimmed_name)
-                new_error(ctx, stmt, err_buf)
-                return
-            }
-
-            if string.strcmp(dirname, "") == 0 {
-                --
-                io.asprintf(&mod_abspath, "%s.bn", trimmed_name)
-            } else {
-                io.asprintf(&mod_abspath, "%s/%s.bn", dirname, trimmed_name)
-            }
+            mod_abspath := resolve_import_path(ctx, stmt, trimmed_path)
             mod_abspath = sys.realpath(mod_abspath, sys.malloc(4096))
 
             if mod_abspath == null {
-                io.asprintf(&err_buf, "Unable to import '%s' no such file or directory. (%s/%s.bn)", mod_name, dirname, trimmed_name)
+                io.asprintf(&err_buf, "Unable to import '%s' no such file or directory. (%s)", mod_name, trimmed_path)
                 new_error(ctx, stmt, err_buf)
                 return
             }
@@ -786,6 +778,33 @@ AssignableInfo* compile_builtin(CompilerCtx* ctx, parser.Node* stmt) {
     }
 
     return (AssignableInfo*) null
+}
+
+str resolve_import_path(CompilerCtx* ctx, parser.Node* stmt, str import_str) {
+    err_buf := ""
+    mod_abspath := ctx.current_module
+
+    -- dirname to where import files from
+    dirname := sys.dirname(mod_abspath)
+
+    if import_str[0] == '/' {
+        -- has tried to do an absolute import
+        io.asprintf(&err_buf, "Imports %s must not start with '/' character.", import_str)
+        new_error(ctx, stmt, err_buf)
+        return (chr*) null
+    }
+
+    if import_str[0] != '.' & import_str[1] != '/' {
+        -- it is not a relative import
+        root := get_root()
+        io.asprintf(&mod_abspath, "%s/lib/%s.bn", root, import_str)
+    } elif string.strcmp(dirname, "") == 0 {
+        --
+        io.asprintf(&mod_abspath, "%s.bn", import_str)
+    } else {
+        io.asprintf(&mod_abspath, "%s/%s.bn", dirname, import_str)
+    }
+    return mod_abspath
 }
 
 AssignableInfo* compile_fn_call(CompilerCtx* ctx, parser.Node* stmt) {
