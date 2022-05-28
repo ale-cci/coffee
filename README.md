@@ -21,8 +21,8 @@ int main() {
 
 #### Getting started
 ###### Dependencies:
- - llvm (requires llc executable to be in "$PATH")
- - gcc
+ - llvm version 13+ (requires llc executable to be in "$PATH")
+ - a C compiler
 
 ```shell
 $ bash install.sh
