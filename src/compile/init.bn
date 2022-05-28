@@ -289,6 +289,7 @@ void mark_weak_global(CompilerCtx* ctx, str id) {
     for g := ctx.globals; g != null; g = g.next {
         if g.weak & string.strcmp(g.identifier, id) == 0 {
             g.compiled = true
+            break
         }
     }
 }
@@ -456,6 +457,7 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
 
         if shallow == false {
             mark_weak_global(ctx, fn_name)
+            define_global(ctx, fn_name, "extern", info, true, true)
             compile_extern(ctx, info)
         } else {
             define_assignable(ctx, stmt, fn_name, info)
@@ -772,7 +774,7 @@ AssignableInfo* compile_builtin(CompilerCtx* ctx, parser.Node* stmt) {
         info_g.type.of.next.next = new_type()
         info_g.type.of.next.next.container = "int"
 
-        define_global(ctx, "realloc", "extern", info_g, true)
+        define_global(ctx, "realloc", "extern", info_g, true, false)
 
         -- info.type = slice_dest.type
         return info
@@ -1685,7 +1687,7 @@ AssignableInfo* define_string(CompilerCtx* ctx, str text) {
 
     identifier := llvm.string_to_llvm(text)
     io.asprintf(&info.type.of.next.container, "%d", llvm.llvm_str_len(identifier))
-    define_global(ctx, identifier, "string", info, false)
+    define_global(ctx, identifier, "string", info, false, false)
 
 
 --     global.global_type = "string"
@@ -1696,13 +1698,13 @@ AssignableInfo* define_string(CompilerCtx* ctx, str text) {
     return info
 }
 
-void define_global(CompilerCtx* ctx, str id, type, AssignableInfo* info, bool weak) {
+void define_global(CompilerCtx* ctx, str id, type, AssignableInfo* info, bool weak, bool compiled) {
 
     global := (GlobalName*) sys.malloc(sizeof(GlobalName))
     global.identifier = id
     global.global_type = type
     global.info = info
-    global.compiled = false
+    global.compiled = compiled
     global.next = null
     global.weak = weak
 
@@ -1719,14 +1721,20 @@ void define_module(CompilerCtx* ctx, parser.Node* mod, str as_name, abspath) {
 }
 
 void append_global(CompilerCtx* ctx, GlobalName* g) {
+
     if ctx.globals == null {
         ctx.globals = g
-    } else {
-        GlobalName* last_global
-        for last_global = ctx.globals; last_global.next != null; last_global = last_global.next {
-        }
-        last_global.next = g
+        return
     }
+
+    last_global := ctx.globals
+    for curr_global := ctx.globals; curr_global != null; curr_global = curr_global.next {
+        if string.strcmp(curr_global.info.id, g.info.id) == 0 {
+            return
+        }
+        last_global = curr_global
+    }
+    last_global.next = g
 }
 
 str type_repr(CompilerCtx* ctx, Type* type) {

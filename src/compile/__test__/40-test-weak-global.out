@@ -1,0 +1,51 @@
+declare i8* @realloc(i8*, i32)
+define void @fn.v() {
+%t.0 = alloca {i32*,i32,i32}
+%.tmp1 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 0
+store i32* null, i32** %.tmp1
+%.tmp2 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 1
+store i32 0, i32* %.tmp2
+%.tmp3 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 2
+store i32 0, i32* %.tmp3
+%.b5.tmp0 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 1
+%.b5.tmp1 = load i32, i32* %.b5.tmp0
+%.b5.tmp2 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 2
+%.b5.tmp3 = load i32, i32* %.b5.tmp2
+%.b5.tmp4 = icmp sge i32 %.b5.tmp1, %.b5.tmp3
+br i1 %.b5.tmp4, label %.b5.if.true.9, label %.b5.if.end.9
+.b5.if.true.9:
+%.b5.tmp6 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 2
+%.b5.tmp7 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 2
+%.b5.tmp8 = load i32, i32* %.b5.tmp7
+%.b5.tmp9 = mul i32 %.b5.tmp8, 2
+%.b5.tmp10 = add i32 %.b5.tmp9, 1
+store i32 %.b5.tmp10, i32* %.b5.tmp6
+%.b5.tmp11 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 0
+%.b5.tmp12 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 0
+%.b5.tmp13 = load i32*, i32** %.b5.tmp12
+%.b5.tmp14 = bitcast i32* %.b5.tmp13 to i8*
+%.b5.tmp15 = getelementptr i32, i32* null, i32 1
+%.b5.tmp16 = ptrtoint i32* %.b5.tmp15 to i32
+%.b5.tmp17 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 2
+%.b5.tmp18 = load i32, i32* %.b5.tmp17
+%.b5.tmp19 = mul i32 %.b5.tmp16, %.b5.tmp18
+%.b5.tmp20 = call i8*(i8*,i32) @realloc(i8* %.b5.tmp14, i32 %.b5.tmp19)
+%.b5.tmp21 = bitcast i8* %.b5.tmp20 to i32*
+store i32* %.b5.tmp21, i32** %.b5.tmp11
+br label %.b5.if.end.9
+.b5.if.end.9:
+%.b5.tmp22 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 0
+%.b5.tmp23 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 1
+%.b5.tmp24 = load i32, i32* %.b5.tmp23
+%.b5.tmp25 = load i32*, i32** %.b5.tmp22
+%.b5.tmp26 = getelementptr i32, i32* %.b5.tmp25, i32 %.b5.tmp24
+store i32 3, i32* %.b5.tmp26
+%.b5.tmp27 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 1
+%.b5.tmp28 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 1
+%.b5.tmp29 = load i32, i32* %.b5.tmp28
+%.b5.tmp30 = add i32 %.b5.tmp29, 1
+store i32 %.b5.tmp30, i32* %.b5.tmp27
+%.tmp4 = load {i32*,i32,i32}, {i32*,i32,i32}* %t.0
+store {i32*,i32,i32} %.tmp4, {i32*,i32,i32}* %t.0
+ret void
+}

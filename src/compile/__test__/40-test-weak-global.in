@@ -1,0 +1,6 @@
+extern chr* realloc(chr* src, int size)
+
+void fn() {
+    int[] t
+    t = append(t, 3)
+}
