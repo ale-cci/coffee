@@ -27,14 +27,9 @@ alias Type = struct {
     chr* info, -- extra info attached to this type entry (for struct field names)
     chr* repr,
 
-    -- NOTE: each "basic" type is not allowed to have a 'next'
-    -- value
-
+    -- NOTE: each "basic" type is not allowed to have a 'next' value
     Type* of,
     Type* next,
-
-    -- Type* of,
-    -- chr* container,
 }
 
 Type* type_clone(Type* t) {
@@ -50,6 +45,7 @@ Type* type_clone(Type* t) {
     clone.info = t.info
     return clone
 }
+
 Type* new_type() {
     type := (Type*) sys.malloc(sizeof(Type))
     type.info = null
@@ -74,32 +70,6 @@ void copy_type(Type* dest, Type* src) {
         dest.next = src.next
         copy_type(dest.next, src.next)
     }
-}
-
-void debug_type(Type* t, int level) {
-    chr* indent = (chr*) sys.malloc(level + 1)
-    for i := 0 ; i < level; i = i + 1 {
-        indent[i] = ' '
-    }
-    indent[level] = '\x00'
-
-    io.printf("%s{\n", indent)
-    io.printf(`%s  container: "%s"\n`, indent, t.container)
-    io.printf(`%s  info: "%s"\n`, indent, t.info)
-    io.printf(`%s  repr: "%s"\n`, indent, t.repr)
-    if t.of == null {
-        io.printf("%s  of: (null)\n", indent)
-    } else {
-        io.printf("%s  of: \n", indent)
-        debug_type(t.of, level + 1)
-    }
-    if t.next == null {
-        io.printf("%s  next: (null)\n", indent)
-    } else {
-        io.printf("%s  next: \n", indent)
-        debug_type(t.next, level + 1)
-    }
-    io.printf("%s}\n", indent)
 }
 
 alias AssignableInfo = struct {
@@ -300,22 +270,23 @@ bool compile(CompilerCtx* ctx, parser.Node* ast) {
     if ctx.errors == null {
         compile_ast(ctx, ast)
     }
-    has_errors := ctx.errors != null
-    for err := ctx.errors; err != null; err = err.next {
-        if err.reported == false {
-            errors.report(err.err)
-            err.reported = true
-        }
-    }
 
+    if ctx.errors != null {
+        for err := ctx.errors; err != null; err = err.next {
+            if err.reported == false {
+                errors.report(err.err)
+                err.reported = true
+            }
+        }
+        return true
+    }
 
     -- add globals
     for g := ctx.globals; g != null; g = g.next {
         compile_global(ctx, g)
     }
 
-    -- TODO: free errors
-    return has_errors
+    return false
 }
 
 void compile_ast(CompilerCtx* ctx, parser.Node* ast) {
@@ -429,7 +400,6 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
             copy_type(info.type, type_struct)
             info.type = type_struct
 
-            -- debug_type(info.type, 0)
         } else {
             scope := find_defined_str(ctx, ctx.current_module, type_name)
             info = scope.info
@@ -568,8 +538,6 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
             }
 
             -- define module lookup if not found
-
-            already_imported := false
             ModuleLookup* m
             ModuleLookup* mod = (ModuleLookup*) null
 
@@ -854,30 +822,29 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
         compile_for_loop(ctx, stmt)
     } elif string.strcmp(expr_type, "keyword") == 0 {
         mod := get_current_module(ctx)
-        found := false
+
         s := mod.scopes
         if string.strcmp(stmt.children.value, "break") == 0 {
-            for ; s != null & found == false ; s = s.prev {
+            for ; s != null ; s = s.prev {
                 if string.strcmp(s.type, "for") == 0 {
-                    found = true
                     io.fprintf(ctx.ir, "br label %%%s\n", s.end_id)
+                    break
                 }
-            }
-            if found == false {
+            } else {
                 new_error(ctx, stmt, "'break' keyword used outside of 'for' statement")
             }
+
         } elif string.strcmp(stmt.children.value, "continue") == 0 {
-            for ; s != null & found == false ; s = s.prev {
+            for ; s != null ; s = s.prev {
                 if string.strcmp(s.type, "for") == 0 {
-                    found = true
                     io.fprintf(ctx.ir, "br label %%%s\n", s.begin_id)
+                    break
                 }
-            }
-            if found == false {
-                new_error(ctx, stmt, "'break' keyword used outside of 'for' statement")
+            } else {
+                new_error(ctx, stmt, "'continue' keyword used outside of 'for' statement")
             }
         } else {
-            io.printf(err_tmpl(ctx, stmt, "Keyword '%s' not implemented"), stmt.children.value)
+            io.printf(err_tmpl(ctx, stmt, "Keyword '%s': behaviour not implemented"), stmt.children.value)
         }
     } else {
         io.printf(err_tmpl(ctx, stmt, "unable to compile expression '%s'"), expr_type)
