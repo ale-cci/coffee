@@ -1,4 +1,0 @@
-extern int puts(str text)
-
-void main() {
-}

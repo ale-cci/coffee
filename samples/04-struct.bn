@@ -1,16 +1,17 @@
 #!/usr/bin/env coffee
--- NOTE: working progress
-import "./sys" as sys
+import "std/sys" as sys
+import "std/io" as io
 
 alias PrintfArgs = struct {
     int arg0,
     str template,
 }
 
-void main() {
+int main() {
     PrintfArgs t
     t.template = "val: %d\0A"
     t.arg0 = 3
 
-    sys.printf(t.template, t.arg0)
+    io.printf(t.template, t.arg0)
+    return 0
 }

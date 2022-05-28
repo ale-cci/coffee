@@ -1,5 +1,0 @@
-#!/usr/bin/env coffee
-
-int main() {
-    return 42
-}
