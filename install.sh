@@ -1,22 +1,42 @@
 #!/usr/bin/env bash
+
 # Script for system-wide coffee installation
-set -e
-
 COFFEE_ROOT=${COFFEE_ROOT:-$HOME/.coffee}
-SRC_DIR=./src/
+ROOT=$(dirname $0)
+SRC_DIR="$ROOT/src/"
 
-# Create installation directory structure
-mkdir -p "$COFFEE_ROOT/bin" "$COFFEE_ROOT/lib"
+# Feel free to customize c compiler at your needs
+CC="${CC:-cc}"
+C_FLAGS="${C_FLAGS:- -Wall -O2}"
 
-llc "$SRC_DIR/coffee.ll" -o coffee.s
-gcc coffee.s -o coffee
-rm coffee.s
 
-mv coffee "$COFFEE_ROOT/bin"
+install-lib() {
+    echo " . Installing standard libraries"
+    pushd "$SRC_DIR" >/dev/null
+    find std -name '*.bn' -not -name '*.test.bn' -exec cp --parents {} "${COFFEE_ROOT}/lib/" \;
+    popd >/dev/null
+    return 0
+}
 
-echo " ☕ coffee is ready!"
+install-coffee() {
+    echo " . Building coffee"
+    llc "$SRC_DIR/coffee.ll" -o coffee.s || return 1
+    cc $CFLAGS coffee.s -o coffee || return 1
+    rm coffee.s
+    mv coffee "$COFFEE_ROOT/bin"
+    return 0
+}
 
-warn() {
+_main() {
+    # Create installation directory structure
+    mkdir -p "$COFFEE_ROOT/bin" "$COFFEE_ROOT/lib"
+    install-lib
+    install-coffee || warn-installation-failure
+    [[ -z "$(which coffee)" ]] && warn-coffee-not-in-path
+    echo " ☕ coffee is ready!"
+}
+
+warn-coffee-not-in-path() {
  echo ""
  echo ""
  echo "WARNING: seems like '$COFFEE_ROOT/bin' is not in \$PATH. Add the following to your shell init file:"
@@ -27,4 +47,9 @@ warn() {
  echo ""
 }
 
-[[ -z "$(which coffee)" ]] && warn
+warn-installation-failure() {
+    echo "Installation interrupted"
+    exit 1
+}
+
+_main
