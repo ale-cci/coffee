@@ -6,7 +6,7 @@ time to do it twice.
 
 ```
 #!/usr/bin/env coffee
-extern int printf(str template, ...args)
+import "std/io" as io
 
 -- this is a comment
 int main() {
