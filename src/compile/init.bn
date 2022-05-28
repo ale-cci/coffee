@@ -137,6 +137,7 @@ alias GlobalName = struct {
 
     chr* global_type, -- string, module
     bool compiled,
+    bool weak,
     AssignableInfo* info,
     GlobalName* next,
 }
@@ -281,13 +282,17 @@ bool compile(CompilerCtx* ctx, parser.Node* ast) {
         return true
     }
 
-    -- add globals
-    for g := ctx.globals; g != null; g = g.next {
-        compile_global(ctx, g)
-    }
-
     return false
 }
+
+void mark_weak_global(CompilerCtx* ctx, str id) {
+    for g := ctx.globals; g != null; g = g.next {
+        if g.weak & string.strcmp(g.identifier, id) == 0 {
+            g.compiled = true
+        }
+    }
+}
+
 
 void compile_ast(CompilerCtx* ctx, parser.Node* ast) {
     if string.strcmp(ast.type, "start") != 0 {
@@ -310,13 +315,40 @@ void compile_ast(CompilerCtx* ctx, parser.Node* ast) {
     for s := start; s != null; s = s.next {
         compile_statement(ctx, s.children, false)
     }
+
+    -- add globals
+    mod := get_current_module(ctx)
+    if string.strcmp(mod.prefix, "") == 0 {
+        for g := ctx.globals; g != null; g = g.next {
+            compile_global(ctx, g)
+        }
+    }
 }
 
+
 void compile_global(CompilerCtx* ctx, GlobalName* g) {
-    if g.compiled == false & string.strcmp(g.global_type, "string") == 0 {
-        io.fprintf(ctx.ir, "%s = constant %s %s\n", repr_assignable_id(g.info), type_repr(ctx, g.info.type), g.identifier)
-        g.compiled = true
+    if g.compiled {
+        return
     }
+
+    if string.strcmp(g.global_type, "string") == 0 {
+        io.fprintf(ctx.ir, "%s = constant %s %s\n", repr_assignable_id(g.info), type_repr(ctx, g.info.type), g.identifier)
+    } elif string.strcmp(g.global_type, "extern") == 0 {
+        compile_extern(ctx, g.info)
+    }
+
+    g.compiled = true
+}
+
+void compile_extern(CompilerCtx* ctx, AssignableInfo* info) {
+    io.fprintf(ctx.ir, "declare %s %s(", type_repr(ctx, info.type.of), repr_assignable_id(info))
+    for pt := info.type.of.next; pt != null; pt = pt.next {
+        if pt != info.type.of.next {
+            io.fprintf(ctx.ir, ", ")
+        }
+        io.fprintf(ctx.ir, "%s", type_repr(ctx, pt))
+    }
+    io.fprintf(ctx.ir, ")\n")
 }
 
 
@@ -420,17 +452,11 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
         return_type.container = info.type.of.container
         return_type.of = info.type.of.of
 
-        if shallow == false {
-            io.fprintf(ctx.ir, "declare %s %s(", type_repr(ctx, return_type), repr_assignable_id(info))
-            for pt := info.type.of.next; pt != null; pt = pt.next {
-                if pt != info.type.of.next {
-                    io.fprintf(ctx.ir, ", ")
-                }
-                io.fprintf(ctx.ir, "%s", type_repr(ctx, pt))
-            }
+        -- if extern is present in week globals, don't define it
 
-            io.fprintf(ctx.ir, ")\n")
-            sys.free((chr*) return_type)
+        if shallow == false {
+            mark_weak_global(ctx, fn_name)
+            compile_extern(ctx, info)
         } else {
             define_assignable(ctx, stmt, fn_name, info)
         }
@@ -722,6 +748,31 @@ AssignableInfo* compile_builtin(CompilerCtx* ctx, parser.Node* stmt) {
 
         tmpl := builtin.append_tmpl()
         io.fprintf(ctx.ir, tmpl, builtin_prefix, type_repr(ctx, array_info.type), repr_assignable_id(array_info), type_repr(ctx, value_info.type), repr_assignable_id(value_info), repr_assignable_id(info))
+
+        -- check if function is defined
+        info_g := new_assignable_info(stmt)
+        set_assignable_id(info_g, SCOPE_GLOBAL, "realloc")
+        info_g.type = new_type()
+        info_g.type.container = "function"
+
+        -- return type
+        info_g.type.of = new_type()
+        info_g.type.of.container = "ptr"
+        info_g.type.of.of = new_type()
+        info_g.type.of.of.container = "chr"
+
+        -- 1st argument
+        info_g.type.of.next = new_type()
+        info_g.type.of.next.container = "ptr"
+        info_g.type.of.next.of = new_type()
+        info_g.type.of.next.of.container = "chr"
+
+
+        -- 2nd argument
+        info_g.type.of.next.next = new_type()
+        info_g.type.of.next.next.container = "int"
+
+        define_global(ctx, "realloc", "extern", info_g, true)
 
         -- info.type = slice_dest.type
         return info
@@ -1108,14 +1159,16 @@ void define_assignable(CompilerCtx* ctx, parser.Node* stmt, str name, Assignable
 
 
     last_item := current_scope.item
-
+    err_buf := ""
     if string.strcmp(last_item.name, name) == 0 {
-         new_error(ctx, stmt, "Name already defined")
+        io.asprintf(&err_buf, "Name '%s' is already defined in this scope", name)
+        new_error(ctx, stmt, err_buf)
     }
 
     for ; last_item.next != null; last_item = last_item.next {
         if string.strcmp(last_item.name, name) == 0 {
-             new_error(ctx, stmt, "Name already defined")
+            io.asprintf(&err_buf, "Name '%s' is already defined in this scope", name)
+            new_error(ctx, stmt, err_buf)
             break
         }
     } else {
@@ -1620,8 +1673,8 @@ AssignableInfo* define_string(CompilerCtx* ctx, str text) {
     io.asprintf(&tmp_buff, ".str%d", new_uid(ctx))
     set_assignable_id(info, SCOPE_GLOBAL, tmp_buff)
 
-    global := (GlobalName*) sys.malloc(sizeof(GlobalName))
-    global.identifier = llvm.string_to_llvm(text)
+    -- global := (GlobalName*) sys.malloc(sizeof(GlobalName))
+    -- global.identifier = llvm.string_to_llvm(text)
 
     info.type = new_type()
     info.type.container = "array"
@@ -1629,14 +1682,31 @@ AssignableInfo* define_string(CompilerCtx* ctx, str text) {
     info.type.of.container = "chr"
     info.type.of.next = new_type()
 
-    io.asprintf(&info.type.of.next.container, "%d", llvm.llvm_str_len(global.identifier))
 
-    global.global_type = "string"
-    global.next = null
+    identifier := llvm.string_to_llvm(text)
+    io.asprintf(&info.type.of.next.container, "%d", llvm.llvm_str_len(identifier))
+    define_global(ctx, identifier, "string", info, false)
+
+
+--     global.global_type = "string"
+--     global.next = null
+--     global.info = info
+--     global.compiled = false
+--     append_global(ctx, global)
+    return info
+}
+
+void define_global(CompilerCtx* ctx, str id, type, AssignableInfo* info, bool weak) {
+
+    global := (GlobalName*) sys.malloc(sizeof(GlobalName))
+    global.identifier = id
+    global.global_type = type
     global.info = info
     global.compiled = false
+    global.next = null
+    global.weak = weak
+
     append_global(ctx, global)
-    return info
 }
 
 void define_module(CompilerCtx* ctx, parser.Node* mod, str as_name, abspath) {
