@@ -1,0 +1,7 @@
+define void @fn.v.fp(void()* %.callback.arg) {
+%callback = alloca void()*
+store void()* %.callback.arg, void()** %callback
+%.tmp0 = load void()*, void()** %callback
+call void() %.tmp0()
+ret void
+}

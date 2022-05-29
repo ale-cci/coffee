@@ -15,7 +15,7 @@ import "./syntax" as syntax
 int main() {
     t := testing.init("./syntax.test.bn")
 
-    testing.setup(t, "grammar parses empty function")
+    testing.setup(t, "test_grammar_parses_empty_function")
     testing.run(t, test_grammar_parses_empty_function(t))
 
     testing.setup(t, "test_parses_atom")
@@ -44,6 +44,9 @@ int main() {
 
     testing.setup(t, "test_parses_function_definition")
     testing.run(t, test_parses_function_definition(t))
+
+    testing.setup(t, "test_parses_function_type")
+    testing.run(t, test_parses_function_type(t))
 
     testing.cleanup(t)
     return 0
@@ -108,10 +111,25 @@ int test_grammar_parses_empty_function(testing.T* t) {
     }
 
     void_type := new_node("WORD", "void", 1, 1, (parser.Node*) null, (parser.Node*) null)
-    n := new_node("type", (chr*) null, 1, 1, (parser.Node*) null, void_type)
+    basic_type := new_node("basic_type", (chr*) null, 1, 1, (parser.Node*) null, void_type)
+    n := new_node("type", (chr*) null, 1, 1, (parser.Node*) null, basic_type)
 
     assert_node_eq(t, res.node, n)
     sys.free((chr*) res)
+    return 0
+}
+
+int test_parses_function_type(testing.T* t) {
+    res := match_rule("type", "void()")
+
+    testing.assert_null(t, (chr*) res.err)
+    if res.err != null {
+        errors.report(res.err)
+        sys.free((chr*) res.err)
+        sys.free((chr*) res)
+        return 0
+    }
+
     return 0
 }
 

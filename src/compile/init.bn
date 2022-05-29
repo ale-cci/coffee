@@ -834,6 +834,16 @@ AssignableInfo* compile_fn_call(CompilerCtx* ctx, parser.Node* stmt) {
     chr* params_buff = ""
     chr* tmp
 
+    if string.strcmp(info.type.container, "ptr") == 0 {
+        new_info := new_assignable_info(stmt)
+        set_assignable_tmp_id(ctx, new_info)
+        new_info.type = info.type.of
+
+        io.fprintf(ctx.ir, "%s = load %s, %s* %s\n", repr_assignable_id(new_info), type_repr(ctx, info.type), type_repr(ctx, info.type), repr_assignable_id(info))
+
+        info = new_info
+    }
+
     if args != null {
         start := skip_to_type(args.children, "assignable")
         argno := 1
@@ -843,6 +853,7 @@ AssignableInfo* compile_fn_call(CompilerCtx* ctx, parser.Node* stmt) {
         for pp := start; pp != null; pp = skip_to_type(pp.next, "assignable") {
             provided_args = provided_args + 1
         }
+
 
         for pp := start; pp != null; pp = skip_to_type(pp, "assignable") {
             if expect_type == null {
@@ -1520,6 +1531,11 @@ AssignableInfo* compile_assignable(CompilerCtx* ctx, parser.Node* curr_node) {
         to_type := type_repr(ctx, type)
 
         cast_fn := "bitcast"
+        if info.type.info != null {
+            if string.strcmp(info.type.info, "slice") == 0 {
+                io.printf("Casting array to slices is not implemented yet\n")
+            }
+        }
 
         if string.strcmp(info.type.container, "ptr") != 0 & string.strcmp(type.container, "ptr") != 0 {
             if from_type[0] == 'i' & to_type[0] == 'i' {
@@ -1742,6 +1758,8 @@ str type_abbr(Type* type) {
             io.asprintf(&buf, "%s%s", buf, type_abbr(t))
         }
         return buf
+    } elif string.strcmp(type.container, "function") == 0 {
+        return "f"
     } elif string.strcmp(type.container, "error") == 0 {
         return "?"
     } else {
@@ -1770,12 +1788,6 @@ AssignableInfo* define_string(CompilerCtx* ctx, str text) {
     io.asprintf(&info.type.of.next.container, "%d", llvm.llvm_str_len(identifier))
     define_global(ctx, identifier, "string", info, false, false)
 
-
---     global.global_type = "string"
---     global.next = null
---     global.info = info
---     global.compiled = false
---     append_global(ctx, global)
     return info
 }
 
@@ -1962,6 +1974,25 @@ parser.Node* syn_function_params(parser.Node* stmt) {
 }
 
 Type* node_to_type(CompilerCtx* ctx, parser.Node* stmt) {
+    if string.strcmp(stmt.type, "basic_type") == 0 {
+        t := node_to_type(ctx, stmt.children)
+        if stmt.next != null {
+            if string.strcmp(stmt.next.type, "type_trailer") == 0 {
+                fst_operator := stmt.next.children.next
+
+                fn_type := new_type()
+                fn_type.container = "function"
+                fn_type.of = t
+
+                t_ptr := new_type()
+                t_ptr.container = "ptr"
+                t_ptr.of = fn_type
+                t = t_ptr
+            }
+        }
+        return t
+    }
+
     t := new_type()
 
     if string.strcmp(stmt.type, "structdef") == 0 {
