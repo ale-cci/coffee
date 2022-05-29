@@ -86,6 +86,7 @@ alias AssignableInfo = struct {
     chr* id,
 
     chr scope, -- adds @ before id if it's a global assignment, otherwise %
+    chr* name,
     chr* name_type,
     Type* type,
 
@@ -105,6 +106,7 @@ AssignableInfo* new_assignable_info(parser.Node* node) {
     ptr.scope = SCOPE_CONST
     ptr.id = null
     ptr.name_type = null
+    ptr.name = ""
     ptr.type = null
 
     -- copy line and char of line from specified node
@@ -179,6 +181,13 @@ alias CompilerCtx = struct {
     ModuleLookup* modules,
     chr* current_module,
 }
+
+bool is_same_type(CompilerCtx* ctx, Type* a, b) {
+    a_repr := type_repr(ctx, a)
+    b_repr := type_repr(ctx, b)
+    return string.strcmp(a_repr, b_repr) == 0
+}
+
 
 void set_assignable_tmp_id(CompilerCtx* ctx, AssignableInfo* info) {
     chr* tmp_buff
@@ -824,9 +833,24 @@ AssignableInfo* compile_fn_call(CompilerCtx* ctx, parser.Node* stmt) {
     args := skip_to_type(stmt, "fn_args")
     chr* params_buff = ""
     chr* tmp
+
     if args != null {
         start := skip_to_type(args.children, "assignable")
+        argno := 1
+        expect_type := info.type.of.next
+
+        provided_args := 0
+        for pp := start; pp != null; pp = skip_to_type(pp.next, "assignable") {
+            provided_args = provided_args + 1
+        }
+
         for pp := start; pp != null; pp = skip_to_type(pp, "assignable") {
+            if expect_type == null {
+                io.asprintf(&tmp, "Function '%s' takes %d arguments, %d given", info.name, argno-1, provided_args)
+                new_error(ctx, stmt, tmp)
+                return (AssignableInfo*) null
+            }
+
             if pp != start {
                 io.asprintf(&tmp, "%s, ", params_buff)
                 chr* tmp_buff = params_buff
@@ -834,12 +858,49 @@ AssignableInfo* compile_fn_call(CompilerCtx* ctx, parser.Node* stmt) {
                 tmp = tmp_buff
                 sys.free(tmp)
             }
+
             a_info := compile_assignable(ctx, pp)
             if a_info == null {
                 return (AssignableInfo*) null
             }
+
+            exp := type_clone(expect_type)
+            exp.next = null
+
+            if string.strcmp(expect_type.container, "vararg") != 0 & is_same_type(ctx, a_info.type, exp) == false {
+                err_buf := ""
+                io.asprintf(&err_buf, "Type for argument %d does not match: '%s', got '%s'", argno, type_repr(ctx, exp), type_repr(ctx, a_info.type))
+                new_error(ctx, pp, err_buf)
+                return (AssignableInfo*) null
+            }
             io.asprintf(&params_buff, "%s%s %s", params_buff, type_repr(ctx, a_info.type), repr_assignable_id(a_info))
             pp = pp.next
+
+            if string.strcmp(expect_type.container, "vararg") != 0 {
+                expect_type = expect_type.next
+            }
+            argno = argno + 1
+        }
+
+        if expect_type != null {
+            if string.strcmp(expect_type.container, "vararg") != 0 {
+                io.asprintf(&tmp, "Function '%s' takes %d arguments, %d given", info.name, argno, provided_args)
+                new_error(ctx, stmt, tmp)
+                return (AssignableInfo*) null
+            }
+        }
+    } elif info.type.of.next != null {
+
+        args_required := 0
+        for pp := info.type.of.next; pp != null; pp = pp.next {
+            if string.strcmp(pp.container, "vararg") == 0 {
+                break
+            }
+            args_required = args_required + 1
+        } else {
+            io.asprintf(&tmp, "Function '%s' takes %d arguments, 0 given", info.name, args_required)
+            new_error(ctx, stmt, tmp)
+            return (AssignableInfo*) null
         }
     }
 
@@ -1171,6 +1232,7 @@ void define_assignable(CompilerCtx* ctx, parser.Node* stmt, str name, Assignable
     newitem.name = name
     newitem.info = info
     newitem.next = null
+    info.name = name
 
 
     if current_scope.item == null {

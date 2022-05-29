@@ -35,6 +35,19 @@ int main() {
     testing.setup(t, "test_prevent_definitions_of_functions_with_same_name")
     testing.run(t, test_prevent_definitions_of_functions_with_same_name(t))
 
+    testing.setup(t, "test_check_functions_are_called_with_correct_types")
+    testing.run(t, test_check_functions_are_called_with_correct_types(t))
+
+    testing.setup(t, "test_check_if_function_is_called_with_too_much_arguments")
+    testing.run(t, test_check_if_function_is_called_with_too_much_arguments(t))
+
+    testing.setup(t, "test_check_if_function_is_called_with_too_few_arguments")
+    testing.run(t, test_check_if_function_is_called_with_too_few_arguments(t))
+
+
+    testing.setup(t, "test_check_if_no_arguments_are_passed_to_function_that_requires_at_least_one")
+    testing.run(t, test_check_if_no_arguments_are_passed_to_function_that_requires_at_least_one(t))
+
     testing.cleanup(t)
     return 0
 }
@@ -125,6 +138,67 @@ int test_respects_lexer_errors(testing.T* t) {
     return 0
 }
 
+int test_check_functions_are_called_with_correct_types(testing.T* t) {
+    ctx := compile_str(`
+void fn(int a, chr b) {
+}
+
+void main() {
+    fn(1, "c")
+}
+`)
+    testing.assert_not_null(t, (chr*) ctx.errors)
+    if ctx.errors != null {
+        testing.assert_contains_str(t, ctx.errors.err.message, "Type for argument 2 does not match")
+    }
+    return 0
+}
+
+int test_check_if_function_is_called_with_too_much_arguments(testing.T* t) {
+    ctx := compile_str(`
+void fn() {
+}
+
+void main() {
+    fn(1)
+}`)
+    testing.assert_not_null(t, (chr*) ctx.errors)
+    if ctx.errors != null {
+        testing.assert_contains_str(t, ctx.errors.err.message, "Function 'fn' takes 0 arguments, 1 given")
+    }
+    return 0
+}
+
+int test_check_if_function_is_called_with_too_few_arguments(testing.T* t) {
+    ctx := compile_str(`
+void fn(int a, b) {
+}
+
+void main() {
+    fn(1)
+}`)
+    testing.assert_not_null(t, (chr*) ctx.errors)
+    if ctx.errors != null {
+        testing.assert_contains_str(t, ctx.errors.err.message, "Function 'fn' takes 2 arguments, 1 given")
+    }
+    return 0
+}
+
+
+int test_check_if_no_arguments_are_passed_to_function_that_requires_at_least_one(testing.T* t) {
+    ctx := compile_str(`
+void fn(int a, b) {
+}
+
+void main() {
+    fn()
+}`)
+    testing.assert_not_null(t, (chr*) ctx.errors)
+    if ctx.errors != null {
+        testing.assert_contains_str(t, ctx.errors.err.message, "Function 'fn' takes 2 arguments, 0 given")
+    }
+    return 0
+}
 
 compile.CompilerCtx* compile_str(str file_content) {
     filename := ""
