@@ -78,7 +78,7 @@ int main() {
     testing.run(t, testfile(t, "./compile/__test__/3F-for-else"))
     testing.run(t, testfile(t, "./compile/__test__/40-test-weak-global"))
     testing.run(t, testfile(t, "./compile/__test__/41-first-class-functions"))
-    -- testing.run(t, testfile(t, "./compile/__test__/42-casts-slices-to-ptr"))
+    testing.run(t, testfile(t, "./compile/__test__/42-first-class-functions"))
 
 
     testing.setup(t, "test_resolves_standard_imports")

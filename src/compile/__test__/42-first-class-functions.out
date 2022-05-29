@@ -1,0 +1,5 @@
+define void @fn.v.fp(i32(i32)* %.callback.arg) {
+%callback = alloca i32(i32)*
+store i32(i32)* %.callback.arg, i32(i32)** %callback
+ret void
+}

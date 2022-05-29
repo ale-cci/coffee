@@ -1,4 +1,0 @@
-int* fn() {
-    int[] a
-    return (int*) a
-}

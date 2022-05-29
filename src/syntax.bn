@@ -45,7 +45,9 @@ basic_type: ( "void" | "int" | "bool" | "chr" | "str" | structdef | dotted_name 
 
 type: basic_type (type_trailer)?
 
-type_trailer: ("(" ")" (type_trailer)?)
+type_fn_params: type ( "," type )*
+
+type_trailer: "(" ( type_fn_params )? ( ")" ) (type_trailer)?
 
 if_block: "if" assignable block (elif_block)? (NL)
 

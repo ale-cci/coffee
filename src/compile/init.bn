@@ -1978,11 +1978,19 @@ Type* node_to_type(CompilerCtx* ctx, parser.Node* stmt) {
         t := node_to_type(ctx, stmt.children)
         if stmt.next != null {
             if string.strcmp(stmt.next.type, "type_trailer") == 0 {
-                fst_operator := stmt.next.children.next
-
                 fn_type := new_type()
                 fn_type.container = "function"
                 fn_type.of = t
+
+
+                fst_operator := stmt.next.children.next
+                if string.strcmp(fst_operator.type, "type_fn_params") == 0 {
+                    last_fn_value := fn_type.of
+                    for t := fst_operator.children; t != null; t = t.next {
+                        last_fn_value.next = node_to_type(ctx, t.children)
+                        last_fn_value = last_fn_value.next
+                    }
+                }
 
                 t_ptr := new_type()
                 t_ptr.container = "ptr"
