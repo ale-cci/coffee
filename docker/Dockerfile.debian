@@ -15,6 +15,6 @@ RUN set -ex \
     ; gcc /coffee/bin/coffee.s -o /coffee/bin/coffee \
     ; rm /coffee/bin/coffee.ll /coffee/bin/coffee.s
 
-COPY src/std/ /coffee/lib/
+COPY src/std/ /coffee/lib/std/
 
 ENV PATH="$PATH:/coffee/bin"
