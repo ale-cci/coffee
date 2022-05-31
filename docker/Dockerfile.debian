@@ -7,7 +7,7 @@ RUN set -ex \
 
 
 ENV COFFEE_ROOT=/coffee
-COPY src/coffee.ll src/syntax.txt /coffee/bin/
+COPY src/coffee.ll /coffee/bin/
 
 RUN set -ex \
     ; llc --version \
