@@ -8,13 +8,13 @@ time to do it twice.
 ```
 -- Example of hello world:
 -- re-use external functions delcared in libc
-extern int printf(str template, ...args)
+import "std/io" as io
 
 -- this is a comment
 int main() {
 
     for i := 0; i < 3; i = i + 1 {
-        printf("Hello from coffee!\0A")
+        io.printf("Hello from coffee!\n")
     }
 
     return 0
