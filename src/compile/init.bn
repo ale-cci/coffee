@@ -177,6 +177,7 @@ void push_scope(types.CompilerCtx* ctx, chr* type, begin_id, end_id) {
     s.end_id = end_id
     m.scopes = s
 }
+
 void pop_scope(types.CompilerCtx* ctx) {
     -- TODO: free this scope -> s := ctx.scopes
     m := get_current_module(ctx)
@@ -253,7 +254,8 @@ void compile_ast(types.CompilerCtx* ctx, parser.Node* ast) {
     if string.strcmp(start.type, "head_comment") == 0 {
         start = start.next
     }
-    -- todo: pre-parse 'extern', 'function', 'globals'
+
+    -- pre-parse 'extern', 'function', 'globals'
     for stmt := start; stmt != null; stmt = stmt.next {
         compile_statement(ctx, stmt.children, true)
     }
