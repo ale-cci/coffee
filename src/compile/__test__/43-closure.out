@@ -1,15 +1,14 @@
 define void @fn.v() {
-%.c.mem = alloca i8*
-%.malloc_res = call i8*(i32) @malloc(i32 7)
-store i8* %.malloc_res, i8** %.c.mem
-%.c.trampoline = call void @llvm.adjust.trampoline(i8* %.c.mem, i8* bitcast (void({}*)* @.fn.c.v to i8*), i8* null)
-%c = bitcast i8* %.c.trampoline to void()*
-call void()* %c
+%.tmem1 = call i8*(i8*,i32,i32,i32,i32,i32) @mmap(i8* null, i32 72, i32 7, i32 34, i32 -1, i32 0)
+call void(i8*,i8*,i8*) @llvm.init.trampoline(i8* %.tmem1, i8* bitcast (void({}*)* @.1 to i8*), i8* null)
+%.trmp1 = call i8*(i8*) @llvm.adjust.trampoline(i8* %.tmem1)
+%c = bitcast i8* %.trmp1 to void()*
+call void() %c()
 ret void
 }
-define void @.fn.c.v({}* %.ctx) {
+define void @.1({}* nest %.0) {
 ret void
 }
-declare void @llvm.init.trampoline(i8,i8*,i8*)
+declare void @llvm.init.trampoline(i8*, i8*, i8*)
 declare i8* @llvm.adjust.trampoline(i8*)
-declare i8* @malloc(i32)
+declare i8* @mmap(i8*, i32, i32, i32, i32, i32)

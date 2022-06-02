@@ -171,6 +171,10 @@ alias ModuleLookup = struct {
 int ModuleLookup_size = 32
 
 
+alias AnonFn = struct {
+    chr* code,
+    AnonFn* next,
+}
 alias CompilerCtx = struct {
     parser.Node* root,
     io.File* ir,
@@ -180,6 +184,7 @@ alias CompilerCtx = struct {
     int counter,
     ModuleLookup* modules,
     chr* current_module,
+    AnonFn* anon_functions,
 }
 
 bool is_same_type(CompilerCtx* ctx, Type* a, b) {
@@ -220,6 +225,7 @@ CompilerCtx* new_context(io.File* fd, str filename) {
     ctx.errors = null
     ctx.counter = 0
     ctx.globals = null
+    ctx.anon_functions = null
     ctx.current_module = filename
 
     grammar_file := ioutil.str_as_file(syntax.grammar())
@@ -333,6 +339,7 @@ void compile_ast(CompilerCtx* ctx, parser.Node* ast) {
 
     for s := start; s != null; s = s.next {
         compile_statement(ctx, s.children, false)
+        compile_anon_fn(ctx)
     }
 
     -- add globals
@@ -531,28 +538,8 @@ void compile_statement(CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
             -- check if last instruction is a return stmt
             -- otherwise add implicit void return
             -- or signal an error
-            ci := skip_to_type(fn_block.children, "expressions")
-            for ci = ci.children; ci != null; ci = ci.next {
-                if string.strcmp(ci.type, "NL") != 0 & string.strcmp(ci.type, "OPERATOR") != 0 {
-                    last_valid_instruction = ci
-                }
-            }
 
-            add_implicit_return := false
-            if last_valid_instruction == null {
-                add_implicit_return = true
-            } elif string.strcmp(last_valid_instruction.children.type, "return") != 0 {
-                add_implicit_return = true
-            }
-
-            if add_implicit_return {
-                if string.strcmp(type_repr(ctx, return_type), "void") != 0 {
-                    new_error(ctx, fn_block, "missing return value")
-                } else {
-                    io.fprintf(ctx.ir, "ret void\n")
-                }
-            }
-
+            check_n_add_implicit_return(ctx, fn_block, return_type)
             io.fprintf(ctx.ir, "}\n")
         }
 
@@ -753,6 +740,8 @@ AssignableInfo* compile_builtin(CompilerCtx* ctx, parser.Node* stmt) {
         io.fprintf(ctx.ir, tmpl, builtin_prefix, type_repr(ctx, array_info.type), repr_assignable_id(array_info), type_repr(ctx, value_info.type), repr_assignable_id(value_info), repr_assignable_id(info))
 
         -- check if function is defined
+        -- llvm_code := compile("extern chr* realloc(chr* pt, int size)")
+
         info_g := new_assignable_info(stmt)
         set_assignable_id(info_g, SCOPE_GLOBAL, "realloc")
         info_g.type = new_type()
@@ -1003,8 +992,157 @@ void compile_expression(CompilerCtx* ctx, parser.Node* stmt) {
         } else {
             io.printf(err_tmpl(ctx, stmt, "Keyword '%s': behaviour not implemented"), stmt.children.value)
         }
+    } elif string.strcmp(expr_type, "function") == 0 {
+        -- this is a closure
+        compile_closure(ctx, stmt)
     } else {
         io.printf(err_tmpl(ctx, stmt, "unable to compile expression '%s'"), expr_type)
+    }
+}
+
+Type* type_ptr_of_chr() {
+    t := new_type()
+    t.container = "ptr"
+    t.of = new_type()
+    t.of.container = "chr"
+    return t
+}
+
+
+void compile_closure(CompilerCtx* ctx, parser.Node* stmt) {
+    cj_id := new_uid(ctx)
+
+    -- define requied weak globals
+    -- llvm.init.trampoline
+    info_lit := new_assignable_info(stmt)
+    set_assignable_id(info_lit, SCOPE_GLOBAL, "llvm.init.trampoline")
+    info_lit.type = new_type()
+    info_lit.type.container = "function"
+    info_lit.type.of = new_type()
+    info_lit.type.of.container = "void"
+    info_lit.type.of.next = type_ptr_of_chr()
+    info_lit.type.of.next.next = type_ptr_of_chr()
+    info_lit.type.of.next.next.next = type_ptr_of_chr()
+    define_global(ctx, "llvm.init.trampoline", "extern", info_lit, true, false)
+
+    -- @llvm.adjust.trampoline
+    info_lat := new_assignable_info(stmt)
+    set_assignable_id(info_lat, SCOPE_GLOBAL, "llvm.adjust.trampoline")
+    info_lat.type = new_type()
+    info_lat.type.container = "function"
+    info_lat.type.of = type_ptr_of_chr()
+    info_lat.type.of.next = type_ptr_of_chr()
+    define_global(ctx, "llvm.adjust.trampoline", "extern", info_lat, true, false)
+
+    -- mmap
+    info_mmap := new_assignable_info(stmt)
+    set_assignable_id(info_mmap, SCOPE_GLOBAL, "mmap")
+    info_mmap.type = new_type()
+    info_mmap.type.container = "function"
+    info_mmap.type.of = type_ptr_of_chr()
+    lt := info_mmap.type.of
+    lt.next = type_ptr_of_chr()
+    lt = lt.next
+    lt.next = new_type()
+    lt.next.container = "int"
+    lt = lt.next
+    lt.next = new_type()
+    lt.next.container = "int"
+    lt = lt.next
+    lt.next = new_type()
+    lt.next.container = "int"
+    lt = lt.next
+    lt.next = new_type()
+    lt.next.container = "int"
+    lt = lt.next
+    lt.next = new_type()
+    lt.next.container = "int"
+    lt = lt.next
+
+    define_global(ctx, "mmap", "extern", info_mmap, true, false)
+
+
+
+    fn_name_node := skip_to_type(stmt.children, "WORD")
+    fn_name := fn_name_node.value
+
+    info := new_assignable_info(stmt)
+    set_assignable_id(info, SCOPE_LOCAL, fn_name)
+    info.type = syn_function_type(ctx, stmt.children)
+    info.name_type = "function"
+
+    define_assignable(ctx, stmt, fn_name, info)
+
+    closure_id := new_uid(ctx)
+
+    closure_type := type_clone(info.type)
+    closure_type.of = type_clone(closure_type.of)
+
+    ctx_param := new_type()
+    ctx_param.container = "ptr"
+    ctx_param.of = new_type()
+    ctx_param.of.container = "struct"
+    ctx_param.next = closure_type.of.next
+    closure_type.of.next = ctx_param
+
+    closure_name := ""
+    io.asprintf(&closure_name, "@.%d", closure_id)
+
+    ret_type := type_clone(closure_type.of)
+    ret_type.of = null
+
+    io.fprintf(ctx.ir, "%%.tmem%d = call i8*(i8*,i32,i32,i32,i32,i32) @mmap(i8* null, i32 72, i32 7, i32 34, i32 -1, i32 0)\n", closure_id)
+    io.fprintf(ctx.ir, "call void(i8*,i8*,i8*) @llvm.init.trampoline(i8* %%.tmem%d, i8* bitcast (%s* %s to i8*), i8* null)\n", closure_id, type_repr(ctx, closure_type), closure_name)
+    io.fprintf(ctx.ir, "%%.trmp%d = call i8*(i8*) @llvm.adjust.trampoline(i8* %%.tmem%d)\n", closure_id, closure_id)
+    io.fprintf(ctx.ir, "%s = bitcast i8* %%.trmp%d to %s*\n", repr_assignable_id(info), closure_id, type_repr(ctx, info.type))
+
+    bkp_ctx := ctx.ir
+    ctx.ir = io.tmpfile()
+    io.fprintf(ctx.ir, "define %s %s(", type_repr(ctx, ret_type), closure_name)
+    io.fprintf(ctx.ir, "%s nest %%.0", type_repr(ctx, ctx_param))
+    io.fprintf(ctx.ir, ") {\n")
+    block := skip_to_type(stmt.children, "block")
+    compile_block(ctx, block)
+    check_n_add_implicit_return(ctx, block, ret_type)
+    io.fprintf(ctx.ir, "}\n")
+
+    io.rewind(ctx.ir)
+    code := ioutil.readall(io.fileno(ctx.ir))
+    io.fclose(ctx.ir)
+    ctx.ir = bkp_ctx
+
+    append_anon_fn(ctx, code)
+
+    -- captured_params := ""
+
+    -- io.fprintf(ctx.ir, "define %s @.cj.%d(%s nest %%.0) {", type_repr(ctx, rv), cj_id)
+    -- io.fprintf(ctx.ir, "}")
+}
+
+void check_n_add_implicit_return(CompilerCtx* ctx, parser.Node* stmt, Type* return_type) {
+    li := (parser.Node*) null
+
+    exprs := skip_to_type(stmt.children, "expressions")
+    for ci := exprs.children; ci != null; ci = ci.next {
+        -- valid instructions are empty new lines and... OPERATOR?
+        if string.strcmp(ci.type, "NL") != 0 {
+            li = ci
+        }
+    }
+
+    if li != null {
+        if string.strcmp(li.children.type, "return") == 0 {
+            return
+        }
+    }
+
+    if string.strcmp(type_repr(ctx, return_type), "void") != 0 {
+        if li != null {
+            stmt = li
+        }
+        new_error(ctx, stmt, "Missing return value")
+    } else {
+        io.fprintf(ctx.ir, "ret void\n")
     }
 }
 
@@ -1811,6 +1949,27 @@ void define_module(CompilerCtx* ctx, parser.Node* mod, str as_name, abspath) {
     info.type = null
 
     define_assignable(ctx, mod, as_name, info)
+}
+
+void append_anon_fn(CompilerCtx* ctx, str code) {
+    fn := (AnonFn*) sys.malloc(sizeof(AnonFn))
+    fn.code = code
+
+    if ctx.anon_functions == null {
+        ctx.anon_functions = fn
+        fn.next = null
+    } else {
+        last := ctx.anon_functions
+        for ; last.next != null; last = last.next {
+        }
+        last.next = fn
+    }
+}
+void compile_anon_fn(CompilerCtx* ctx) {
+    for fn := ctx.anon_functions; fn != null; fn = fn.next {
+        io.fprintf(ctx.ir, "%s\n", fn.code)
+    }
+    ctx.anon_functions = null
 }
 
 void append_global(CompilerCtx* ctx, GlobalName* g) {
