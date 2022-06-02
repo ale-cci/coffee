@@ -1,0 +1,28 @@
+define i32(i32,i32)* @fn.fp() {
+%.tmem1 = call i8*(i8*,i32,i32,i32,i32,i32) @mmap(i8* null, i32 72, i32 7, i32 34, i32 -1, i32 0)
+call void(i8*,i8*,i8*) @llvm.init.trampoline(i8* %.tmem1, i8* bitcast (i32({}*,i32,i32)* @.1 to i8*), i8* null)
+%.trmp1 = call i8*(i8*) @llvm.adjust.trampoline(i8* %.tmem1)
+%x = bitcast i8* %.trmp1 to i32(i32,i32)*
+ret i32(i32,i32)* %x
+}
+define i32 @.1({}* nest %.0, i32 %.a.arg, i32 %.b.arg) {
+%a = alloca i32
+store i32 %.a.arg, i32* %a
+%b = alloca i32
+store i32 %.b.arg, i32* %b
+%.tmp2 = load i32, i32* %a
+%.tmp3 = load i32, i32* %b
+%.tmp4 = add i32 %.tmp2, %.tmp3
+ret i32 %.tmp4
+}
+define i32 @main() {
+%.tmp6 = call i32(i32,i32)*() @fn.fp()
+%j.7 = alloca i32(i32,i32)*
+store i32(i32,i32)* %.tmp6, i32(i32,i32)** %j.7
+%.tmp8 = load i32(i32,i32)*, i32(i32,i32)** %j.7
+%.tmp9 = call i32(i32,i32) %.tmp8(i32 3, i32 4)
+ret i32 %.tmp9
+}
+declare void @llvm.init.trampoline(i8*, i8*, i8*)
+declare i8* @llvm.adjust.trampoline(i8*)
+declare i8* @mmap(i8*, i32, i32, i32, i32, i32)

@@ -919,7 +919,6 @@ void compile_expression(types.CompilerCtx* ctx, parser.Node* stmt) {
             io.printf(err_tmpl(ctx, stmt, "Keyword '%s': behaviour not implemented"), stmt.children.value)
         }
     } elif string.strcmp(expr_type, "function") == 0 {
-        -- this is a closure
         compile_closure(ctx, stmt)
     } else {
         io.printf(err_tmpl(ctx, stmt, "unable to compile expression '%s'"), expr_type)
@@ -1025,11 +1024,29 @@ void compile_closure(types.CompilerCtx* ctx, parser.Node* stmt) {
     bkp_ctx := ctx.ir
     ctx.ir = io.tmpfile()
     io.fprintf(ctx.ir, "define %s %s(", type_repr(ctx, ret_type), closure_name)
+    -- define params
+    push_scope(ctx, "function", (chr*) null, (chr*) null)
     io.fprintf(ctx.ir, "%s nest %%.0", type_repr(ctx, ctx_param))
+    params := syn_function_params(stmt.children)
+    types.Type* param_type
+    for param_ptr := params; param_ptr != null ; {
+        if param_ptr != params {
+            param_ptr = param_ptr.next
+        }
+        io.fprintf(ctx.ir, ", ")
+        if string.strcmp(param_ptr.type, "type") == 0 {
+            param_type = node_to_type(ctx, param_ptr.children)
+            param_ptr = param_ptr.next
+        }
+        io.fprintf(ctx.ir, "%s %%.%s.arg", type_repr(ctx, param_type), param_ptr.value)
+        param_ptr = param_ptr.next
+    }
     io.fprintf(ctx.ir, ") {\n")
+    compile_fn_params(ctx, params)
     block := skip_to_type(stmt.children, "block")
     compile_block(ctx, block)
     check_n_add_implicit_return(ctx, block, ret_type)
+    pop_scope(ctx)
     io.fprintf(ctx.ir, "}\n")
 
     io.rewind(ctx.ir)
@@ -1745,6 +1762,12 @@ types.AssignableInfo* compile_mono_assignable(types.CompilerCtx* ctx, parser.Nod
         if mono.children.children != dest {
             -- it's a pointer, load it's address
             io.fprintf(ctx.ir, "%s = getelementptr %s, %s* %s, i32 0\n", repr_assignable_id(assignable_info), var_type_repr, var_type_repr, repr_assignable_id(var_info))
+        } elif string.strcmp(assignable_info.type.container, "function") == 0 {
+            assignable_info = var_info
+            type := new_type()
+            type.of = assignable_info.type
+            type.container = "ptr"
+            assignable_info.type = type
         } else {
             -- it's a variable, load it's content
             io.fprintf(ctx.ir, "%s = load %s, %s* %s\n", repr_assignable_id(assignable_info), var_type_repr, var_type_repr, repr_assignable_id(var_info))
@@ -2072,8 +2095,12 @@ types.Type* node_to_type(types.CompilerCtx* ctx, parser.Node* stmt) {
                 if string.strcmp(fst_operator.type, "type_fn_params") == 0 {
                     last_fn_value := fn_type.of
                     for t := fst_operator.children; t != null; t = t.next {
+                        -- skip commas
                         last_fn_value.next = node_to_type(ctx, t.children)
                         last_fn_value = last_fn_value.next
+                        if t.next != null {
+                            t = t.next
+                        }
                     }
                 }
 

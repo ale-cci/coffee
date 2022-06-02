@@ -81,6 +81,7 @@ int main() {
     testing.run(t, testfile(t, "./std/compile/__test__/41-first-class-functions"))
     testing.run(t, testfile(t, "./std/compile/__test__/42-first-class-functions"))
     testing.run(t, testfile(t, "./std/compile/__test__/43-closure"))
+    testing.run(t, testfile(t, "./std/compile/__test__/44-closure-with-params"))
 
 
     testing.setup(t, "test_resolves_standard_imports")
