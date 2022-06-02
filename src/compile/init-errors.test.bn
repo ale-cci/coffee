@@ -1,4 +1,5 @@
 import "./init" as compile
+import "./types" as types
 import "../std/testing" as testing
 import "../std/string" as string
 import "../std/io" as io
@@ -200,12 +201,12 @@ void main() {
     return 0
 }
 
-compile.CompilerCtx* compile_str(str file_content) {
+types.CompilerCtx* compile_str(str file_content) {
     filename := ""
 
     grammar_file := ioutil.str_as_file(syntax.grammar())
     if grammar_file == null {
-        return (compile.CompilerCtx*) null
+        return (types.CompilerCtx*) null
     }
     grammar_ctx := parser.new_context(grammar_file)
     grammar := parser.parse_grammar(grammar_ctx)

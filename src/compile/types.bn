@@ -1,0 +1,86 @@
+import "../errors" as errors
+import "../parser" as parser
+import "../std/io" as io
+
+alias Type = struct {
+    chr* container,
+
+    chr* info, -- extra info attached to this type entry (for struct field names)
+    chr* repr,
+
+    -- NOTE: each "basic" type is not allowed to have a 'next' value
+    Type* of,
+    Type* next,
+}
+
+alias ErrorList = struct {
+    errors.Error* err,
+    ErrorList* next,
+    bool reported,
+}
+
+
+alias AssignableInfo = struct {
+    -- uniquely identifies assignable
+    chr* id,
+
+    chr scope, -- adds @ before id if it's a global assignment, otherwise %
+    chr* name,
+    chr* name_type,
+    Type* type,
+
+    -- where was the assignable defined
+    int line,
+    int char_of_line,
+    chr* filename,
+}
+
+alias ScopeItem = struct {
+    chr* name,
+    AssignableInfo* info,
+    ScopeItem* next,
+}
+
+alias Scope = struct {
+    chr* filename,
+    ScopeItem* item,
+    chr* type,
+    chr* begin_id,
+    chr* end_id,
+    Scope* prev,
+}
+
+alias GlobalName = struct {
+    chr* identifier,
+
+    chr* global_type, -- string, module
+    bool compiled,
+    bool weak,
+    AssignableInfo* info,
+    GlobalName* next,
+}
+
+alias ModuleLookup = struct {
+    chr* abspath,
+    chr* prefix,
+    ModuleLookup* next,
+    Scope* scopes,
+}
+
+alias AnonFn = struct {
+    chr* code,
+    AnonFn* next,
+}
+
+alias CompilerCtx = struct {
+    parser.Node* root,
+    io.File* ir,
+    ErrorList* errors,
+    GlobalName* globals,
+    parser.Rule** grammar,
+    int counter,
+    ModuleLookup* modules,
+    chr* current_module,
+    AnonFn* anon_functions,
+}
+
