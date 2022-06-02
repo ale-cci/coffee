@@ -1,7 +1,7 @@
 -- breaks up file in one or multiple tokens
-import "./std/sys" as sys
-import "./std/string" as string
-import "./std/io" as io
+import "../sys" as sys
+import "../string" as string
+import "../io" as io
 
 import "./peeker" as peeker
 -- import "./errors" as errors

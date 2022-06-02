@@ -1,0 +1,22 @@
+define void @fn.v() {
+%x.0 = alloca i32
+store i32 1, i32* %x.0
+%ctx.1 = alloca {i32}
+%.tmp2 = getelementptr {i32}, {i32}* %ctx.1, i32 0, i32 0
+store i32 1, i32* %.tmp2
+%.tmem5 = call i8*(i8*,i32,i32,i32,i32,i32) @mmap(i8* null, i32 72, i32 7, i32 34, i32 -1, i32 0)
+call void(i8*,i8*,i8*) @llvm.init.trampoline(i8* %.tmem5, i8* bitcast (void({}*)* @.5 to i8*), i8* %ctx.1)
+%.trmp5 = call i8*(i8*) @llvm.adjust.trampoline(i8* %.tmem5)
+%c = bitcast i8* %.trmp5 to void()*
+ret void
+}
+define void @.5({i32}* nest %.0) {
+%.tmp6 = getelementptr {i32}, {i32}* %ctx.1, i32 0, i32 0
+%.tmp7 = load i32, i32* %.tmp6
+%j.8 = alloca i32
+store i32 %.tmp7, i32* %j.8
+ret void
+}
+declare void @llvm.init.trampoline(i8*, i8*, i8*)
+declare i8* @llvm.adjust.trampoline(i8*)
+declare i8* @mmap(i8*, i32, i32, i32, i32, i32)

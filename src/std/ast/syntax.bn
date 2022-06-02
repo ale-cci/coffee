@@ -1,6 +1,6 @@
-import "./std/io" as io
-import "./std/sys" as sys
-import "./std/string" as string
+import "../io" as io
+import "../sys" as sys
+import "../string" as string
 
 
 str grammar() {

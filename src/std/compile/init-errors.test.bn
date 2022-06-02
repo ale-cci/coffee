@@ -1,15 +1,17 @@
+import "../testing" as testing
+import "../string" as string
+import "../io" as io
+import "../ioutil" as ioutil
+import "../sys" as sys
+
+import "../ast/parser" as parser
+import "../ast/peeker" as peeker
+import "../ast/lexer" as lexer
+import "../ast/errors" as errors
+import "../ast/syntax" as syntax
+
 import "./init" as compile
 import "./types" as types
-import "../std/testing" as testing
-import "../std/string" as string
-import "../std/io" as io
-import "../std/ioutil" as ioutil
-import "../std/sys" as sys
-import "../parser" as parser
-import "../peeker" as peeker
-import "../lexer" as lexer
-import "../errors" as errors
-import "../syntax" as syntax
 
 
 int main() {
@@ -133,8 +135,8 @@ void fnx() {
 
 
 int test_respects_lexer_errors(testing.T* t) {
-    ctx := compile.new_context(io.tmpfile(), "./compile/__test__/test-dir/file-with-errors")
-    has_error := compile.compile_file(ctx, (parser.Node*) null, "./compile/__test__/test-dir/file-with-errors.bn")
+    ctx := compile.new_context(io.tmpfile(), "./std/compile/__test__/test-dir/file-with-errors")
+    has_error := compile.compile_file(ctx, (parser.Node*) null, "./std/compile/__test__/test-dir/file-with-errors.bn")
     testing.assert_true(t, "compilation error", has_error)
     return 0
 }

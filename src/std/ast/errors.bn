@@ -1,5 +1,5 @@
-import "./std/sys" as sys
-import "./std/io" as io
+import "../sys" as sys
+import "../io" as io
 import "./lexer" as lexer
 
 -- error reporting message

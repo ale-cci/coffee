@@ -1,9 +1,10 @@
 -- implementation of the Shunting-yard_algorithm
 -- https://en.wikipedia.org/wiki/Shunting-yard_algorithm#The_algorithm_in_detail
-import "../std/sys" as sys
-import "../std/io" as io
-import "../parser" as parser
-import "../std/string" as string
+import "../sys" as sys
+import "../io" as io
+import "../string" as string
+
+import "../ast/parser" as parser
 
 -- implementation of the shunting yard alogirhtm
 alias SYStack = struct {

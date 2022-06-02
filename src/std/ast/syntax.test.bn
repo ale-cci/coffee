@@ -1,8 +1,8 @@
-import "./std/testing" as testing
-import "./std/string" as string
-import "./std/sys" as sys
-import "./std/io" as io
-import "./std/ioutil" as ioutil
+import "../testing" as testing
+import "../string" as string
+import "../sys" as sys
+import "../io" as io
+import "../ioutil" as ioutil
 
 import "./errors" as errors
 import "./parser" as parser

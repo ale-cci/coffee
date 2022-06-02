@@ -1,0 +1,11 @@
+void fn() {
+    x := 1
+    struct {
+        int* x,
+    } ctx
+    ctx.x = &x
+
+    void c() {
+        j := ctx.x
+    }
+}

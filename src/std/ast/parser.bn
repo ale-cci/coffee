@@ -1,10 +1,9 @@
 -- :Parser module:
 -- builds grammar from syntax file
 -- uses grammar to build ast
-
-import "./std/io" as io
-import "./std/sys" as sys
-import "./std/string" as string
+import "../io" as io
+import "../sys" as sys
+import "../string" as string
 import "./peeker" as peeker
 import "./lexer" as lexer
 import "./errors" as errors

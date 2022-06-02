@@ -1,17 +1,18 @@
-import "../std/sys" as sys
-import "../std/io" as io
-import "../syntax" as syntax
-import "../parser" as parser
-import "../std/string" as string
-import "../peeker" as peeker
-import "../lexer" as lexer
-import "../std/ioutil" as ioutil
+import "../io" as io
+import "../ioutil" as ioutil
+import "../string" as string
+import "../sys" as sys
 
-import "../parser.debug" as parser_debug
-import "../errors" as errors
-import "./shunting_yard" as sy
-import "./llvm" as llvm
+import "../ast/errors" as errors
+import "../ast/lexer" as lexer
+import "../ast/parser" as parser
+import "../ast/parser.debug" as parser_debug
+import "../ast/peeker" as peeker
+import "../ast/syntax" as syntax
+
 import "./builtin_templates" as builtin
+import "./llvm" as llvm
+import "./shunting_yard" as sy
 import "./types" as types
 
 bool DEBUG_INTERNALS=false

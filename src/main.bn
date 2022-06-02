@@ -3,12 +3,12 @@ import "./std/io" as io
 import "./std/ioutil" as ioutil
 import "./std/sys" as sys
 import "./std/string" as string
+import "./std/compile/init" as compile
 
-import "./peeker" as peeker
-import "./parser" as parser
-import "./errors" as errors
-import "./lexer" as lexer
-import "./compile/init" as compile
+import "./std/ast/peeker" as peeker
+import "./std/ast/parser" as parser
+import "./std/ast/errors" as errors
+import "./std/ast/lexer" as lexer
 
 
 int main(int argc, str* argv) {

@@ -1,6 +1,6 @@
-import "../std/string" as string
-import "../std/io" as io
-import "../std/sys" as sys
+import "../string" as string
+import "../io" as io
+import "../sys" as sys
 
 
 chr* string_to_llvm(chr* text) {

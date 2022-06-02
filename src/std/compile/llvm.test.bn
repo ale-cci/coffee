@@ -1,4 +1,4 @@
-import "../std/testing" as testing
+import "../testing" as testing
 import "./llvm" as llvm
 
 int main() {
