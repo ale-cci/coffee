@@ -47,14 +47,33 @@ int main() {
     testing.setup(t, "test_check_if_function_is_called_with_too_few_arguments")
     testing.run(t, test_check_if_function_is_called_with_too_few_arguments(t))
 
-
     testing.setup(t, "test_check_if_no_arguments_are_passed_to_function_that_requires_at_least_one")
     testing.run(t, test_check_if_no_arguments_are_passed_to_function_that_requires_at_least_one(t))
+
+    testing.setup(t, "test_does_not_crash_on_undefined_var")
+    testing.run(t, test_does_not_crash_on_undefined_var(t))
 
     testing.cleanup(t)
     return 0
 }
 
+int test_does_not_crash_on_undefined_var(testing.T* t) {
+    ctx := compile_str(`
+void fn() {
+    struct {
+        int a,
+    } b
+
+    b.a = "s"
+}`)
+
+    testing.assert_not_null(t, (chr*) ctx.errors)
+    if ctx.errors != null {
+        chr* got
+        testing.assert_contains_str(t, ctx.errors.err.message, "cannot assign type")
+    }
+    return 0
+}
 
 int test_signals_missing_for_condition(testing.T* t) {
     ctx := compile_str(`

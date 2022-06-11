@@ -110,6 +110,9 @@ chr* repr_assignable_id(types.AssignableInfo* info) {
 
 
 bool is_same_type(types.CompilerCtx* ctx, types.Type* a, b) {
+    if string.strcmp(a.container, "nullptr") == 0 | string.strcmp(b.container, "nullptr") == 0 {
+        return string.strcmp(a.container, "ptr") == 0 | string.strcmp(b.container, "ptr") == 0
+    }
     a_repr := type_repr(ctx, a)
     b_repr := type_repr(ctx, b)
     return string.strcmp(a_repr, b_repr) == 0
@@ -188,11 +191,6 @@ void pop_scope(types.CompilerCtx* ctx) {
 
 
 bool compile_file(types.CompilerCtx* ctx, parser.Node* stmt, str filepath) {
-    grammar_file := ioutil.str_as_file(syntax.grammar())
-    if grammar_file == null {
-        return false
-    }
-
     int input_fd = io.open(filepath, io.O_RDONLY)
     if input_fd <= 0 {
         chr* err_msg
@@ -880,6 +878,11 @@ void compile_expression(types.CompilerCtx* ctx, parser.Node* stmt) {
         a_info = compile_assignable(ctx, assignable)
         if a_info == null {
             return
+        }
+        if is_same_type(ctx, a_info.type, dest.type) == false {
+            err_buf := ""
+            io.asprintf(&err_buf, "cannot assign type '%s' to type '%s'", type_repr(ctx, a_info.type), type_repr(ctx, dest.type))
+            new_error(ctx, stmt, err_buf)
         }
 
         dest_tr := type_repr(ctx, dest.type)
