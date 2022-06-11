@@ -11,53 +11,70 @@ import "./std/ast/errors" as errors
 import "./std/ast/lexer" as lexer
 
 
-int main(int argc, str* argv) {
-    check_args(argc, argv)
-
+bool compile_file(str filename, outname) {
     stderr := io.fdopen(io.STDERR, "w")
-
-    filename := argv[1]
-
     llvm_code := io.tmpfile()
     compiler_ctx := compile.new_context(llvm_code, filename)
     if compile.compile_file(compiler_ctx, (parser.Node*) null, filename) {
         io.fprintf(stderr, "Compilation to llvm interrupted.\0A")
-        return 1
+        return false
     }
 
     -- check for compiler error
-    outname := "out"
-
     io.fflush(llvm_code)
     llvm_code_size := io.ftell(llvm_code)
     io.rewind(llvm_code)
 
     cmd := ""
-    io.asprintf(&cmd, "tee debug.ll | llc - -o %s.s", outname)
+    io.asprintf(&cmd, "tee debug.ll | llc - -o debug.s", outname)
     proc := sys.popen(cmd, "w")
 
     ioutil.copy(io.fileno(proc), io.fileno(llvm_code))
 
     if proc == null {
         io.fprintf(stderr, "unable to spawn subprocess\n")
-        return 0
+        return false
     }
 
     if sys.pclose(proc) != 0 {
         io.fprintf(stderr, "error on llc execution\0A")
-        return 0
+        return false
     }
 
-    io.asprintf(&cmd, "cc %s.s -o %s", outname, outname)
+    io.asprintf(&cmd, "cc debug.s -o %s", outname, outname)
     cc_proc := sys.popen(cmd, "w")
     if cc_proc == null {
         io.fprintf(stderr, "unable to spawn subprocess\n")
-        return 0
+        return false
     }
     if sys.pclose(proc) != 0 {
         io.fprintf(stderr, "error on cc execution")
     } else {
-        io.printf("File %s compiled successfully!\0A", filename)
+        io.printf("File %s compiled successfully!\0A", outname)
+    }
+
+    return true
+}
+
+
+alias Args = struct {
+    str action,
+    str filename,
+    str outname,
+    str* argv,
+}
+
+int main(int argc, str* argv) {
+    args := check_args(argc, argv)
+
+    if compile_file(args.filename, args.outname) == false {
+        return 0
+    }
+
+    if string.strcmp(args.action, "run") == 0 {
+        cmd := ""
+        io.asprintf(&cmd, "./%s", args.outname)
+        return sys.execvp(cmd, args.argv)
     }
 
     return 0
@@ -65,17 +82,38 @@ int main(int argc, str* argv) {
 
 
 -- check how the program was called, assuring at least one argument is present in argv
-void check_args(int argc, str* argv) {
-    if argc == 2 {
-        return
+Args check_args(int argc, str* argv) {
+    tmpl := "Usage: %s <filename>\n"
+
+    Args args
+    if argc < 2 {
+        io.printf(tmpl, argv[0])
+        sys.exit(1)
     }
 
-    tmpl := "Usage: %s <filename>"
-    int len_filename = string.strlen(argv[0]) + string.strlen(tmpl)
-    chr* buf = sys.malloc(len_filename)
-    io.sprintf(buf, tmpl, argv[0])
+    int fp = 1
+    args.action = "compile"
+    if string.strcmp(argv[1], "run") == 0 {
+        args.action = "run"
+        fp = 2
+    }
 
-    io.puts(buf)
-    sys.free(buf)
-    sys.exit(1)
+    if argc < fp + 1 {
+        io.printf(tmpl, argv[0])
+        sys.exit(1)
+    }
+
+    args.filename = argv[fp]
+
+    ext := sys.splitext(args.filename)
+    args.outname = ext.base
+
+    ac := argc - fp + 1
+    args.argv = (str*) sys.malloc(8 * ac)
+
+    args.argv[0] = args.outname
+    for i := 0; i < argc - fp; i = i + 1 {
+        args.argv[i + 1] = argv[fp + i + 1]
+    }
+    return args
 }

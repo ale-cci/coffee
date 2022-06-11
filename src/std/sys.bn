@@ -45,6 +45,8 @@ extern int pipe(int* fds)
 extern io.File* popen(str cmd, str type)
 extern int pclose(io.File* stream)
 
+extern int execvp(str file, str* argv)
+
 -- returns directory name of path, libc `dirname` seems not to have a consistent behaviour
 -- between different architectures.
 str dirname(chr* path) {
@@ -89,3 +91,35 @@ alias Passwd = struct {
 
 extern int getuid()
 extern Passwd* getpwuid(int uid)
+
+
+struct {
+    str base,
+    str ext,
+} splitext(str path) {
+    struct {
+        str base,
+        str ext,
+    } S
+
+    str_length := string.strlen(path)
+    ext_pos := str_length
+    for i := str_length -1; i > 0; i = i -1 {
+        if path[i] == '.' {
+            ext_pos = i
+            break
+        } elif path[i] == '/' {
+            break
+        }
+    }
+
+    S.base = malloc(ext_pos + 1)
+    string.strncpy(S.base, path, ext_pos)
+    S.base[ext_pos] = '\x00'
+
+    S.ext = malloc(str_length - ext_pos)
+    for i := ext_pos; i < str_length; i = i + 1 {
+        S.ext[i - ext_pos] = path[i]
+    }
+    return S
+}

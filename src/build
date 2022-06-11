@@ -10,13 +10,13 @@ case $1 in
     test)
         set -e
         TEST_EXE="./coffee_test"
-        "$COFFEE_EXE" main.bn && mv out "${TEST_EXE}"
+        "$COFFEE_EXE" main.bn && mv main "${TEST_EXE}"
 
         [[ ! -z "$COFFEE_DEBUG" ]] && DEBUGGER="${COFFEE_DEBUG:-valgrind}"
 
-        find . -name '*.test.bn' -exec sh -c "echo && $DEBUGGER ${TEST_EXE} {} && $DEBUGGER ./out " \;
-        ./coffee_test main.bn
-        rm -rf ./out "${TEST_EXE}"
+        find . -name '*.test.bn' -exec sh -c "echo && $DEBUGGER ${TEST_EXE} run {}" \;
+        "$TEST_EXE" main.bn
+        rm -rf "${TEST_EXE}"
         ;;
 
 
@@ -48,11 +48,11 @@ case $1 in
 
     build)
         "$COFFEE_EXE" main.bn
-        mv out ./coffee
+        mv main ./coffee
         ;;
 
     release)
-        "$COFFEE_EXE" main.bn && rm out
+        "$COFFEE_EXE" main.bn && rm main
         mv debug.ll coffee.ll
         ;;
 
