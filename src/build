@@ -47,9 +47,8 @@ case $1 in
         ;;
 
     build)
-        ./run main.bn
-        mv out run
-        mv debug.ll coffee.ll
+        "$COFFEE_EXE" main.bn
+        mv out ./coffee
         ;;
 
     release)

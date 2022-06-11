@@ -26,11 +26,15 @@ int main(int argc, str* argv) {
     }
 
     -- check for compiler error
+    outname := "out"
 
     io.fflush(llvm_code)
     llvm_code_size := io.ftell(llvm_code)
     io.rewind(llvm_code)
-    proc := sys.popen("tee debug.ll | llc - -o out.s", "w")
+
+    cmd := ""
+    io.asprintf(&cmd, "tee debug.ll | llc - -o %s.s", outname)
+    proc := sys.popen(cmd, "w")
 
     ioutil.copy(io.fileno(proc), io.fileno(llvm_code))
 
@@ -44,7 +48,8 @@ int main(int argc, str* argv) {
         return 0
     }
 
-    cc_proc := sys.popen("cc out.s -o out", "w")
+    io.asprintf(&cmd, "cc %s.s -o %s", outname, outname)
+    cc_proc := sys.popen(cmd, "w")
     if cc_proc == null {
         io.fprintf(stderr, "unable to spawn subprocess\n")
         return 0
