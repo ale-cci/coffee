@@ -9,20 +9,9 @@ import "./lexer" as lexer
 import "./errors" as errors
 
 
-alias Query = struct {
-    -- 'v': .value contains the value of the token
-    -- 'a': .value is an alias to a rule
-    -- 't': .value contains the type of the token ex: EOF, STRING, CHAR...
-    chr type,
-    chr* value,
-
-    Query* next,
-}
-
-
-chr TYPE_VALUE = 'v'
-chr TYPE_ALIAS = 'a'
-chr TYPE_TYPE = 't'
+chr TYPE_VALUE  = 'v'
+chr TYPE_ALIAS  = 'a'
+chr TYPE_TYPE   = 't'
 chr TYPE_IGNORE = '\x00'
 
 
@@ -120,30 +109,6 @@ void append_submatch(Matcher* m, child) {
     for ; base.next != null; base = base.next {
     }
     base.next = child
-}
-
-void print_matcher(Matcher* m, int indent) {
-    if m == null {
-        io.printf("null")
-        return
-    }
-
-    buf := "%%%ds"
-    io.asprintf(&buf, buf, indent * 2)
-    io.asprintf(&buf, buf, "")
-
-    io.printf("[")
-    for match := m; match != null; match = match.next {
-        io.printf("\n%s{", buf)
-        io.printf(`\n%s"value": "%s",`, buf, match.value)
-        io.printf(`\n%s"times": "%c",`, buf, match.times)
-        io.printf(`\n%s"submatcher": `, buf)
-        print_matcher(match.submatcher, indent + 1)
-        io.printf(`\n%s"alternative": `, buf)
-        print_matcher(match.alternative, indent + 1)
-        io.printf("\n%s},", buf)
-    }
-    io.printf("\n],\n")
 }
 
 -- parse the grammar file, starting from the current "context cursor
@@ -367,7 +332,26 @@ alias AstContext = struct {
     lexer.Token* current_token,
     Rule** grammar,
     errors.Error* err,
+
+    int max_line,
+    int max_char_of_line,
 }
+
+AstContext* next_token(AstContext* ctx) {
+    ctx.current_token = ctx.current_token.next
+
+    ct := ctx.current_token
+    if ct.line > ctx.max_line {
+        ctx.max_line = ct.line
+        ctx.max_char_of_line = ct.char_of_line
+    } elif ct.line == ctx.max_line {
+        if ct.char_of_line > ctx.max_char_of_line {
+            ctx.max_char_of_line = ct.char_of_line
+        }
+    }
+    return ctx
+}
+
 
 
 Rule* find_rule(Rule** grammar, str rule_name) {
@@ -397,6 +381,10 @@ ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
     -- start matching querys tokens
     -- res.err = parse_query(c, rule.matcher, res.node)
     res.err = execute_matcher(c, rule, rule.matcher, res.node)
+    if res.err != null {
+        res.err.line = c.max_line
+        res.err.char_of_line = c.max_char_of_line
+    }
     return res
 }
 
@@ -444,7 +432,7 @@ errors.Error* execute_matcher_straight(AstContext* ctx, Rule* rule, Matcher* mat
             return errors.from(ctx.current_token, buf)
         }
         child = new_node(ctx.current_token, ctx.current_token.type, ctx.current_token.value)
-        ctx.current_token = ctx.current_token.next
+        ctx = next_token(ctx)
     } elif matcher.type == TYPE_TYPE {
         if matcher.value == null {
             io.printf("Matcher type is null\n")
@@ -459,7 +447,7 @@ errors.Error* execute_matcher_straight(AstContext* ctx, Rule* rule, Matcher* mat
             return errors.from(ctx.current_token, buf)
         }
         child = new_node(ctx.current_token, ctx.current_token.type, ctx.current_token.value)
-        ctx.current_token = ctx.current_token.next
+        ctx = next_token(ctx)
     } elif matcher.type == TYPE_ALIAS {
         alias_rule := find_rule(ctx.grammar, matcher.value)
         if alias_rule == null {
