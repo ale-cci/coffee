@@ -40,7 +40,8 @@ alias Matcher = struct {
 }
 
 alias Rule = struct {
-    chr*      name,
+    str       name,
+    str       transformer,
     Matcher*  matcher,
 }
 
@@ -191,12 +192,11 @@ Rule* parse_rule(ParsingContext* ctx) {
     }
     ctx.current_token = ctx.current_token.next
 
+    transformer_name := ""
     if string.strcmp(ctx.current_token.value, "[") == 0 {
-        for ; string.strcmp(ctx.current_token.value, ":") != 0; ctx.current_token = ctx.current_token.next {
-            if ctx.current_token == null {
-                break
-            }
-        }
+        ctx.current_token = ctx.current_token.next
+        transformer_name = ctx.current_token.value
+        ctx.current_token = ctx.current_token.next.next
     }
 
     if string.strcmp(ctx.current_token.value, ":") != 0 {
@@ -209,6 +209,7 @@ Rule* parse_rule(ParsingContext* ctx) {
 
     Rule* rule = (Rule*) sys.malloc(sizeof(Rule))
     rule.name = rule_name
+    rule.transformer = transformer_name
 
 
     rule.matcher = parse_matcher(ctx)
@@ -316,7 +317,7 @@ alias AstContext = struct {
 }
 
 
-Rule* _find_rule(Rule** grammar, str rule_name) {
+Rule* find_rule(Rule** grammar, str rule_name) {
     for i := 0; true ;i = i + 1 {
         rule := grammar[i]
         if string.strcmp(rule.name, rule_name) == 0 {
@@ -389,7 +390,7 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
 
         } elif q.type == 'a' {
             -- retrieve parse rule
-            alias_rule := _find_rule(c.grammar, q.value)
+            alias_rule := find_rule(c.grammar, q.value)
             if alias_rule == null {
                 err = errors.from(c.current_token, "unable to retrieve alias rule")
             } else {
@@ -492,7 +493,7 @@ ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
 -- :param tokens: list of tokens of the language
 ParseResult* ast(Rule** grammar, str start, lexer.Token* tokens) {
     -- find starting rule
-    Rule* start_matcher = _find_rule(grammar, start)
+    Rule* start_matcher = find_rule(grammar, start)
     sys.assert(start_matcher != null, "Unable to find starting rule in the grammar")
 
     AstContext c
