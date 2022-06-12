@@ -4,3 +4,4 @@ coffee
 !coffee.ll
 *.dSYM
 .DS_Store
+*.test
