@@ -45,7 +45,7 @@ str _context(Error* e) {
 
         if curline >= e.line - context_size & curline <= e.line + context_size {
             lines = append(lines, "")
-            io.asprintf(&lines[len(lines) -1], "%4d | %s", curline + 1, buf)
+            io.asprintf(&lines[len(lines) -1], "%4d | %s", curline, buf)
         }
     }
     io.fclose(fd)
