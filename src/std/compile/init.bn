@@ -1226,6 +1226,7 @@ types.AssignableInfo* compile_declaration(types.CompilerCtx* ctx, parser.Node* s
             new_error(ctx, stmt, err_msg)
         }
     }
+
     define_assignable(ctx, stmt, var_name.value, info)
 
     io.fprintf(ctx.ir, "%s = alloca %s\n", repr_assignable_id(info), var_type_repr)
@@ -1273,6 +1274,8 @@ void compile_zero_value(types.CompilerCtx* ctx, parser.Node* stmt, types.Assigna
             compile_zero_value(ctx, stmt, field_info)
             field_id = field_id + 1
         }
+    } elif string.strcmp(t.container, "error") == 0 {
+        return
     } else {
         io.printf(err_tmpl(ctx, stmt, "Default type not existent for type: %s (%s)"), info.type.container, lang_types.repr(ctx, info.type))
         return
@@ -1545,7 +1548,6 @@ types.AssignableInfo* compile_addr(types.CompilerCtx* ctx, parser.Node* stmt) {
     for addr := curr_node.children.next; addr != null; addr = addr.next.next.next {
         index := addr.next
         index_info := compile_assignable(ctx, index)
-
         index_type := lang_types.repr(ctx, index_info.type)
 
         -- automatically get correct index from slice
@@ -1573,7 +1575,7 @@ types.AssignableInfo* compile_addr(types.CompilerCtx* ctx, parser.Node* stmt) {
         if base.type.of == null {
             io.asprintf(&err_msg, "Unable to get address for type: %s", base_type)
             new_error(ctx, addr, err_msg)
-            return base
+            return (types.AssignableInfo*) null
         }
 
         new_base.type = base.type.of
@@ -1751,6 +1753,10 @@ types.AssignableInfo* compile_mono_assignable(types.CompilerCtx* ctx, parser.Nod
         var_info := compile_addr(ctx, dest)
 
         if var_info == null {
+            return (types.AssignableInfo*) null
+        }
+        if var_info.type == null {
+            -- An error has occurred in the variable declaration
             return (types.AssignableInfo*) null
         }
 

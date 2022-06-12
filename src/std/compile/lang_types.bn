@@ -65,6 +65,9 @@ str repr(types.CompilerCtx* ctx, types.Type* type) {
 
 
 bool cmp(types.CompilerCtx* ctx, types.Type* a, b) {
+    if a == null | b == null {
+        return false
+    }
     if string.strcmp(a.container, "nullptr") == 0 | string.strcmp(b.container, "nullptr") == 0 {
         return string.strcmp(a.container, "ptr") == 0 | string.strcmp(b.container, "ptr") == 0
     }
@@ -74,6 +77,7 @@ bool cmp(types.CompilerCtx* ctx, types.Type* a, b) {
     if string.strcmp(b.container, "typealias") == 0 {
         return cmp(ctx, a, b.of)
     }
+
     a_repr := repr(ctx, a)
     b_repr := repr(ctx, b)
     return string.strcmp(a_repr, b_repr) == 0

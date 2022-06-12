@@ -59,6 +59,10 @@ int main() {
     testing.setup(t, "test_checks_for_invalid_return_type")
     testing.run(t, test_checks_for_invalid_return_type(t))
 
+    testing.setup(t, "test_not_crashes_with_usage_of_erroneously_defined_var")
+    testing.run(t, test_not_crashes_with_usage_of_erroneously_defined_var(t))
+
+
     testing.cleanup(t)
     return 0
 }
@@ -257,6 +261,20 @@ int test_checks_for_invalid_return_type(testing.T* t) {
     return 0
 }
 
+
+int test_not_crashes_with_usage_of_erroneously_defined_var(testing.T* t) {
+    ctx := compile_str(`
+    void fn() {
+        a := b
+        j := a
+    }
+    `)
+    testing.assert_not_null(t, (chr*) ctx.errors)
+    if ctx.errors != null {
+        testing.assert_null(t, (chr*) ctx.errors.next)
+    }
+    return 0
+}
 
 types.CompilerCtx* compile_str(str file_content) {
     filename := ""
