@@ -3,10 +3,10 @@ import "../string" as string
 import "../sys" as sys
 import "../io" as io
 import "../ioutil" as ioutil
+import "./parser.debug" as parser_debug
 
 import "./errors" as errors
 import "./parser" as parser
-import "./parser.debug" as parser_debug
 import "./peeker" as peeker
 import "./lexer" as lexer
 import "./syntax" as syntax
@@ -47,6 +47,9 @@ int main() {
 
     testing.setup(t, "test_parses_function_type")
     testing.run(t, test_parses_function_type(t))
+
+    testing.setup(t, "test_parses_import_statement")
+    testing.run(t, test_parses_import_statement(t))
 
     testing.cleanup(t)
     return 0
@@ -103,8 +106,9 @@ void assert_node_eq(testing.T* t, parser.Node* a, b) {
 int test_grammar_parses_empty_function(testing.T* t) {
     res := match_rule("type", "void")
 
+    testing.assert_null(t, (chr*) res.err)
     if res.err != null {
-        errors.report(res.err)
+        errors.freport(t.out, res.err)
         sys.free((chr*) res.err)
         sys.free((chr*) res)
         return 0
@@ -175,10 +179,8 @@ int test_parses_function_arguments(testing.T* t) {
 int test_parses_type_alias(testing.T* t) {
     res := match_rule("statement", "alias t = struct{ \n int t, \n \n int j,\n}")
     testing.assert_null(t, (chr*) res.err)
-    return 0
-}
 
-int test_parses_global_variable(testing.T* t) {
+
     -- grammar_file := io.fopen("syntax.txt", "r")
     -- ctx := parser.new_context(grammar_file)
     -- grammar := parser.parse_grammar(ctx)
@@ -186,6 +188,10 @@ int test_parses_global_variable(testing.T* t) {
     -- parser.debug_matcher(r.matcher)
     -- io.printf("\n")
 
+    return 0
+}
+
+int test_parses_global_variable(testing.T* t) {
     res := match_rule("statement", "int something = 3")
     testing.assert_null(t, (chr*) res.err)
     return 0
@@ -221,3 +227,20 @@ int test_parses_function_definition(testing.T* t) {
     return 0
 }
 
+
+int test_parses_import_statement(testing.T* t) {
+    res := match_rule("import", `import "a" as b`)
+    testing.assert_null(t, (chr*) res.err)
+
+    -- grammar_file := ioutil.str_as_file(syntax.grammar())
+    -- ctx := parser.new_context(grammar_file)
+    -- grammar := parser.parse_grammar(ctx)
+
+    -- r := parser.find_rule(grammar, "import")
+    -- parser.print_matcher(r.matcher, 0)
+
+    if res.err != null {
+        errors.freport(t.out, res.err)
+    }
+    return 0
+}

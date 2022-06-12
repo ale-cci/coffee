@@ -152,6 +152,10 @@ types.CompilerCtx* new_context(io.File* fd, str filename) {
     grammar_ctx := parser.new_context(grammar_file)
     io.fclose(grammar_file)
     ctx.grammar = parser.parse_grammar(grammar_ctx)
+    if ctx.grammar == null {
+        io.printf("Grammar error unable to create context")
+        sys.exit(1)
+    }
 
     ctx.modules = (types.ModuleLookup*) sys.malloc(sizeof(types.ModuleLookup))
     ctx.modules.abspath = filename
@@ -198,8 +202,11 @@ bool compile_file(types.CompilerCtx* ctx, parser.Node* stmt, str filepath) {
     tokens := lexer.tokenize(p, false)
     ast := parser.ast(ctx.grammar, "start", tokens)
 
+    io.close(input_fd)
+
     if ast.err != null {
         append_error(ctx, ast.err)
+        return true
     }
     return compile(ctx, ast.node)
 }

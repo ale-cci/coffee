@@ -20,23 +20,32 @@ alias Query = struct {
 }
 
 
+chr TYPE_VALUE = 'v'
+chr TYPE_ALIAS = 'a'
+chr TYPE_TYPE = 't'
+chr TYPE_IGNORE = '\x00'
+
+
 alias Matcher = struct {
-
-    -- list of names to match.
-    -- reserved names are for a specific token type, which could be
-    -- NUMBER, STRING, WORD, CHAR, EOF
-    Query* querys,
-
     -- how many times this matcher should be applied
     -- [1] just one tim (default)
     -- [+] one or more
     -- [?] one or none
     -- [*] none or more
     chr times,
+    str tag,
 
     -- in case this matcher fails call the following matcher
     Matcher* alternative,
     Matcher* next,
+    Matcher* submatcher,
+
+    -- names to match.
+    -- reserved names are for a specific token type, which could be
+    -- NUMBER, STRING, WORD, CHAR, EOF
+    -- type of the matcher
+    chr type,
+    str value,
 }
 
 alias Rule = struct {
@@ -51,6 +60,7 @@ alias Rule = struct {
 -- `io.File*` by using the function `new_context`
 alias ParsingContext = struct {
     lexer.Token* current_token,
+    errors.Error* err,
 }
 
 
@@ -70,116 +80,143 @@ ParsingContext* new_context(io.File* f) {
 -- matcher constructor
 Matcher* new_matcher() {
     Matcher* m = (Matcher*) sys.malloc(sizeof(Matcher))
+    m.type = TYPE_IGNORE
+    m.value = ""
+    m.tag = ""
+    m.submatcher = null
     m.times = '1'
     m.alternative = null
     m.next = null
-    m.querys = null
     return m
 }
 
+str value(lexer.Token* token) {
+    if token == null {
+        return ""
+    }
+    return token.value
+}
+
+str type(lexer.Token* token) {
+    if token == null {
+        return ""
+    }
+    return token.type
+}
+
+lexer.Token* next(lexer.Token* token) {
+    if token == null {
+        return (lexer.Token*) null
+    }
+    return token.next
+}
+
+void append_submatch(Matcher* m, child) {
+    if m.submatcher == null {
+        m.submatcher = child
+        return
+    }
+    base := m.submatcher
+    for ; base.next != null; base = base.next {
+    }
+    base.next = child
+}
+
+void print_matcher(Matcher* m, int indent) {
+    if m == null {
+        io.printf("null")
+        return
+    }
+
+    buf := "%%%ds"
+    io.asprintf(&buf, buf, indent * 2)
+    io.asprintf(&buf, buf, "")
+
+    io.printf("[")
+    for match := m; match != null; match = match.next {
+        io.printf("\n%s{", buf)
+        io.printf(`\n%s"value": "%s",`, buf, match.value)
+        io.printf(`\n%s"times": "%c",`, buf, match.times)
+        io.printf(`\n%s"submatcher": `, buf)
+        print_matcher(match.submatcher, indent + 1)
+        io.printf(`\n%s"alternative": `, buf)
+        print_matcher(match.alternative, indent + 1)
+        io.printf("\n%s},", buf)
+    }
+    io.printf("\n],\n")
+}
 
 -- parse the grammar file, starting from the current "context cursor
 -- position"
 Matcher* parse_matcher(ParsingContext* ctx) {
-    Matcher* m
-    if string.strcmp(ctx.current_token.value, "(") == 0 {
-        ctx.current_token = ctx.current_token.next
-        int max_matchers = 10
-
-        m = parse_matcher(ctx)
-        -- ) | EOF
-
-        if string.strcmp(ctx.current_token.value, "|") == 0 {
-            -- parse matcher chain
-            ctx.current_token = ctx.current_token.next
-            last_matcher := m
-
-            for ; string.strcmp(ctx.current_token.value, ")") != 0 & string.strcmp(ctx.current_token.type, "EOF") != 0 ; {
-                last_matcher.alternative = parse_matcher(ctx)
-                last_matcher = last_matcher.alternative
-
-                if string.strcmp(ctx.current_token.value, "|") != 0 & string.strcmp(ctx.current_token.value, ")") != 0 {
-                    io.printf("[%d:%d] malformed grammar, expected | got '%s'\n", ctx.current_token.line, ctx.current_token.char_of_line, ctx.current_token.value)
-                    sys.exit(1)
-                }
-
-                if string.strcmp(ctx.current_token.value, "|") == 0 {
-                    ctx.current_token = ctx.current_token.next
-                }
-            }
-        }
-
-        if string.strcmp(ctx.current_token.value, ")") != 0 {
-            -- panic, wrong grammar
-            parser_error(ctx, "open brace not closed")
-        }
-        ctx.current_token = ctx.current_token.next
-
-        -- parse molteplicity
-        if string.strcmp(ctx.current_token.value, "+") == 0 {
-            ctx.current_token = ctx.current_token.next
-            m.times = '+'
-        } elif string.strcmp(ctx.current_token.value, "*") == 0 {
-            ctx.current_token = ctx.current_token.next
-            m.times = '*'
-        } elif string.strcmp(ctx.current_token.value, "?") == 0 {
-            ctx.current_token = ctx.current_token.next
-            m.times = '?'
-        }
-
-    } else {
-        m = parse_simple_matcher(ctx)
+    if string.strcmp(ctx.current_token.value, ")") == 0 {
+        return (Matcher*) null
+    }
+    if string.strcmp(ctx.current_token.value, "]") == 0 {
+        return (Matcher*) null
     }
 
-    -- if a bracket is opened, another matcher should be parsed
-    -- this allows for (a b) (c d) or a (b c)? d
-    if string.strcmp(ctx.current_token.value, "(") == 0 | string.strcmp(ctx.current_token.type, "WORD") == 0 {
-        m.next = parse_matcher(ctx)
+    m := new_matcher()
+
+    tmp_submatch := (Matcher*) null
+    for ; ctx.current_token != null ; {
+        if string.strcmp(ctx.current_token.value, "(") == 0 {
+            b_tok := ctx.current_token
+            ctx.current_token = ctx.current_token.next
+            tmp_submatch = parse_matcher(ctx)
+
+            if string.strcmp(value(ctx.current_token), ")") != 0 {
+                ctx.err = errors.from(b_tok, "Bracket not closed")
+                return (Matcher*) null
+            }
+            ctx.current_token = ctx.current_token.next
+        } elif string.strcmp(ctx.current_token.type, "WORD") == 0 | string.strcmp(ctx.current_token.type, "STRING") == 0 {
+            tmp_submatch = parse_single_token(ctx, ctx.current_token)
+            ctx.current_token = next(ctx.current_token)
+        } elif string.strcmp(ctx.current_token.value, "|") == 0 {
+            ctx.current_token = next(ctx.current_token)
+            m.submatcher.alternative = parse_matcher(ctx)
+            break
+        } else {
+            break
+        }
+
+        nv := value(ctx.current_token)
+        if string.strcmp(nv, "+") == 0 {
+            tmp_submatch.times = '+'
+            ctx.current_token = next(ctx.current_token)
+        } elif string.strcmp(nv, "*") == 0 {
+            tmp_submatch.times = '*'
+            ctx.current_token = next(ctx.current_token)
+        } elif string.strcmp(nv, "?") == 0 {
+            tmp_submatch.times = '?'
+            ctx.current_token = next(ctx.current_token)
+        }
+
+        append_submatch(m, tmp_submatch)
+
     }
 
     return m
 }
 
 
-
-Matcher* parse_simple_matcher(ParsingContext* ctx) {
-    Matcher* m = new_matcher()
-
-    -- count number of 'words'
-    int count
-    ptr := ctx.current_token
-    for count = 0; string.strcmp(ptr.type, "WORD") == 0 | string.strcmp(ptr.type, "STRING") == 0; {
-        count = count + 1
-        ptr = ptr.next
+Matcher* parse_single_token(ParsingContext* ctx, lexer.Token* t) {
+    if t == null {
+        return (Matcher*) null
     }
-
-    m.querys = (Query*) sys.malloc(sizeof(Query))
-
-    q := m.querys
-    for i := 0; i < count; i = i + 1 {
-        if i > 0 {
-            q.next = (Query*) sys.malloc(sizeof(Query))
-            q = q.next
-        }
-
-        -- STRING it's used to match by token value
-        -- WORD UPPERCASE is used to match by token type
-        -- WORD LOWERCASE is used to alias another rule
-        if string.strcmp(ctx.current_token.type, "STRING") == 0 {
-            q.type = 'v'
-        } elif string.is_lower(ctx.current_token.value) {
-            q.type = 'a'
-        } elif string.is_upper(ctx.current_token.value) {
-            q.type = 't'
-        } else {
-            io.printf("rule name: '%s'\n", ctx.current_token.value)
-            parser_error(ctx, "Some characters are not allowed in this rule name")
-        }
-        q.value = ctx.current_token.value
-        q.next = null
-        ctx.current_token = ctx.current_token.next
+    m := new_matcher()
+    m.value = t.value
+    if string.strcmp(type(t), "STRING") == 0 {
+        m.type = TYPE_VALUE
+    } elif string.is_lower(value(t)) {
+        m.type = TYPE_ALIAS
+    } elif string.is_upper(value(t)) {
+        m.type = TYPE_TYPE
+    } else {
+        ctx.err = errors.from(t, "Some characters are not allowed in this rule name")
+        return (Matcher*) null
     }
-
     return m
 }
 
@@ -211,8 +248,17 @@ Rule* parse_rule(ParsingContext* ctx) {
     rule.name = rule_name
     rule.transformer = transformer_name
 
-
     rule.matcher = parse_matcher(ctx)
+    ctx.current_token = ctx.current_token
+    if ctx.current_token != null {
+        if string.strcmp(type(ctx.current_token), "NL") != 0 & string.strcmp(type(ctx.current_token), "EOF") != 0 {
+            io.printf("[%d, %d]: rule must terminate with newline, got: '%s' %s\n", ctx.current_token.line, ctx.current_token.char_of_line, type(ctx.current_token), value(ctx.current_token))
+            return (Rule*) null
+        }
+    }
+    if rule.matcher == null {
+        return (Rule*) null
+    }
     return rule
 }
 
@@ -234,7 +280,12 @@ Rule** parse_grammar(ParsingContext* ctx) {
 
     for i := 0; string.strcmp(ctx.current_token.type, "EOF") != 0; {
         if string.strcmp(ctx.current_token.type, "NL") != 0 {
-            grammar[i] = parse_rule(ctx)
+            rule := parse_rule(ctx)
+            if rule == null {
+                errors.report(ctx.err)
+                return (Rule**) null
+            }
+            grammar[i] = rule
             i = i + 1
         } else {
             ctx.current_token = ctx.current_token.next
@@ -260,8 +311,9 @@ alias Node = struct {
     Node* next,      -- required for a list of child nodes
 }
 
-Node* new_node(lexer.Token* t, chr* type, chr* value) {
+Node* new_node(lexer.Token* t, str type, str value) {
     node := (Node*) sys.malloc(sizeof(Node))
+
     node.type = type
     node.value = value
     node.line = t.line
@@ -314,6 +366,7 @@ void child_pop(Node* parent) {
 alias AstContext = struct {
     lexer.Token* current_token,
     Rule** grammar,
+    errors.Error* err,
 }
 
 
@@ -334,144 +387,6 @@ alias ParseResult = struct {
 }
 
 
--- mutates base node, assigning to it the parsed results
-errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
-    Node* child
-    start_token := c.current_token
-
-    new_children := 0
-    errors.Error* err = (errors.Error*) null
-
-    for q := m.querys; q != null & err == null; q = q.next {
-        if q.type == 'v' {
-            -- match by exact token value
-            qv_len := string.strlen(q.value) -2
-            tmp_buff := sys.malloc(qv_len + 1)
-            io.sscanf(q.value, `"%[^"]"`, tmp_buff)
-
-            if string.strncmp(tmp_buff, c.current_token.value, qv_len) == 0 & qv_len == string.strlen(c.current_token.value) {
-                -- we have a match on this node
-                child = new_node(c.current_token, c.current_token.type, c.current_token.value)
-                child_append(base, child)
-                new_children = new_children + 1
-
-                c.current_token = c.current_token.next
-            } else {
-                -- match failure, depending on the parsing mode choose the
-                -- appropriate outcome
-                token_value := c.current_token.value
-                if token_value == null {
-                    token_value = "(null)"
-                }
-
-                err_buf := ""
-                io.asprintf(&err_buf, `Unable to match token by value: %s != "%s"`, q.value, c.current_token.value)
-                err = errors.from(c.current_token, err_buf)
-            }
-            sys.free(tmp_buff)
-
-        } elif q.type == 't' {
-            -- match by token type
-            if string.strcmp(q.value, c.current_token.type) == 0 {
-                -- we have a match
-                child = new_node(c.current_token, c.current_token.type, c.current_token.value)
-                child_append(base, child)
-                new_children = new_children + 1
-                c.current_token = c.current_token.next
-            } else {
-                err_fmt_t := "%s: %s != %s"
-                err_msg_t := "unable to match token by type"
-                err_len_t := string.strlen(err_fmt_t) + string.strlen(err_msg_t) + string.strlen(q.value) + string.strlen(c.current_token.type)
-                err_buf_t := sys.malloc(err_len_t)
-
-                io.snprintf(err_buf_t, err_len_t, err_fmt_t, err_msg_t, q.value, c.current_token.type)
-                err = errors.from(c.current_token, err_buf_t)
-            }
-
-        } elif q.type == 'a' {
-            -- retrieve parse rule
-            alias_rule := find_rule(c.grammar, q.value)
-            if alias_rule == null {
-                err = errors.from(c.current_token, "unable to retrieve alias rule")
-            } else {
-                parse_result := parse_to_ast(c, alias_rule)
-
-                if parse_result.err != null {
-                    err = parse_result.err
-                } else {
-                    child_append(base, parse_result.node)
-                    new_children = new_children + 1
-                }
-                sys.free((chr*) parse_result)
-            }
-
-        } else {
-            sys.assert(false, "parser.bn: query matcher not implemented")
-        }
-    }
-
-    if err != null {
-        -- restore previous token position
-        c.current_token = start_token
-        for i := 0; i < new_children; i = i + 1 {
-            child_pop(base)
-        }
-    }
-
-
-    if m.alternative != null & err != null {
-        -- ignore errors on or matcher
-        new_err := parse_query(c, m.alternative, base)
-        if new_err == null {
-            err = null
-        } else {
-            sys.free((chr*) new_err)
-        }
-    }
-
-
-    if m.times == '1' {
-        -- done
-    } elif m.times == '+' & err == null {
-        -- it should be ensured that this matcher runs at lest one time.
-        -- and it should not run the 'parse_query' with 'm.next'
-        -- multiple times, in order to avoid failures.
-
-        -- therefor the execution of the 'next' is delegated to the last one
-        -- where the next has a failure
-        err = parse_query(c, m, base)
-        if err != null {
-            sys.free((chr*) err)
-            err = null
-        } else {
-            return (errors.Error*) null
-        }
-
-    } elif m.times == '?' & err != null {
-        sys.free((chr*) err)
-        err = null
-
-    } elif m.times == '*' {
-        -- match one or more times
-        if err != null {
-            sys.free((chr*) err)
-            err = null
-        } else {
-            -- a 'star' matcher ends it's matching when error is not null
-            -- when the error is null, the execution is delegated to
-            -- at the last match.
-            return parse_query(c, m, base)
-        }
-    }
-
-    if m.next != null & err == null {
-        err = parse_query(c, m.next, base)
-    }
-
-    return (errors.Error*) err
-}
-
-
 -- start parsing the list of tokens by applying a specific rule
 ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
     res := (ParseResult*) sys.malloc(sizeof(ParseResult))
@@ -480,10 +395,120 @@ ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
     start_match := c.current_token
 
     -- start matching querys tokens
-    res.err = parse_query(c, rule.matcher, res.node)
+    -- res.err = parse_query(c, rule.matcher, res.node)
+    res.err = execute_matcher(c, rule, rule.matcher, res.node)
     return res
 }
 
+
+-- appends match results to root.
+--
+errors.Error* execute_matcher(AstContext* ctx, Rule* rule, Matcher* matcher, Node* root) {
+    -- io.printf("Matching: %s\n", rule.name)
+    err := (errors.Error*) null
+    for m := matcher; m != null; m = m.alternative {
+        err = execute_matcher_straight(ctx, rule, m, root)
+        if err == null {
+            break
+        }
+    }
+    return err
+}
+
+errors.Error* execute_matcher_straight(AstContext* ctx, Rule* rule, Matcher* matcher, Node* root) {
+    buf := ""
+    -- io.printf("Executing rule: %s '%p'\n", rule.name, matcher)
+
+    err := (errors.Error*) null
+    anchor := ctx.current_token
+    child := (Node*) null
+
+    if matcher.type == TYPE_IGNORE {
+        if matcher.submatcher != null {
+            err = execute_matcher(ctx, rule, matcher.submatcher, root)
+        }
+    } elif matcher.type == TYPE_VALUE {
+        if matcher.value == null {
+            io.printf("Matcher type is null\n")
+        }
+        buf := sys.malloc(string.strlen(matcher.value) -1)
+        io.sscanf(matcher.value, `"%[^"]"`, buf)
+        if string.strcmp(buf, ctx.current_token.value) != 0 {
+            io.asprintf(
+                &buf,
+                `Unable to match token by value: %s != "%s"`,
+                buf,
+                ctx.current_token.value,
+            )
+
+            return errors.from(ctx.current_token, buf)
+        }
+        child = new_node(ctx.current_token, ctx.current_token.type, ctx.current_token.value)
+        ctx.current_token = ctx.current_token.next
+    } elif matcher.type == TYPE_TYPE {
+        if matcher.value == null {
+            io.printf("Matcher type is null\n")
+        }
+        if string.strcmp(matcher.value, ctx.current_token.type) != 0 {
+            io.asprintf(
+                &buf,
+                `Unable to match token by type, expecing "%s" got "%s"`,
+                matcher.value,
+                ctx.current_token.type,
+            )
+            return errors.from(ctx.current_token, buf)
+        }
+        child = new_node(ctx.current_token, ctx.current_token.type, ctx.current_token.value)
+        ctx.current_token = ctx.current_token.next
+    } elif matcher.type == TYPE_ALIAS {
+        alias_rule := find_rule(ctx.grammar, matcher.value)
+        if alias_rule == null {
+            return errors.from(ctx.current_token, "Unable to find alias rule")
+        }
+
+        parse_result := parse_to_ast(ctx, alias_rule)
+        if parse_result.err != null {
+            return parse_result.err
+        }
+        child = parse_result.node
+    } else {
+        sys.assert(false, "CRITICAL: Parser not implemented")
+    }
+
+    if child != null {
+        child_append(root, child)
+    }
+
+    if matcher.times == '?' & err != null {
+        err = null
+    } elif matcher.times == '*' {
+        if err != null {
+            err = null
+        } else {
+            return execute_matcher(ctx, rule, matcher, root)
+        }
+    } elif matcher.times == '+' & err == null {
+        err = execute_matcher(ctx, rule, matcher, root)
+        if err != null {
+            err = null
+        } else {
+            return (errors.Error*) null
+        }
+    }
+
+
+    if matcher.next != null & err == null {
+        err = execute_matcher(ctx, rule, matcher.next, root)
+    }
+    if err != null {
+        ctx.current_token = anchor
+        if child != null {
+            child_pop(root)
+        }
+    }
+
+    return err
+}
 
 
 -- Parse a list of tokens

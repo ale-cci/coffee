@@ -101,25 +101,23 @@ int should_parse_one_word_matcher(testing.T* t) {
     -- testing.assert_not_null(t, (chr*) matcher)
     testing.assert_null(t, (chr*) matcher.alternative)
     testing.assert_equal_chr(t, '1', matcher.times)
-    testing.assert_not_null(t, (chr*) matcher.querys)
 
-    qs := matcher.querys
-    testing.assert_equal_chr(t, 't', qs.type)
-    testing.assert_null(t, (chr*) qs.next)
-    testing.assert_equal_str(t, "NUMBER", qs.value)
+    testing.assert_equal_chr(t, parser.TYPE_TYPE, matcher.submatcher.type)
+    testing.assert_equal_str(t, "NUMBER", matcher.submatcher.value)
+    testing.assert_null(t, (chr*) matcher.submatcher.next)
     return 0
 }
 
 int should_parse_lowercase_words_as_rule_alias(testing.T* t) {
     matcher := build_matcher("number")
-    testing.assert_equal_chr(t, 'a', matcher.querys.type)
+    testing.assert_equal_chr(t, 'a', matcher.submatcher.type)
     return 0
 }
 
 int should_parse_string_as_value_matcher(testing.T* t) {
     matcher := build_matcher(`"NUMBER"`)
 
-    testing.assert_equal_chr(t, 'v', matcher.querys.type)
+    testing.assert_equal_chr(t, 'v', matcher.submatcher.type)
     return 0
 }
 
@@ -128,7 +126,7 @@ int should_parse_two_consecutive_tokens(testing.T* t) {
 
     testing.assert_null(t, (chr*) matcher.alternative)
 
-    qs := matcher.querys
+    qs := matcher.submatcher
     testing.assert_equal_str(t, "a", qs.value)
     testing.assert_not_null(t, (chr*) qs.next)
     if qs.next == null {
@@ -141,28 +139,31 @@ int should_parse_two_consecutive_tokens(testing.T* t) {
 
 int should_parse_catenated_matchers(testing.T* t) {
     matcher := build_matcher("(a) (b)")
-    testing.assert_not_null(t, (chr*) matcher.next)
+    testing.assert_not_null(t, (chr*) matcher.submatcher.next)
     return 0
 }
 
 int should_parse_repeating_condition_plus(testing.T* t) {
     matcher := build_matcher("(a) + ")
-    testing.assert_equal_chr(t, '+', matcher.times)
+    testing.assert_equal_chr(t, '+', matcher.submatcher.times)
     return 0
 }
 
 int should_parse_repeating_condition_times(testing.T* t) {
     matcher := build_matcher("(a) * ")
-    testing.assert_equal_chr(t, '*', matcher.times)
+    testing.assert_equal_chr(t, '*', matcher.submatcher.times)
     return 0
 }
 
 int should_parse_or_condition(testing.T* t) {
     matcher := build_matcher("(a | b)")
 
-    testing.assert_not_null(t, (chr*) matcher.querys)
-    testing.assert_not_null(t, (chr*) matcher.alternative)
-    testing.assert_null(t, (chr*) matcher.alternative.alternative)
+    testing.assert_not_null(t, (chr*) matcher.submatcher)
+    testing.assert_not_null(t, (chr*) matcher.submatcher.submatcher.alternative)
+
+    if matcher.alternative != null {
+        testing.assert_null(t, (chr*) matcher.submatcher.submatcher.alternative.alternative)
+    }
     testing.assert_equal_chr(t, '1', matcher.times)
 
     return 0
@@ -170,9 +171,9 @@ int should_parse_or_condition(testing.T* t) {
 
 int should_parse_repeating_condition_question(testing.T* t) {
     matcher := build_matcher("(a b)?")
-    testing.assert_not_null(t, (chr*) matcher.querys)
+    testing.assert_not_null(t, (chr*) matcher.submatcher)
     testing.assert_null(t, (chr*) matcher.alternative)
-    testing.assert_equal_chr(t, '?', matcher.times)
+    testing.assert_equal_chr(t, '?', matcher.submatcher.times)
     return 0
 }
 
@@ -183,8 +184,8 @@ int should_parse_matching_rule(testing.T* t) {
     sys.free((chr*) ctx)
 
     testing.assert_equal_str(t, "rule_name", rule.name)
-    testing.assert_equal_str(t, "example", rule.matcher.querys.value)
-    testing.assert_equal_str(t, "pattern", rule.matcher.querys.next.value)
+    testing.assert_equal_str(t, "example", rule.matcher.submatcher.value)
+    testing.assert_equal_str(t, "pattern", rule.matcher.submatcher.next.value)
     return 0
 }
 
@@ -382,7 +383,8 @@ int should_report_error_if_element_is_not_matched(testing.T* t) {
 
     result := parser.ast(grammar, "start", source_tokens)
     testing.assert_not_null(t, (chr*) result.err)
-    testing.assert_equal_int(t, 5, result.err.char_of_line)
+    testing.assert_equal_int(t, 1, result.err.line)
+    testing.assert_equal_int(t, 3, result.err.char_of_line)
     return 0
 }
 
