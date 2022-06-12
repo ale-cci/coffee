@@ -34,7 +34,7 @@ str _context(Error* e) {
     }
 
     int curline = 0
-    int context_size = 1
+    int context_size = 2
 
     str buf = (chr*) null
     int bufsize
@@ -55,6 +55,7 @@ str _context(Error* e) {
         io.asprintf(&buf, "%s%s", buf, lines[i])
     }
 
+    io.asprintf(&buf, "\n%s\n", buf)
     return buf
 }
 
