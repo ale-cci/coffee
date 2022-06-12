@@ -25,10 +25,50 @@ Error* new(chr* filename, int line, char_of_line, chr* message) {
     return e
 }
 
+str _context(Error* e) {
+    str[] lines
+    fd := io.fopen(e.filename, "r")
+    if fd == null {
+        -- failed to open file, skipping context
+        return ""
+    }
+
+    int curline = 0
+    int context_size = 1
+
+    str buf = (chr*) null
+    int bufsize
+    for curline := 0; curline <= e.line + context_size ; curline = curline + 1 {
+        if io.getline(&buf, &bufsize, fd) < 0 {
+            break
+        }
+
+        if curline >= e.line - context_size & curline < e.line + context_size {
+            lines = append(lines, "")
+            io.asprintf(&lines[len(lines) -1], "%4d | %s", curline + 1, buf)
+        }
+    }
+    io.fclose(fd)
+
+    buf = ""
+    for i := 0; i < len(lines); i = i + 1 {
+        io.asprintf(&buf, "%s%s", buf, lines[i])
+    }
+
+    return buf
+}
+
+str to_string(Error* e) {
+    buf := ""
+    ctx := _context(e)
+    io.asprintf(&buf, "[%s %d:%d] error: %s\n%s", e.filename, e.line, e.char_of_line, e.message, ctx)
+    return buf
+}
+
 void report(Error* e) {
-    io.printf("[%s %d:%d] error: %s\n", e.filename, e.line, e.char_of_line, e.message)
+    io.printf(to_string(e))
 }
 
 void freport(io.File* fd, Error* e) {
-    io.fprintf(fd, "[%s %d:%d] error: %s\n", e.filename, e.line, e.char_of_line, e.message)
+    io.fprintf(fd, to_string(e))
 }
