@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 COFFEE_EXE="coffee"
 COFFEE_ROOT=${COFEE_BIN:-$HOME/.coffee}
 
@@ -13,7 +14,7 @@ case $1 in
         "$TEST_EXE" main.bn
 
         find . -name '*.test.bn' -exec sh -c "echo && ${TEST_EXE} run {}" \;
-        rm -rf "${TEST_EXE}" main
+        rm -rf "${TEST_EXE}" main debug.ll
         ;;
 
 
