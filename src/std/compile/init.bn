@@ -1082,7 +1082,7 @@ void check_n_add_implicit_return(types.CompilerCtx* ctx, parser.Node* stmt, type
     exprs := skip_to_type(stmt.children, "expressions")
     for ci := exprs.children; ci != null; ci = ci.next {
         -- valid instructions are empty new lines and... OPERATOR?
-        if string.strcmp(ci.type, "NL") != 0 {
+        if string.strcmp(ci.children.type, "NL") != 0 {
             li = ci
         }
     }
