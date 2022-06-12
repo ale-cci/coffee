@@ -53,6 +53,12 @@ int main() {
     testing.setup(t, "test_does_not_crash_on_undefined_var")
     testing.run(t, test_does_not_crash_on_undefined_var(t))
 
+    testing.setup(t, "test_alerts_undefined_variable_in_function_call")
+    testing.run(t, test_alerts_undefined_variable_in_function_call(t))
+
+    testing.setup(t, "test_checks_for_invalid_return_type")
+    testing.run(t, test_checks_for_invalid_return_type(t))
+
     testing.cleanup(t)
     return 0
 }
@@ -222,6 +228,35 @@ void main() {
     }
     return 0
 }
+
+
+int test_alerts_undefined_variable_in_function_call(testing.T* t) {
+    ctx := compile_str(`
+    void a(int b) {
+    }
+    void fn() {
+        a(c)
+    }
+    `)
+    testing.assert_not_null(t, (chr*) ctx.errors)
+    if ctx.errors != null {
+        testing.assert_contains_str(t, ctx.errors.err.message, "'c' was not declared in this scope")
+    }
+    return 0
+}
+
+int test_checks_for_invalid_return_type(testing.T* t) {
+    ctx := compile_str(`
+    void fn() {
+        return 4
+    }`)
+    testing.assert_not_null(t, (chr*) ctx.errors)
+    if ctx.errors != null {
+        testing.assert_contains_str(t, ctx.errors.err.message, "return type")
+    }
+    return 0
+}
+
 
 types.CompilerCtx* compile_str(str file_content) {
     filename := ""

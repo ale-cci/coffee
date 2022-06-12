@@ -48,6 +48,7 @@ alias Scope = struct {
     chr* begin_id,
     chr* end_id,
     Scope* prev,
+    Type* return_type,
 }
 
 alias GlobalName = struct {

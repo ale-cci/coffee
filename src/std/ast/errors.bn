@@ -34,16 +34,16 @@ str _context(Error* e) {
     }
 
     int curline = 0
-    int context_size = 2
+    int context_size = 1
 
     str buf = (chr*) null
     int bufsize
-    for curline := 0; curline <= e.line + context_size ; curline = curline + 1 {
+    for curline := 1; curline <= e.line + context_size ; curline = curline + 1 {
         if io.getline(&buf, &bufsize, fd) < 0 {
             break
         }
 
-        if curline >= e.line - context_size & curline < e.line + context_size {
+        if curline >= e.line - context_size & curline <= e.line + context_size {
             lines = append(lines, "")
             io.asprintf(&lines[len(lines) -1], "%4d | %s", curline + 1, buf)
         }
@@ -67,9 +67,9 @@ str to_string(Error* e) {
 }
 
 void report(Error* e) {
-    io.printf(to_string(e))
+    io.printf("%s", to_string(e))
 }
 
 void freport(io.File* fd, Error* e) {
-    io.fprintf(fd, to_string(e))
+    io.fprintf(fd, "%s", to_string(e))
 }

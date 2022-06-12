@@ -1,0 +1,81 @@
+import "../io" as io
+import "../ioutil" as ioutil
+import "../string" as string
+import "../sys" as sys
+import "./types" as types
+
+
+str repr(types.CompilerCtx* ctx, types.Type* type) {
+    if type == null {
+        return "?"
+    }
+    sys.assert(type.container != null, "called 'repr' with malformed type, container is null.")
+    chr* buf
+
+    if string.strcmp(type.container, "int") == 0 {
+        return "i32"
+    } elif string.strcmp(type.container, "void") == 0 {
+        return "void"
+    } elif string.strcmp(type.container, "bool") == 0 {
+        return "i1"
+    } elif string.strcmp(type.container, "nullptr") == 0 {
+        return "ptr"
+    } elif string.strcmp(type.container, "chr") == 0 {
+        return "i8"
+    } elif string.strcmp(type.container, "function") == 0 {
+        io.asprintf(&buf, "%s(", repr(ctx, type.of))
+        for p := type.of.next; p != null; p = p.next {
+            if p != type.of.next {
+                io.asprintf(&buf, "%s,", buf)
+            }
+            io.asprintf(&buf, "%s%s", buf, repr(ctx, p))
+        }
+        io.asprintf(&buf, "%s)", buf)
+        return buf
+    } elif string.strcmp(type.container, "ptr") == 0 {
+        io.asprintf(&buf, "%s*", repr(ctx, type.of))
+        return buf
+    } elif string.strcmp(type.container, "struct") == 0 {
+        -- io.asprintf(&buf, "{%s}", repr(type.of)
+        io.asprintf(&buf, "{")
+        for t := type.of; t != null; t = t.next {
+            if t != type.of {
+                io.asprintf(&buf, "%s,", buf)
+            }
+            io.asprintf(&buf, "%s%s", buf, repr(ctx, t))
+        }
+        io.asprintf(&buf, "%s}", buf)
+        return buf
+    } elif string.strcmp(type.container, "array") == 0 {
+        io.asprintf(&buf, "[%s x %s]", type.of.next.container, repr(ctx, type.of))
+        return buf
+    } elif string.strcmp(type.container, "typealias") == 0 {
+        io.asprintf(&buf, "%%%s", type.repr)
+        return buf
+    } elif string.strcmp(type.container, "vararg") == 0 {
+        return "..."
+    } elif string.strcmp(type.container, "error") == 0 {
+        -- syntax error occurred before, not returning anything as type container
+    } else {
+        io.printf(":coffee-error: 'repr' not implemented for type '%s'\n", type.container)
+    }
+
+    return (chr*) null
+}
+
+
+bool cmp(types.CompilerCtx* ctx, types.Type* a, b) {
+    if string.strcmp(a.container, "nullptr") == 0 | string.strcmp(b.container, "nullptr") == 0 {
+        return string.strcmp(a.container, "ptr") == 0 | string.strcmp(b.container, "ptr") == 0
+    }
+    if string.strcmp(a.container, "typealias") == 0 {
+        return cmp(ctx, a.of, b)
+    }
+    if string.strcmp(b.container, "typealias") == 0 {
+        return cmp(ctx, a, b.of)
+    }
+    a_repr := repr(ctx, a)
+    b_repr := repr(ctx, b)
+    return string.strcmp(a_repr, b_repr) == 0
+}
+
