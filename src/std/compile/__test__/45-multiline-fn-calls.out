@@ -1,0 +1,13 @@
+define void @a.v.i.i.i(i32 %.a.arg, i32 %.b.arg, i32 %.c.arg) {
+%a = alloca i32
+store i32 %.a.arg, i32* %a
+%b = alloca i32
+store i32 %.b.arg, i32* %b
+%c = alloca i32
+store i32 %.c.arg, i32* %c
+ret void
+}
+define void @fn.v() {
+call void(i32,i32,i32) @a.v.i.i.i(i32 1, i32 2, i32 3)
+ret void
+}

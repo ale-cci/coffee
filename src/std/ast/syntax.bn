@@ -61,7 +61,7 @@ declaration: ( type WORD "=" assignable | WORD ":" "=" assignable | type WORD )
 
 assignment: destination "=" assignable
 
-fn_args: assignable ( "," assignable )*
+fn_args: ( (assignable ( "," assignable )* ) | ( NL ( assignable "," NL )* ) )
 
 fn_call: (destination "(") (fn_args)? (")")
 
