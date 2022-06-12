@@ -346,7 +346,7 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
             -- match by exact token value
             qv_len := string.strlen(q.value) -2
             tmp_buff := sys.malloc(qv_len + 1)
-            io.sscanf(q.value, "\22%[^\22]\22", tmp_buff)
+            io.sscanf(q.value, `"%[^"]"`, tmp_buff)
 
             if string.strncmp(tmp_buff, c.current_token.value, qv_len) == 0 & qv_len == string.strlen(c.current_token.value) {
                 -- we have a match on this node
@@ -363,12 +363,8 @@ errors.Error* parse_query(AstContext* c, Matcher* m, Node* base) {
                     token_value = "(null)"
                 }
 
-                err_fmt := "%s: %s != \22%s\22"
-                err_msg := "unable to match token by value"
-                err_len := string.strlen(err_msg) + string.strlen(tmp_buff) + string.strlen(token_value) + string.strlen(err_fmt) - 3 * 2 + 1
-                err_buf := sys.malloc(err_len)
-
-                io.snprintf(err_buf, err_len, err_fmt, err_msg, tmp_buff, token_value)
+                err_buf := ""
+                io.asprintf(&err_buf, `Unable to match token by value: %s != "%s"`, q.value, c.current_token.value)
                 err = errors.from(c.current_token, err_buf)
             }
             sys.free(tmp_buff)
