@@ -96,3 +96,5 @@ extern int ftell(File* f)
 
 extern void rewind(File* f)
 
+extern int getline(str* lineptr, int* linesize, File* stream)
+

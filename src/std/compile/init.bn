@@ -1209,14 +1209,7 @@ types.AssignableInfo* compile_declaration(types.CompilerCtx* ctx, parser.Node* s
     var_type_repr := type_repr(ctx, info.type)
     if a_info != null {
         a_type_repr := type_repr(ctx, a_info.type)
-        type_error := false
-        if string.strlen(a_type_repr) != string.strlen(var_type_repr) {
-            type_error = true
-        } elif string.strcmp(a_type_repr, var_type_repr) != 0 {
-            type_error = true
-        }
-
-        if type_error {
+        if is_same_type(ctx, a_info.type, info.type) == false {
             chr* err_msg = (chr*) null
             io.asprintf(&err_msg, "cannot assign type '%s' to variable of type '%s'", a_type_repr, var_type_repr)
             new_error(ctx, stmt, err_msg)
