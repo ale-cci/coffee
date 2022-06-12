@@ -79,6 +79,9 @@ int main() {
     testing.setup(t, "test_fully_compares_words_by_value")
     testing.run(t, test_fully_compares_words_by_value(t))
 
+    testing.setup(t, "test_parses_name_of_rule")
+    testing.run(t, test_parses_name_of_rule(t))
+
     testing.cleanup(t)
     return 0
 }
@@ -414,3 +417,9 @@ int test_fully_compares_words_by_value(testing.T* t) {
     return 0
 }
 
+
+int test_parses_name_of_rule(testing.T* t) {
+    grammar := gen_grammar(`start[staple]: "a"`)
+    testing.assert_not_null(t, (chr*) grammar)
+    return 0
+}

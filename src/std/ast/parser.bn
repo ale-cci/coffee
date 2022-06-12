@@ -53,6 +53,7 @@ alias ParsingContext = struct {
 }
 
 
+
 ParsingContext* new_context(io.File* f) {
     ParsingContext* ctx = (ParsingContext*) sys.malloc(sizeof(ParsingContext))
 
@@ -190,9 +191,19 @@ Rule* parse_rule(ParsingContext* ctx) {
     }
     ctx.current_token = ctx.current_token.next
 
+    if string.strcmp(ctx.current_token.value, "[") == 0 {
+        for ; string.strcmp(ctx.current_token.value, ":") != 0; ctx.current_token = ctx.current_token.next {
+            if ctx.current_token == null {
+                break
+            }
+        }
+    }
+
     if string.strcmp(ctx.current_token.value, ":") != 0 {
         io.printf(ctx.current_token.value)
-        parser_error(ctx, "expected : after rule name")
+        err := ""
+        io.asprintf(&err, "expected : after rule name, got %s", ctx.current_token.value)
+        parser_error(ctx, err)
     }
     ctx.current_token = ctx.current_token.next
 
@@ -204,11 +215,14 @@ Rule* parse_rule(ParsingContext* ctx) {
     return rule
 }
 
+
 void parser_error(ParsingContext* ctx, chr* error) {
     e := errors.from(ctx.current_token, error)
     errors.report(e)
     sys.exit(1)
 }
+
+
 
 -- a grammar is buildt by one or more rules,
 -- the entire grammar describes how the ast is buildt
@@ -232,10 +246,10 @@ Rule** parse_grammar(ParsingContext* ctx) {
 
 -- basic node for 'ast' representation
 alias Node = struct {
-    chr* type,
-    chr* value,
-    chr* filename,
+    str type,
+    str value,
 
+    str filename,
     int line,
     int char_of_line,
 
@@ -472,6 +486,7 @@ ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
     res.err = parse_query(c, rule.matcher, res.node)
     return res
 }
+
 
 
 -- Parse a list of tokens
