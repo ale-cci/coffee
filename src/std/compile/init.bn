@@ -1883,9 +1883,6 @@ types.AssignableInfo* define_string(types.CompilerCtx* ctx, str text) {
     io.asprintf(&tmp_buff, ".str%d", new_uid(ctx))
     set_assignable_id(info, SCOPE_GLOBAL, tmp_buff)
 
-    -- global := (types.GlobalName*) sys.malloc(sizeof(types.GlobalName))
-    -- global.identifier = llvm.string_to_llvm(text)
-
     info.type = new_type()
     info.type.container = "array"
     info.type.of = new_type()
