@@ -88,6 +88,12 @@ int main() {
     testing.setup(t, "test_matcher_assigns_tag_to_node")
     testing.run(t, test_matcher_assigns_tag_to_node(t))
 
+    testing.setup(t, "test_assigns_transformer_to_node")
+    testing.run(t, test_assigns_transformer_to_node(t))
+
+    testing.setup(t, "test_assigns_transformer_from_submatchers")
+    testing.run(t, test_assigns_transformer_from_submatchers(t))
+
     testing.cleanup(t)
     return 0
 }
@@ -455,6 +461,7 @@ int test_matcher_assigns_tag_to_node(testing.T* t) {
     p := peeker.new(fd)
     source_tokens := lexer.tokenize(p, false)
     results := parser.ast(grammar, "start", source_tokens)
+    io.close(fd)
 
     node := parser.find_tag(results.node, "tag")
     testing.assert_not_null(t, (chr*) node)
@@ -464,3 +471,43 @@ int test_matcher_assigns_tag_to_node(testing.T* t) {
     return 0
 }
 
+
+int test_assigns_transformer_to_node(testing.T* t) {
+    grammar := gen_grammar(`start[x]: "s"`)
+    source := testing.tempfile("s a")
+
+    fd := io.fileno(source)
+    p := peeker.new(fd)
+    source_tokens := lexer.tokenize(p, false)
+    io.close(fd)
+
+    results := parser.ast(grammar, "start", source_tokens)
+    testing.assert_not_null(t, (chr*) results.node)
+
+    if results.node != null {
+        testing.assert_equal_str(t, results.node.transformer, "x")
+    }
+    return 0
+}
+
+
+int test_assigns_transformer_from_submatchers(testing.T* t) {
+    grammar := gen_grammar(`
+        start: "s" after
+        after[x]: "a"
+    `)
+    source := testing.tempfile("s a")
+
+    fd := io.fileno(source)
+    p := peeker.new(fd)
+    source_tokens := lexer.tokenize(p, false)
+    io.close(fd)
+
+    results := parser.ast(grammar, "start", source_tokens)
+    testing.assert_not_null(t, (chr*) results.node)
+
+    if results.node != null {
+        testing.assert_equal_str(t, results.node.children.next.transformer, "x")
+    }
+    return 0
+}

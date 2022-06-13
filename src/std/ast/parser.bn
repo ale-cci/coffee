@@ -280,6 +280,7 @@ alias Node = struct {
     int line,
     int char_of_line,
 
+    str transformer,
     str tag,
 
     Node* parent,
@@ -291,6 +292,7 @@ alias Node = struct {
 Node* new_node(lexer.Token* t, str type, str value, str tag) {
     node := (Node*) sys.malloc(sizeof(Node))
 
+    node.transformer = ""
     node.type = type
     node.value = value
     node.line = t.line
@@ -390,6 +392,7 @@ ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
     res.err = null
     res.node = new_node(c.current_token, rule.name, (chr*) null, rule.matcher.tag)
     start_match := c.current_token
+    res.node.transformer = rule.transformer
 
     -- start matching querys tokens
     -- res.err = parse_query(c, rule.matcher, res.node)
@@ -472,6 +475,7 @@ errors.Error* execute_matcher_straight(AstContext* ctx, Rule* rule, Matcher* mat
             return parse_result.err
         }
         child = parse_result.node
+        child.transformer = alias_rule.transformer
     } else {
         sys.assert(false, "CRITICAL: Parser not implemented")
     }
@@ -557,3 +561,5 @@ Node* find_tag(Node* root, str tag) {
     -- BFS
     return (Node*) null -- nothing was found
 }
+
+
