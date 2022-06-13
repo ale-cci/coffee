@@ -206,9 +206,22 @@ bool compile_file(types.CompilerCtx* ctx, parser.Node* stmt, str filepath) {
 
     if ast.err != null {
         append_error(ctx, ast.err)
+        report_errors(ctx)
         return true
     }
     return compile(ctx, ast.node)
+}
+
+void report_errors(types.CompilerCtx* ctx) {
+    if ctx.errors != null {
+        for err := ctx.errors; err != null; err = err.next {
+            if err.reported == false {
+                errors.report(err.err)
+                err.reported = true
+            }
+        }
+    }
+
 }
 
 
@@ -218,12 +231,7 @@ bool compile(types.CompilerCtx* ctx, parser.Node* ast) {
     }
 
     if ctx.errors != null {
-        for err := ctx.errors; err != null; err = err.next {
-            if err.reported == false {
-                errors.report(err.err)
-                err.reported = true
-            }
-        }
+        report_errors(ctx)
         return true
     }
 
