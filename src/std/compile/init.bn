@@ -94,16 +94,16 @@ types.AssignableInfo* new_assignable_info(parser.Node* node) {
     return ptr
 }
 
-void set_assignable_id(types.AssignableInfo* info, chr scope, chr* id) {
+void set_assignable_id(types.AssignableInfo* info, chr scope, str id) {
     info.id = id
     info.scope = scope
 }
 
-chr* repr_assignable_id(types.AssignableInfo* info) {
+str repr_assignable_id(types.AssignableInfo* info) {
     if info.scope == SCOPE_CONST {
         return info.id
     }
-    chr* buf
+    buf := ""
     io.asprintf(&buf, "%c%s", info.scope, info.id)
     return buf
 }
@@ -112,7 +112,7 @@ chr* repr_assignable_id(types.AssignableInfo* info) {
 
 
 void set_assignable_tmp_id(types.CompilerCtx* ctx, types.AssignableInfo* info) {
-    chr* tmp_buff
+    tmp_buff := ""
     io.asprintf(&tmp_buff, ".tmp%d", new_uid(ctx))
     set_assignable_id(info, SCOPE_LOCAL, tmp_buff)
 }
@@ -166,7 +166,7 @@ types.CompilerCtx* new_context(io.File* fd, str filename) {
     return (types.CompilerCtx*) ctx
 }
 
-void push_scope(types.CompilerCtx* ctx, chr* type, begin_id, end_id, types.Type* t) {
+void push_scope(types.CompilerCtx* ctx, str type, begin_id, end_id, types.Type* t) {
     s := (types.Scope*) sys.malloc(sizeof(types.Scope))
 
     m := get_current_module(ctx)
@@ -190,7 +190,7 @@ void pop_scope(types.CompilerCtx* ctx) {
 bool compile_file(types.CompilerCtx* ctx, parser.Node* stmt, str filepath) {
     int input_fd = io.open(filepath, io.O_RDONLY)
     if input_fd <= 0 {
-        chr* err_msg
+        err_msg := ""
         io.asprintf(&err_msg, "Unable to open file: '%s'", stmt)
         new_error(ctx, stmt, err_msg)
         return false
@@ -311,23 +311,23 @@ void compile_extern(types.CompilerCtx* ctx, types.AssignableInfo* info) {
 }
 
 
-chr* get_mod_prefix(types.CompilerCtx* ctx, str module_abspath) {
+str get_mod_prefix(types.CompilerCtx* ctx, str module_abspath) {
     m := get_current_module(ctx)
     return m.prefix
 }
 
 
 str name_mangle(types.CompilerCtx* ctx, parser.Node* fn, str original_name, types.Type* type) {
-    chr* mangled_name
+    mangled_name := ""
 
-    chr* prefix = get_mod_prefix(ctx, fn.filename)
+    prefix := get_mod_prefix(ctx, fn.filename)
     io.asprintf(&mangled_name, "%s%s", prefix, original_name)
     if string.strcmp(type.container, "function") == 0 {
         -- function  name is the concatenation of module, original name
         -- return value and parameters type
         if string.strcmp(mangled_name, "main") != 0 {
-            chr* tmp_buff
-            chr* swap_var
+            tmp_buff := ""
+            swap_var := ""
             for tp := type.of; tp != null; tp = tp.next {
                 io.asprintf(&tmp_buff, "%s.%s", mangled_name, type_abbr(tp))
 
@@ -345,8 +345,8 @@ str name_mangle(types.CompilerCtx* ctx, parser.Node* fn, str original_name, type
 void compile_statement(types.CompilerCtx* ctx, parser.Node* stmt, bool shallow) {
     types.AssignableInfo* info
     types.Type* return_type
-    chr* err_buf
-    chr* tmp_buff
+    err_buf := ""
+    tmp_buff := ""
 
     if string.strcmp(stmt.type, "NL") == 0 {
         return
@@ -539,8 +539,8 @@ void compile_statement(types.CompilerCtx* ctx, parser.Node* stmt, bool shallow) 
     }
 }
 
-chr* err_tmpl(types.CompilerCtx* ctx, parser.Node* stmt, chr* msg) {
-    chr* buf
+str err_tmpl(types.CompilerCtx* ctx, parser.Node* stmt, str msg) {
+    buf := ""
     io.asprintf(&buf, ":coffee-error: (%s: %d:%d) %s\n", ctx.current_module, stmt.line, stmt.char_of_line, msg)
     return buf
 }
@@ -609,7 +609,7 @@ types.AssignableInfo* get_struct_attr(types.CompilerCtx* ctx, parser.Node* stmt,
     return info
 }
 
-void set_struct_attr(types.CompilerCtx* ctx, parser.Node* stmt, int attr_id, chr* attr) {
+void set_struct_attr(types.CompilerCtx* ctx, parser.Node* stmt, int attr_id, str attr) {
     val := compile_addr(ctx, stmt)
     if string.strcmp(val.type.container, "struct") != 0 {
         io.printf("WhAT!\n")
@@ -668,14 +668,12 @@ types.AssignableInfo* compile_builtin(types.CompilerCtx* ctx, parser.Node* stmt)
         set_assignable_tmp_id(ctx, info)
         info.type = array_info.type
 
-        chr* builtin_prefix
+        builtin_prefix := ""
         io.asprintf(&builtin_prefix, ".b%d", new_uid(ctx))
 
         tmpl := builtin.append_tmpl()
         io.fprintf(ctx.ir, tmpl, builtin_prefix, lang_types.repr(ctx, array_info.type), repr_assignable_id(array_info), lang_types.repr(ctx, value_info.type), repr_assignable_id(value_info), repr_assignable_id(info))
 
-        -- check if function is defined
-        -- llvm_code := compile("extern chr* realloc(chr* pt, int size)")
 
         info_g := new_assignable_info(stmt)
         set_assignable_id(info_g, SCOPE_GLOBAL, "realloc")
@@ -755,8 +753,8 @@ types.AssignableInfo* compile_fn_call(types.CompilerCtx* ctx, parser.Node* stmt)
     }
 
     args := skip_to_type(stmt, "fn_args")
-    chr* params_buff = ""
-    chr* tmp
+    params_buff := ""
+    tmp := ""
 
     if string.strcmp(info.type.container, "ptr") == 0 {
         new_info := new_assignable_info(stmt)
@@ -788,7 +786,7 @@ types.AssignableInfo* compile_fn_call(types.CompilerCtx* ctx, parser.Node* stmt)
 
             if pp != start {
                 io.asprintf(&tmp, "%s, ", params_buff)
-                chr* tmp_buff = params_buff
+                tmp_buff := params_buff
                 params_buff = tmp
                 tmp = tmp_buff
                 sys.free(tmp)
@@ -856,7 +854,7 @@ types.AssignableInfo* compile_fn_call(types.CompilerCtx* ctx, parser.Node* stmt)
 }
 
 void compile_expression(types.CompilerCtx* ctx, parser.Node* stmt) {
-    chr* err_msg
+    err_msg := ""
     expr_type := stmt.type
 
     types.AssignableInfo* info = (types.AssignableInfo*) null
@@ -911,7 +909,7 @@ void compile_expression(types.CompilerCtx* ctx, parser.Node* stmt) {
         }
 
         dest_tr := lang_types.repr(ctx, dest.type)
-        chr* src_tr = lang_types.repr(ctx, a_info.type)
+        src_tr := lang_types.repr(ctx, a_info.type)
         if string.strcmp(src_tr, "ptr") == 0 {
             src_tr = dest_tr
         }
@@ -1219,13 +1217,13 @@ types.AssignableInfo* compile_declaration(types.CompilerCtx* ctx, parser.Node* s
 
     mod := get_current_module(ctx)
     if find_defined_here(ctx, mod.scopes, var_name.value) != null {
-        chr* err_buf
+        err_buf := ""
         io.asprintf(&err_buf, "Name '%s' is already defined in this scope", var_name.value)
         new_error(ctx, stmt, err_buf)
         return (types.AssignableInfo*) null
     }
 
-    chr* var_id
+    var_id := ""
     io.asprintf(&var_id, "%s.%d", var_name.value, new_uid(ctx))
     set_assignable_id(info, SCOPE_LOCAL, var_id)
 
@@ -1238,7 +1236,7 @@ types.AssignableInfo* compile_declaration(types.CompilerCtx* ctx, parser.Node* s
     if a_info != null {
         a_type_repr := lang_types.repr(ctx, a_info.type)
         if lang_types.cmp(ctx, a_info.type, info.type) == false {
-            chr* err_msg = (chr*) null
+            err_msg := ""
             io.asprintf(&err_msg, "cannot assign type '%s' to variable of type '%s'", a_type_repr, var_type_repr)
             new_error(ctx, stmt, err_msg)
         }
@@ -1379,12 +1377,8 @@ void define_assignable(types.CompilerCtx* ctx, parser.Node* stmt, str name, type
 }
 
 types.ScopeItem* find_defined_in(types.CompilerCtx* ctx, str module, parser.Node* dotted_name) {
-    chr* err_buf
-
     found := find_defined_str(ctx, module, dotted_name.value)
     if found == null {
-        -- io.asprintf(&err_buf, "Name %s not found in module %s", dotted_name.value, module)
-        -- new_error(ctx, dotted_name, err_buf)
         return (types.ScopeItem*) null
     }
 
@@ -1435,8 +1429,8 @@ types.ScopeItem* find_defined(types.CompilerCtx* ctx, parser.Node* dotted_name) 
 
 
 types.AssignableInfo* get_dotted_name(types.CompilerCtx* ctx, parser.Node* dot_name_ptr, types.AssignableInfo* info) {
-    chr* err_msg
-    chr* buf
+    err_msg := ""
+    buf := ""
 
     if info == null {
         io.printf(err_tmpl(ctx, dot_name_ptr, "cannot call 'get_dotted_name' on null assignable info"))
@@ -1521,7 +1515,7 @@ types.AssignableInfo* get_dotted_name(types.CompilerCtx* ctx, parser.Node* dot_n
 
 -- returns address for node
 types.AssignableInfo* compile_addr(types.CompilerCtx* ctx, parser.Node* stmt) {
-    chr* err_msg
+    err_msg := ""
 
     curr_node := stmt
     if string.strcmp(curr_node.type, "addr_destination") == 0 | string.strcmp(curr_node.type, "mono_assignable") == 0 | string.strcmp(curr_node.type, "assignable") == 0 {
@@ -1629,8 +1623,6 @@ types.AssignableInfo* compile_assignable(types.CompilerCtx* ctx, parser.Node* cu
         cast_type := skip_to_type(cast.children, "type")
 
         type := node_to_type(ctx, cast_type.children)
-        -- chr* new_id
-        -- io.asprintf(&new_id, "%%.tmp%d", new_uid(ctx))
         prev_id := repr_assignable_id(info)
         set_assignable_tmp_id(ctx, info)
 
@@ -1745,8 +1737,8 @@ types.Type* operator_type(parser.Node* op) {
 types.AssignableInfo* compile_mono_assignable(types.CompilerCtx* ctx, parser.Node* curr_node) {
     types.AssignableInfo* assignable_info = (types.AssignableInfo*) null
     mono := curr_node
-    chr* err_buf
-    chr* buf
+    err_buf := ""
+    buf := ""
 
     if string.strcmp(mono.children.type, "NUMBER") == 0 {
         assignable_info = new_assignable_info(curr_node)
@@ -1864,13 +1856,13 @@ str type_abbr(types.Type* type) {
     } elif string.strcmp(type.container, "chr") == 0 {
         return "c"
     } elif string.strcmp(type.container, "ptr") == 0 {
-        chr* buf
+        buf := ""
         io.asprintf(&buf, "%sp", type_abbr(type.of))
         return buf
     } elif string.strcmp(type.container, "typealias") == 0 {
         return type.repr
     } elif string.strcmp(type.container, "struct") == 0 {
-        chr* buf = "s"
+        buf := "s"
         for t := type.of; t != null; t = t.next {
             io.asprintf(&buf, "%s%s", buf, type_abbr(t))
         }
@@ -1887,7 +1879,7 @@ str type_abbr(types.Type* type) {
 
 types.AssignableInfo* define_string(types.CompilerCtx* ctx, str text) {
     info := new_assignable_info((parser.Node*) null)
-    chr* tmp_buff
+    tmp_buff := ""
     io.asprintf(&tmp_buff, ".str%d", new_uid(ctx))
     set_assignable_id(info, SCOPE_GLOBAL, tmp_buff)
 
@@ -1988,7 +1980,7 @@ void append_error(types.CompilerCtx* ctx, errors.Error* e) {
     last.next = new_err
 }
 
-chr* syn_function_name(parser.Node* stmt) {
+str syn_function_name(parser.Node* stmt) {
     return stmt.children.next.value
 }
 parser.Node* skip_to_type(parser.Node* node, str type) {
@@ -2105,7 +2097,7 @@ types.Type* node_to_type(types.CompilerCtx* ctx, parser.Node* stmt) {
     } elif string.strcmp(stmt.type, "dotted_name") == 0 {
         -- 1st resolve dotted name
         -- 2nd create type
-        chr* err_msg
+        err_msg := ""
         base := find_defined(ctx, stmt)
         if base == null {
             io.asprintf(&err_msg, "Name %s is not defined in this scope", stmt.children.value)
