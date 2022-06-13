@@ -62,6 +62,8 @@ int main() {
     testing.setup(t, "test_not_crashes_with_usage_of_erroneously_defined_var")
     testing.run(t, test_not_crashes_with_usage_of_erroneously_defined_var(t))
 
+    testing.setup(t, "test_does_not_crash_on_undefined_struct_field")
+    testing.run(t, test_does_not_crash_on_undefined_struct_field(t))
 
     testing.cleanup(t)
     return 0
@@ -267,6 +269,23 @@ int test_not_crashes_with_usage_of_erroneously_defined_var(testing.T* t) {
     void fn() {
         a := b
         j := a
+    }
+    `)
+    testing.assert_not_null(t, (chr*) ctx.errors)
+    if ctx.errors != null {
+        testing.assert_null(t, (chr*) ctx.errors.next)
+    }
+    return 0
+}
+
+int test_does_not_crash_on_undefined_struct_field(testing.T* t) {
+    ctx := compile_str(`
+    alias A = struct {
+    }
+    void fn() {
+        A a
+        for ; a.a < 3; {
+        }
     }
     `)
     testing.assert_not_null(t, (chr*) ctx.errors)
