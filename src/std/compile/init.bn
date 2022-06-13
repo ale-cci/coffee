@@ -1152,6 +1152,9 @@ void compile_for_loop(types.CompilerCtx* ctx, parser.Node* stmt) {
         return
     }
     condition_info := compile_assignable(ctx, condition)
+    if condition_info == null {
+        return
+    }
     snd_colon := skip_to_type(fst_colon.next, "OPERATOR")
     for_body := skip_to_type(snd_colon, "block")
     else_block := skip_to_type(for_body, "else_block")
