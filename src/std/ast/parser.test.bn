@@ -85,6 +85,9 @@ int main() {
     testing.setup(t, "test_parses_matcher_tag")
     testing.run(t, test_parses_matcher_tag(t))
 
+    testing.setup(t, "test_matcher_assigns_tag_to_node")
+    testing.run(t, test_matcher_assigns_tag_to_node(t))
+
     testing.cleanup(t)
     return 0
 }
@@ -422,7 +425,6 @@ int test_fully_compares_words_by_value(testing.T* t) {
     return 0
 }
 
-
 int test_parses_name_of_rule(testing.T* t) {
     grammar := gen_grammar(`start[staple]: "a"`)
     testing.assert_not_null(t, (chr*) grammar)
@@ -444,3 +446,21 @@ int test_parses_matcher_tag(testing.T* t) {
     testing.assert_equal_str(t, rule.matcher.submatcher.tag, "sample")
     return 0
 }
+
+int test_matcher_assigns_tag_to_node(testing.T* t) {
+    grammar := gen_grammar(`start: "s" tag="a"`)
+    source := testing.tempfile("s a")
+
+    fd := io.fileno(source)
+    p := peeker.new(fd)
+    source_tokens := lexer.tokenize(p, false)
+    results := parser.ast(grammar, "start", source_tokens)
+
+    node := parser.find_tag(results.node, "tag")
+    testing.assert_not_null(t, (chr*) node)
+    if node != null {
+        testing.assert_equal_str(t, node.value, "a")
+    }
+    return 0
+}
+

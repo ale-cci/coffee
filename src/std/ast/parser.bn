@@ -280,18 +280,21 @@ alias Node = struct {
     int line,
     int char_of_line,
 
+    str tag,
+
     Node* parent,
 
     Node* children,
     Node* next,      -- required for a list of child nodes
 }
 
-Node* new_node(lexer.Token* t, str type, str value) {
+Node* new_node(lexer.Token* t, str type, str value, str tag) {
     node := (Node*) sys.malloc(sizeof(Node))
 
     node.type = type
     node.value = value
     node.line = t.line
+    node.tag = tag
     node.filename = t.filename
     node.char_of_line = t.char_of_line
     node.parent = null
@@ -385,7 +388,7 @@ alias ParseResult = struct {
 ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
     res := (ParseResult*) sys.malloc(sizeof(ParseResult))
     res.err = null
-    res.node = new_node(c.current_token, rule.name, (chr*) null)
+    res.node = new_node(c.current_token, rule.name, (chr*) null, rule.matcher.tag)
     start_match := c.current_token
 
     -- start matching querys tokens
@@ -441,7 +444,7 @@ errors.Error* execute_matcher_straight(AstContext* ctx, Rule* rule, Matcher* mat
 
             return errors.from(ctx.current_token, buf)
         }
-        child = new_node(ctx.current_token, ctx.current_token.type, ctx.current_token.value)
+        child = new_node(ctx.current_token, ctx.current_token.type, ctx.current_token.value, matcher.tag)
         ctx = next_token(ctx)
     } elif matcher.type == TYPE_TYPE {
         if matcher.value == null {
@@ -456,7 +459,7 @@ errors.Error* execute_matcher_straight(AstContext* ctx, Rule* rule, Matcher* mat
             )
             return errors.from(ctx.current_token, buf)
         }
-        child = new_node(ctx.current_token, ctx.current_token.type, ctx.current_token.value)
+        child = new_node(ctx.current_token, ctx.current_token.type, ctx.current_token.value, matcher.tag)
         ctx = next_token(ctx)
     } elif matcher.type == TYPE_ALIAS {
         alias_rule := find_rule(ctx.grammar, matcher.value)
@@ -529,4 +532,28 @@ ParseResult* ast(Rule** grammar, str start, lexer.Token* tokens) {
     }
 
     return res
+}
+
+Node* find_tag(Node* root, str tag) {
+    if root == null {
+        return (Node*) null
+    }
+
+    if string.strcmp(root.tag, tag) == 0 {
+        return root
+    }
+    for n := root.next; n != null; n = n.next {
+        node := find_tag(n, tag)
+        if node != null {
+            return node
+        }
+    }
+    for n := root.children; n != null; n = n.next {
+        node := find_tag(n, tag)
+        if node != null {
+            return node
+        }
+    }
+    -- BFS
+    return (Node*) null -- nothing was found
 }
