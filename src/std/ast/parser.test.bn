@@ -82,6 +82,9 @@ int main() {
     testing.setup(t, "test_parses_name_of_rule")
     testing.run(t, test_parses_name_of_rule(t))
 
+    testing.setup(t, "test_parses_matcher_tag")
+    testing.run(t, test_parses_matcher_tag(t))
+
     testing.cleanup(t)
     return 0
 }
@@ -430,5 +433,14 @@ int test_parses_name_of_rule(testing.T* t) {
     if rule != null {
         testing.assert_equal_str(t, rule.transformer, "staple")
     }
+    return 0
+}
+
+int test_parses_matcher_tag(testing.T* t) {
+    grammar := gen_grammar("start: sample=a")
+    testing.assert_not_null(t, (chr*) grammar)
+
+    rule := parser.find_rule(grammar, "start")
+    testing.assert_equal_str(t, rule.matcher.submatcher.tag, "sample")
     return 0
 }

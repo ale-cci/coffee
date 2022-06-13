@@ -124,7 +124,16 @@ Matcher* parse_matcher(ParsingContext* ctx) {
     m := new_matcher()
 
     tmp_submatch := (Matcher*) null
+    tag := ""
     for ; ctx.current_token != null ; {
+        -- check if it's traying to assign a tag to the current matcher
+        if string.strcmp(type(ctx.current_token), "WORD") == 0 & string.strcmp(value(next(ctx.current_token)), "=") == 0 {
+            tag = ctx.current_token.value
+            ctx.current_token = ctx.current_token.next.next
+        } else {
+            tag = ""
+        }
+
         if string.strcmp(ctx.current_token.value, "(") == 0 {
             b_tok := ctx.current_token
             ctx.current_token = ctx.current_token.next
@@ -145,6 +154,7 @@ Matcher* parse_matcher(ParsingContext* ctx) {
         } else {
             break
         }
+        tmp_submatch.tag = tag
 
         nv := value(ctx.current_token)
         if string.strcmp(nv, "+") == 0 {
