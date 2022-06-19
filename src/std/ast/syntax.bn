@@ -43,7 +43,7 @@ structdef: ( "struct" "{" NL ) ( ( type WORD "," NL ) | ( NL ) )* ( "}" )
 
 enum: "enum" "{" NL ( WORD ("(" type WORD ")")? "," | NL )* "}"
 
-basic_type: ( "void" | "int" | "bool" | "chr" | "str" | structdef | dotted_name | "..." ) ("[" "]")* ("*")*
+basic_type: ( "void" | "int" | "bool" | "chr" | "str" | enum | structdef | dotted_name | "..." ) ("[" "]")* ("*")*
 
 type: basic_type (type_trailer)?
 

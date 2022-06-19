@@ -51,9 +51,11 @@ int main() {
     testing.setup(t, "test_parses_import_statement")
     testing.run(t, test_parses_import_statement(t))
 
-
     testing.setup(t, "test_parses_enum_statement")
     testing.run(t, test_parses_enum_statement(t))
+
+    testing.setup(t, "test_enum_is_a_type")
+    testing.run(t, test_enum_is_a_type(t))
 
     testing.cleanup(t)
     return 0
@@ -264,5 +266,21 @@ int test_parses_enum_statement(testing.T* t) {
     if res.err != null {
         errors.freport(t.out, res.err)
     }
+
+    return 0
+}
+
+int test_enum_is_a_type(testing.T* t) {
+    res := match_rule("type", `enum {
+    Name,
+    OtherName(int t),
+}`)
+
+    testing.assert_null(t, (chr*) res.err)
+
+    if res.err != null {
+        errors.freport(t.out, res.err)
+    }
+
     return 0
 }
