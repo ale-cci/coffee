@@ -397,10 +397,6 @@ ParseResult* parse_to_ast(AstContext* c, Rule* rule) {
     -- start matching querys tokens
     -- res.err = parse_query(c, rule.matcher, res.node)
     res.err = execute_matcher(c, rule, rule.matcher, res.node)
-    if res.err != null {
-        res.err.line = c.max_line
-        res.err.char_of_line = c.max_char_of_line
-    }
     return res
 }
 
@@ -544,6 +540,8 @@ ParseResult* ast(Rule** grammar, str start, lexer.Token* tokens) {
     res := parse_to_ast(&c, start_matcher)
     if string.strcmp(c.current_token.type, "EOF") != 0 & res.err == null {
         res.err = errors.from(c.current_token, "SyntaxError: parsing ended here")
+        res.err.line = c.max_line
+        res.err.char_of_line = c.max_char_of_line
     }
 
     return res

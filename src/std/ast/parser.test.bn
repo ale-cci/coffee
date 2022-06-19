@@ -396,7 +396,7 @@ int should_report_error_if_element_is_not_matched(testing.T* t) {
     result := parser.ast(grammar, "start", source_tokens)
     testing.assert_not_null(t, (chr*) result.err)
     testing.assert_equal_int(t, 1, result.err.line)
-    testing.assert_equal_int(t, 5, result.err.char_of_line)
+    testing.assert_equal_int(t, 3, result.err.char_of_line)
     return 0
 }
 
