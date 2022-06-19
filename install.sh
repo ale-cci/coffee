@@ -13,10 +13,14 @@ C_FLAGS="${C_FLAGS:- -Wall -O2}"
 install-lib() {
     echo " . Installing standard libraries"
     pushd "$SRC_DIR" >/dev/null
+
     # Cleanup std directory
     rm -rf "${COFFEE_ROOT}/lib/"*
+
+    # Copy only non-test files
     find std -name '*.bn' -not -name '*.test.bn' \
         -exec bash -c 'mkdir -p $(dirname "${COFFEE_ROOT}/lib/{}") && cp "{}" "${COFFEE_ROOT}/lib/{}"' \;
+
     popd >/dev/null
     return 0
 }
