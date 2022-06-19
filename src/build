@@ -59,4 +59,7 @@ case $1 in
         "$0" release
         "$0" install
         ;;
+    *)
+        echo "Command '$1' not found."
+        ;;
 esac
