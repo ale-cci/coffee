@@ -12,7 +12,7 @@ COPY src/coffee.ll /coffee/bin/
 RUN set -ex \
     ; llc --version \
     ; llc /coffee/bin/coffee.ll -o /coffee/bin/coffee.s \
-    ; gcc /coffee/bin/coffee.s -o /coffee/bin/coffee \
+    ; cc /coffee/bin/coffee.s -o /coffee/bin/coffee \
     ; rm /coffee/bin/coffee.ll /coffee/bin/coffee.s
 
 COPY src/std/ /coffee/lib/std/
