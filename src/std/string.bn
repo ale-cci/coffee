@@ -1,10 +1,14 @@
--- compare strings
--- returns:
---     0. if the two strings are equals
---    -1. if str1 is greater than str2
---     1. if str1 is lower than str2
-extern int strcmp(chr* str1, str2)
+import "./_string" as _string
 
+int strcmp(str str1, str2) {
+    if str1 == null | str2 == null {
+        if str1 == null & str2 == null {
+            return 0
+        }
+        return 1
+    }
+    return _string.strcmp(str1, str2)
+}
 
 -- like strcmp but limits the comparison at the first n characters
 -- Compares up to num characters of the C string str1 to those of the C

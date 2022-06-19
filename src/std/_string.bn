@@ -1,0 +1,6 @@
+-- compare strings
+-- returns:
+--     0. if the two strings are equals
+--    -1. if str1 is greater than str2
+--     1. if str1 is lower than str2
+extern int strcmp(chr* str1, str2)
