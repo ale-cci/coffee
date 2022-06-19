@@ -370,7 +370,7 @@ AstContext* next_token(AstContext* ctx) {
 
 
 Rule* find_rule(Rule** grammar, str rule_name) {
-    for i := 0; true ;i = i + 1 {
+    for i := 0; grammar[i] != null ; i = i + 1 {
         rule := grammar[i]
         if string.strcmp(rule.name, rule_name) == 0 {
             return rule
@@ -524,6 +524,17 @@ errors.Error* execute_matcher_straight(AstContext* ctx, Rule* rule, Matcher* mat
 ParseResult* ast(Rule** grammar, str start, lexer.Token* tokens) {
     -- find starting rule
     Rule* start_matcher = find_rule(grammar, start)
+    if start_matcher == null {
+        res := (ParseResult*) sys.malloc(sizeof(ParseResult))
+        res.node = null
+
+        buf := ""
+        io.asprintf(&buf, "Grammar rule '%s' not found.", start)
+
+        res.err = errors.new("syntax.bn", 0, 0, buf)
+        return res
+    }
+
     sys.assert(start_matcher != null, "Unable to find starting rule in the grammar")
 
     AstContext c
