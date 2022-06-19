@@ -51,18 +51,26 @@ int main() {
     testing.setup(t, "test_parses_import_statement")
     testing.run(t, test_parses_import_statement(t))
 
+
+    testing.setup(t, "test_parses_enum_statement")
+    testing.run(t, test_parses_enum_statement(t))
+
     testing.cleanup(t)
     return 0
 }
+
 
 parser.ParseResult* match_rule(chr* rule_name, chr* program) {
     grammar_file := ioutil.str_as_file(syntax.grammar())
     ctx := parser.new_context(grammar_file)
     grammar := parser.parse_grammar(ctx)
-
+    if grammar == null {
+        return (parser.ParseResult*) null
+    }
 
     sys.free((chr*) ctx)
 
+    -- Program tokenization
     tmp := testing.tempfile(program)
     fd := io.fileno(tmp)
     p := peeker.new(fd)
@@ -238,6 +246,20 @@ int test_parses_import_statement(testing.T* t) {
 
     -- r := parser.find_rule(grammar, "import")
     -- parser.print_matcher(r.matcher, 0)
+
+    if res.err != null {
+        errors.freport(t.out, res.err)
+    }
+    return 0
+}
+
+int test_parses_enum_statement(testing.T* t) {
+    res := match_rule("enum", `enum {
+    Name,
+    OtherName(int t),
+}`)
+
+    testing.assert_null(t, (chr*) res.err)
 
     if res.err != null {
         errors.freport(t.out, res.err)
