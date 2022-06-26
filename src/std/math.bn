@@ -1,0 +1,20 @@
+int max(int a, b) {
+    if a > b {
+        return a
+    }
+    return b
+}
+
+int gcd(int a, b) {
+    if b == 0 {
+        return a
+    }
+    return gcd(b, a % b)
+}
+
+int lcm(int a, b) {
+    if a == 0 & b == 0 {
+        return 0
+    }
+    return a * b / gcd(a, b)
+}

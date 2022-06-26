@@ -1,0 +1,48 @@
+import "./testing" as testing
+import "./math" as math
+
+
+int main() {
+    t := testing.init("std/math.test.bn")
+
+    testing.setup(t, "test_least_common_multiple")
+    testing.run(t, test_least_common_multiple(t))
+
+    testing.setup(t, "test_calculates_lcm_of_0_and_0")
+    testing.run(t, test_calculates_lcm_of_0_and_0(t))
+
+    testing.setup(t, "test_greatest_common_divisor")
+    testing.run(t, test_greatest_common_divisor(t))
+
+    testing.setup(t, "test_greatest_common_divisor_should_not_return_0")
+    testing.run(t, test_greatest_common_divisor_should_not_return_0(t))
+    return 0
+}
+
+
+int test_least_common_multiple(testing.T* t) {
+    got := math.lcm(4, 6)
+    testing.assert_equal_int(t, got, 12)
+    return 0
+}
+
+
+int test_calculates_lcm_of_0_and_0(testing.T* t) {
+    got := math.lcm(0, 0)
+    testing.assert_equal_int(t, got, 0)
+    return 0
+}
+
+
+
+int test_greatest_common_divisor(testing.T* t) {
+    got := math.gcd(4, 6)
+    testing.assert_equal_int(t, got, 2)
+    return 0
+}
+
+int test_greatest_common_divisor_should_not_return_0(testing.T* t) {
+    got := math.gcd(0, 0)
+    testing.assert_equal_int(t, got, 0)
+    return 0
+}
