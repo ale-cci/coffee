@@ -1,0 +1,11 @@
+%.Option.type = type {i32,i32}
+define %.Option @div(%.Option $.in.arg) {
+%in = alloca %.Option.type
+br i1 0, label %.if.true.0, label %.if.false.0
+.if.true.0:
+br label %.if.end.0
+.if.false.0:
+br label %.if.end.0
+.if.end.0:
+
+}

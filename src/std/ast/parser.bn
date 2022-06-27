@@ -307,6 +307,7 @@ Node* new_node(lexer.Token* t, str type, str value, str tag) {
 
 -- append child to a node
 void child_append(Node* parent, Node* child) {
+    child.parent = parent
     if parent.children == null {
         parent.children = child
     } else {
@@ -471,6 +472,7 @@ errors.Error* execute_matcher_straight(AstContext* ctx, Rule* rule, Matcher* mat
             return parse_result.err
         }
         child = parse_result.node
+        child.tag = matcher.tag
         child.transformer = alias_rule.transformer
     } else {
         sys.assert(false, "CRITICAL: Parser not implemented")
@@ -547,6 +549,7 @@ ParseResult* ast(Rule** grammar, str start, lexer.Token* tokens) {
     return res
 }
 
+-- recursively search for given tag
 Node* find_tag(Node* root, str tag) {
     if root == null {
         return (Node*) null
@@ -572,3 +575,27 @@ Node* find_tag(Node* root, str tag) {
 }
 
 
+-- search for tag in .next (current tag is included)
+Node* next_tag(Node* node, str tag) {
+    if node == null {
+        return (Node*) null
+    }
+
+    for n := node.next; n != null; n = n.next {
+        if string.strcmp(n.tag, tag) == 0 {
+            return n
+        }
+    }
+    return (Node*) null
+}
+
+
+Node* nearest_type(Node* node, str type) {
+    if node == null {
+        return (Node*) null
+    }
+    if string.strcmp(node.type, type) == 0 {
+        return node
+    }
+    return nearest_type(node.parent, type)
+}

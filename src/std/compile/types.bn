@@ -11,6 +11,9 @@ alias Type = struct {
     -- NOTE: each "basic" type is not allowed to have a 'next' value
     Type* of,
     Type* next,
+
+    -- contains pointer to enum family
+    Type* family,
 }
 
 alias ErrorList = struct {

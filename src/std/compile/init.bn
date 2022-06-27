@@ -49,6 +49,7 @@ types.Type* new_type() {
     type.container = null
     type.of = null
     type.next = null
+    type.family = null
     return type
 }
 
@@ -751,8 +752,70 @@ types.AssignableInfo* compile_fn_call(types.CompilerCtx* ctx, parser.Node* stmt)
         }
         return (types.AssignableInfo*) null
     }
-
     args := skip_to_type(stmt, "fn_args")
+
+    if string.strcmp(info.type.container, "enum_field") == 0 {
+        -- this is not a function call, this is an enum constructor.
+        io.printf("Info: %s\n", info.type.info) -- 1st find out id of this thing
+
+
+        -- find enum field info
+        field_id := 0
+        for f := info.type.family.of.next.of; f != null; f = f.next {
+            if f == info.type {
+                break
+            }
+            field_id = field_id + 1
+        } else {
+            buf := ""
+            io.asprintf(&buf, "Field named %s was not defined in enum", info.type.info)
+            new_error(ctx, stmt, buf)
+            return (types.AssignableInfo*) null
+        }
+
+        buf_types := ""
+        buf_values := ""
+
+        padding := lang_types.type_size(ctx, info.type.family.of.next)
+        expect_fields := 0
+        for f := info.type.of; f != null; f = f.next {
+            io.printf("(%s) Found type: %s\n", info.type.info, lang_types.repr(ctx, f))
+            padding = padding - lang_types.type_size(ctx, f)
+            expect_fields = expect_fields + 1
+        }
+        io.printf("padding: %d\n", padding)
+
+        if args != null {
+            start := skip_to_type(args.children, "assignable")
+            for pp := start; pp != null; pp = skip_to_type(pp, "assignable") {
+                tmp_a := compile_assignable(ctx, pp)
+                io.asprintf(&buf_types, "%s,%s", buf_types, lang_types.repr(ctx, tmp_a.type))
+                io.asprintf(&buf_values, "%s,%s %s", buf_values, lang_types.repr(ctx, tmp_a.type), repr_assignable_id(tmp_a))
+                pp = pp.next
+            }
+        } elif expect_fields > 0 {
+            -- TODO
+            io.printf("error\n")
+            return (types.AssignableInfo*) null
+        }
+
+        if padding > 0 {
+            io.asprintf(&buf_types, "%s,i%d", buf_types, padding)
+            io.asprintf(&buf_values, "%s,i%d 0", buf_values, padding)
+        }
+
+        a := new_assignable_info(stmt)
+        set_assignable_tmp_id(ctx, a)
+        a.type = info.type
+
+        io.fprintf(ctx.ir, "%s = alloca {i32%s}\n", repr_assignable_id(a), buf_types)
+        io.fprintf(ctx.ir, "store {i32%s} {i32 %d%s}, %s* %s\n", buf_types, field_id, buf_values, lang_types.repr(ctx, a.type), repr_assignable_id(a))
+        io.fprintf(ctx.ir, "... = bitcast {i32%s}* %s to %s\n")
+        io.fprintf(ctx.ir, "... = load %s, %s* ...\n")
+        -- a = {i32 ..., something something}
+        return a
+    }
+
     params_buff := ""
     tmp := ""
 
@@ -1507,6 +1570,43 @@ types.AssignableInfo* get_dotted_name(types.CompilerCtx* ctx, parser.Node* dot_n
 
     } elif string.strcmp(info.name_type, "variable") == 0 {
         return info
+    } elif string.strcmp(info.name_type, "typealias") == 0 {
+        -- 1st get defined type alias
+        if string.strcmp(info.type.container, "enum") != 0 {
+            err_msg := ""
+            io.asprintf(&err_msg, "cannot get attribute %s from type %s", dot_name_ptr.value, info.type.container)
+
+            new_error(ctx, dot_name_ptr, err_msg)
+            return (types.AssignableInfo*) null
+        }
+        -- io.printf("Container: %s\n", dot_name_ptr.next.next.value)
+
+
+        enum_type := (types.Type*) null
+
+        for f := info.type.of.next.of; f != null; f = f.next {
+            if string.strcmp(f.info, dot_name_ptr.next.next.value) == 0 {
+                enum_type = f
+                break
+                -- return constructor or field id
+            }
+        } else {
+            err_msg := ""
+            io.asprintf(&err_msg, "Enum '%s' has no field named '%s'", dot_name_ptr.value, dot_name_ptr.next.next.value)
+            new_error(ctx, dot_name_ptr, err_msg)
+            return (types.AssignableInfo*) null
+        }
+
+
+        dest := parser.nearest_type(dot_name_ptr, "destination")
+        if string.strcmp(dest.next.value, "(") == 0 {
+            new_info := new_assignable_info(dot_name_ptr.next.next)
+            new_info.type = enum_type
+            -- function, return constructor
+            return new_info
+        }
+
+        return (types.AssignableInfo*) null
     }
 
     io.printf(err_tmpl(ctx, dot_name_ptr, "`get_dotted_name` does not handle type: %s"), info.name_type)
@@ -1980,6 +2080,16 @@ void append_error(types.CompilerCtx* ctx, errors.Error* e) {
 str syn_function_name(parser.Node* stmt) {
     return stmt.children.next.value
 }
+
+parser.Node* skip_to_tag(parser.Node* node, str tag) {
+    for n := node; n != null; n = n.next {
+        if string.strcmp(n.tag, tag) == 0 {
+            return n
+        }
+    }
+    return (parser.Node*) null
+}
+
 parser.Node* skip_to_type(parser.Node* node, str type) {
     for n := node; n != null; n = n.next {
         if string.strcmp(n.type, type) == 0 {
@@ -2043,7 +2153,7 @@ parser.Node* syn_function_params(parser.Node* stmt) {
 types.Type* node_to_type(types.CompilerCtx* ctx, parser.Node* stmt) {
     if string.strcmp(stmt.type, "basic_type") == 0 {
         t := node_to_type(ctx, stmt.children)
-        if stmt.next != null {
+        if t != null & stmt.next != null {
             if string.strcmp(stmt.next.type, "type_trailer") == 0 {
                 fn_type := new_type()
                 fn_type.container = "function"
@@ -2109,6 +2219,55 @@ types.Type* node_to_type(types.CompilerCtx* ctx, parser.Node* stmt) {
         t.repr = base.info.id
 
         t.of = base.info.type
+    } elif string.strcmp(stmt.type, "enum") == 0 {
+        t.container = "enum"
+        -- for type in types...
+        t.of = new_type()
+        t.of.container = "int"
+
+        enum_union := new_type()
+        t.of.next = enum_union
+
+        enum_union.container = "union"
+
+        union_children := (types.Type*) null
+        -- repr
+        for field := parser.next_tag(stmt.children, "name"); field != null; field = parser.next_tag(field, "name") {
+
+            content := new_type()
+            content.container = "enum_field"
+            content.family = t
+            content.info = field.value
+
+            union := (types.Type*) null
+
+            if string.strcmp(field.next.type, "enum_field") == 0 {
+                for f := parser.next_tag(field.next.children, "elem_type"); f != null; f = parser.next_tag(f, "elem_type") {
+                    field_type := node_to_type(ctx, f.children)
+                    field_name := f.next.value
+
+                    if union == null {
+                        union = field_type
+                        union.info = field_name
+
+                        content.of = union
+                    } else {
+                        union.next = field_type
+                        union.next.info = field_name
+                        union = union.next
+                    }
+                }
+            }
+
+            if union_children == null {
+                union_children = content
+                enum_union.of = union_children
+            } else {
+                union_children.next = content
+                union_children = union_children.next
+            }
+        }
+
     } elif string.strcmp(stmt.value, "str") == 0 {
         t.container = "ptr"
         t.of = new_type()

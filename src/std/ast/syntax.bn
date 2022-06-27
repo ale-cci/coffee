@@ -41,7 +41,9 @@ function: type WORD "(" (fn_params)? ( ")" block )
 
 structdef: ( "struct" "{" NL ) ( ( type WORD "," NL ) | ( NL ) )* ( "}" )
 
-enum: "enum" "{" NL ( WORD ("(" type WORD ")")? "," | NL )* "}"
+enum_field: "(" elem_type=type WORD ")"
+
+enum: "enum" "{" NL ( name=WORD (enum_field)? "," | NL )* "}"
 
 basic_type: ( "void" | "int" | "bool" | "chr" | "str" | enum | structdef | dotted_name | "..." ) ("[" "]")* ("*")*
 

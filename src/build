@@ -46,12 +46,13 @@ case $1 in
 
     build)
         "$COFFEE_EXE" main.bn
-        mv main ./coffee
         ;;
 
     release)
         "$COFFEE_EXE" main.bn && rm main
         mv debug.ll coffee.ll
+        opt coffee.ll -o coffee.opt.ll
+        mv coffee.opt.ll coffee.ll
         ;;
 
     update)

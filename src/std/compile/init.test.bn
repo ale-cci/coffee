@@ -83,6 +83,9 @@ int main() {
     testing.run(t, testfile(t, "./std/compile/__test__/43-closure"))
     testing.run(t, testfile(t, "./std/compile/__test__/44-closure-with-params"))
     testing.run(t, testfile(t, "./std/compile/__test__/45-multiline-fn-calls"))
+    testing.run(t, testfile(t, "./std/compile/__test__/46-enum"))
+
+    testing.run(t, testfile(t, "./std/compile/__test__/47-enum-usage"))
 
 
     testing.setup(t, "test_resolves_standard_imports")

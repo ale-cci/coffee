@@ -1,0 +1,4 @@
+alias Option = enum {
+    Nothing,
+    Some(int value),
+}

@@ -1,0 +1,11 @@
+alias Option = enum {
+    Some(int value),
+    Nothing,
+}
+
+Option div(Option in) {
+    if false {
+        return Option.Nothing()
+    }
+    return Option.Some(3)
+}

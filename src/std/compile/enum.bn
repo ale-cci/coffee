@@ -1,0 +1,5 @@
+
+
+-- converts "enum" node to "enum type"
+types.Type* to_type(types.CompilerCtx* ctx, parser.Node* stmt) {
+}

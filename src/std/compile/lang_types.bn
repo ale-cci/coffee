@@ -3,8 +3,10 @@ import "../ioutil" as ioutil
 import "../string" as string
 import "../sys" as sys
 import "./types" as types
+import "../math" as math
 
 
+-- converts coffee-type to it's llvm representation
 str repr(types.CompilerCtx* ctx, types.Type* type) {
     if type == null {
         return "?"
@@ -54,6 +56,13 @@ str repr(types.CompilerCtx* ctx, types.Type* type) {
         return buf
     } elif string.strcmp(type.container, "vararg") == 0 {
         return "..."
+    } elif string.strcmp(type.container, "enum") == 0 {
+        buf := ""
+        enum_size := type_size(ctx, type.of.next)
+        io.asprintf(&buf, "{i32,i%d}", enum_size)
+        return buf
+    } elif string.strcmp(type.container, "enum_field") == 0 {
+        return repr(ctx, type.family)
     } elif string.strcmp(type.container, "error") == 0 {
         -- syntax error occurred before, not returning anything as type container
     } else {
@@ -83,3 +92,24 @@ bool cmp(types.CompilerCtx* ctx, types.Type* a, b) {
     return string.strcmp(a_repr, b_repr) == 0
 }
 
+
+int type_size(types.CompilerCtx* ctx, types.Type* t) {
+    if t == null {
+        return 0
+    }
+
+    if string.strcmp(t.container, "int") == 0 {
+        return 32
+    } elif string.strcmp(t.container, "union") == 0 {
+        union_size := 0
+        for field := t.of; field != null; field = field.next {
+            union_size = math.max(union_size, type_size(ctx, field.of))
+        }
+        return union_size
+    } elif string.strcmp(t.container, "enum_field") == 0 {
+        return type_size(ctx, t.family.of.next)
+    }
+
+    io.printf("Type size not implemented for type: %s\n", t.container)
+    return 0-1
+}
