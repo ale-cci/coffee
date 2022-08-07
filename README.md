@@ -28,14 +28,16 @@ int main() {
 
 ```shell
 $ bash install.sh
-$ coffee samples/hello.bn
-File hello compiled successfully!
-$ ./out
+ . Installing standard libraries
+ . Building coffee
+ ☕ coffee is ready!
+
+$ coffee run samples/00-hello_world.bn
+File samples/00-hello_world compiled successfully!
 Hello from coffee!
 Hello from coffee!
 Hello from coffee!
 ```
-
 
 #### Documentation
 Waiting for a better way to host it, [here](./docs) you could find the documentation
