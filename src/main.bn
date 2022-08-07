@@ -26,7 +26,8 @@ bool compile_file(str filename, outname) {
     io.rewind(llvm_code)
 
     cmd := ""
-    io.asprintf(&cmd, "tee debug.ll | llc - -o debug.s", outname)
+    io.asprintf(&cmd, "tee debug.ll | llc -opaque-pointers - -o debug.s", outname)
+
     proc := sys.popen(cmd, "w")
 
     ioutil.copy(io.fileno(proc), io.fileno(llvm_code))

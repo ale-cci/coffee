@@ -11,7 +11,7 @@ COPY src/coffee.ll /coffee/bin/
 
 RUN set -ex \
     ; llc --version \
-    ; llc /coffee/bin/coffee.ll -o /coffee/bin/coffee.s \
+    ; llc -opaque-pointers /coffee/bin/coffee.ll -o /coffee/bin/coffee.s \
     ; cc /coffee/bin/coffee.s -o /coffee/bin/coffee \
     ; rm /coffee/bin/coffee.ll /coffee/bin/coffee.s
 
