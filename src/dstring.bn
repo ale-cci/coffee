@@ -1,0 +1,53 @@
+import "std/sys" as sys
+import "std/string" as string
+
+
+alias String = struct {
+    chr* string,
+    int length,
+    int capacity,
+}
+
+String to_string(chr* c_str) {
+    String s
+    len := string.strlen(c_str)
+    s.string = sys.malloc(len)
+    string.strncpy(s.string, c_str, len)
+    s.capacity = len
+    return s
+}
+
+
+String new_builder(int capacity) {
+    String s
+    s.string = (chr*) sys.malloc(capacity)
+    s.string[0] = '\x00'
+    s.length = 0
+    s.capacity = capacity
+    return s
+}
+
+void append(String* dest, String* to_append) {
+    required_len := dest.length + to_append.length + 1
+    if required_len > dest.capacity {
+        dest.string = sys.realloc(dest.string, required_len)
+    }
+
+    dest.string = string.strncat(dest.string, to_append.string, to_append.length)
+    dest.length = dest.length + to_append.length
+}
+
+void append_cstr(String* builder, str text) {
+    other_len := string.strlen(text)
+    required_len := builder.length + other_len + 1
+    if required_len > builder.capacity {
+        builder.string = sys.realloc(builder.string, required_len)
+    }
+
+    builder.string = string.strncat(builder.string, text, other_len)
+    builder.length = builder.length + other_len
+}
+
+void free(String* builder) {
+    sys.free(builder.string)
+}

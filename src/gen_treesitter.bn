@@ -1,0 +1,118 @@
+import "std/sys" as sys
+import "std/ioutil" as ioutil
+import "std/io" as io
+import "std/ast/parser" as parser
+import "std/ast/syntax" as syntax
+import "./dstring" as ds
+import "std/string" as string
+import "std/ast/errors" as errors
+
+void debug_matcher(parser.Matcher* m) {
+    io.printf(
+        "[%s] times: %c alternative: %p next: %p submatcher: %p type: %c value: %s\n",
+        m.tag,
+        m.times,
+        m.alternative,
+        m.next,
+        m.submatcher,
+        m.type,
+        m.value,
+    )
+}
+
+int MATCHER_TYPE_ERROR = 0
+int MATCHER_TYPE_LEAF = 1
+int MATCHER_TYPE_OPTIONAL = 2
+
+alias Matcher = struct {
+    int type, -- LEAF, OPTIONAL, ...
+    str value, -- has value only if it's a leaf token
+
+    Matcher* matchers, -- has value only if it is not a leaf
+    int length,
+}
+
+alias Rule = struct {
+    str name,
+    Matcher m,
+}
+
+alias Grammar = struct {
+    Rule* rules,
+    int length,
+}
+
+-- ds.String rule_repr(parser.Rule* rule) {
+--     builder := ds.new_builder(100)
+-- 
+--     ds.append_cstr(&builder, "_")
+--     ds.append_cstr(&builder, rule.name)
+--     ds.append_cstr(&builder, ": $ => ")
+--     ds.append_cstr(&builder, ",")
+--     ds.append_cstr(&builder, "\n")
+-- 
+--     for m := rule.matcher; m != null; {
+--         for s := m.submatcher; s != null; {
+--             if s.times == '?' {
+--                 io.printf("optional(")
+--             }
+--             if s.type == 'a' {
+--                 io.printf("$._%s\n", s.value)
+--             } else {
+--                 debug_matcher(s)
+--             }
+--             s = s.submatcher
+--         }
+--         m = m.next
+--     }
+--     return builder
+-- }
+
+
+errors.Error* parse_rule(parser.ParsingContext* ctx, Rule* rule) {
+    name := ctx.current_token.value
+    rule.name = name
+    ctx.current_token = ctx.current_token.next
+    if string.strcmp(ctx.current_token.value, ":") != 0 {
+        str msg
+        io.asprintf(&msg, "expected : after rule name, got: '%s'", ctx.current_token.value)
+        return errors.from(ctx.current_token, msg)
+    }
+    ctx.current_token = ctx.current_token.next
+    return null
+}
+
+void main() {
+    gfile := ioutil.str_as_file(syntax.grammar())
+    ctx := parser.new_context(gfile)
+    io.fclose(gfile)
+
+    for ; string.strcmp(ctx.current_token.type, "EOF") != 0; {
+        if string.strcmp(ctx.current_token.type, "NL") == 0 {
+            ctx.current_token = ctx.current_token.next
+            continue
+        }
+
+        Rule rule
+        err := parse_rule(ctx, &rule)
+        if err != null {
+            errors.report(err)
+            break
+        }
+        io.printf("Successully parsed rule: %s\n", rule.name)
+
+        ctx.current_token = ctx.current_token.next
+    }
+
+--    grammar_repr := ds.new_builder(1000)
+--    for i := 0; grammar[i] != null; i = i + 1 {
+--        rule := grammar[i]
+--        repr := rule_repr(rule)
+--
+--        ds.append(&grammar_repr, &repr)
+--        ds.free(&repr)
+--    }
+--
+--    io.printf("here the grammar: \n")
+--    io.printf("%s\n", grammar_repr.string)
+}
