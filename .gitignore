@@ -5,3 +5,4 @@ coffee
 *.dSYM
 .DS_Store
 *.test
+*.o

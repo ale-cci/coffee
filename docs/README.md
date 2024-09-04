@@ -19,7 +19,7 @@ void main() {
     int t = 32
 
     -- \0A is the hex-ascii code for newline
-    io.printf("Example of function call: %d\0A", t)
+    io.printf("Example of function call: %d\n", t)
 }
 ```
 
@@ -42,8 +42,8 @@ You can find more examples [here](../samples).
 ## TODOs:
 - [ ] lexer better error reporting
 - [ ] first class functions
+- [ ] reliable paramater expansion (maybe something like rust macros) `something(...x)`
 - [ ] keyword argument: `int fd = io.open(file: "something", mode: 0)`
-- [ ] paramater expansion `something(...x)`
 - [ ] Unions
 - [ ] clojures
 - [ ] something like va\_args
@@ -54,3 +54,8 @@ You can find more examples [here](../samples).
 
 - [x] standard library import
 - [ ] zero value initialization (`https://go.dev/ref/spec#The_zero_value`)
+
+## TOOLS - todo
+- [ ] formatter
+- [ ] syntax highlighter
+- [ ] http library

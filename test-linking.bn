@@ -1,0 +1,7 @@
+
+
+extern int write(int fd, str string, int nchars)
+
+void main() {
+    write(1, "test", 4)
+}

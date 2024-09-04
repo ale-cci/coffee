@@ -16,7 +16,7 @@ bool compile_file(str filename, outname) {
     llvm_code := io.tmpfile()
     compiler_ctx := compile.new_context(llvm_code, filename)
     if compile.compile_file(compiler_ctx, (parser.Node*) null, filename) {
-        io.fprintf(stderr, "Compilation to llvm interrupted.\0A")
+        io.fprintf(stderr, "Compilation to llvm interrupted.\n")
         return false
     }
 
@@ -26,7 +26,7 @@ bool compile_file(str filename, outname) {
     io.rewind(llvm_code)
 
     cmd := ""
-    io.asprintf(&cmd, "tee debug.ll | llc - -o debug.s", outname)
+    io.asprintf(&cmd, "tee debug.ll | llc - -o debug.s")
     proc := sys.popen(cmd, "w")
 
     ioutil.copy(io.fileno(proc), io.fileno(llvm_code))
@@ -37,7 +37,7 @@ bool compile_file(str filename, outname) {
     }
 
     if sys.pclose(proc) != 0 {
-        io.fprintf(stderr, "error on llc execution\0A")
+        io.fprintf(stderr, "error on llc execution\n")
         return false
     }
 
@@ -50,7 +50,7 @@ bool compile_file(str filename, outname) {
     if sys.pclose(proc) != 0 {
         io.fprintf(stderr, "error on cc execution")
     } else {
-        io.printf("File %s compiled successfully!\0A", outname)
+        io.printf("File %s compiled successfully!\n", outname)
     }
 
     return true

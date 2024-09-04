@@ -1,0 +1,8 @@
+export function w $main() {
+@start
+    call $printf(l $fmt, ...)
+    ret 0
+}
+
+
+data $fmt = { b "One and one makes two!\n", b 0}
