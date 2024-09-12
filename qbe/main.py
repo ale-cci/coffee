@@ -183,7 +183,9 @@ def main(filename):
         ":": Token.OPERATOR,
     }, keywords=["if", "fn", "for", "else"], filename=filename)
 
-    gen_grammar(io.BytesIO(GRAMMAR), "grammar.bnf")
+    g = gen_grammar(io.BytesIO(GRAMMAR), "grammar.bnf")
+    for name, rule in g.items():
+        print(name, rule)
 
 
 class ParseError(Exception):
@@ -196,6 +198,8 @@ class GrammarRule:
         self.name = name
         self.callback = callback
         self.definition = definition
+    def __repr__(self):
+        return "<Rule (%r) %r>" % (self.callback, self.definition)
 
 def parse_rule_def(lexer, priority_tbl):
     output = []
@@ -244,6 +248,7 @@ def gen_grammar(fd, filename):
             if cb_token.kind != Token.IDENT:
                 raise ParseError(cb_token, f"Got unexpected token {cb_token.kind}, expected ident")
             closed_paren = lex.next()
+            callback_value = cb_token.value
             if closed_paren.kind != "rsqparen":
                 raise ParseError(cb_token, f"Got unexpected token {cb_token.kind}, expected ]")
             eqq = lex.next()
