@@ -1,6 +1,18 @@
 import io
-import re
+import collections
+TOKEN_PRECEDENCE = {
+    "and": 2,
+    "or": 1,
+}
+NON_LEFT_ASSOCIATIVE = []
 
+class Node:
+    def __init__(self, op: str, left, right):
+        self.op = op
+        self.left = left
+        self.right = right
+    def __repr__(self):
+        return f"<Node ({self.op}\n- {self.left}\n- {self.right}>"
 
 class Token:
     NUMBER = "number"
@@ -20,6 +32,9 @@ class Token:
 
     def __repr__(self):
         return "<Token: %r %r %d:%d>" % (self.kind, self.value, self.lineno, self.colno)
+    def __eq__(self, other):
+        return self.kind == other.kind and self.value == other.value and self.lineno == other.lineno and self.colno == other.lineno and self.filename == other.filename
+
 
 class Lexer:
     # single line comments
@@ -162,6 +177,7 @@ class Grammar:
 
 
 GRAMMAR = b"""
+start := "def";
 one := a | b;
 two := a b;
 three := (a b) | c;
@@ -170,7 +186,18 @@ five := STRING; # comment
 six[parser_callback] := xyz;
 """
 
+def parse_main():
+    pass
+
+PARSER_CALLBACKS = {
+    "parser_callback": parse_main,
+}
+
+
 def main(filename):
+    g = gen_grammar(io.BytesIO(GRAMMAR), "grammar.bnf")
+    # assume grammar is safely parsable
+
     fd = open(filename, 'rb')
     lex = Lexer(fd, {
         ">": Token.OPERATOR,
@@ -182,10 +209,21 @@ def main(filename):
         "->": Token.OPERATOR,
         ":": Token.OPERATOR,
     }, keywords=["if", "fn", "for", "else"], filename=filename)
+    syntax_tree = gen_ast(g["start"], g, lex)
 
-    g = gen_grammar(io.BytesIO(GRAMMAR), "grammar.bnf")
-    for name, rule in g.items():
-        print(name, rule)
+
+class AstNode:
+    def __init__(self, callback, node_id, children):
+        self.callback = callback
+        self.node_id = node_id
+        self.children = children
+
+
+
+def gen_ast(rule_root, g, lex):
+    pass
+
+
 
 
 class ParseError(Exception):
@@ -201,16 +239,99 @@ class GrammarRule:
     def __repr__(self):
         return "<Rule (%r) %r>" % (self.callback, self.definition)
 
-def parse_rule_def(lexer, priority_tbl):
-    output = []
-    items = []
+def parse_rule_def(lexer, precedence):
+    tokens = []
     while True:
         tok = lexer.next()
         if tok.kind == "eol" or tok.kind == "eof":
             break
 
-        items.append(tok)
-    return items
+        # add "and" for two consecutive ident tokens
+        tokens.append(tok)
+
+    leaves = [Token.IDENT, Token.STRING]
+    output = shunting_yard(tokens, precedence, leaves)
+    tree = build_tree(output, leaves)
+    return tree
+
+
+
+def build_tree(output, leaves, i=None):
+    if i is None:
+        i = len(output) -1
+
+    if output[i].kind in leaves:
+        return output[i], i -1
+
+    op = output[i]
+    left, i = build_tree(output, leaves, i - 1)
+    right, i = build_tree(output, leaves, i)
+
+    return Node(
+        op=op,
+        left=left,
+        right=right,
+    ), i
+
+def shunting_yard(in_tokens, precedence, leaves=[Token.IDENT, Token.NUMBER]):
+    def add_and(prev, curr):
+        if prev.kind == curr.kind and curr.kind in leaves:
+            return True
+        if prev.kind in leaves and curr.kind == "lparen":
+            return True
+        if prev.kind == "rparen" and curr.kind in leaves:
+            return True
+        return False
+
+    tokens = collections.deque()
+
+    prev_token = None
+    for t in in_tokens:
+        if prev_token is not None and add_and(prev_token, t):
+            tokens.append(Token(
+                value='&',
+                kind='and',
+                lineno=t.lineno,
+                colno=t.colno,
+                filename=t.filename,
+            ))
+        tokens.append(t)
+        prev_token = t
+
+    output = []
+
+    op_stack = collections.deque()
+    while len(tokens):
+        t = tokens.popleft()
+
+        if t.kind in leaves:
+            output.append(t)
+
+        elif t.kind == "lparen":
+            op_stack.append(t)
+
+        elif t.kind == "rparen":
+            while len(op_stack) and op_stack[-1].kind != "lparen":
+                output.append(op_stack.pop())
+            assert len(op_stack) and op_stack[-1].kind == "lparen"
+            op_stack.pop()
+
+        else:
+            o1 = t
+            o1_prec = precedence[t.kind]
+
+            while len(op_stack) and op_stack[-1].kind != 'lparen' and (o1_prec < precedence[op_stack[-1].kind] or (o1_prec == precedence[op_stack[-1].kind] and op_stack[-1].kind not in NON_LEFT_ASSOCIATIVE)):
+                o2 = op_stack.pop()
+                output.append(o2)
+
+            op_stack.append(o1)
+
+    while len(op_stack):
+        o = op_stack.pop()
+        assert o.kind != "lparen"
+        output.append(o)
+
+    return list(output)
 
 def gen_grammar(fd, filename):
     lex = Lexer(fd, {
@@ -227,7 +348,8 @@ def gen_grammar(fd, filename):
     }, keywords=[], filename=filename, whitespaces=[' ', '\n', '\t'])
 
     op_priority = {
-        "|": 1,
+        "or": 1,
+        "and": 2,
     }
 
     rules = {}
