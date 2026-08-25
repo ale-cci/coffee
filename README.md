@@ -23,17 +23,15 @@ int main() {
 
 #### Getting started
 ###### Dependencies:
- - llvm (requires llc executable to be in "$PATH")
- - gcc
+ - qbe (requires qbe executable to be in "$PATH")
+ - cc/gcc
 
 ```shell
 $ bash install.sh
-$ coffee samples/hello.bn
-File hello compiled successfully!
-$ ./out
-Hello from coffee!
-Hello from coffee!
-Hello from coffee!
+$ coffee samples/00-hello_world.bn
+File samples/00-hello_world compiled successfully!
+$ ./samples/00-hello_world
+Hello from coffee!Hello from coffee!Hello from coffee!
 ```
 
 
