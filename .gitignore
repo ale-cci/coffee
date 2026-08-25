@@ -6,3 +6,18 @@ coffee
 .DS_Store
 *.test
 *.o
+
+# Debug and execution logs
+*.ssa
+!src/coffee.ssa
+*.log
+
+# Compiled compiler binaries and test outputs
+src/main
+src/main_llvm
+test-args
+test-args.bn
+runtime_test_bin
+
+# Local dependency sandboxes
+src/qbe/

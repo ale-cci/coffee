@@ -23,8 +23,7 @@ install-lib() {
 
 install-coffee() {
     echo " . Building coffee"
-    llc "$SRC_DIR/coffee.ll"  -o coffee.s || return 1
-    # lld-link $CFLAGS -o coffee coffee.o || return 1
+    qbe "$SRC_DIR/coffee.ssa" -o coffee.s || return 1
     cc $CFLAGS coffee.s -o coffee || return 1
     rm coffee.s
     mv coffee "$COFFEE_ROOT/bin"
