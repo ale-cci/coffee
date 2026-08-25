@@ -1,10 +1,8 @@
-define void @fn.v() {
-%.tmp1 = getelementptr [66 x i8], [66 x i8]*@.str0, i32 0, i32 0
-%value.2 = alloca i8*
-store i8* %.tmp1, i8** %value.2
-ret void
+export function $fn.v() {
+@start
+%.tmp1 =l copy $.str0
+%value.2 =l alloc8 8
+storel %.tmp1, %value.2
+ret
 }
-@.str0 = constant [66 x i8] c"
-        the quick brown fox
-        jumps over the lazy dog
-    \00"
+data $.str0 = { b "\n        the quick brown fox\n        jumps over the lazy dog\n    ", b 0 }

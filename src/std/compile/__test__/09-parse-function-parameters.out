@@ -1,14 +1,16 @@
-define void @f2.v.i.i(i32 %.a.arg, i32 %.b.arg) {
-%a = alloca i32
-store i32 %.a.arg, i32* %a
-%b = alloca i32
-store i32 %.b.arg, i32* %b
-ret void
+export function $f2.v.i.i(w %.a.arg, w %.b.arg) {
+@start
+%a =l alloc4 4
+storew %.a.arg, %a
+%b =l alloc4 4
+storew %.b.arg, %b
+ret
 }
-define void @f.v() {
-%a.0 = alloca i32
-store i32 4, i32* %a.0
-%.tmp1 = load i32, i32* %a.0
-call void(i32,i32) @f2.v.i.i(i32 3, i32 %.tmp1)
-ret void
+export function $f.v() {
+@start
+%a.0 =l alloc4 4
+storew 4, %a.0
+%.tmp1 =w loadw %a.0
+call $f2.v.i.i(w 3, w %.tmp1)
+ret
 }

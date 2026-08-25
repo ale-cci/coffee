@@ -1,5 +1,6 @@
-@X = constant i32 3
-define i32 @fn.i() {
-%.tmp1 = load i32, i32* @X
-ret i32 %.tmp1
+data $X = { w 3 }
+export function w $fn.i() {
+@start
+%.tmp1 =w loadw $X
+ret %.tmp1
 }

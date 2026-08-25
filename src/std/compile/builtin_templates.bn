@@ -1,10 +1,12 @@
--- requires those 6 arguments:
+-- requires those 8 arguments:
 -- 1. builtin prefix
--- 2. array type
+-- 2. array type (unused in QBE)
 -- 3. array id
--- 4. assigned type
+-- 4. assigned type (unused in QBE)
 -- 5. assigned id
 -- 6. destination id
+-- 7. element size in bytes (int)
+-- 8. QBE store instruction (str)
 --
 -- Has the following behaviour:
 -- {
@@ -13,49 +15,39 @@
 --       t.cap = t.cap * 2 + 1
 --       t.c_arr = (T*) realloc((chr*) t.c_arr, sizeof(T) * t.cap)
 --   }
---   t.c_arr[t.len] = '3'
+--   t.c_arr[t.len] = val
 --   t.len = t.len + 1
 --
 --   j := t
 -- }
 str append_tmpl() {
-    return `%%%1$s.tmp0 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 1
-%%%1$s.tmp1 = load i32, i32* %%%1$s.tmp0
-%%%1$s.tmp2 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 2
-%%%1$s.tmp3 = load i32, i32* %%%1$s.tmp2
-%%%1$s.tmp4 = icmp sge i32 %%%1$s.tmp1, %%%1$s.tmp3
-br i1 %%%1$s.tmp4, label %%%1$s.if.true.9, label %%%1$s.if.end.9
-%1$s.if.true.9:
-%%%1$s.tmp6 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 2
-%%%1$s.tmp7 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 2
-%%%1$s.tmp8 = load i32, i32* %%%1$s.tmp7
-%%%1$s.tmp9 = mul i32 %%%1$s.tmp8, 2
-%%%1$s.tmp10 = add i32 %%%1$s.tmp9, 1
-store i32 %%%1$s.tmp10, i32* %%%1$s.tmp6
-%%%1$s.tmp11 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 0
-%%%1$s.tmp12 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 0
-%%%1$s.tmp13 = load %4$s*, %4$s** %%%1$s.tmp12
-%%%1$s.tmp14 = bitcast %4$s* %%%1$s.tmp13 to i8*
-%%%1$s.tmp15 = getelementptr %4$s, %4$s* null, i32 1
-%%%1$s.tmp16 = ptrtoint %4$s* %%%1$s.tmp15 to i32
-%%%1$s.tmp17 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 2
-%%%1$s.tmp18 = load i32, i32* %%%1$s.tmp17
-%%%1$s.tmp19 = mul i32 %%%1$s.tmp16, %%%1$s.tmp18
-%%%1$s.tmp20 = call i8*(i8*,i32) @realloc(i8* %%%1$s.tmp14, i32 %%%1$s.tmp19)
-%%%1$s.tmp21 = bitcast i8* %%%1$s.tmp20 to %4$s*
-store %4$s* %%%1$s.tmp21, %4$s** %%%1$s.tmp11
-br label %%%1$s.if.end.9
-%1$s.if.end.9:
-%%%1$s.tmp22 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 0
-%%%1$s.tmp23 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 1
-%%%1$s.tmp24 = load i32, i32* %%%1$s.tmp23
-%%%1$s.tmp25 = load %4$s*, %4$s** %%%1$s.tmp22
-%%%1$s.tmp26 = getelementptr %4$s, %4$s* %%%1$s.tmp25, i32 %%%1$s.tmp24
-store %4$s %5$s, %4$s* %%%1$s.tmp26
-%%%1$s.tmp27 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 1
-%%%1$s.tmp28 = getelementptr %2$s, %2$s* %3$s, i32 0, i32 1
-%%%1$s.tmp29 = load i32, i32* %%%1$s.tmp28
-%%%1$s.tmp30 = add i32 %%%1$s.tmp29, 1
-store i32 %%%1$s.tmp30, i32* %%%1$s.tmp27
-%6$s = load %2$s, %2$s* %3$s\n`
+    return `@%1$s.start
+    %9$s.tmp_ptr.%1$s =l add %3$s, 8
+    %9$s.tmp1.%1$s =w loadw %9$s.tmp_ptr.%1$s
+    %9$s.tmp_cap_ptr.%1$s =l add %3$s, 12
+    %9$s.tmp3.%1$s =w loadw %9$s.tmp_cap_ptr.%1$s
+    %9$s.tmp4.%1$s =w csgew %9$s.tmp1.%1$s, %9$s.tmp3.%1$s
+    jnz %9$s.tmp4.%1$s, @%1$s.if.true, @%1$s.if.end
+
+@%1$s.if.true
+    %9$s.tmp9.%1$s =w mul %9$s.tmp3.%1$s, 2
+    %9$s.tmp10.%1$s =w add %9$s.tmp9.%1$s, 1
+    storew %9$s.tmp10.%1$s, %9$s.tmp_cap_ptr.%1$s
+    %9$s.tmp13.%1$s =l loadl %3$s
+    %9$s.ext_cap.%1$s =l extsw %9$s.tmp10.%1$s
+    %9$s.size.%1$s =l mul %9$s.ext_cap.%1$s, %7$d
+    %9$s.tmp20.%1$s =l call $realloc(l %9$s.tmp13.%1$s, l %9$s.size.%1$s)
+    storel %9$s.tmp20.%1$s, %3$s
+    jmp @%1$s.if.end
+
+@%1$s.if.end
+    %9$s.tmp25.%1$s =l loadl %3$s
+    %9$s.tmp24.%1$s =w loadw %9$s.tmp_ptr.%1$s
+    %9$s.ext_len.%1$s =l extsw %9$s.tmp24.%1$s
+    %9$s.off26.%1$s =l mul %9$s.ext_len.%1$s, %7$d
+    %9$s.tmp26.%1$s =l add %9$s.tmp25.%1$s, %9$s.off26.%1$s
+    %8$s %5$s, %9$s.tmp26.%1$s
+    %9$s.tmp30.%1$s =w add %9$s.tmp24.%1$s, 1
+    storew %9$s.tmp30.%1$s, %9$s.tmp_ptr.%1$s
+    %6$s =l copy %3$s\n`
 }

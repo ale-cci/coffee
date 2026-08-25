@@ -1,3 +1,6 @@
 
+int AF_UNIX = 0
+int SOCK_DGRAM = 0
+
 -- create an endpoint for communication `man 2 socket`
 extern int socket(int domain, int type, int protocol)

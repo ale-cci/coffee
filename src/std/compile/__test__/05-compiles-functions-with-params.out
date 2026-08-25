@@ -1,7 +1,8 @@
-define void @fn.v.i.c(i32 %.t.arg, i8 %.j.arg) {
-%t = alloca i32
-store i32 %.t.arg, i32* %t
-%j = alloca i8
-store i8 %.j.arg, i8* %j
-ret void
+export function $fn.v.i.c(w %.t.arg, w %.j.arg) {
+@start
+%t =l alloc4 4
+storew %.t.arg, %t
+%j =l alloc4 4
+storeb %.j.arg, %j
+ret
 }

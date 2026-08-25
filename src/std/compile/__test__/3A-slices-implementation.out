@@ -1,55 +1,45 @@
-define void @fn.v() {
-%t.0 = alloca {i32*,i32,i32}
-%.tmp1 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 0
-store i32* null, i32** %.tmp1
-%.tmp2 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 1
-store i32 0, i32* %.tmp2
-%.tmp3 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 2
-store i32 0, i32* %.tmp3
-%.tmp4 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 1
-%.tmp5 = load i32, i32* %.tmp4
-%t_len.6 = alloca i32
-store i32 %.tmp5, i32* %t_len.6
-%.b8.tmp0 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 1
-%.b8.tmp1 = load i32, i32* %.b8.tmp0
-%.b8.tmp2 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 2
-%.b8.tmp3 = load i32, i32* %.b8.tmp2
-%.b8.tmp4 = icmp sge i32 %.b8.tmp1, %.b8.tmp3
-br i1 %.b8.tmp4, label %.b8.if.true.9, label %.b8.if.end.9
-.b8.if.true.9:
-%.b8.tmp6 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 2
-%.b8.tmp7 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 2
-%.b8.tmp8 = load i32, i32* %.b8.tmp7
-%.b8.tmp9 = mul i32 %.b8.tmp8, 2
-%.b8.tmp10 = add i32 %.b8.tmp9, 1
-store i32 %.b8.tmp10, i32* %.b8.tmp6
-%.b8.tmp11 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 0
-%.b8.tmp12 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 0
-%.b8.tmp13 = load i32*, i32** %.b8.tmp12
-%.b8.tmp14 = bitcast i32* %.b8.tmp13 to i8*
-%.b8.tmp15 = getelementptr i32, i32* null, i32 1
-%.b8.tmp16 = ptrtoint i32* %.b8.tmp15 to i32
-%.b8.tmp17 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 2
-%.b8.tmp18 = load i32, i32* %.b8.tmp17
-%.b8.tmp19 = mul i32 %.b8.tmp16, %.b8.tmp18
-%.b8.tmp20 = call i8*(i8*,i32) @realloc(i8* %.b8.tmp14, i32 %.b8.tmp19)
-%.b8.tmp21 = bitcast i8* %.b8.tmp20 to i32*
-store i32* %.b8.tmp21, i32** %.b8.tmp11
-br label %.b8.if.end.9
-.b8.if.end.9:
-%.b8.tmp22 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 0
-%.b8.tmp23 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 1
-%.b8.tmp24 = load i32, i32* %.b8.tmp23
-%.b8.tmp25 = load i32*, i32** %.b8.tmp22
-%.b8.tmp26 = getelementptr i32, i32* %.b8.tmp25, i32 %.b8.tmp24
-store i32 3, i32* %.b8.tmp26
-%.b8.tmp27 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 1
-%.b8.tmp28 = getelementptr {i32*,i32,i32}, {i32*,i32,i32}* %t.0, i32 0, i32 1
-%.b8.tmp29 = load i32, i32* %.b8.tmp28
-%.b8.tmp30 = add i32 %.b8.tmp29, 1
-store i32 %.b8.tmp30, i32* %.b8.tmp27
-%.tmp7 = load {i32*,i32,i32}, {i32*,i32,i32}* %t.0
-store {i32*,i32,i32} %.tmp7, {i32*,i32,i32}* %t.0
-ret void
+export function $fn.v() {
+@start
+%t.0 =l alloc8 16
+%.tmp1 =l copy %t.0
+storel 0, %.tmp1
+%.tmp2 =l add %t.0, 8
+storew 0, %.tmp2
+%.tmp3 =l add %t.0, 12
+storew 0, %.tmp3
+%.tmp4 =l add %t.0, 8
+%.tmp5 =w loadw %.tmp4
+%t_len.6 =l alloc4 4
+storew %.tmp5, %t_len.6
+@.b8.start
+    %.tmp_ptr..b8 =l add %t.0, 8
+    %.tmp1..b8 =w loadw %.tmp_ptr..b8
+    %.tmp_cap_ptr..b8 =l add %t.0, 12
+    %.tmp3..b8 =w loadw %.tmp_cap_ptr..b8
+    %.tmp4..b8 =w csgew %.tmp1..b8, %.tmp3..b8
+    jnz %.tmp4..b8, @.b8.if.true, @.b8.if.end
+
+@.b8.if.true
+    %.tmp9..b8 =w mul %.tmp3..b8, 2
+    %.tmp10..b8 =w add %.tmp9..b8, 1
+    storew %.tmp10..b8, %.tmp_cap_ptr..b8
+    %.tmp13..b8 =l loadl %t.0
+    %.ext_cap..b8 =l extsw %.tmp10..b8
+    %.size..b8 =l mul %.ext_cap..b8, 4
+    %.tmp20..b8 =l call $realloc(l %.tmp13..b8, l %.size..b8)
+    storel %.tmp20..b8, %t.0
+    jmp @.b8.if.end
+
+@.b8.if.end
+    %.tmp25..b8 =l loadl %t.0
+    %.tmp24..b8 =w loadw %.tmp_ptr..b8
+    %.ext_len..b8 =l extsw %.tmp24..b8
+    %.off26..b8 =l mul %.ext_len..b8, 4
+    %.tmp26..b8 =l add %.tmp25..b8, %.off26..b8
+    storew 3, %.tmp26..b8
+    %.tmp30..b8 =w add %.tmp24..b8, 1
+    storew %.tmp30..b8, %.tmp_ptr..b8
+    %.tmp7 =l copy %t.0
+call $memcpy(l %t.0, l %.tmp7, l 16)
+ret
 }
-declare i8* @realloc(i8*, i32)

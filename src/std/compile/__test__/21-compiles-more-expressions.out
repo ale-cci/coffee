@@ -1,15 +1,16 @@
-define void @f.v() {
-%.tmp0 = icmp sgt i32 1, 2
-%.tmp1 = icmp slt i32 4, 5
-%.tmp2 = icmp sgt i32 3, 2
-%.tmp3 = and i1 %.tmp1, %.tmp2
-%.tmp4 = or i1 %.tmp0, %.tmp3
-%t.5 = alloca i1
-store i1 %.tmp4, i1* %t.5
-%.tmp6 = icmp sge i32 4, 2
-%.tmp7 = icmp sle i32 2, 4
-%.tmp8 = or i1 %.tmp6, %.tmp7
-%j.9 = alloca i1
-store i1 %.tmp8, i1* %j.9
-ret void
+export function $f.v() {
+@start
+%.tmp0 =w csgtw 1, 2
+%.tmp1 =w csltw 4, 5
+%.tmp2 =w csgtw 3, 2
+%.tmp3 =w and %.tmp1, %.tmp2
+%.tmp4 =w or %.tmp0, %.tmp3
+%t.5 =l alloc4 4
+storeb %.tmp4, %t.5
+%.tmp6 =w csgew 4, 2
+%.tmp7 =w cslew 2, 4
+%.tmp8 =w or %.tmp6, %.tmp7
+%j.9 =l alloc4 4
+storeb %.tmp8, %j.9
+ret
 }

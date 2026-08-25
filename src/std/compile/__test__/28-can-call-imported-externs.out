@@ -1,5 +1,5 @@
-declare i32 @extern_fn(i32)
-define void @fn.v() {
-%.tmp1 = call i32(i32) @extern_fn(i32 3)
-ret void
+export function $fn.v() {
+@start
+%.tmp1 =w call $extern_fn(w 3)
+ret
 }

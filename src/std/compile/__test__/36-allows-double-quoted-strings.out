@@ -1,7 +1,8 @@
-define void @fn.v() {
-%.tmp1 = getelementptr [6 x i8], [6 x i8]*@.str0, i32 0, i32 0
-%t.2 = alloca i8*
-store i8* %.tmp1, i8** %t.2
-ret void
+export function $fn.v() {
+@start
+%.tmp1 =l copy $.str0
+%t.2 =l alloc8 8
+storel %.tmp1, %t.2
+ret
 }
-@.str0 = constant [6 x i8] c"te\22st\00"
+data $.str0 = { b "te\"st", b 0 }

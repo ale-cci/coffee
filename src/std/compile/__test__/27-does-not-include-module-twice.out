@@ -1,3 +1,4 @@
-define void @m1$fn.v() {
-ret void
+export function $m1$fn.v() {
+@start
+ret
 }

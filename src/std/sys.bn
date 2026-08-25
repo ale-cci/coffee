@@ -92,14 +92,13 @@ extern int getuid()
 extern Passwd* getpwuid(int uid)
 
 
-struct {
+alias SplitextResult = struct {
     str base,
     str ext,
-} splitext(str path) {
-    struct {
-        str base,
-        str ext,
-    } S
+}
+
+SplitextResult* splitext(str path) {
+    S := (SplitextResult*) malloc(sizeof(SplitextResult))
 
     str_length := string.strlen(path)
     ext_pos := str_length

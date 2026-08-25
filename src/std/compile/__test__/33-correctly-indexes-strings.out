@@ -1,10 +1,12 @@
-define i8 @fn.c() {
-%.tmp1 = getelementptr [5 x i8], [5 x i8]*@.str0, i32 0, i32 0
-%s.2 = alloca i8*
-store i8* %.tmp1, i8** %s.2
-%.tmp3 = load i8*, i8** %s.2
-%.tmp4 = getelementptr i8, i8* %.tmp3, i32 3
-%.tmp5 = load i8, i8* %.tmp4
-ret i8 %.tmp5
+export function w $fn.c() {
+@start
+%.tmp1 =l copy $.str0
+%s.2 =l alloc8 8
+storel %.tmp1, %s.2
+%.tmp3 =l loadl %s.2
+%.ext5 =l extsw 3
+%.tmp4 =l add %.tmp3, %.ext5
+%.tmp6 =w loadub %.tmp4
+ret %.tmp6
 }
-@.str0 = constant [5 x i8] c"test\00"
+data $.str0 = { b "test", b 0 }

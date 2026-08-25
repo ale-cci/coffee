@@ -1,15 +1,17 @@
-define void @fn.v() {
-%i.0 = alloca i32
-store i32 0, i32* %i.0
-store i32 2, i32* %i.0
-br label %.for.start.1
-.for.start.1:
-br i1 1, label %.for.continue.1, label %.for.end.1
-.for.continue.1:
-%.tmp2 = load i32, i32* %i.0
-%.tmp3 = add i32 %.tmp2, 1
-store i32 %.tmp3, i32* %i.0
-br label %.for.start.1
-.for.end.1:
-ret void
+export function $fn.v() {
+@start
+%i.0 =l alloc4 4
+storew 0, %i.0
+storew 2, %i.0
+jmp @for.start.1
+@for.start.1
+jnz 1, @for.continue.1, @for.end.1
+@for.continue.1
+%.tmp2 =w loadw %i.0
+%.tmp3 =w add %.tmp2, 1
+storew %.tmp3, %i.0
+@for.inc_end.1
+jmp @for.start.1
+@for.end.1
+ret
 }

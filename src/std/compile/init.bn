@@ -11,13 +11,110 @@ import "../ast/peeker" as peeker
 import "../ast/syntax" as syntax
 
 import "./builtin_templates" as builtin
-import "./llvm" as llvm
+import "./qbe" as qbe
 import "./shunting_yard" as sy
 import "./types" as types
 import "./lang_types" as lang_types
 
 bool DEBUG_INTERNALS=false
 
+
+str get_alloc_instr(types.CompilerCtx* ctx, types.Type* t) {
+    repr_str := lang_types.repr(ctx, t)
+    if string.strcmp(repr_str, "w") == 0 {
+        return "=l alloc4 4"
+    }
+    int size = type_size(ctx, t)
+    if size < 8 {
+        size = 8
+    }
+    buf := ""
+    io.asprintf(&buf, "=l alloc8 %d", size)
+    return buf
+}
+
+bool is_byte_type(types.Type* t) {
+    if t == null {
+        return false
+    }
+    if string.strcmp(t.container, "typealias") == 0 {
+        return is_byte_type(t.of)
+    }
+    return string.strcmp(t.container, "chr") == 0 | string.strcmp(t.container, "bool") == 0
+}
+
+str get_store_instr(types.CompilerCtx* ctx, types.Type* t) {
+    if is_byte_type(t) {
+        return "storeb"
+    }
+    repr_str := lang_types.repr(ctx, t)
+    if string.strcmp(repr_str, "w") == 0 {
+        return "storew"
+    } elif string.strcmp(repr_str, "b") == 0 {
+        return "storeb"
+    }
+    return "storel"
+}
+
+str get_load_instr(types.CompilerCtx* ctx, types.Type* t) {
+    if is_byte_type(t) {
+        return "loadub"
+    }
+    repr_str := lang_types.repr(ctx, t)
+    if string.strcmp(repr_str, "w") == 0 {
+        return "loadw"
+    } elif string.strcmp(repr_str, "b") == 0 {
+        return "loadub"
+    }
+    return "loadl"
+}
+
+int type_size(types.CompilerCtx* ctx, types.Type* type) {
+    if type == null {
+        return 0
+    }
+    if string.strcmp(type.container, "int") == 0 {
+        return 4
+    } elif string.strcmp(type.container, "bool") == 0 {
+        return 1
+    } elif string.strcmp(type.container, "chr") == 0 {
+        return 1
+    } elif string.strcmp(type.container, "nullptr") == 0 {
+        return 8
+    } elif string.strcmp(type.container, "ptr") == 0 {
+        return 8
+    } elif string.strcmp(type.container, "function") == 0 {
+        return 8
+    } elif string.strcmp(type.container, "struct") == 0 {
+        int sz = 0
+        for f := type.of; f != null; f = f.next {
+            sz = sz + type_size(ctx, f)
+        }
+        return sz
+    } elif string.strcmp(type.container, "array") == 0 {
+        element_size := type_size(ctx, type.of)
+        int count = 0
+        io.sscanf(type.of.next.container, "%d", &count)
+        return element_size * count
+    } elif string.strcmp(type.container, "typealias") == 0 {
+        return type_size(ctx, type.of)
+    }
+    return 0
+}
+
+int struct_field_offset(types.CompilerCtx* ctx, types.Type* struct_type, int field_index) {
+    t := struct_type
+    if string.strcmp(t.container, "typealias") == 0 {
+        t = t.of
+    }
+    int offset = 0
+    int idx = 0
+    for f := t.of; f != null & idx < field_index; f = f.next {
+        offset = offset + type_size(ctx, f)
+        idx = idx + 1
+    }
+    return offset
+}
 
 types.Type* type_clone(types.Type* t) {
     if t == null {
@@ -53,22 +150,39 @@ types.Type* new_type() {
 }
 
 void copy_type(types.Type* dest, types.Type* src) {
+    if src == null {
+        return
+    }
     dest.container = src.container
     dest.info = src.info
     dest.repr = src.repr
 
-    if dest.of != src.of {
-        dest.of = src.of
-        copy_type(dest.of, src.of)
+    if src.of != null {
+        is_typealias := false
+        if src.container != null {
+            if string.strcmp(src.container, "typealias") == 0 {
+                is_typealias = true
+            }
+        }
+        if is_typealias {
+            dest.of = src.of
+        } else {
+            dest.of = new_type()
+            copy_type(dest.of, src.of)
+        }
+    } else {
+        dest.of = (types.Type*) null
     }
 
-    if dest.next != src.next {
-        dest.next = src.next
+    if src.next != null {
+        dest.next = new_type()
         copy_type(dest.next, src.next)
+    } else {
+        dest.next = (types.Type*) null
     }
 }
 
-chr SCOPE_GLOBAL = '@'
+chr SCOPE_GLOBAL = '$'
 chr SCOPE_LOCAL = '%'
 chr SCOPE_CONST = ' '
 
@@ -188,6 +302,7 @@ void pop_scope(types.CompilerCtx* ctx) {
 
 
 bool compile_file(types.CompilerCtx* ctx, parser.Node* stmt, str filepath) {
+    io.printf("[DEBUG] compile_file: opening %s\n", filepath)
     int input_fd = io.open(filepath, io.O_RDONLY)
     if input_fd <= 0 {
         err_msg := ""
@@ -196,11 +311,15 @@ bool compile_file(types.CompilerCtx* ctx, parser.Node* stmt, str filepath) {
         return false
     }
 
+    io.printf("[DEBUG] compile_file: creating peeker\n")
     p := peeker.new(input_fd)
     p.filename = filepath
 
+    io.printf("[DEBUG] compile_file: tokenizing\n")
     tokens := lexer.tokenize(p, false)
+    io.printf("[DEBUG] compile_file: parsing AST\n")
     ast := parser.ast(ctx.grammar, "start", tokens)
+    io.printf("[DEBUG] compile_file: parsing finished\n")
 
     io.close(input_fd)
 
@@ -291,7 +410,7 @@ void compile_global(types.CompilerCtx* ctx, types.GlobalName* g) {
     }
 
     if string.strcmp(g.global_type, "string") == 0 {
-        io.fprintf(ctx.ir, "%s = constant %s %s\n", repr_assignable_id(g.info), lang_types.repr(ctx, g.info.type), g.identifier)
+        io.fprintf(ctx.ir, "data %s = { b %s, b 0 }\n", repr_assignable_id(g.info), g.identifier)
     } elif string.strcmp(g.global_type, "extern") == 0 {
         compile_extern(ctx, g.info)
     }
@@ -300,14 +419,7 @@ void compile_global(types.CompilerCtx* ctx, types.GlobalName* g) {
 }
 
 void compile_extern(types.CompilerCtx* ctx, types.AssignableInfo* info) {
-    io.fprintf(ctx.ir, "declare %s %s(", lang_types.repr(ctx, info.type.of), repr_assignable_id(info))
-    for pt := info.type.of.next; pt != null; pt = pt.next {
-        if pt != info.type.of.next {
-            io.fprintf(ctx.ir, ", ")
-        }
-        io.fprintf(ctx.ir, "%s", lang_types.repr(ctx, pt))
-    }
-    io.fprintf(ctx.ir, ")\n")
+    -- QBE does not require external declarations
 }
 
 
@@ -366,7 +478,7 @@ void compile_statement(types.CompilerCtx* ctx, parser.Node* stmt, bool shallow) 
         if shallow == true {
             define_assignable(ctx, stmt, global_name, info)
         } else {
-            io.fprintf(ctx.ir, "%s = constant %s %s\n", repr_assignable_id(info), lang_types.repr(ctx, info.type), repr_assignable_id(a_info))
+            io.fprintf(ctx.ir, "data %s = { %s %s }\n", repr_assignable_id(info), lang_types.repr(ctx, info.type), repr_assignable_id(a_info))
         }
 
     } elif string.strcmp(stmt.type, "typealias") == 0 {
@@ -395,7 +507,7 @@ void compile_statement(types.CompilerCtx* ctx, parser.Node* stmt, bool shallow) 
         } else {
             scope := find_defined_str(ctx, ctx.current_module, type_name)
             info = scope.info
-            io.fprintf(ctx.ir, "%s = type %s\n", repr_assignable_id(info), lang_types.repr(ctx, info.type))
+            io.fprintf(ctx.ir, "type :%s = %s\n", info.id, lang_types.repr(ctx, info.type))
         }
 
     } elif string.strcmp(stmt.type, "extern") == 0 {
@@ -440,7 +552,12 @@ void compile_statement(types.CompilerCtx* ctx, parser.Node* stmt, bool shallow) 
             copy_type(return_type, info.type.of)
 
 
-            io.fprintf(ctx.ir, "define %s %s(", lang_types.repr(ctx, return_type), repr_assignable_id(info))
+            ret_repr := lang_types.repr(ctx, return_type)
+            if string.strlen(ret_repr) > 0 {
+                io.fprintf(ctx.ir, "export function %s %s(", ret_repr, repr_assignable_id(info))
+            } else {
+                io.fprintf(ctx.ir, "export function %s(", repr_assignable_id(info))
+            }
             params := syn_function_params(stmt.children)
 
             types.Type* param_type
@@ -457,7 +574,7 @@ void compile_statement(types.CompilerCtx* ctx, parser.Node* stmt, bool shallow) 
                 param_ptr = param_ptr.next
             }
             -- build function parameters string
-            io.fprintf(ctx.ir, ") {\n")
+            io.fprintf(ctx.ir, ") {\n@start\n")
             push_scope(ctx, "function", (chr*) null, (chr*) null, return_type)
             compile_fn_params(ctx, params)
 
@@ -563,10 +680,9 @@ void compile_fn_params(types.CompilerCtx* ctx, parser.Node* fn_params) {
         var_name := param_ptr.value
         set_assignable_id(param_info, SCOPE_LOCAL, var_name)
 
-        param_info_tr := lang_types.repr(ctx, param_info.type)
-        io.fprintf(ctx.ir, "%s = alloca %s\n", repr_assignable_id(param_info), param_info_tr)
+        io.fprintf(ctx.ir, "%s %s\n", repr_assignable_id(param_info), get_alloc_instr(ctx, param_info.type))
         define_assignable(ctx, param_ptr, var_name, param_info)
-        io.fprintf(ctx.ir, "store %s %%.%s.arg, %s* %s\n", param_info_tr, var_name, param_info_tr, repr_assignable_id(param_info))
+        io.fprintf(ctx.ir, "%s %%.%s.arg, %s\n", get_store_instr(ctx, param_info.type), var_name, repr_assignable_id(param_info))
         param_ptr = param_ptr.next
     }
 }
@@ -603,8 +719,13 @@ types.AssignableInfo* get_struct_attr(types.CompilerCtx* ctx, parser.Node* stmt,
     type_as_str := lang_types.repr(ctx, val.type)
 
     set_assignable_tmp_id(ctx, info)
-    io.fprintf(ctx.ir, "%%.tmp%d = getelementptr %s, %s* %s, i32 0, i32 %d\n", tmp_id, type_as_str, type_as_str, repr_assignable_id(val), attr_id)
-    io.fprintf(ctx.ir, "%s = load %s, %s* %%.tmp%d\n", repr_assignable_id(info), lang_types.repr(ctx, info.type), lang_types.repr(ctx, info.type), tmp_id)
+    offset := struct_field_offset(ctx, val.type, attr_id)
+    if offset == 0 {
+        io.fprintf(ctx.ir, "%%.tmp%d =l copy %s\n", tmp_id, repr_assignable_id(val))
+    } else {
+        io.fprintf(ctx.ir, "%%.tmp%d =l add %s, %d\n", tmp_id, repr_assignable_id(val), offset)
+    }
+    io.fprintf(ctx.ir, "%s =%s %s %%.tmp%d\n", repr_assignable_id(info), lang_types.repr(ctx, info.type), get_load_instr(ctx, info.type), tmp_id)
 
     return info
 }
@@ -624,8 +745,13 @@ void set_struct_attr(types.CompilerCtx* ctx, parser.Node* stmt, int attr_id, str
     tmp_id := new_uid(ctx)
     type_as_str := lang_types.repr(ctx, val.type)
 
-    io.fprintf(ctx.ir, "%%.tmp%d = getelementptr %s, %s* %s, i32 0, i32 %d\n", tmp_id, type_as_str, type_as_str, repr_assignable_id(val), attr_id)
-    io.fprintf(ctx.ir, "store %s, %s* %s\n", lang_types.repr(ctx, node_type), lang_types.repr(ctx, node_type), attr)
+    offset := struct_field_offset(ctx, val.type, attr_id)
+    if offset == 0 {
+        io.fprintf(ctx.ir, "%%.tmp%d =l copy %s\n", tmp_id, repr_assignable_id(val))
+    } else {
+        io.fprintf(ctx.ir, "%%.tmp%d =l add %s, %d\n", tmp_id, repr_assignable_id(val), offset)
+    }
+    io.fprintf(ctx.ir, "%s %s, %%.tmp%d\n", get_store_instr(ctx, node_type), attr, tmp_id)
 }
 
 
@@ -650,8 +776,8 @@ types.AssignableInfo* compile_builtin(types.CompilerCtx* ctx, parser.Node* stmt)
         inspected_type := node_to_type(ctx, value)
         type_as_str := lang_types.repr(ctx, inspected_type)
 
-        io.fprintf(ctx.ir, "%%.tmp%d = getelementptr %s, %s* null, i32 1\n", tmp_id, type_as_str, type_as_str)
-        io.fprintf(ctx.ir, "%s = ptrtoint %s* %%.tmp%d to i32\n", repr_assignable_id(info), type_as_str, tmp_id)
+        sz := type_size(ctx, inspected_type)
+        io.fprintf(ctx.ir, "%s =w copy %d\n", repr_assignable_id(info), sz)
 
 
         return info
@@ -672,7 +798,9 @@ types.AssignableInfo* compile_builtin(types.CompilerCtx* ctx, parser.Node* stmt)
         io.asprintf(&builtin_prefix, ".b%d", new_uid(ctx))
 
         tmpl := builtin.append_tmpl()
-        io.fprintf(ctx.ir, tmpl, builtin_prefix, lang_types.repr(ctx, array_info.type), repr_assignable_id(array_info), lang_types.repr(ctx, value_info.type), repr_assignable_id(value_info), repr_assignable_id(info))
+        elem_size := type_size(ctx, value_info.type)
+        store_instr := get_store_instr(ctx, value_info.type)
+        io.fprintf(ctx.ir, tmpl, builtin_prefix, lang_types.repr(ctx, array_info.type), repr_assignable_id(array_info), lang_types.repr(ctx, value_info.type), repr_assignable_id(value_info), repr_assignable_id(info), elem_size, store_instr, "%")
 
 
         info_g := new_assignable_info(stmt)
@@ -761,7 +889,7 @@ types.AssignableInfo* compile_fn_call(types.CompilerCtx* ctx, parser.Node* stmt)
         set_assignable_tmp_id(ctx, new_info)
         new_info.type = info.type.of
 
-        io.fprintf(ctx.ir, "%s = load %s, %s* %s\n", repr_assignable_id(new_info), lang_types.repr(ctx, info.type), lang_types.repr(ctx, info.type), repr_assignable_id(info))
+        io.fprintf(ctx.ir, "%s =l loadl %s\n", repr_assignable_id(new_info), repr_assignable_id(info))
 
         info = new_info
     }
@@ -777,6 +905,7 @@ types.AssignableInfo* compile_fn_call(types.CompilerCtx* ctx, parser.Node* stmt)
         }
 
 
+        vararg_inserted := 0
         for pp := start; pp != null; pp = skip_to_type(pp, "assignable") {
             if expect_type == null {
                 io.asprintf(&tmp, "Function '%s' takes %d arguments, %d given", info.name, argno-1, provided_args)
@@ -784,12 +913,25 @@ types.AssignableInfo* compile_fn_call(types.CompilerCtx* ctx, parser.Node* stmt)
                 return (types.AssignableInfo*) null
             }
 
-            if pp != start {
-                io.asprintf(&tmp, "%s, ", params_buff)
+            if string.strcmp(expect_type.container, "vararg") == 0 & vararg_inserted == 0 {
+                if pp != start {
+                    io.asprintf(&tmp, "%s, ..., ", params_buff)
+                } else {
+                    io.asprintf(&tmp, "..., ")
+                }
                 tmp_buff := params_buff
                 params_buff = tmp
                 tmp = tmp_buff
                 sys.free(tmp)
+                vararg_inserted = 1
+            } else {
+                if pp != start {
+                    io.asprintf(&tmp, "%s, ", params_buff)
+                    tmp_buff := params_buff
+                    params_buff = tmp
+                    tmp = tmp_buff
+                    sys.free(tmp)
+                }
             }
 
             a_info := compile_assignable(ctx, pp)
@@ -838,8 +980,8 @@ types.AssignableInfo* compile_fn_call(types.CompilerCtx* ctx, parser.Node* stmt)
     }
 
 
-    if string.strcmp(lang_types.repr(ctx, info.type.of), "void") == 0 {
-        io.fprintf(ctx.ir, "call %s %s(%s)\n", lang_types.repr(ctx, info.type), repr_assignable_id(info), params_buff)
+    if string.strcmp(lang_types.repr(ctx, info.type.of), "") == 0 {
+        io.fprintf(ctx.ir, "call %s(%s)\n", repr_assignable_id(info), params_buff)
         return (types.AssignableInfo*) null
     }
 
@@ -848,7 +990,7 @@ types.AssignableInfo* compile_fn_call(types.CompilerCtx* ctx, parser.Node* stmt)
     call_info.type = type_clone(info.type.of)
     call_info.type.next = null
 
-    io.fprintf(ctx.ir, "%s = call %s %s(%s)\n", repr_assignable_id(call_info), lang_types.repr(ctx, info.type), repr_assignable_id(info), params_buff)
+    io.fprintf(ctx.ir, "%s =%s call %s(%s)\n", repr_assignable_id(call_info), lang_types.repr(ctx, call_info.type), repr_assignable_id(info), params_buff)
 
     return (types.AssignableInfo*) call_info
 }
@@ -880,10 +1022,10 @@ void compile_expression(types.CompilerCtx* ctx, parser.Node* stmt) {
                 return
             }
 
-            io.fprintf(ctx.ir, "ret %s %s\n", lang_types.repr(ctx, info.type), repr_assignable_id(info))
+            io.fprintf(ctx.ir, "ret %s\n", repr_assignable_id(info))
 
         } else {
-            io.fprintf(ctx.ir, "ret void\n")
+            io.fprintf(ctx.ir, "ret\n")
         }
 
     } elif string.strcmp(expr_type, "NL") == 0 {
@@ -908,12 +1050,22 @@ void compile_expression(types.CompilerCtx* ctx, parser.Node* stmt) {
             new_error(ctx, stmt, err_buf)
         }
 
-        dest_tr := lang_types.repr(ctx, dest.type)
-        src_tr := lang_types.repr(ctx, a_info.type)
-        if string.strcmp(src_tr, "ptr") == 0 {
-            src_tr = dest_tr
+        is_struct := false
+        if string.strcmp(dest.type.container, "struct") == 0 {
+            is_struct = true
+        } elif string.strcmp(dest.type.container, "typealias") == 0 {
+            if dest.type.of != null {
+                if string.strcmp(dest.type.of.container, "struct") == 0 {
+                    is_struct = true
+                }
+            }
         }
-        io.fprintf(ctx.ir, "store %s %s, %s* %s\n", src_tr, repr_assignable_id(a_info), dest_tr, repr_assignable_id(dest))
+        if is_struct {
+            int sz = type_size(ctx, dest.type)
+            io.fprintf(ctx.ir, "call $memcpy(l %s, l %s, l %d)\n", repr_assignable_id(dest), repr_assignable_id(a_info), sz)
+        } else {
+            io.fprintf(ctx.ir, "%s %s, %s\n", get_store_instr(ctx, dest.type), repr_assignable_id(a_info), repr_assignable_id(dest))
+        }
     } elif string.strcmp(expr_type, "if_block") == 0 {
         compile_if_block(ctx, stmt)
     } elif string.strcmp(expr_type, "for_loop") == 0 {
@@ -929,10 +1081,10 @@ void compile_expression(types.CompilerCtx* ctx, parser.Node* stmt) {
         }
 
         if string.strcmp(stmt.children.value, "break") == 0 {
-            io.fprintf(ctx.ir, "br label %%%s\n", for_scope.end_id)
+            io.fprintf(ctx.ir, "jmp %s\n", for_scope.end_id)
 
         } elif string.strcmp(stmt.children.value, "continue") == 0 {
-            io.fprintf(ctx.ir, "br label %%%s\n", for_scope.begin_id)
+            io.fprintf(ctx.ir, "jmp %s\n", for_scope.begin_id)
         }
     } elif string.strcmp(expr_type, "function") == 0 {
         compile_closure(ctx, stmt)
@@ -1042,17 +1194,23 @@ void compile_closure(types.CompilerCtx* ctx, parser.Node* stmt) {
     ret_type := type_clone(closure_type.of)
     ret_type.of = null
 
-    io.fprintf(ctx.ir, "%%.tmem%d = call i8*(i8*,i32,i32,i32,i32,i32) @mmap(i8* null, i32 72, i32 7, i32 34, i32 -1, i32 0)\n", closure_id)
-    io.fprintf(ctx.ir, "call void(i8*,i8*,i8*) @llvm.init.trampoline(i8* %%.tmem%d, i8* bitcast (%s* %s to i8*), i8* null)\n", closure_id, lang_types.repr(ctx, closure_type), closure_name)
-    io.fprintf(ctx.ir, "%%.trmp%d = call i8*(i8*) @llvm.adjust.trampoline(i8* %%.tmem%d)\n", closure_id, closure_id)
-    io.fprintf(ctx.ir, "%s = bitcast i8* %%.trmp%d to %s*\n", repr_assignable_id(info), closure_id, lang_types.repr(ctx, info.type))
+    io.fprintf(ctx.ir, "%%.tmem%d =l call $mmap(l 0, l 72, w 7, w 34, w -1, w 0)\n", closure_id)
+    io.fprintf(ctx.ir, "call $llvm_init_trampoline(l %%.tmem%d, l %s, l 0)\n", closure_id, closure_name)
+    io.fprintf(ctx.ir, "%%.trmp%d =l call $llvm_adjust_trampoline(l %%.tmem%d)\n", closure_id, closure_id)
+    io.fprintf(ctx.ir, "%s =l copy %%.trmp%d\n", repr_assignable_id(info), closure_id)
 
     bkp_ctx := ctx.ir
     ctx.ir = io.tmpfile()
-    io.fprintf(ctx.ir, "define %s %s(", lang_types.repr(ctx, ret_type), closure_name)
+    
+    ret_repr := lang_types.repr(ctx, ret_type)
+    if string.strlen(ret_repr) > 0 {
+        io.fprintf(ctx.ir, "function %s %s(", ret_repr, closure_name)
+    } else {
+        io.fprintf(ctx.ir, "function %s(", closure_name)
+    }
     -- define params
     push_scope(ctx, "function", (chr*) null, (chr*) null, ret_type)
-    io.fprintf(ctx.ir, "%s nest %%.0", lang_types.repr(ctx, ctx_param))
+    io.fprintf(ctx.ir, "%s %%.0", lang_types.repr(ctx, ctx_param))
     params := syn_function_params(stmt.children)
     types.Type* param_type
     for param_ptr := params; param_ptr != null ; {
@@ -1067,7 +1225,7 @@ void compile_closure(types.CompilerCtx* ctx, parser.Node* stmt) {
         io.fprintf(ctx.ir, "%s %%.%s.arg", lang_types.repr(ctx, param_type), param_ptr.value)
         param_ptr = param_ptr.next
     }
-    io.fprintf(ctx.ir, ") {\n")
+    io.fprintf(ctx.ir, ") {\n@start\n")
     compile_fn_params(ctx, params)
     block := skip_to_type(stmt.children, "block")
     compile_block(ctx, block)
@@ -1105,13 +1263,13 @@ void check_n_add_implicit_return(types.CompilerCtx* ctx, parser.Node* stmt, type
         }
     }
 
-    if string.strcmp(lang_types.repr(ctx, return_type), "void") != 0 {
+    if string.strcmp(lang_types.repr(ctx, return_type), "") != 0 {
         if li != null {
             stmt = li
         }
         new_error(ctx, stmt, "Missing return value")
     } else {
-        io.fprintf(ctx.ir, "ret void\n")
+        io.fprintf(ctx.ir, "ret\n")
     }
 }
 
@@ -1121,8 +1279,8 @@ void compile_for_loop(types.CompilerCtx* ctx, parser.Node* stmt) {
     chr* begin_lbl = (chr*) null
     chr* end_lbl = (chr*) null
 
-    io.asprintf(&begin_lbl, ".for.start.%d", for_id)
-    io.asprintf(&end_lbl, ".for.end.%d", for_id)
+    io.asprintf(&begin_lbl, "@for.start.%d", for_id)
+    io.asprintf(&end_lbl, "@for.end.%d", for_id)
 
     push_scope(ctx, "for", begin_lbl, end_lbl, (types.Type*) null)
 
@@ -1139,8 +1297,8 @@ void compile_for_loop(types.CompilerCtx* ctx, parser.Node* stmt) {
         return
     }
 
-    io.fprintf(ctx.ir, "br label %%.for.start.%d\n", for_id)
-    io.fprintf(ctx.ir, ".for.start.%d:\n", for_id)
+    io.fprintf(ctx.ir, "jmp %s\n", begin_lbl)
+    io.fprintf(ctx.ir, "%s\n", begin_lbl)
 
     -- check for 'for' condition
     fst_colon := skip_to_type(stmt.children, "OPERATOR")
@@ -1159,12 +1317,12 @@ void compile_for_loop(types.CompilerCtx* ctx, parser.Node* stmt) {
 
     on_end := end_lbl
     if else_block != null {
-        io.asprintf(&on_end, ".for.else.%d", for_id)
+        io.asprintf(&on_end, "@for.else.%d", for_id)
     }
 
-    io.fprintf(ctx.ir, "br %s %s, label %%.for.continue.%d, label %%%s\n", lang_types.repr(ctx, condition_info.type), repr_assignable_id(condition_info), for_id, on_end)
+    io.fprintf(ctx.ir, "jnz %s, @for.continue.%d, %s\n", repr_assignable_id(condition_info), for_id, on_end)
 
-    io.fprintf(ctx.ir, ".for.continue.%d:\n", for_id)
+    io.fprintf(ctx.ir, "@for.continue.%d\n", for_id)
 
     -- compile body
 
@@ -1179,15 +1337,17 @@ void compile_for_loop(types.CompilerCtx* ctx, parser.Node* stmt) {
     }
 
     -- execute for increment before next loop
-    io.fprintf(ctx.ir, "br label %%%s\n", begin_lbl)
+    io.fprintf(ctx.ir, "@for.inc_end.%d\n", for_id)
+    io.fprintf(ctx.ir, "jmp %s\n", begin_lbl)
     -- compile else
     if else_block != null {
-        io.fprintf(ctx.ir, ".for.else.%d:\n", for_id)
+        io.fprintf(ctx.ir, "%s\n", on_end)
         block := skip_to_type(else_block.children, "block")
         compile_block(ctx, block)
-        io.fprintf(ctx.ir, "br label %%%s\n", end_lbl)
+        io.fprintf(ctx.ir, "@for.else_end.%d\n", for_id)
+        io.fprintf(ctx.ir, "jmp %s\n", end_lbl)
     }
-    io.fprintf(ctx.ir, "%s:\n", end_lbl)
+    io.fprintf(ctx.ir, "%s\n", end_lbl)
     pop_scope(ctx)
 }
 
@@ -1244,9 +1404,24 @@ types.AssignableInfo* compile_declaration(types.CompilerCtx* ctx, parser.Node* s
 
     define_assignable(ctx, stmt, var_name.value, info)
 
-    io.fprintf(ctx.ir, "%s = alloca %s\n", repr_assignable_id(info), var_type_repr)
+    io.fprintf(ctx.ir, "%s %s\n", repr_assignable_id(info), get_alloc_instr(ctx, info.type))
     if a_info != null {
-        io.fprintf(ctx.ir, "store %s %s, %s* %s\n", lang_types.repr(ctx, a_info.type), repr_assignable_id(a_info), var_type_repr, repr_assignable_id(info))
+        is_struct := false
+        if string.strcmp(info.type.container, "struct") == 0 {
+            is_struct = true
+        } elif string.strcmp(info.type.container, "typealias") == 0 {
+            if info.type.of != null {
+                if string.strcmp(info.type.of.container, "struct") == 0 {
+                    is_struct = true
+                }
+            }
+        }
+        if is_struct {
+            int sz = type_size(ctx, info.type)
+            io.fprintf(ctx.ir, "call $memcpy(l %s, l %s, l %d)\n", repr_assignable_id(info), repr_assignable_id(a_info), sz)
+        } else {
+            io.fprintf(ctx.ir, "%s %s, %s\n", get_store_instr(ctx, a_info.type), repr_assignable_id(a_info), repr_assignable_id(info))
+        }
     } else {
         -- auto-initialization of type
         compile_zero_value(ctx, stmt, info)
@@ -1266,16 +1441,21 @@ void compile_zero_value(types.CompilerCtx* ctx, parser.Node* stmt, types.Assigna
 
     t := info.type
     if string.strcmp(t.container, "int") == 0 | string.strcmp(t.container, "chr") == 0 | string.strcmp(t.container, "bool") == 0 {
-        io.fprintf(ctx.ir, "store %s %d, %s* %s\n", t_repr, 0, t_repr, id)
+        io.fprintf(ctx.ir, "%s 0, %s\n", get_store_instr(ctx, t), id)
     } elif string.strcmp(t.container, "ptr") == 0 {
-        io.fprintf(ctx.ir, "store %s %s, %s* %s\n", t_repr, "null", t_repr, id)
+        io.fprintf(ctx.ir, "storel 0, %s\n", id)
     } elif string.strcmp(t.container, "struct") == 0 {
         for field = t.of; field != null; field = field.next {
             field_info = new_assignable_info(stmt)
             set_assignable_tmp_id(ctx, field_info)
             field_info.type = field
 
-            io.fprintf(ctx.ir, "%s = getelementptr %s, %s* %s, i32 0, i32 %d\n", repr_assignable_id(field_info), t_repr, t_repr, id, field_id)
+            offset := struct_field_offset(ctx, t, field_id)
+            if offset == 0 {
+                io.fprintf(ctx.ir, "%s =l copy %s\n", repr_assignable_id(field_info), id)
+            } else {
+                io.fprintf(ctx.ir, "%s =l add %s, %d\n", repr_assignable_id(field_info), id, offset)
+            }
             compile_zero_value(ctx, stmt, field_info)
             field_id = field_id + 1
         }
@@ -1285,7 +1465,12 @@ void compile_zero_value(types.CompilerCtx* ctx, parser.Node* stmt, types.Assigna
             set_assignable_tmp_id(ctx, field_info)
             field_info.type = field
 
-            io.fprintf(ctx.ir, "%s = getelementptr %s, %s* %s, i32 0, i32 %d\n", repr_assignable_id(field_info), t_repr, t_repr, id, field_id)
+            offset := struct_field_offset(ctx, t.of, field_id)
+            if offset == 0 {
+                io.fprintf(ctx.ir, "%s =l copy %s\n", repr_assignable_id(field_info), id)
+            } else {
+                io.fprintf(ctx.ir, "%s =l add %s, %d\n", repr_assignable_id(field_info), id, offset)
+            }
             compile_zero_value(ctx, stmt, field_info)
             field_id = field_id + 1
         }
@@ -1306,12 +1491,13 @@ void compile_if_block(types.CompilerCtx* ctx, parser.Node* stmt) {
     }
 
     if_id := new_uid(ctx)
-    io.fprintf(ctx.ir, "br %s %s, label %%.if.true.%d, label %%.if.false.%d\n", lang_types.repr(ctx, a_info.type), repr_assignable_id(a_info), if_id, if_id)
-    io.fprintf(ctx.ir, ".if.true.%d:\n", if_id)
+    io.fprintf(ctx.ir, "jnz %s, @if.true.%d, @if.false.%d\n", repr_assignable_id(a_info), if_id, if_id)
+    io.fprintf(ctx.ir, "@if.true.%d\n", if_id)
     block := skip_to_type(stmt.children, "block")
     compile_block(ctx, block)
-    io.fprintf(ctx.ir, "br label %%.if.end.%d\n", if_id)
-    io.fprintf(ctx.ir, ".if.false.%d:\n", if_id)
+    io.fprintf(ctx.ir, "@if.true_end.%d\n", if_id)
+    io.fprintf(ctx.ir, "jmp @if.end.%d\n", if_id)
+    io.fprintf(ctx.ir, "@if.false.%d\n", if_id)
 
     else_block := skip_to_type(stmt.children, "elif_block")
     if else_block != null {
@@ -1324,8 +1510,9 @@ void compile_if_block(types.CompilerCtx* ctx, parser.Node* stmt) {
     }
 
     -- compile any elif blocks
-    io.fprintf(ctx.ir, "br label %%.if.end.%d\n", if_id)
-    io.fprintf(ctx.ir, ".if.end.%d:\n", if_id)
+    io.fprintf(ctx.ir, "@if.else_end.%d\n", if_id)
+    io.fprintf(ctx.ir, "jmp @if.end.%d\n", if_id)
+    io.fprintf(ctx.ir, "@if.end.%d\n", if_id)
 }
 
 
@@ -1456,7 +1643,7 @@ types.AssignableInfo* get_dotted_name(types.CompilerCtx* ctx, parser.Node* dot_n
             set_assignable_tmp_id(ctx, new_base)
             new_base.type = base_var.type.of
 
-            io.fprintf(ctx.ir, "%s = load %s*, %s* %s\n", repr_assignable_id(new_base), lang_types.repr(ctx, new_base.type), lang_types.repr(ctx, base_var.type), repr_assignable_id(base_var))
+            io.fprintf(ctx.ir, "%s =l loadl %s\n", repr_assignable_id(new_base), repr_assignable_id(base_var))
             base_var = new_base
 
             struct_info = struct_info.of
@@ -1500,8 +1687,12 @@ types.AssignableInfo* get_dotted_name(types.CompilerCtx* ctx, parser.Node* dot_n
         set_assignable_tmp_id(ctx, new_info)
         new_info.name_type = "variable"
 
-        info_tr := lang_types.repr(ctx, base_var.type)
-        io.fprintf(ctx.ir, "%s = getelementptr %s, %s* %s, i32 0, i32 %d\n", repr_assignable_id(new_info), info_tr, info_tr, repr_assignable_id(base_var), field_id)
+        offset := struct_field_offset(ctx, base_var.type, field_id)
+        if offset == 0 {
+            io.fprintf(ctx.ir, "%s =l copy %s\n", repr_assignable_id(new_info), repr_assignable_id(base_var))
+        } else {
+            io.fprintf(ctx.ir, "%s =l add %s, %d\n", repr_assignable_id(new_info), repr_assignable_id(base_var), offset)
+        }
 
         return get_dotted_name(ctx, dot_name_ptr.next.next, new_info)
 
@@ -1567,7 +1758,7 @@ types.AssignableInfo* compile_addr(types.CompilerCtx* ctx, parser.Node* stmt) {
                 new_base := new_assignable_info(curr_node)
                 set_assignable_tmp_id(ctx, new_base)
 
-                io.fprintf(ctx.ir, "%s = getelementptr %s, %s* %s, i32 0, i32 0\n", repr_assignable_id(new_base), lang_types.repr(ctx, base.type), lang_types.repr(ctx, base.type), repr_assignable_id(base))
+                io.fprintf(ctx.ir, "%s =l copy %s\n", repr_assignable_id(new_base), repr_assignable_id(base))
 
                 new_base.type = type_clone(base.type.of)
                 new_base.type.next = null
@@ -1578,7 +1769,7 @@ types.AssignableInfo* compile_addr(types.CompilerCtx* ctx, parser.Node* stmt) {
         base_type := lang_types.repr(ctx, base.type)
 
         tmp_id := new_uid(ctx)
-        io.fprintf(ctx.ir, "%%.tmp%d = load %s, %s* %s\n", tmp_id, base_type, base_type, repr_assignable_id(base))
+        io.fprintf(ctx.ir, "%%.tmp%d =l loadl %s\n", tmp_id, repr_assignable_id(base))
 
         new_base := new_assignable_info(curr_node)
         set_assignable_tmp_id(ctx, new_base)
@@ -1590,9 +1781,25 @@ types.AssignableInfo* compile_addr(types.CompilerCtx* ctx, parser.Node* stmt) {
         }
 
         new_base.type = base.type.of
-        base_type_2 := lang_types.repr(ctx, new_base.type)
+        
+        -- Sign-extend the index to 64-bit if it is 32-bit (word)
+        ext_index := ""
+        if string.strcmp(index_type, "w") == 0 {
+            ext_uid := new_uid(ctx)
+            io.fprintf(ctx.ir, "%%.ext%d =l extsw %s\n", ext_uid, repr_assignable_id(index_info))
+            io.asprintf(&ext_index, "%%.ext%d", ext_uid)
+        } else {
+            ext_index = repr_assignable_id(index_info)
+        }
 
-        io.fprintf(ctx.ir, "%s = getelementptr %s, %s* %%.tmp%d, %s %s\n", repr_assignable_id(new_base), base_type_2, base_type_2, tmp_id, index_type, repr_assignable_id(index_info))
+        elem_size := type_size(ctx, new_base.type)
+        if elem_size > 1 {
+            offset_uid := new_uid(ctx)
+            io.fprintf(ctx.ir, "%%.off%d =l mul %s, %d\n", offset_uid, ext_index, elem_size)
+            io.fprintf(ctx.ir, "%s =l add %%.tmp%d, %%.off%d\n", repr_assignable_id(new_base), tmp_id, offset_uid)
+        } else {
+            io.fprintf(ctx.ir, "%s =l add %%.tmp%d, %s\n", repr_assignable_id(new_base), tmp_id, ext_index)
+        }
 
         base = new_base
     }
@@ -1629,29 +1836,12 @@ types.AssignableInfo* compile_assignable(types.CompilerCtx* ctx, parser.Node* cu
         from_type := lang_types.repr(ctx, info.type)
         to_type := lang_types.repr(ctx, type)
 
-        cast_fn := "bitcast"
-        if info.type.info != null {
-            if string.strcmp(info.type.info, "slice") == 0 {
-                io.printf("Casting array to slices is not implemented yet\n")
-            }
+        cast_fn := "copy"
+        if string.strcmp(from_type, "w") == 0 & string.strcmp(to_type, "l") == 0 {
+            cast_fn = "extsw"
         }
 
-        if string.strcmp(info.type.container, "ptr") != 0 & string.strcmp(type.container, "ptr") != 0 {
-            if from_type[0] == 'i' & to_type[0] == 'i' {
-                int from_size
-                int to_size
-                io.sscanf(from_type, "i%d", &from_size)
-                io.sscanf(to_type, "i%d", &to_size)
-
-                if from_size < to_size {
-                    cast_fn = "sext"
-                } else {
-                    cast_fn = "trunc"
-                }
-            }
-        }
-
-        io.fprintf(ctx.ir, "%s = %s %s %s to %s\n", repr_assignable_id(info), cast_fn, from_type, prev_id, to_type)
+        io.fprintf(ctx.ir, "%s =%s %s %s\n", repr_assignable_id(info), to_type, cast_fn, prev_id)
 
         info.type = type
     }
@@ -1680,9 +1870,16 @@ types.AssignableInfo* compile_assignable_stack(types.CompilerCtx* ctx, StackHead
     op_info := new_assignable_info((parser.Node*) null)
     op_info.type = operator_type(operator)
 
-    -- op_id := new_uid(ctx)
     set_assignable_tmp_id(ctx, op_info)
-    io.fprintf(ctx.ir, "%s = %s %s %s, %s\n", repr_assignable_id(op_info), operator_op(ctx, operator), lang_types.repr(ctx, A.type), repr_assignable_id(A), repr_assignable_id(B))
+    op_repr := operator_op(ctx, operator)
+    a_type_str := lang_types.repr(ctx, A.type)
+    op_type_str := lang_types.repr(ctx, op_info.type)
+
+    if string.strcmp(op_repr, "ceq") == 0 | string.strcmp(op_repr, "cne") == 0 | string.strcmp(op_repr, "csgt") == 0 | string.strcmp(op_repr, "cslt") == 0 | string.strcmp(op_repr, "csge") == 0 | string.strcmp(op_repr, "csle") == 0 {
+        io.fprintf(ctx.ir, "%s =%s %s%s %s, %s\n", repr_assignable_id(op_info), op_type_str, op_repr, a_type_str, repr_assignable_id(A), repr_assignable_id(B))
+    } else {
+        io.fprintf(ctx.ir, "%s =%s %s %s, %s\n", repr_assignable_id(op_info), op_type_str, op_repr, repr_assignable_id(A), repr_assignable_id(B))
+    }
 
     return op_info
 }
@@ -1699,25 +1896,25 @@ str operator_op(types.CompilerCtx* ctx, parser.Node* op) {
     } elif string.strcmp(op.value, "*") == 0 {
         return "mul"
     } elif string.strcmp(op.value, "/") == 0 {
-        return "sdiv"
+        return "div"
     } elif string.strcmp(op.value, "==") == 0 {
-        return "icmp eq"
+        return "ceq"
     } elif string.strcmp(op.value, "!=") == 0 {
-        return "icmp ne"
+        return "cne"
     } elif string.strcmp(op.value, ">") == 0 {
-        return "icmp sgt"
+        return "csgt"
     } elif string.strcmp(op.value, "<") == 0 {
-        return "icmp slt"
+        return "cslt"
     } elif string.strcmp(op.value, "&") == 0 {
         return "and"
     } elif string.strcmp(op.value, "|") == 0 {
         return "or"
     } elif string.strcmp(op.value, ">=") == 0 {
-        return "icmp sge"
+        return "csge"
     } elif string.strcmp(op.value, "<=") == 0 {
-        return "icmp sle"
+        return "csle"
     } elif string.strcmp(op.value, "%") == 0 {
-        return "srem"
+        return "rem"
     } else {
         io.printf(err_tmpl(ctx, op, "operator '%s' not implemented"), op.value)
     }
@@ -1752,7 +1949,7 @@ types.AssignableInfo* compile_mono_assignable(types.CompilerCtx* ctx, parser.Nod
             return (types.AssignableInfo*) null
         }
         assignable_info = new_assignable_info(curr_node)
-        set_assignable_id(assignable_info, SCOPE_CONST, "null")
+        set_assignable_id(assignable_info, SCOPE_CONST, "0")
         assignable_info.type = new_type()
         assignable_info.type.container = "nullptr"
 
@@ -1783,16 +1980,30 @@ types.AssignableInfo* compile_mono_assignable(types.CompilerCtx* ctx, parser.Nod
 
         if mono.children.children != dest {
             -- it's a pointer, load it's address
-            io.fprintf(ctx.ir, "%s = getelementptr %s, %s* %s, i32 0\n", repr_assignable_id(assignable_info), var_type_repr, var_type_repr, repr_assignable_id(var_info))
+            io.fprintf(ctx.ir, "%s =l copy %s\n", repr_assignable_id(assignable_info), repr_assignable_id(var_info))
         } elif string.strcmp(assignable_info.type.container, "function") == 0 {
             assignable_info = var_info
             type := new_type()
             type.of = assignable_info.type
             type.container = "ptr"
             assignable_info.type = type
+        } elif string.strcmp(assignable_info.type.container, "struct") == 0 {
+            io.fprintf(ctx.ir, "%s =l copy %s\n", repr_assignable_id(assignable_info), repr_assignable_id(var_info))
+        } elif string.strcmp(assignable_info.type.container, "typealias") == 0 {
+            is_struct := false
+            if assignable_info.type.of != null {
+                if string.strcmp(assignable_info.type.of.container, "struct") == 0 {
+                    is_struct = true
+                }
+            }
+            if is_struct {
+                io.fprintf(ctx.ir, "%s =l copy %s\n", repr_assignable_id(assignable_info), repr_assignable_id(var_info))
+            } else {
+                io.fprintf(ctx.ir, "%s =%s %s %s\n", repr_assignable_id(assignable_info), lang_types.repr(ctx, assignable_info.type), get_load_instr(ctx, assignable_info.type), repr_assignable_id(var_info))
+            }
         } else {
             -- it's a variable, load it's content
-            io.fprintf(ctx.ir, "%s = load %s, %s* %s\n", repr_assignable_id(assignable_info), var_type_repr, var_type_repr, repr_assignable_id(var_info))
+            io.fprintf(ctx.ir, "%s =%s %s %s\n", repr_assignable_id(assignable_info), lang_types.repr(ctx, assignable_info.type), get_load_instr(ctx, assignable_info.type), repr_assignable_id(var_info))
         }
 
     } elif string.strcmp(mono.children.type, "boolean") == 0 {
@@ -1811,8 +2022,7 @@ types.AssignableInfo* compile_mono_assignable(types.CompilerCtx* ctx, parser.Nod
         assignable_info = new_assignable_info(curr_node)
         set_assignable_tmp_id(ctx, assignable_info)
 
-        str_tr := lang_types.repr(ctx, string_info.type)
-        io.fprintf(ctx.ir, "%s = getelementptr %s, %s*%s, i32 0, i32 0\n", repr_assignable_id(assignable_info), str_tr, str_tr, repr_assignable_id(string_info))
+        io.fprintf(ctx.ir, "%s =l copy %s\n", repr_assignable_id(assignable_info), repr_assignable_id(string_info))
 
         assignable_info.type = new_type()
         assignable_info.type.container = "ptr"
@@ -1824,7 +2034,7 @@ types.AssignableInfo* compile_mono_assignable(types.CompilerCtx* ctx, parser.Nod
         chr_len := string.strlen(mono.children.value)
         set_assignable_id(assignable_info, SCOPE_CONST, "0")
 
-        assignable_info.id = llvm.chr_to_llvm(mono.children.value)
+        assignable_info.id = qbe.chr_to_qbe(mono.children.value)
         if assignable_info.id == null {
             io.asprintf(&err_buf, "Invalid character: %s", mono.children.value)
             return (types.AssignableInfo*) null
@@ -1890,8 +2100,8 @@ types.AssignableInfo* define_string(types.CompilerCtx* ctx, str text) {
     info.type.of.next = new_type()
 
 
-    identifier := llvm.string_to_llvm(text)
-    io.asprintf(&info.type.of.next.container, "%d", llvm.llvm_str_len(identifier))
+    identifier := qbe.string_to_qbe(text)
+    io.asprintf(&info.type.of.next.container, "%d", qbe.qbe_str_len(identifier))
     define_global(ctx, identifier, "string", info, false, false)
 
     return info
@@ -2114,7 +2324,19 @@ types.Type* node_to_type(types.CompilerCtx* ctx, parser.Node* stmt) {
         t.of = new_type()
         t.of.container = "chr"
     } elif string.strcmp(stmt.type, "WORD") == 0 {
-        t.container = stmt.value
+        scope := find_defined_str(ctx, ctx.current_module, stmt.value)
+        if scope != null {
+            if string.strcmp(scope.info.name_type, "typealias") == 0 {
+                t.container = "typealias"
+                t.info = scope.name
+                t.repr = scope.info.id
+                t.of = scope.info.type
+            } else {
+                t.container = stmt.value
+            }
+        } else {
+            t.container = stmt.value
+        }
 
     } elif string.strcmp(stmt.value, "...") == 0 {
         t.container = "vararg"

@@ -1,15 +1,20 @@
-define void @f.v() {
-br i1 0, label %.if.true.0, label %.if.false.0
-.if.true.0:
-br label %.if.end.0
-.if.false.0:
-br i1 1, label %.if.true.1, label %.if.false.1
-.if.true.1:
-br label %.if.end.1
-.if.false.1:
-br label %.if.end.1
-.if.end.1:
-br label %.if.end.0
-.if.end.0:
-ret void
+export function $f.v() {
+@start
+jnz 0, @if.true.0, @if.false.0
+@if.true.0
+@if.true_end.0
+jmp @if.end.0
+@if.false.0
+jnz 1, @if.true.1, @if.false.1
+@if.true.1
+@if.true_end.1
+jmp @if.end.1
+@if.false.1
+@if.else_end.1
+jmp @if.end.1
+@if.end.1
+@if.else_end.0
+jmp @if.end.0
+@if.end.0
+ret
 }

@@ -1,6 +1,7 @@
-%m0$.T.type = type {i32}
-define void @fn.v.m0$.T.typep(%m0$.T.type* %.a.arg) {
-%a = alloca %m0$.T.type*
-store %m0$.T.type* %.a.arg, %m0$.T.type** %a
-ret void
+type :m0$.T.type = { w }
+export function $fn.v.m0$.T.typep(l %.a.arg) {
+@start
+%a =l alloc8 8
+storel %.a.arg, %a
+ret
 }

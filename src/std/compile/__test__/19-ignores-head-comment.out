@@ -1,3 +1,4 @@
-define void @main() {
-ret void
+export function $main() {
+@start
+ret
 }

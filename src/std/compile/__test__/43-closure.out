@@ -1,14 +1,14 @@
-define void @fn.v() {
-%.tmem1 = call i8*(i8*,i32,i32,i32,i32,i32) @mmap(i8* null, i32 72, i32 7, i32 34, i32 -1, i32 0)
-call void(i8*,i8*,i8*) @llvm.init.trampoline(i8* %.tmem1, i8* bitcast (void({}*)* @.1 to i8*), i8* null)
-%.trmp1 = call i8*(i8*) @llvm.adjust.trampoline(i8* %.tmem1)
-%c = bitcast i8* %.trmp1 to void()*
-call void() %c()
-ret void
+export function $fn.v() {
+@start
+%.tmem1 =l call $mmap(l 0, l 72, w 7, w 34, w -1, w 0)
+call $llvm_init_trampoline(l %.tmem1, l @.1, l 0)
+%.trmp1 =l call $llvm_adjust_trampoline(l %.tmem1)
+%c =l copy %.trmp1
+call %c()
+ret
 }
-define void @.1({}* nest %.0) {
-ret void
+function @.1(l %.0) {
+@start
+ret
 }
-declare void @llvm.init.trampoline(i8*, i8*, i8*)
-declare i8* @llvm.adjust.trampoline(i8*)
-declare i8* @mmap(i8*, i32, i32, i32, i32, i32)
+

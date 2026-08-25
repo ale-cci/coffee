@@ -1,9 +1,10 @@
-%.PeekerInfo.type = type {i1}
-define i1 @read.b..PeekerInfo.typep(%.PeekerInfo.type* %.p.arg) {
-%p = alloca %.PeekerInfo.type*
-store %.PeekerInfo.type* %.p.arg, %.PeekerInfo.type** %p
-%.tmp0 = load %.PeekerInfo.type*, %.PeekerInfo.type** %p
-%.tmp1 = getelementptr %.PeekerInfo.type, %.PeekerInfo.type* %.tmp0, i32 0, i32 0
-%.tmp2 = load i1, i1* %.tmp1
-ret i1 %.tmp2
+type :.PeekerInfo.type = { b }
+export function w $read.b..PeekerInfo.typep(l %.p.arg) {
+@start
+%p =l alloc8 8
+storel %.p.arg, %p
+%.tmp0 =l loadl %p
+%.tmp1 =l copy %.tmp0
+%.tmp2 =w loadub %.tmp1
+ret %.tmp2
 }

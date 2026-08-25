@@ -1,2 +1,2 @@
-%.S.type = type {i32}
-%.T.type = type {i32,%.T.type*}
+type :.S.type = { w }
+type :.T.type = { w, l }

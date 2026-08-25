@@ -1,6 +1,7 @@
-define void @f.v() {
-%.tmp0 = bitcast ptr null to i8*
-%t.1 = alloca i8*
-store i8* %.tmp0, i8** %t.1
-ret void
+export function $f.v() {
+@start
+%.tmp0 =l copy 0
+%t.1 =l alloc8 8
+storel %.tmp0, %t.1
+ret
 }

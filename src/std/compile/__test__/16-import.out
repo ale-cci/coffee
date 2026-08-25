@@ -1,7 +1,9 @@
-define void @m0$main.v() {
-ret void
+export function $m0$main.v() {
+@start
+ret
 }
-define void @main() {
-call void() @m0$main.v()
-ret void
+export function $main() {
+@start
+call $m0$main.v()
+ret
 }

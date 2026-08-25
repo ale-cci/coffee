@@ -1,9 +1,10 @@
-define void @f.v() {
-%t.0 = alloca i32
-store i32 0, i32* %t.0
-store i32 3, i32* %t.0
-%.tmp1 = load i32, i32* %t.0
-%k.2 = alloca i32
-store i32 %.tmp1, i32* %k.2
-ret void
+export function $f.v() {
+@start
+%t.0 =l alloc4 4
+storew 0, %t.0
+storew 3, %t.0
+%.tmp1 =w loadw %t.0
+%k.2 =l alloc4 4
+storew %.tmp1, %k.2
+ret
 }

@@ -1,8 +1,9 @@
-define void @f.v() {
-%t.0 = alloca i32
-store i32 3, i32* %t.0
-%.tmp1 = getelementptr i32, i32* %t.0, i32 0
-%j.2 = alloca i32*
-store i32* %.tmp1, i32** %j.2
-ret void
+export function $f.v() {
+@start
+%t.0 =l alloc4 4
+storew 3, %t.0
+%.tmp1 =l copy %t.0
+%j.2 =l alloc8 8
+storel %.tmp1, %j.2
+ret
 }

@@ -1,7 +1,7 @@
-declare i8* @malloc()
-define void @alloc.v() {
-%.tmp0 = call i8*() @malloc()
-%test.1 = alloca i8*
-store i8* %.tmp0, i8** %test.1
-ret void
+export function $alloc.v() {
+@start
+%.tmp0 =l call $malloc()
+%test.1 =l alloc8 8
+storel %.tmp0, %test.1
+ret
 }

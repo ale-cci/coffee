@@ -12,24 +12,26 @@ import "./std/ast/lexer" as lexer
 
 
 bool compile_file(str filename, outname) {
+    io.printf("[DEBUG] compile_file start: %s -> %s\n", filename, outname)
     stderr := io.fdopen(io.STDERR, "w")
-    llvm_code := io.tmpfile()
-    compiler_ctx := compile.new_context(llvm_code, filename)
+    ssa_code := io.tmpfile()
+    compiler_ctx := compile.new_context(ssa_code, filename)
+    io.printf("[DEBUG] compile_file: context created\n")
     if compile.compile_file(compiler_ctx, (parser.Node*) null, filename) {
-        io.fprintf(stderr, "Compilation to llvm interrupted.\n")
+        io.fprintf(stderr, "Compilation to QBE SSA interrupted.\n")
         return false
     }
 
     -- check for compiler error
-    io.fflush(llvm_code)
-    llvm_code_size := io.ftell(llvm_code)
-    io.rewind(llvm_code)
+    io.fflush(ssa_code)
+    ssa_code_size := io.ftell(ssa_code)
+    io.rewind(ssa_code)
 
     cmd := ""
-    io.asprintf(&cmd, "tee debug.ll | llc - -o debug.s")
+    io.asprintf(&cmd, "tee debug.ssa | qbe -o debug.s")
     proc := sys.popen(cmd, "w")
 
-    ioutil.copy(io.fileno(proc), io.fileno(llvm_code))
+    ioutil.copy(io.fileno(proc), io.fileno(ssa_code))
 
     if proc == null {
         io.fprintf(stderr, "unable to spawn subprocess\n")
@@ -37,7 +39,7 @@ bool compile_file(str filename, outname) {
     }
 
     if sys.pclose(proc) != 0 {
-        io.fprintf(stderr, "error on llc execution\n")
+        io.fprintf(stderr, "error on qbe execution\n")
         return false
     }
 
@@ -65,7 +67,9 @@ alias Args = struct {
 }
 
 int main(int argc, str* argv) {
+    io.printf("[DEBUG] main start\n")
     args := check_args(argc, argv)
+    io.printf("[DEBUG] main: check_args passed. Action: %s, Filename: %s, Outname: %s\n", args.action, args.filename, args.outname)
 
     if compile_file(args.filename, args.outname) == false {
         return 0
@@ -82,10 +86,10 @@ int main(int argc, str* argv) {
 
 
 -- check how the program was called, assuring at least one argument is present in argv
-Args check_args(int argc, str* argv) {
+Args* check_args(int argc, str* argv) {
     tmpl := "Usage: %s <filename>\n"
 
-    Args args
+    args := (Args*) sys.malloc(sizeof(Args))
     if argc < 2 {
         io.printf(tmpl, argv[0])
         sys.exit(1)

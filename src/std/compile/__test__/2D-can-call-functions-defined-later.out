@@ -1,7 +1,9 @@
-define void @fn1.v() {
-call void() @fn2.v()
-ret void
+export function $fn1.v() {
+@start
+call $fn2.v()
+ret
 }
-define void @fn2.v() {
-ret void
+export function $fn2.v() {
+@start
+ret
 }

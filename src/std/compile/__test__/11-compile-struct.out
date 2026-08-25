@@ -1,10 +1,11 @@
-define void @f.v() {
-%t.0 = alloca {i32,i32}
-%.tmp1 = getelementptr {i32,i32}, {i32,i32}* %t.0, i32 0, i32 0
-store i32 0, i32* %.tmp1
-%.tmp2 = getelementptr {i32,i32}, {i32,i32}* %t.0, i32 0, i32 1
-store i32 0, i32* %.tmp2
-%.tmp3 = getelementptr {i32,i32}, {i32,i32}* %t.0, i32 0, i32 1
-store i32 3, i32* %.tmp3
-ret void
+export function $f.v() {
+@start
+%t.0 =l alloc8 8
+%.tmp1 =l copy %t.0
+storew 0, %.tmp1
+%.tmp2 =l add %t.0, 4
+storew 0, %.tmp2
+%.tmp3 =l add %t.0, 4
+storew 3, %.tmp3
+ret
 }

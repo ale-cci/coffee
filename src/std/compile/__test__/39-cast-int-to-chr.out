@@ -1,4 +1,5 @@
-define i8 @fn.c() {
-%.tmp0 = trunc i32 97 to i8
-ret i8 %.tmp0
+export function w $fn.c() {
+@start
+%.tmp0 =w copy 97
+ret %.tmp0
 }

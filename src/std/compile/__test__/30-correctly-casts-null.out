@@ -1,6 +1,7 @@
-define void @t.v() {
-%j.0 = alloca i32*
-store i32* null, i32** %j.0
-store i32* null, i32** %j.0
-ret void
+export function $t.v() {
+@start
+%j.0 =l alloc8 8
+storel 0, %j.0
+storel 0, %j.0
+ret
 }

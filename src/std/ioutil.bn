@@ -14,13 +14,13 @@ chr* readall(int fd) {
 
     read_bytes := io.read(fd, buf, buf_len)
     for ; read_bytes > 0; read_bytes = io.read(fd, buf, buf_len) {
-        content = sys.realloc(content, content_len + read_bytes)
+        content = sys.realloc(content, content_len + read_bytes + 1)
         for i := 0; i < read_bytes; i = i + 1 {
             content[i + content_len] = buf[i]
         }
         content_len = content_len + read_bytes
+        content[content_len] = '\x00'
     }
-    content[content_len-1] = '\x00'
     sys.free(buf)
     return content
 }

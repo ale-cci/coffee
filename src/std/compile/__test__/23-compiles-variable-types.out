@@ -1,20 +1,24 @@
-define void @is_lower.v.cp(i8* %.string.arg) {
-%string = alloca i8*
-store i8* %.string.arg, i8** %string
-br label %.for.start.0
-.for.start.0:
-%.tmp1 = load i8*, i8** %string
-%.tmp2 = getelementptr i8, i8* %.tmp1, i32 0
-%.tmp3 = load i8, i8* %.tmp2
-%.tmp4 = icmp ne i8 %.tmp3, 0
-br i1 %.tmp4, label %.for.continue.0, label %.for.end.0
-.for.continue.0:
-%.tmp5 = load i8*, i8** %string
-%.tmp6 = getelementptr i8, i8* %.tmp5, i32 0
-%.tmp7 = load i8, i8* %.tmp6
-%c.8 = alloca i8
-store i8 %.tmp7, i8* %c.8
-br label %.for.start.0
-.for.end.0:
-ret void
+export function $is_lower.v.cp(l %.string.arg) {
+@start
+%string =l alloc8 8
+storel %.string.arg, %string
+jmp @for.start.0
+@for.start.0
+%.tmp1 =l loadl %string
+%.ext3 =l extsw 0
+%.tmp2 =l add %.tmp1, %.ext3
+%.tmp4 =w loadub %.tmp2
+%.tmp5 =w cnew %.tmp4, 0
+jnz %.tmp5, @for.continue.0, @for.end.0
+@for.continue.0
+%.tmp6 =l loadl %string
+%.ext8 =l extsw 0
+%.tmp7 =l add %.tmp6, %.ext8
+%.tmp9 =w loadub %.tmp7
+%c.10 =l alloc4 4
+storeb %.tmp9, %c.10
+@for.inc_end.0
+jmp @for.start.0
+@for.end.0
+ret
 }

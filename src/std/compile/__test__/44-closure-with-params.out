@@ -1,28 +1,29 @@
-define i32(i32,i32)* @fn.fp() {
-%.tmem1 = call i8*(i8*,i32,i32,i32,i32,i32) @mmap(i8* null, i32 72, i32 7, i32 34, i32 -1, i32 0)
-call void(i8*,i8*,i8*) @llvm.init.trampoline(i8* %.tmem1, i8* bitcast (i32({}*,i32,i32)* @.1 to i8*), i8* null)
-%.trmp1 = call i8*(i8*) @llvm.adjust.trampoline(i8* %.tmem1)
-%x = bitcast i8* %.trmp1 to i32(i32,i32)*
-ret i32(i32,i32)* %x
+export function l $fn.fp() {
+@start
+%.tmem1 =l call $mmap(l 0, l 72, w 7, w 34, w -1, w 0)
+call $llvm_init_trampoline(l %.tmem1, l @.1, l 0)
+%.trmp1 =l call $llvm_adjust_trampoline(l %.tmem1)
+%x =l copy %.trmp1
+ret %x
 }
-define i32 @.1({}* nest %.0, i32 %.a.arg, i32 %.b.arg) {
-%a = alloca i32
-store i32 %.a.arg, i32* %a
-%b = alloca i32
-store i32 %.b.arg, i32* %b
-%.tmp2 = load i32, i32* %a
-%.tmp3 = load i32, i32* %b
-%.tmp4 = add i32 %.tmp2, %.tmp3
-ret i32 %.tmp4
+function w @.1(l %.0, w %.a.arg, w %.b.arg) {
+@start
+%a =l alloc4 4
+storew %.a.arg, %a
+%b =l alloc4 4
+storew %.b.arg, %b
+%.tmp2 =w loadw %a
+%.tmp3 =w loadw %b
+%.tmp4 =w add %.tmp2, %.tmp3
+ret %.tmp4
 }
-define i32 @main() {
-%.tmp6 = call i32(i32,i32)*() @fn.fp()
-%j.7 = alloca i32(i32,i32)*
-store i32(i32,i32)* %.tmp6, i32(i32,i32)** %j.7
-%.tmp8 = load i32(i32,i32)*, i32(i32,i32)** %j.7
-%.tmp9 = call i32(i32,i32) %.tmp8(i32 3, i32 4)
-ret i32 %.tmp9
+
+export function w $main() {
+@start
+%.tmp6 =l call $fn.fp()
+%j.7 =l alloc8 8
+storel %.tmp6, %j.7
+%.tmp8 =l loadl %j.7
+%.tmp9 =w call %.tmp8(w 3, w 4)
+ret %.tmp9
 }
-declare void @llvm.init.trampoline(i8*, i8*, i8*)
-declare i8* @llvm.adjust.trampoline(i8*)
-declare i8* @mmap(i8*, i32, i32, i32, i32, i32)

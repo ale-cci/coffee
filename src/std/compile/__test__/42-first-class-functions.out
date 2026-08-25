@@ -1,5 +1,6 @@
-define void @fn.v.fp(i32(i32)* %.callback.arg) {
-%callback = alloca i32(i32)*
-store i32(i32)* %.callback.arg, i32(i32)** %callback
-ret void
+export function $fn.v.fp(l %.callback.arg) {
+@start
+%callback =l alloc8 8
+storel %.callback.arg, %callback
+ret
 }

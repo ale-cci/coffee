@@ -1,0 +1,36 @@
+import "../testing" as testing
+import "./qbe" as qbe
+
+int main() {
+    t := testing.init("compile/qbe.test.bn")
+
+    testing.setup(t, "test_ascii_strings_stay_normal")
+    testing.run(t, test_ascii_strings_stay_normal(t))
+
+    testing.setup(t, "test_escapes_char_values")
+    testing.run(t, test_escapes_char_values(t))
+
+    testing.setup(t, "test_allows_hex_in_chars")
+    testing.run(t, test_allows_hex_in_chars(t))
+
+    testing.cleanup(t)
+    return 0
+}
+
+int test_ascii_strings_stay_normal(testing.T* t) {
+    got := qbe.string_to_qbe(`"hello"`)
+    testing.assert_equal_str(t, `"hello"`, got)
+    return 0
+}
+
+int test_escapes_char_values(testing.T* t) {
+    got := qbe.chr_to_qbe("'\\n'")
+    testing.assert_equal_str(t, "10", got)
+    return 0
+}
+
+int test_allows_hex_in_chars(testing.T* t) {
+    got := qbe.chr_to_qbe("'\\x0a'")
+    testing.assert_equal_str(t, "10", got)
+    return 0
+}

@@ -368,8 +368,14 @@ AstContext* next_token(AstContext* ctx) {
 
 
 Rule* find_rule(Rule** grammar, str rule_name) {
+    if grammar == null {
+        return (Rule*) null
+    }
     for i := 0; true ;i = i + 1 {
         rule := grammar[i]
+        if rule == null {
+            break
+        }
         if string.strcmp(rule.name, rule_name) == 0 {
             return rule
         }
@@ -525,6 +531,9 @@ ParseResult* ast(Rule** grammar, str start, lexer.Token* tokens) {
     AstContext c
     c.current_token = tokens
     c.grammar = grammar
+    c.max_line = 0
+    c.max_char_of_line = 0
+    c.err = null
 
     res := parse_to_ast(&c, start_matcher)
     if string.strcmp(c.current_token.type, "EOF") != 0 & res.err == null {

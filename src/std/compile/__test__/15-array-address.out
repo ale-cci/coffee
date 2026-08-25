@@ -1,8 +1,10 @@
-define void @fn.v.cp(i8* %.sample.arg) {
-%sample = alloca i8*
-store i8* %.sample.arg, i8** %sample
-%.tmp0 = load i8*, i8** %sample
-%.tmp1 = getelementptr i8, i8* %.tmp0, i32 0
-store i8 0, i8* %.tmp1
-ret void
+export function $fn.v.cp(l %.sample.arg) {
+@start
+%sample =l alloc8 8
+storel %.sample.arg, %sample
+%.tmp0 =l loadl %sample
+%.ext2 =l extsw 0
+%.tmp1 =l add %.tmp0, %.ext2
+storeb 0, %.tmp1
+ret
 }

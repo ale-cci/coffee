@@ -1,13 +1,15 @@
-define void @a.v.i.i.i(i32 %.a.arg, i32 %.b.arg, i32 %.c.arg) {
-%a = alloca i32
-store i32 %.a.arg, i32* %a
-%b = alloca i32
-store i32 %.b.arg, i32* %b
-%c = alloca i32
-store i32 %.c.arg, i32* %c
-ret void
+export function $a.v.i.i.i(w %.a.arg, w %.b.arg, w %.c.arg) {
+@start
+%a =l alloc4 4
+storew %.a.arg, %a
+%b =l alloc4 4
+storew %.b.arg, %b
+%c =l alloc4 4
+storew %.c.arg, %c
+ret
 }
-define void @fn.v() {
-call void(i32,i32,i32) @a.v.i.i.i(i32 1, i32 2, i32 3)
-ret void
+export function $fn.v() {
+@start
+call $a.v.i.i.i(w 1, w 2, w 3)
+ret
 }

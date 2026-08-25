@@ -1,7 +1,7 @@
-declare i32 @strlen(i8*)
-define i32 @fn.i() {
-%.tmp1 = getelementptr [20 x i8], [20 x i8]*@.str0, i32 0, i32 0
-%.tmp2 = call i32(i8*) @strlen(i8* %.tmp1)
-ret i32 %.tmp2
+export function w $fn.i() {
+@start
+%.tmp1 =l copy $.str0
+%.tmp2 =w call $strlen(l %.tmp1)
+ret %.tmp2
 }
-@.str0 = constant [20 x i8] c"the quick brown fox\00"
+data $.str0 = { b "the quick brown fox", b 0 }

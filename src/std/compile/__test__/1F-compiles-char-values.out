@@ -1,7 +1,8 @@
-define void @fn.v() {
-%a.0 = alloca i8
-store i8 97, i8* %a.0
-%b.1 = alloca i8
-store i8 18, i8* %b.1
-ret void
+export function $fn.v() {
+@start
+%a.0 =l alloc4 4
+storeb 97, %a.0
+%b.1 =l alloc4 4
+storeb 18, %b.1
+ret
 }

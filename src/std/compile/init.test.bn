@@ -164,16 +164,35 @@ int testfile(testing.T* t, str filename) {
         return 0
     }
 
-    expect := read_testfile(filename, "out")
+    outfile := compiler_ctx.ir
+    io.rewind(outfile)
+    got := ioutil.readall(io.fileno(outfile))
+
+    expect := (chr*) null
+    update_snapshots := sys.getenv("UPDATE_SNAPSHOTS")
+    if update_snapshots != null {
+        if string.strcmp(update_snapshots, "1") == 0 {
+            chr* out_filename
+            io.asprintf(&out_filename, "%s.out", filename)
+            out_file := io.fopen(out_filename, "w")
+            if out_file != null {
+                io.fprintf(out_file, "%s", got)
+                io.fclose(out_file)
+            }
+            sys.free(out_filename)
+            expect = got
+        }
+    }
+
+    if expect == null {
+        expect = read_testfile(filename, "out")
+    }
+
     if expect == null {
         testing.fail(t)
         io.fprintf(t.out, "Unable to open %s.out\0A", filename)
         return 0
     }
-
-    outfile := compiler_ctx.ir
-    io.rewind(outfile)
-    got := ioutil.readall(io.fileno(outfile))
 
     testing.assert_equal_str(t, expect, got)
     io.fclose(tmpfile)

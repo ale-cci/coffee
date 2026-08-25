@@ -1,6 +1,7 @@
-%.Token.type = type {%.Token.type*}
-define %.Token.type* @new_token..Token.typep() {
-%.tmp0 = call %.Token.type*() @new_token..Token.typep()
-%.tmp1 = bitcast %.Token.type* %.tmp0 to %.Token.type*
-ret %.Token.type* %.tmp1
+type :.Token.type = { l }
+export function l $new_token..Token.typep() {
+@start
+%.tmp0 =l call $new_token..Token.typep()
+%.tmp1 =l copy %.tmp0
+ret %.tmp1
 }

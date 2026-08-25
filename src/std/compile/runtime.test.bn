@@ -1,0 +1,72 @@
+import "../testing" as testing
+import "../io" as io
+import "../ioutil" as ioutil
+import "../sys" as sys
+import "../string" as string
+
+int run_test(testing.T* t, str name, str filepath, int expected_exit_code, str expected_output) {
+    testing.setup(t, name)
+
+    ext := sys.splitext(filepath)
+    binary_path := ext.base
+
+    -- 1. Compile the source file
+    cmd := ""
+    io.asprintf(&cmd, "./main %s >/dev/null 2>&1", filepath)
+    comp_stream := sys.popen(cmd, "r")
+    comp_exit_status := sys.pclose(comp_stream)
+    sys.free(cmd)
+
+    if comp_exit_status != 0 {
+        testing.fail(t)
+        io.fprintf(t.out, "Compilation failed for %s (exit code %d)\n", filepath, comp_exit_status)
+        return 0
+    }
+
+    -- 2. Run the compiled executable and capture stdout
+    run_stream := sys.popen(binary_path, "r")
+    if run_stream == null {
+        testing.fail(t)
+        io.fprintf(t.out, "Failed to execute compiled binary '%s' for %s\n", binary_path, name)
+        return 0
+    }
+    
+    got_output := ioutil.readall(io.fileno(run_stream))
+    run_exit_status := sys.pclose(run_stream)
+
+    -- Unix exit status code is in the high byte: status / 256
+    got_exit_code := run_exit_status / 256
+
+    -- 3. Assertions
+    testing.assert_equal_int(t, expected_exit_code, got_exit_code)
+    testing.assert_equal_str(t, expected_output, got_output)
+
+    sys.free(got_output)
+
+    -- 4. Clean up the generated binary
+    io.asprintf(&cmd, "rm -f %s", binary_path)
+    rm_stream := sys.popen(cmd, "r")
+    sys.pclose(rm_stream)
+    sys.free(cmd)
+
+    return 0
+}
+
+int main() {
+    t := testing.init("std/compile/runtime.test.bn")
+
+    -- 1. Compiler integration test fragments
+    testing.run(t, run_test(t, "empty_main", "std/compile/__test__/01-empty_main.in", 0, ""))
+    testing.run(t, run_test(t, "return-digit", "std/compile/__test__/02-return-digit.in", 1, ""))
+    testing.run(t, run_test(t, "return-void", "std/compile/__test__/03-return-void.in", 1, ""))
+    testing.run(t, run_test(t, "function-call", "std/compile/__test__/04-function-call.in", 0, ""))
+
+    -- 2. Samples and End-to-End runnable programs
+    testing.run(t, run_test(t, "hello_world", "../samples/00-hello_world.bn", 0, "Hello from coffee!Hello from coffee!Hello from coffee!"))
+    testing.run(t, run_test(t, "functions", "../samples/01-functions.bn", 0, "3! = 6\n"))
+    testing.run(t, run_test(t, "loops", "../samples/03-loops.bn", 1, "Number: 0Number: 1Number: 2Number: 3Number: 4Number: 5Number: 6Number: 7Number: 8Number: 9"))
+    testing.run(t, run_test(t, "struct", "../samples/04-struct.bn", 0, "val: 3"))
+
+    testing.cleanup(t)
+    return 0
+}
