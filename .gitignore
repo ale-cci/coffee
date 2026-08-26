@@ -21,3 +21,11 @@ runtime_test_bin
 
 # Local dependency sandboxes
 src/qbe/
+
+# Tree-sitter build artifacts and local node dependencies
+node_modules/
+src/gen_treesitter
+src/parser.c
+src/grammar.json
+src/node-types.json
+src/tree_sitter/

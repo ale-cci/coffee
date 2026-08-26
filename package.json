@@ -1,0 +1,27 @@
+{
+  "name": "coffee-lang",
+  "version": "1.0.0",
+  "description": "> C-like programming language with Clojures",
+  "main": "grammar.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/ale-cci/coffee-lang.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://bitbucket.org/ale-cci/coffee-lang/issues"
+  },
+  "homepage": "https://bitbucket.org/ale-cci/coffee-lang#readme",
+  "devDependencies": {
+    "tree-sitter-cli": "^0.26.13"
+  }
+}
